@@ -1,0 +1,237 @@
+/* Reset all margins, padding, and borders */
+
+/* Set default font family and size */
+.enroll{
+  background-color: #EAEAEA;
+  margin-top: 200px;
+  margin-left: 500px;
+  width: 400px;
+  height: 200px;
+  padding: 10px;
+  border-radius: 10px;
+
+  text-align: center;
+}
+body {
+  font-family: Arial, sans-serif; /* Example font family */
+  font-size: 16px;
+  color: black; /* Example font size */
+}
+.lesson{
+    padding: 30px;
+    padding-bottom: 0px;
+}
+.lesson p{
+  text-align: left;
+  text-indent: 200px; 
+  font-size: larger;
+  line-height: 1.5; 
+}
+.viewcontent{
+  width: 100%;
+  height: 80vh;
+  background-color: white;
+  border-radius: 5px;
+  overflow-y: scroll;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  height: 450px;
+  padding: 40px;
+  position: relative;
+}
+
+.VideoFrame,
+.list {
+  height: 400px;
+}
+
+.list {
+  padding: 15px;
+  background-color: #7cd3d3;
+  border-radius: 25px;
+}
+
+.content {
+  width: 100%;
+  height: 90%;
+  padding: 20px;
+  align-items: center;
+  overflow: auto; /* Use auto to add scrollbar only when necessary */
+}
+.viewcontent::-webkit-scrollbar{
+  width: 3px;
+}
+.content::-webkit-scrollbar {
+  width: 10px;
+}
+.viewcontent::-webkit-scrollbar-track,
+.content::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 5px;
+}
+.viewcontent::-webkit-scrollbar-thumb,
+.content::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the scrollbar thumb */
+  border-radius: 4px;
+}
+.viewcontent::-webkit-scrollbar:hover,
+.content::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+.notes{
+    height: 40px;
+    width: 95%;
+    background-color: white;
+    border-radius: 10px;
+    color: black;
+    text-align: start;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1fr 40fr;
+    gap: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.notes h6{
+    text-align: start;
+    font-weight: bold;
+}
+.notecontent{
+    padding: 60px;
+}
+.notecontent h1,.notecontent p{
+    text-align: left;
+    
+}
+.notecontent p{
+    font-size: larger;
+    text-indent: 200px;
+    line-height: 1.5; 
+}
+.lessmain{
+  height:750px;
+  position: relative;
+  background-color: #EAEAEA;
+  padding: 25px;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap:20px;
+
+}
+
+.lesmaindiv{
+  flex:1;
+  color: black;
+  height: 100%;
+  margin-left: 10px;
+  width: 90%;
+  padding: 20px;
+  border-radius: 15px;
+  background-color: rgba(178, 181, 225, 1);
+  text-align: center;
+}
+
+.coursedesc{
+  text-align: left;
+  margin-bottom: 15px;
+  text-indent: 200px;
+}
+.lesdiv{
+  display: grid;
+  grid-template-columns: 25fr 1fr 1fr 1fr 1fr;
+  gap: 10px;
+  text-align: left;
+ padding-left: 10px;
+ padding-right: 10px;
+  color: black;
+  background-color: white;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  width: 98%;
+}
+.lesname{
+  padding: 15px;
+  font-size: larger;
+  display: block;
+}
+.lesname:hover{
+  font-weight: bold;
+}
+.notesdiv{
+  background-color: rgb(247, 209, 235);
+  border-radius: 5px;
+  text-align: left;
+  width: 98%;
+}
+
+.horizontal-line {
+  border-bottom: 1px solid #807d7d; /* Change color and thickness as needed */
+ padding-left: 10px;
+ margin-right: 10px;
+
+}
+.notetitle{
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 15fr  1fr 1fr 1fr;
+}
+.navigationButtons{
+  width: 100%;
+  display: grid;
+  grid-template-columns: 40fr 1fr 1fr;
+ gap: 20px;
+ padding: 20px;
+ padding-left: 20px;
+   
+}
+.notfoundlesson{
+  width: 100%;
+  height: 80%;
+  background-color: #EAEAEA;
+}
+.notfoundinner{
+  margin-left: 350px;
+  border-radius: 10px;
+  margin-top: 200px;
+  background-color: white;
+  font-weight: bolder;
+  text-align: center;
+  vertical-align:middle;
+  width: 50%;
+  padding: 30px;
+}
+.bttoncust{
+  border: none;
+  background-color: transparent;
+  color:blue;
+  cursor: pointer;
+}
+.lessonlistscroll{
+  height: 350px;
+  overflow-y: auto;
+}
+.lessonlistscroll::-webkit-scrollbar {
+  width: 10px;
+   padding: 2px;
+}
+
+.lessonlistscroll::-webkit-scrollbar-track {
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+}
+
+.lessonlistscroll::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the scrollbar thumb */
+  border-radius: 4px;
+}
+
+.lessonlistscroll::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
