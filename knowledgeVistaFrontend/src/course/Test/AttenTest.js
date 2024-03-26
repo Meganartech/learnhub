@@ -7,19 +7,22 @@ const AttenTest = () => {
     const MySwal = withReactContent(Swal);
     // const {userId}=sessionStorage.getItem("userid");
     const {courseId}=useParams();
-    const { testId } = useParams();
+    //const { testId } = useParams();
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState({});
+  
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/test/getbytestid/${testId}`);
+                const response = await fetch(`http://localhost:8080/test/getbytestid/${courseId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch questions');
                 }
                 const data = await response.json();
+            
+               
                 
 
                 // Transform the data structure to match the expected format
@@ -75,9 +78,9 @@ const AttenTest = () => {
   
       try {
         const token = sessionStorage.getItem("token");
-       
+     
           // Send the selectedAnswersArray to the server
-          const response = await fetch(`http://localhost:8080/test/${testId}/calculateMarks/${courseId}`, {
+          const response = await fetch(`http://localhost:8080/test/calculateMarks/${courseId}`, {
               method: 'POST',
               headers: {
                 "Authorization": token,

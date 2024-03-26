@@ -151,7 +151,9 @@ const CreateTest = () => {
           <button className="btn btn-primary"   onClick={(e) => submitTest(e)}>save</button></div>
       </div>
       ) : (
-        <div className="outer mt-3" style={{ height: "80vh" }}>
+        <div className="contentbackground">
+        <div className="contentinner">
+        <div className="outer mt-3" >
           <div className="first">
             <h3>Create Test</h3>
             <input
@@ -232,6 +234,8 @@ const CreateTest = () => {
               </div>
             )}
           </div>
+        </div>
+        </div>
         </div>
       )}
     </div>

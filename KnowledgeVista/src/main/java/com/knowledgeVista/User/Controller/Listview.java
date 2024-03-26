@@ -92,5 +92,21 @@ public class Listview {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-}
+
 //```````````````WORKING````````````````````````````````````
+@GetMapping("/Trainer")
+public ResponseEntity<List<Muser>> getTrainerByRoleName() {
+    try {
+        List<Muser> users = muserrepositories.findByRoleName("TRAINER");
+       
+        users.forEach(user -> {
+            byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
+            user.setProfile(decompressedImage);
+            user.setCourses(null);
+        });
+        return ResponseEntity.ok(users);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+}
+}

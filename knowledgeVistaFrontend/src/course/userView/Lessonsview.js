@@ -99,7 +99,7 @@ const Lessonsview = () => {
   const testredirect = () => {
 
   
-    window.location.href = `/test/${courseId}`;
+    window.location.href = `/test/start/${courseId}`;
   };
 
   return (

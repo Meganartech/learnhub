@@ -1,7 +1,9 @@
 package com.knowledgeVista.Course.certificate;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -117,31 +119,69 @@ public class certificateController {
 	        }
 	    }
 	}
-
-//`````````````````````````````````````SEND CERTIFICATE````````````````````````````````````````````````````````
-	@GetMapping("/getAllCertificate")
-	private ResponseEntity<?> sendAllCertificate( @RequestHeader("Authorization") String token){
-		String username = jwtUtil.getUsernameFromToken(token);
+	
+	
+//-------------------Table view of certificates in user---------------------------------
+@GetMapping("/getAllCertificate")
+	private ResponseEntity<?> sendAllCertificate(@RequestHeader("Authorization") String token) {
+	    String username = jwtUtil.getUsernameFromToken(token);
 	    Optional<Muser> opuser = muserRepository.findByEmail(username);
-	    if(opuser.isPresent()) {
-	    	Muser user=opuser.get();
-	    	List<MuserTestActivity> activityDetails = activityrepo.findByuser(user);
+	    if (opuser.isPresent()) {
+	        Muser user = opuser.get();
+	        List<MuserTestActivity> activityDetails = activityrepo.findByuser(user);
 
-	    	// Group activityDetails by courseId
-	    	Map<Long, List<MuserTestActivity>> activityByCourseId = activityDetails.stream()
-	    	        .collect(Collectors.groupingBy(activity -> activity.getCourse().getCourseId()));
+	        // Group activityDetails by courseId
+	        Map<Long, List<MuserTestActivity>> activityByCourseId = activityDetails.stream()
+	                .collect(Collectors.groupingBy(activity -> activity.getCourse().getCourseId()));
 
-	    	// Filter for highest percentage activity for each courseId
-	    	List<MuserTestActivity> filteredActivityDetails = activityByCourseId.values().stream()
-	    	        .map(activityList -> activityList.stream()
-	    	                .max(Comparator.comparing(MuserTestActivity::getPercentage))
-	    	                .orElse(null)) // Handle empty list if needed
-	    	        .collect(Collectors.toList());
-	    	 return ResponseEntity.ok().body(filteredActivityDetails);
+	        // Filter for highest percentage activity for each courseId
+	        List<MuserTestActivity> filteredActivityDetails = activityByCourseId.values().stream()
+	                .map(activityList -> activityList.stream()
+	                        .max(Comparator.comparing(MuserTestActivity::getPercentage))
+	                        .orElse(null)) // Handle empty list if needed
+	                .collect(Collectors.toList());
+
+	        List<HashMap<String, Object>> allActivityHashMaps = new ArrayList<>();
+	        for (MuserTestActivity act : filteredActivityDetails) {
+	            HashMap<String, Object> hashMap = new HashMap<>();
+	            hashMap.put("activityId", act.getActivityId());
+	            hashMap.put("user", act.getUser().getUsername());
+	            hashMap.put("course", act.getCourse().getCourseName());
+	            hashMap.put("testDate", act.getTestDate());
+	            hashMap.put("percentage", act.getPercentage());
+	            allActivityHashMaps.add(hashMap); // Add each HashMap to the list
+	        }
+
+	        // Return the list of HashMaps as the response body
+	        return ResponseEntity.ok().body(allActivityHashMaps);
 	    }
 	    return ResponseEntity.ok().body("something fuzzy happen");
-	   
-	   
-	    
 	}
+
+@GetMapping("/getByActivityId/{activityId}")
+public ResponseEntity<?> getByActivityId(@PathVariable Long activityId,
+                                         @RequestHeader("Authorization") String token) {
+	
+    if (jwtUtil.validateToken(token)) {
+        Optional<MuserTestActivity> opActivity = activityrepo.findById(activityId);
+        if (opActivity.isPresent()) {
+            MuserTestActivity activity = opActivity.get();
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("user", activity.getUser().getUsername());
+            hashMap.put("course", activity.getCourse().getCourseName());
+            hashMap.put("testDate", activity.getTestDate());
+            hashMap.put("percentage", activity.getPercentage());
+            
+            return ResponseEntity.ok().body(hashMap);
+        } else {
+            // Activity not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Activity not found");
+        }
+    } else {
+        // Invalid token
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+    }
 }
+
+}
+	

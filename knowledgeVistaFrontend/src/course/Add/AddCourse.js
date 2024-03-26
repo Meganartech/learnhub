@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import "../../OrganizationSettings/CreateApplication.css"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "../Lessons/Style.css";
@@ -90,9 +91,10 @@ const AddCourse = () => {
   return (
     <>
     {userRole === "ADMIN"&&(
-    <div className="bg1  ">
+    <div className="contentbackground ">
       <form onSubmit={handleSubmit}>
-        <div className="outer1 bg-white" >
+        <div className="contentinner">
+        <div className="outer1 " >
           <div className="First1">
             <h2 className="heading">Add Course</h2>
             <div className="form-group">
@@ -118,7 +120,7 @@ const AddCourse = () => {
               <textarea
                 name="courseDescription"
                 id="courseDescription"
-                rows={5}
+                rows={6}
                 className="form-control "
                 placeholder="Description about the Course"
                 value={formData.courseDescription}
@@ -142,9 +144,9 @@ const AddCourse = () => {
               />
             </div>
           </div>
-          <div class="vertical-line"></div>
+          <div className="vertical-line"></div>
           <div className="second1">
-            <div className="form-group">
+            <div className="form-group mt-5">
               <label htmlFor="courseImage" >
                 Course Image
               </label>
@@ -186,6 +188,7 @@ const AddCourse = () => {
               </button>
             </div>
           </div>
+        </div>
         </div>
       </form>
     </div>)}</>

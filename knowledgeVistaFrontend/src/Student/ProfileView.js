@@ -67,10 +67,7 @@ const ProfileView = () => {
          
         </div>
       </div>
-      <div className='btngrp'>
-        <button className='btn btn-primary' >Edit</button>
-       
-     </div>
+      
     </div>
   </div>
   )

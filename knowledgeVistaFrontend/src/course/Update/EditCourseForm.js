@@ -133,8 +133,9 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
     }
   };
   return (
-    <div className="bg pb-5">
+    <div className="contentbackground">
       <form onSubmit={handleSubmit}>
+        <div className="contentinner">
         <div className="outer " >
           <div className="first">
             <div className="head">
@@ -240,6 +241,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </form>
     </div>

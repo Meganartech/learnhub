@@ -26,11 +26,8 @@ const AddNotes = ({ notesField, handleNotesChange, handleFileChange }) => {
             type="text"
             name="notesTitle"
             className="form-control"
-            placeholder="Untitled"
-            style={{
-              backgroundColor: "white",
-              boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)"
-            }}
+            placeholder="Note Name"
+          
             value={notesField.notesTitle}
             required
             onChange={handleNotesChange}
@@ -46,10 +43,7 @@ const AddNotes = ({ notesField, handleNotesChange, handleFileChange }) => {
             name="notesDesc"
             rows="3"
             required
-            style={{
-              backgroundColor: "white",
-              boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)"
-            }}
+          
             placeholder="Give Notes Description here......"
             value={notesField.notesDesc}
             onChange={handleNotesChange}
@@ -78,10 +72,7 @@ const AddNotes = ({ notesField, handleNotesChange, handleFileChange }) => {
                   value={notesField.fileUrl}
                   required
                   className="urlbox form-control"
-                  style={{
-                    backgroundColor: "white",
-                    boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)"
-                  }}
+                 
                   onChange={handleNotesChange}
                   placeholder="Enter URL"
                 />

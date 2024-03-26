@@ -11,7 +11,7 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired, children 
     }
 
     // Check if authorization is required and user has the ADMIN role
-    if (authorizationRequired && userRole !== 'ADMIN') {
+    if (authorizationRequired && userRole === "USER") {
         return <Navigate to="/unauthorized" />;
     }
 

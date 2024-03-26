@@ -65,7 +65,8 @@ const CourseDetails = () => {
       {editMode ? (
         <EditCourseForm id={courseId} toggleEditMode={toggleEditMode} />
       ) : (
-        <div className="bg pb-5">
+        <div className="contentbackground">
+          <div className="contentinner">
           <div className="outer mb-3">
             <div className="first">
               <div className="head">
@@ -128,6 +129,7 @@ const CourseDetails = () => {
               </div>
             </div>
 
+          </div>
           </div>
         </div>
       )}

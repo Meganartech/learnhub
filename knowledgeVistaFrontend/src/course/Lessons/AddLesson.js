@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 
 const AddLesson = () => {
   const {courseId}=useParams();
+  const{courseName}=useParams();
   const MySwal = withReactContent(Swal);
 
   const [notesField, setNotesField] = useState({
@@ -79,7 +80,7 @@ const AddLesson = () => {
               fileUrl: "",
               videoFile: null,
             });
-            window.location.href = `/course/viewlessons/${courseId}`;
+            window.location.href = `/course/viewlessons/${courseName}/${courseId}`;
           }
         });
       }
@@ -97,14 +98,15 @@ const AddLesson = () => {
   };
 
   return (
-    <div className="bg">
+    <div className="contentbackground">
       <form onSubmit={handleSubmit}>
-        <div className="outer mt-4">
+      <div className="contentinner">
+        <div className="outer">
           <div className="first">
-            <h4 className="heading">Lesson Details</h4>
+            <h4 className="heading"></h4>
             <div className="mb-3">
               <label htmlFor="lessonTitle" className=" mt-3">
-                <h5> Lesson Title</h5>
+                <h2>{courseName}</h2>
               </label>
               <input
                 type="text"
@@ -113,7 +115,7 @@ const AddLesson = () => {
                 value={lesson.lessonTitle}
                 className="form-control"
                 id="lessonTitle"
-                placeholder="Untitled"
+                placeholder="Lesson Name"
                 onChange={handleChange}
              
               />
@@ -129,18 +131,18 @@ const AddLesson = () => {
                 id="lessonDesc"
                 rows="6"
                 onChange={handleChange}
-                placeholder="Give a brief description about the course..."
+                placeholder="Give a brief description about the Lesson..."
               ></textarea>
             </div>
           </div>
           <div className="vertical-line" ></div>
 
           <div className="second">
-          <AddNotes
-  notesField={notesField}
-  handleNotesChange={handleNotesChange}
-  handleFileChange={handleFileChange}
-/>
+                      <AddNotes
+              notesField={notesField}
+              handleNotesChange={handleNotesChange}
+              handleFileChange={handleFileChange}
+            />
 
           </div>
           <div className="submitbtn text-center mb-4">
@@ -153,7 +155,7 @@ const AddLesson = () => {
         </div>
         </div>
 
-        
+        </div>
       </form>
     </div>
   );

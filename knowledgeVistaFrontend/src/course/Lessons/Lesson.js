@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 const Lesson = () => {
   const { courseId } = useParams();
+  const {courseName}=useParams();
   const MySwal = withReactContent(Swal);
   const [lessons, setLessons] = useState([]);
   const [course, setCourse] = useState({});
@@ -236,13 +237,16 @@ const Lesson = () => {
       {notFound ? (
         <div className='notfoundlesson'>
           <div className='notfoundinner'>
+            
           <h2>No Lessons found for this course.</h2>
-          <Link to={`/course/Addlesson/${courseId}`}className='btn btn-primary'>Add Lesson</Link>
-          </div>
+          <Link to={`/course/Addlesson/${courseName}/${courseId}`}className='btn btn-primary'>Add Lesson</Link></div>
+          
         </div>
       ) : (
         <div className='lesmaindiv'style={{ height: "80%" }} >
-          <h1>{course.courseName}</h1>
+          <div style={{display:'grid',gridTemplateColumns:"10fr 1fr",alignContent:"center"}}>
+          <h1>{course.courseName}</h1> <Link to={`/course/Addlesson/${courseName}/${courseId}`}className='btn btn-primary'>Add Lesson</Link></div>
+          
           <div className="coursedesc">
             <h5>{course.courseDescription}</h5>
           </div>

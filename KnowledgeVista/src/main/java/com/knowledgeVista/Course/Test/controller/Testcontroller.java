@@ -40,7 +40,7 @@ public class Testcontroller {
 	    
 	    @Autowired
 	    private TestRepository testRepository;
-//-----------------------------WORKING-------------------------
+//-----------------------------WORKING for ADMIN View-------------------------
 	    @PostMapping("/create/{courseId}")
 	    public ResponseEntity<String> createTest(@PathVariable Long courseId, @RequestBody CourseTest test) {
 	        try {
@@ -48,7 +48,10 @@ public class Testcontroller {
 	            CourseDetail courseDetail = courseDetailRepository.findById(courseId)
 	                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
 	            
-	            // Set the course detail in the test object
+	            Optional <CourseTest> opcoursetest= testRepository.findByCourseDetail(courseDetail);
+	            if(opcoursetest.isPresent()) {
+	            	return ResponseEntity.badRequest().build();
+	            }
 	            test.setCourseDetail(courseDetail);
 	            int numberOfQuestions = test.getQuestions().size();
 	            test.setNoOfQuestions((long) numberOfQuestions);
@@ -70,30 +73,24 @@ public class Testcontroller {
 	                                 .body("Error creating test: " + e.getMessage());
 	        }
 	    }
-	  //-----------------------------WORKING-------------------------
+	  //-----------------------------WORKING for ADMIN View-------------------------	    
 	    @GetMapping("/getall/{courseId}")
 	    public ResponseEntity<?> getTestsByCourseId(@PathVariable Long courseId) {
 	        try {
 	            // Find the course by its ID
-	            Optional<CourseDetail> optionalCourseDetail = courseDetailRepository.findById(courseId);
-	            if (!optionalCourseDetail.isPresent()) {
-	                return ResponseEntity.notFound().build();
-	            }
-
-	            // Get tests related to the course
-	            List<CourseTest> tests = testRepository.findByCourseDetail(optionalCourseDetail.get());
-	            if (tests.isEmpty()) {
-	                return ResponseEntity.notFound().build();	            }
-
-	            // Map to store test details along with questions and answers
-	            List<Map<String, Object>> testDetails = new ArrayList<>();
-	            for (CourseTest test : tests) {
+	            CourseDetail courseDetail = courseDetailRepository.findById(courseId)
+	                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
+	            
+	            Optional<CourseTest> opcoursetest = testRepository.findByCourseDetail(courseDetail);
+	            if (opcoursetest.isPresent()) {
+	                CourseTest test = opcoursetest.get();
 	                Map<String, Object> testMap = new HashMap<>();
+	                testMap.put("coursename", test.getCourseDetail().getCourseName());
 	                testMap.put("testId", test.getTestId());
 	                testMap.put("testName", test.getTestName());
 	                testMap.put("noofattempt", test.getNoofattempt());
-	                testMap.put("passPercentage",test.getPassPercentage());
-	                testMap.put("noOfQuestions",test.getNoOfQuestions());
+	                testMap.put("passPercentage", test.getPassPercentage());
+	                testMap.put("noOfQuestions", test.getNoOfQuestions());
 	                
 	                // Retrieve questions for the current test
 	                List<Question> questions = test.getQuestions();
@@ -112,80 +109,143 @@ public class Testcontroller {
 	                    }
 	                    testMap.put("questions", questionDetails);
 	                }
-
-	                testDetails.add(testMap);
+	                
+	                return ResponseEntity.ok(testMap);
 	            }
-
-	            return ResponseEntity.ok(testDetails);
+	            // Return a response for the case where opcoursetest.isPresent() is false
+	            return ResponseEntity.notFound().build();
 	        } catch (Exception e) {
-	            e.printStackTrace();
-	            return ResponseEntity.status(500).body("Error retrieving test details: " + e.getMessage());
+	            e.printStackTrace(); // Print the stack trace for debugging
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                                 .body("Error creating test: " + e.getMessage());
 	        }
 	    }
+
+	    
+	    
+	  //-----------------------------WORKING-------------------------
+//	    @GetMapping("/getall/{courseId}")
+//	    public ResponseEntity<?> getTestsByCourseId(@PathVariable Long courseId) {
+//	        try {
+//	            // Find the course by its ID
+//	            Optional<CourseDetail> optionalCourseDetail = courseDetailRepository.findById(courseId);
+//	            if (!optionalCourseDetail.isPresent()) {
+//	                return ResponseEntity.notFound().build();
+//	            }
+//
+//	            // Get tests related to the course
+//	            List<CourseTest> tests = testRepository.findByCourseDetail(optionalCourseDetail.get());
+//	            if (tests.isEmpty()) {
+//	                return ResponseEntity.notFound().build();	            }
+//
+//	            // Map to store test details along with questions and answers
+//	            List<Map<String, Object>> testDetails = new ArrayList<>();
+//	            for (CourseTest test : tests) {
+//	                Map<String, Object> testMap = new HashMap<>();
+//	                testMap.put("testId", test.getTestId());
+//	                testMap.put("testName", test.getTestName());
+//	                testMap.put("noofattempt", test.getNoofattempt());
+//	                testMap.put("passPercentage",test.getPassPercentage());
+//	                testMap.put("noOfQuestions",test.getNoOfQuestions());
+//	                
+//	                // Retrieve questions for the current test
+//	                List<Question> questions = test.getQuestions();
+//	                if (!questions.isEmpty()) {
+//	                    List<Map<String, Object>> questionDetails = new ArrayList<>();
+//	                    for (Question question : questions) {
+//	                        Map<String, Object> questionMap = new HashMap<>();
+//	                        questionMap.put("questionId", question.getQuestionId());
+//	                        questionMap.put("questionText", question.getQuestionText());
+//	                        questionMap.put("option1", question.getOption1());
+//	                        questionMap.put("option2", question.getOption2());
+//	                        questionMap.put("option3", question.getOption3());
+//	                        questionMap.put("option4", question.getOption4());
+//	                        questionMap.put("answer", question.getAnswer());
+//	                        questionDetails.add(questionMap);
+//	                    }
+//	                    testMap.put("questions", questionDetails);
+//	                }
+//
+//	                testDetails.add(testMap);
+//	            }
+//
+//	            return ResponseEntity.ok(testDetails);
+//	        } catch (Exception e) {
+//	            e.printStackTrace();
+//	            return ResponseEntity.status(500).body("Error retrieving test details: " + e.getMessage());
+//	        }
+//	    }
 	  //-----------------------------WORKING THIS IS FOR USER LOGIN-------------------------
-	    @GetMapping("/getall/user/{courseId}")
-	    public ResponseEntity<?> gettsestlistForUser(@PathVariable Long courseId) {
-	        try {
-	            // Find the course by its ID
-	            Optional<CourseDetail> optionalCourseDetail = courseDetailRepository.findById(courseId);
-	            if (!optionalCourseDetail.isPresent()) {
-	                return ResponseEntity.notFound().build();
-	            }
-
-	            // Get tests related to the course
-	            List<CourseTest> tests = testRepository.findByCourseDetail(optionalCourseDetail.get());
-	            if (tests.isEmpty()) {
-	            	   return ResponseEntity.notFound().build();	
-	            }
-
-	            // Map to store test details along with questions and answers
-	            List<Map<String, Object>> testDetails = new ArrayList<>();
-	            for (CourseTest test : tests) {
-	                Map<String, Object> testMap = new HashMap<>();
-	                testMap.put("testId", test.getTestId());
-	                testMap.put("testName", test.getTestName());
-	                testMap.put("passPercentage", test.getPassPercentage());
-	                testDetails.add(testMap);
-	            }
-
-	            return ResponseEntity.ok(testDetails);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            return ResponseEntity.status(500).body("Error retrieving test details: " + e.getMessage());
-	        }
-	    } 
+//	    @GetMapping("/getall/user/{courseId}")
+//	    public ResponseEntity<?> gettsestlistForUser(@PathVariable Long courseId) {
+//	        try {
+//	            // Find the course by its ID
+//	            Optional<CourseDetail> optionalCourseDetail = courseDetailRepository.findById(courseId);
+//	            if (!optionalCourseDetail.isPresent()) {
+//	                return ResponseEntity.notFound().build();
+//	            }
+//
+//	            // Get tests related to the course
+//	            List<CourseTest> tests = testRepository.findByCourseDetail(optionalCourseDetail.get());
+//	            if (tests.isEmpty()) {
+//	            	   return ResponseEntity.notFound().build();	
+//	            }
+//
+//	            // Map to store test details along with questions and answers
+//	            List<Map<String, Object>> testDetails = new ArrayList<>();
+//	            for (CourseTest test : tests) {
+//	                Map<String, Object> testMap = new HashMap<>();
+//	                testMap.put("testId", test.getTestId());
+//	                testMap.put("testName", test.getTestName());
+//	                testMap.put("passPercentage", test.getPassPercentage());
+//	                testDetails.add(testMap);
+//	            }
+//
+//	            return ResponseEntity.ok(testDetails);
+//	        } catch (Exception e) {
+//	            e.printStackTrace();
+//	            return ResponseEntity.status(500).body("Error retrieving test details: " + e.getMessage());
+//	        }
+//	    } 
 	  //-----------------------------WORKING FOR USER LOGIN -------------------------
 
-	    @GetMapping("/getbytestid/{testId}")
-	    public ResponseEntity<?> getTestById(@PathVariable Long testId) {
-	        Optional<CourseTest> optionalTest = testRepository.findById(testId);
-	        if (optionalTest.isPresent()) {
-	            CourseTest test = optionalTest.get();
-	            test.setCourseDetail(null);
-            
+	    @GetMapping("/getbytestid/{courseId}")
+	    public ResponseEntity<?> getTestById(@PathVariable Long courseId) {
+	        Optional<CourseDetail> opcourse = courseDetailRepository.findById(courseId);
+	        if (opcourse.isPresent()) {
+	            CourseDetail course = opcourse.get();
+	            Optional<CourseTest> optest = testRepository.findByCourseDetail(course);
+	            if (optest.isPresent()) {
+	                CourseTest test = optest.get();
 
-	            List<Question> questions = test.getQuestions();
+	                test.setCourseDetail(null);
 
-	            // Shuffle the list of questions randomly
-	            shuffleList(questions);
+	                List<Question> questions = test.getQuestions();
 
-	            // Shuffle the options within each question
-	            for (Question question : questions) {
-	            	 question.setTest(null);
-	            	 question.setAnswer(null);
-	                String[] options = { question.getOption1(), question.getOption2(), question.getOption3(), question.getOption4() };
-	                shuffleArray(options);
-	                question.setOption1(options[0]);
-	                question.setOption2(options[1]);
-	                question.setOption3(options[2]);
-	                question.setOption4(options[3]);
+	                // Shuffle the list of questions randomly
+	                shuffleList(questions);
+
+	                // Shuffle the options within each question
+	                for (Question question : questions) {
+	                    question.setTest(null);
+	                    question.setAnswer(null);
+	                    String[] options = {question.getOption1(), question.getOption2(), question.getOption3(), question.getOption4()};
+	                    shuffleArray(options);
+	                    question.setOption1(options[0]);
+	                    question.setOption2(options[1]);
+	                    question.setOption3(options[2]);
+	                    question.setOption4(options[3]);
+	                }
+
+	                return ResponseEntity.ok(test);
+	            } else {
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Test not found for course with id: " + courseId);
 	            }
-
-	            return ResponseEntity.ok(test);
 	        } else {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Test not found with id: " + testId);
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found with id: " + courseId);
 	        }
 	    }
+
 	    
 	    
 //-----------------------------WORKING--------------------------------------------------	    

@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.User.Repository.MuserRepositories;
+import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
+
+import io.jsonwebtoken.io.DecodingException;
 import jakarta.transaction.Transactional;
 @RestController
 @RequestMapping("/student")
@@ -28,82 +32,11 @@ import jakarta.transaction.Transactional;
 public class MserRegistrationController {
 	@Autowired
 	private MuserRepositories muserrepositories;
-
+	 @Autowired
+	 private JwtUtil jwtUtil;
 	@Autowired
 	private MuserRoleRepository muserrolerepository;
-//	@Autowired
-//	private MuserDetailRepository muserdetailrepository;
-//	@Autowired
-//	private OccupationDetailsRepository occupationdetailrepository;
-//	@Autowired
-//	private OrgDetailRepository orgdetailrepository;
-//	@Autowired
-//	private SkillDetailRepository skilldetailrepository;
 	
-//	@PostMapping("/register")
-//	public ResponseEntity<String> registerStudent(@RequestBody RegisterRequestDTO registrationrequestdto) {
-//		
-//		
-//		   Muser user = registrationrequestdto.getMuser();
-//		 String   email=user.getEmail();
-//		    
-//		 long userCount = muserrepositories.count();
-//		    // Check if email exists
-//		    Muser existingUser = muserrepositories.findByEmail(email);
-//		muserrepositories.findByEmail(email);
-//		
-//		 if ( userCount > 0) {
-//			if(existingUser!=null) {
-//			   
-//				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"EMAIL ALREADY EXISTS\"}");
-//
-//			}else {
-//			MuserRoles roleUser=muserrolerepository.findByroleName("USER");
-//			 user.setRole(roleUser);
-//			 }
-//		}else{
-//			MuserRoles roleuser= new MuserRoles();
-//			roleuser.setRoleName("USER");
-//			roleuser.setIsActive(true);
-//			 muserrolerepository.save(roleuser); 
-//			 
-//			 MuserRoles role= new MuserRoles();
-//			 role.setRoleName("ADMIN");
-//			 role.setIsActive(true);
-//			 MuserRoles savedroleadmin = muserrolerepository.save(role);
-//			 user.setRole(savedroleadmin);
-//		}
-//		 
-////	        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-////			String encodedPassword = passwordEncoder.encode(user.getPsw());
-////			user.setPsw(encodedPassword);
-//		    
-//		
-//		  		    // Save Muser
-//		    muserrepositories.save(user);
-//		    
-//	  
-//		   MuserDetails muserdetail=  registrationrequestdto.getMuserDetails();
-//		   muserdetail.setUserId(user);
-//		   OccupationDetails occ= registrationrequestdto.getOccupationDetails();
-//		    occupationdetailrepository.save(occ);
-//		    muserdetail.setOccupationId(occ);
-//////		   OrgDetails org=orgdetailrepository.save(registrationrequestdto.getOrgDetails());
-//////		   muserdetail.setOrgId(org);
-//	       SkillDetails skill=skilldetailrepository.save(registrationrequestdto.getSkillDetails());
-//	       muserdetail.setSkillId(skill);
-//	       muserdetailrepository.save(registrationrequestdto.getMuserDetails());
-//	
-//	
-//	
-//	
-//	 return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
-//	
-//	}
-	
-	
-//	@PostMapping("/trainerRegister")
-//	public ResponseEntity<?>addtrainer()
 
 	@PostMapping("/register")
 	public ResponseEntity<?> registerStudent(@RequestParam("username") String username,
@@ -112,7 +45,8 @@ public class MserRegistrationController {
 			                                 @RequestParam("dob") LocalDate dob,
 			                                 @RequestParam("phone") String phone,
 			                                 @RequestParam("profile")MultipartFile profile,
-			                                 @RequestParam ("isActive") Boolean isActive) {
+			                                 @RequestParam ("isActive") Boolean isActive
+			                                ) {
 		long userCount = muserrepositories.count();
 		Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 		 if ( userCount > 0) {
@@ -141,6 +75,13 @@ public class MserRegistrationController {
 					 roleuser.setIsActive(true);
 					 roleuser.setUsers(null);
 					 muserrolerepository.save(roleuser); 
+					 
+					 MuserRoles roletrainer= new MuserRoles();
+					 roletrainer.setRoleName("TRAINER");
+					 roletrainer.setIsActive(true);
+					 roletrainer.setUsers(null);
+					 muserrolerepository.save(roletrainer); 
+					 
 					 
 					 MuserRoles role= new MuserRoles();
 					 role.setRoleName("ADMIN");
@@ -225,11 +166,82 @@ public class MserRegistrationController {
 	      }
 	  }
 	  
-//	@PostMapping("/addTrainer")  
-	  
-	  
+		  
 	  
 	  
 
 	
 }
+	
+//	@Autowired
+//	private MuserDetailRepository muserdetailrepository;
+//	@Autowired
+//	private OccupationDetailsRepository occupationdetailrepository;
+//	@Autowired
+//	private OrgDetailRepository orgdetailrepository;
+//	@Autowired
+//	private SkillDetailRepository skilldetailrepository;
+	
+//	@PostMapping("/register")
+//	public ResponseEntity<String> registerStudent(@RequestBody RegisterRequestDTO registrationrequestdto) {
+//		
+//		
+//		   Muser user = registrationrequestdto.getMuser();
+//		 String   email=user.getEmail();
+//		    
+//		 long userCount = muserrepositories.count();
+//		    // Check if email exists
+//		    Muser existingUser = muserrepositories.findByEmail(email);
+//		muserrepositories.findByEmail(email);
+//		
+//		 if ( userCount > 0) {
+//			if(existingUser!=null) {
+//			   
+//				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"EMAIL ALREADY EXISTS\"}");
+//
+//			}else {
+//			MuserRoles roleUser=muserrolerepository.findByroleName("USER");
+//			 user.setRole(roleUser);
+//			 }
+//		}else{
+//			MuserRoles roleuser= new MuserRoles();
+//			roleuser.setRoleName("USER");
+//			roleuser.setIsActive(true);
+//			 muserrolerepository.save(roleuser); 
+//			 
+//			 MuserRoles role= new MuserRoles();
+//			 role.setRoleName("ADMIN");
+//			 role.setIsActive(true);
+//			 MuserRoles savedroleadmin = muserrolerepository.save(role);
+//			 user.setRole(savedroleadmin);
+//		}
+//		 
+////	        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+////			String encodedPassword = passwordEncoder.encode(user.getPsw());
+////			user.setPsw(encodedPassword);
+//		    
+//		
+//		  		    // Save Muser
+//		    muserrepositories.save(user);
+//		    
+//	  
+//		   MuserDetails muserdetail=  registrationrequestdto.getMuserDetails();
+//		   muserdetail.setUserId(user);
+//		   OccupationDetails occ= registrationrequestdto.getOccupationDetails();
+//		    occupationdetailrepository.save(occ);
+//		    muserdetail.setOccupationId(occ);
+//////		   OrgDetails org=orgdetailrepository.save(registrationrequestdto.getOrgDetails());
+//////		   muserdetail.setOrgId(org);
+//	       SkillDetails skill=skilldetailrepository.save(registrationrequestdto.getSkillDetails());
+//	       muserdetail.setSkillId(skill);
+//	       muserdetailrepository.save(registrationrequestdto.getMuserDetails());
+//	
+//	
+//	
+//	
+//	 return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
+//	
+//	}
+	
+	
+

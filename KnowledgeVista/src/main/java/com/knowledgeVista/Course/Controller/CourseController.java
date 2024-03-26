@@ -41,17 +41,7 @@ public class CourseController {
 	
 	
 //`````````````````````````WORKING``````````````````````````````````
-//	 @GetMapping("/countcourse")
-//	    public ResponseEntity<Long> countCourse() {
-//	        try {
-//	            Long count = coursedetailrepository.count();
-//	            return ResponseEntity.ok().body(count);
-//	        } catch (Exception e) {
-//	            // Log the exception for debugging purposes
-//	            e.printStackTrace();
-//	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//	        }
-//	    }
+
 	 @GetMapping("/countcourse")
 	 public ResponseEntity<Long> countCourse(@RequestHeader("Authorization") String token) {
 	     try {

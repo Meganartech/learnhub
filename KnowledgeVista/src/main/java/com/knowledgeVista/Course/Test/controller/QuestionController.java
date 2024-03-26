@@ -48,65 +48,77 @@ public class QuestionController {
 		@Autowired
 		private MusertestactivityRepo muserActivityRepo;
 
-		@PostMapping("{testId}/calculateMarks/{courseId}")
-		public ResponseEntity<?> calculateMarks(@RequestBody List<Map<String, Object>> answers, 
-		                                        @PathVariable Long testId,
-		                                        @PathVariable  Long courseId,
+		@PostMapping("/calculateMarks/{courseId}")
+		public ResponseEntity<?> calculateMarks(@RequestBody List<Map<String, Object>> answers,
+		                                        @PathVariable Long courseId,
 		                                        @RequestHeader("Authorization") String token) {
-		    Optional<CourseDetail> opcourse=coursedetailrepository.findById(courseId);
+		    Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
 		    String username = jwtUtil.getUsernameFromToken(token);
+
+		    if (username == null) {
+		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+		    }
+
 		    Optional<Muser> opuser = muserRepository.findByEmail(username);
-		    Optional<CourseTest> optest = testrepo.findById(testId);
-		    
-		    if (opuser.isPresent() && optest.isPresent() && opcourse.isPresent()) {
-		    	CourseDetail course=opcourse.get();
+
+		    if (opuser.isPresent() && opcourse.isPresent()) {
+		        CourseDetail course = opcourse.get();
 		        Muser user = opuser.get();
-		        CourseTest test = optest.get();
-		        MuserTestActivity activity = new MuserTestActivity();
-		        activity.setCourse(course);
-		        activity.setUser(user);
-		        activity.setTest(test);
-		        activity.setTestDate(LocalDateTime.now().toLocalDate());
+		        Optional<CourseTest> optest = testrepo.findByCourseDetail(course);
 
-		        double passpercentage = test.getPassPercentage();
-		        Long noofQuestion = test.getNoOfQuestions();
-		        
-		        int totalMarks = 0;
-		        for (Map<String, Object> answer : answers) {
-		            long questionId = Long.parseLong(answer.get("questionId").toString());
-		            String selectedAnswer = answer.get("selectedAnswer").toString();
+		        if (optest.isPresent()) {
+		            CourseTest test = optest.get();
 
-		            Question question = questionRepository.findById(questionId)
-		                    .orElseThrow(() -> new IllegalArgumentException("Question not found with id: " + questionId));
+		            MuserTestActivity activity = new MuserTestActivity();
+		            activity.setCourse(course);
+		            activity.setUser(user);
+		            activity.setTest(test);
+		            activity.setTestDate(LocalDateTime.now().toLocalDate());
 
-		            if (question.getAnswer().equals(selectedAnswer)) {
-		                totalMarks++;
+		            double passpercentage = test.getPassPercentage();
+		            Long noofQuestion = test.getNoOfQuestions();
+
+		            int totalMarks = 0;
+		            for (Map<String, Object> answer : answers) {
+		                long questionId = Long.parseLong(answer.get("questionId").toString());
+		                String selectedAnswer = answer.get("selectedAnswer").toString();
+
+		                Question question = questionRepository.findById(questionId)
+		                        .orElseThrow(() -> new IllegalArgumentException("Question not found with id: " + questionId));
+
+		                if (question.getAnswer().equals(selectedAnswer)) {
+		                    totalMarks++;
+		                }
 		            }
-		        }
-		        
-		        Double markacquired = ((double) totalMarks / noofQuestion) * 100;
-		        activity.setPercentage(markacquired);
-		        muserActivityRepo.save(activity);
-		        
-		        String message;
-		        String result;
-		        if (markacquired >= passpercentage) {
-		            message = "Congratulations! You passed the exam with " + Math.round(markacquired) + "%";
-		            result = "pass";
+
+		            Double markacquired = ((double) totalMarks / noofQuestion) * 100;
+		            activity.setPercentage(markacquired);
+		            muserActivityRepo.save(activity);
+
+		            String message;
+		            String result;
+		            if (markacquired >= passpercentage) {
+		                message = "Congratulations! You passed the exam with " + Math.round(markacquired) + "%";
+		                result = "pass";
+		            } else {
+		                message = "You have got " + Math.round(markacquired) + "%";
+		                result = "fail";
+		            }
+
+		            Map<String, String> response = new HashMap<>();
+		            response.put("message", message);
+		            response.put("result", result);
+		            return ResponseEntity.ok(response);
 		        } else {
-		            message = "You have got " + Math.round(markacquired) + "%";
-		            result = "fail";
+		            // Handle the case when the test is not present
+		            return ResponseEntity.notFound().build();
 		        }
-		        
-		        Map<String, String> response = new HashMap<>();
-		        response.put("message", message);
-		        response.put("result", result);
-		        return ResponseEntity.ok(response);
 		    } else {
-		        // Handle the case when either user or test is not present
+		        // Handle the case when either user or course is not present
 		        return ResponseEntity.notFound().build();
 		    }
 		}
+
 	    
 	 
 	 

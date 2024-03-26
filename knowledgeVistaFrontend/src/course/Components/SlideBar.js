@@ -59,7 +59,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
         </li>
       )}
 
-      {userRole === "ADMIN" && (
+      {(userRole === "ADMIN" || userRole === "TRAINER") && (
         <li className="nav-item mt-4">
           <a
             className={activeLink === "/course/admin/edit" ? "ActiveLink nav-link" : "nav-link text-muted"}
@@ -73,19 +73,19 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
      
         </li>
       )}
-      {/* {userRole === "ADMIN" && (
+      {userRole === "ADMIN" && (
       <li className="nav-item mt-4">
         <a
-          className={activeLink === "/trainers" ? "ActiveLink nav-link" : "nav-link text-muted"}
+          className={activeLink === "/view/Trainer" ? "ActiveLink nav-link" : "nav-link text-muted"}
           href="#"
-          onClick={() => handleClick("/trainers")}
+          onClick={() => handleClick("/view/Trainer")}
         >
-          <i className={activeLink === "/trainers" ? "fa-solid fa-chalkboard-user text-light" : "fa-solid fa-chalkboard-user text-muted"}></i>
+          <i className={activeLink === "/view/Trainer" ? "fa-solid fa-chalkboard-user text-light" : "fa-solid fa-chalkboard-user text-muted"}></i>
           <span>Trainers</span>
         </a>
       </li>
-      )} */}
-        {userRole === "ADMIN" && (
+      )}
+        {(userRole === "ADMIN" || userRole === "TRAINER") && (
       <li className="nav-item mt-4">
         <a
           className={activeLink === "/view/Students" ? "ActiveLink nav-link" : "nav-link text-muted"}
@@ -113,11 +113,11 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
           {userRole === "USER" && (
         <li className="nav-item mt-4">
           <a
-            className={activeLink === "/mycertificate" ? "ActiveLink nav-link" : "nav-link text-muted"}
+            className={activeLink === "/MyCertificateList" ? "ActiveLink nav-link" : "nav-link text-muted"}
             href="#"
-            onClick={() => handleClick("/mycertificate")}
+            onClick={() => handleClick("/MyCertificateList")}
           >
-            <i className={activeLink === "/mycertificate" ? "fa-solid fa-award text-light" : "fa-solid fa-award text-muted"}></i>
+            <i className={activeLink === "/MyCertificateList" ? "fa-solid fa-award text-light" : "fa-solid fa-award text-muted"}></i>
             <span>MyCertificates</span>
           </a>
         </li>

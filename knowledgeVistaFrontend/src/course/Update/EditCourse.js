@@ -87,7 +87,7 @@ const EditCourse = ({filteredCourses}) => {
       )}
       </div>
       {filteredCourses.length > 0 ? (
-        <ul className={styles.maincontainer}>
+        <ul className={styles.maincontainer} style={{height:"70vh"}}>
           {filteredCourses
             .slice()
             .reverse()
@@ -119,13 +119,9 @@ const EditCourse = ({filteredCourses}) => {
                   className="dropdown-menu dropdown-menu-left shadow animated--grow-in"
                   aria-labelledby="userDropdown"
                         >
-                    <Link to={`/course/AddTest/${item.courseId}`} 
-                    className="dropdown-item" 
-                    href="/course/dashboard/profile">
-                    Add Test
-                    </Link>
-                    <div className="dropdown-divider"></div>
-                    <Link to={`/course/Addlesson/${item.courseId}`}
+                  
+                  
+                    <Link to={`/course/Addlesson/${item.courseName}/${item.courseId}`}
                       className="dropdown-item"
                       data-toggle="modal"
                       data-target="#logoutModal"   
@@ -133,7 +129,7 @@ const EditCourse = ({filteredCourses}) => {
                     Add Lesson
                     </Link>
                     <div className="dropdown-divider"></div>
-                    <Link to={`/course/viewlessons/${item.courseId}`}
+                    <Link to={`/course/viewlessons/${item.courseName}/${item.courseId}`}
                       className="dropdown-item"
                       data-toggle="modal"
                       data-target="#logoutModal"   
@@ -146,7 +142,7 @@ const EditCourse = ({filteredCourses}) => {
                       data-toggle="modal"
                       data-target="#logoutModal"   
                     >
-                    view Test
+                     Test
                     </Link>
 
                   </div>
@@ -188,8 +184,8 @@ const EditCourse = ({filteredCourses}) => {
             ))}
         </ul>
       ) : (
-        <div className="text-center mt-5">
-          <p className="font-weight-bold">No courses Found</p>
+        <div className={styles.maincontainer} style={{borderBottomLeftRadius:"10px",borderBottomRightRadius:"10px", height:"70vh",display:"flex",justifyContent:"center",alignItems:"center"}}>
+             <h1>No Course Found </h1>
         </div>
       )}
     </div>

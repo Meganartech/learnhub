@@ -198,11 +198,8 @@ if(amount===0){
             ))}
         </ul>
       ) : (
-        <div className="text-center mt-5  bg-white">
-             <div className='notfound '>
-
-                    <h2>No course found </h2>
-                </div>
+        <div className={styles.maincontainer} style={{borderRadius:"10px",display:"flex",justifyContent:"center",alignItems:"center"}}>
+             <h1>No Course Found </h1>
         </div>
       )}
     </div>

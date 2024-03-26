@@ -3,8 +3,6 @@ import { useState ,useEffect } from "react";
 import StudentRegister from "./Student/StudentRegister";
 import ForgetPassword from "./AuthenticationPages/forgetpassword";
 import Login from "./AuthenticationPages/login";
-import AddLessonForm from "./course/Lessons/AddLessonFrom";
-import CreateApplication from "./OrganizationSettings/CreateApplication";
 import ResetPassword from "./AuthenticationPages/ResetPassword";
 import React from "react";
 import PrivateRoute from "./AuthenticationPages/PrivateRoute";
@@ -28,10 +26,14 @@ import AddLesson from "./course/Lessons/AddLesson";
 import Layout from "./Layout";
 import CreateTest from "./course/Test/CreateTest";
 import TestList from "./course/Test/TestList";
-import ViewStudentList from "./ViewStudentList";
+import ViewStudentList from "./Student/ViewStudentList";
 import AssignCourse from "./AssignCourse";
 import Paycheck from "./Paycheck";
 import Mycourse from "./Student/Mycourse";
+import MyCertificateList from "./certificate/MyCertificateList";
+import AddTrainer from "./Trainer/AddTrainer";
+import AddStudent from "./Student/AddStudent";
+import ViewTrainerList from "./Trainer/ViewTrainerList";
 
 
 function App() {
@@ -78,24 +80,28 @@ function App() {
                   setSearchQuery={setSearchQuery}/>}>
 
                       {/* <Route path="/" element={<CreateApplication />} /> */}
+                      <Route path="/addTrainer" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddTrainer/></PrivateRoute>}/>
+                      <Route path="/addStudent" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddStudent/></PrivateRoute>}/>
                       <Route path="/mycourses" element={<PrivateRoute authenticationRequired={true} ><Mycourse/></PrivateRoute>}/>
                       <Route path="/dashboard/course" element={<PrivateRoute authenticationRequired={true}><CourseView  filteredCourses={filteredCourses} /></PrivateRoute>} />
-                      <Route path="/course/admin/edit" element={<PrivateRoute authenticationRequired={true}><EditCourse  filteredCourses={filteredCourses} /></PrivateRoute>} />
-                      <Route path="/course/Addlesson/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddLesson /></PrivateRoute>} />
+                      <Route path="/course/admin/edit" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditCourse  filteredCourses={filteredCourses} /></PrivateRoute>} />
+                      <Route path="/course/Addlesson/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddLesson /></PrivateRoute>} />
                       <Route path="/course/AddTest/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CreateTest /></PrivateRoute>} />
                       <Route path="/course/testlist/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TestList /></PrivateRoute>} />
-                      <Route path="/course/viewlessons/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><Lesson/></PrivateRoute>} />
+                      <Route path="/course/viewlessons/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><Lesson/></PrivateRoute>} />
                       <Route path="/courses/:courseName/:courseId/lesson/:lessonId/note/:noteId" element={<Notesview/>} />
                       <Route path="/test/:courseId" element={<AttenTestList/>}/>
-                      <Route path="/test/start/:courseId/:testId" element={<AttenTest/>}/>
+                      <Route path="/test/start/:courseId" element={<AttenTest/>}/>
                       <Route path="/courses/:courseName/:courseId" element={<Lessonsview/>}/>
                       <Route path="/course/addcourse" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddCourse /></PrivateRoute>} />
                       <Route path="/course/dashboard/profile" element={<PrivateRoute authenticationRequired={true}><ProfileView/></PrivateRoute>}/>
                       <Route path="/course/edit/:courseId" element={<CourseDetails/>}/>
                       <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute>}/>
-                      <Route path="/template" element={<PrivateRoute authenticationRequired={true}><Template/></PrivateRoute>}/>
+                      <Route path="/MyCertificateList" element={<PrivateRoute authenticationRequired={true}><MyCertificateList /></PrivateRoute>}/>
+                      <Route path="/template/:activityId" element={<PrivateRoute authenticationRequired={true}><Template/></PrivateRoute>}/>
                       <Route path="/assignCourse/:userId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AssignCourse /></PrivateRoute>} />
                       <Route path="/view/Students" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><ViewStudentList/></PrivateRoute>}/>
+                      <Route path="/view/Trainer" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><ViewTrainerList/></PrivateRoute>}/>
                       <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute> }/>
                   </Route>
   
@@ -105,14 +111,13 @@ function App() {
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/login" element={<Login />} />
           <Route path="/resetpassword" element={<ResetPassword />}></Route>
-      
-          <Route path="/template" element={<Template/>}/>
+          {/* <Route path="/MyCertificateList" element={<MyCertificateList/>}/>
+         */}
           <Route path="*" element={<Missing/>}/>
           <Route path="/pay" element={<Paycheck/>}/>
         </Routes>
       </div>
-    </Router>
-  );
+    </Router>  );
 }
 
 export default App;
