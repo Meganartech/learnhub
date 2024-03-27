@@ -78,6 +78,7 @@ display: grid;
 grid-template-columns: 6fr 1fr 12fr;
 }.inputgrp input{
     border: none;
+    width: 100%;
     background-color: var(--input-bg);
     outline: none;
     border-radius: 5px;

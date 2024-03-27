@@ -18,6 +18,25 @@
     padding-left: 30px;
     padding-top: 20px;
 }
+.table-container {
+  max-height: 600px; /* Adjust the height as needed */
+  overflow-y: auto;
+}
+
+
+
+.table thead {
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
+
+}
+
+.table tbody {
+  overflow-y: auto; /* Enable vertical scrolling for the body */
+}
+
+
 
 .singletest{
     flex: 1;

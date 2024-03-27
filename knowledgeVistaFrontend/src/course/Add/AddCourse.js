@@ -99,7 +99,7 @@ const AddCourse = () => {
             <h2 className="heading">Add Course</h2>
             <div className="form-group">
               <label htmlFor="courseName" >
-                Name
+                Name<span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -115,7 +115,7 @@ const AddCourse = () => {
             </div>
             <div className="form-group">
               <label htmlFor="courseDescription">
-                Description
+                Description<span className="text-danger">*</span>
               </label>
               <textarea
                 name="courseDescription"
@@ -130,7 +130,7 @@ const AddCourse = () => {
             </div>
             <div className="form-group">
               <label htmlFor="courseCategory" >
-                Category
+                Category<span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -148,7 +148,7 @@ const AddCourse = () => {
           <div className="second1">
             <div className="form-group mt-5">
               <label htmlFor="courseImage" >
-                Course Image
+                Course Image <span className="text-danger">*</span>
               </label>
               <input
                 type="file"
@@ -170,7 +170,7 @@ const AddCourse = () => {
             <div>
             <div className="form-group">
               <label htmlFor="courseAmount" >
-                Amount
+                Amount <span className="text-danger">*</span>
               </label>
               <input
                 type="number"

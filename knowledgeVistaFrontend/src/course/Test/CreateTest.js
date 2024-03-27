@@ -212,7 +212,9 @@ const CreateTest = () => {
               {savedQuestions.length > 0 && (
                 savedQuestions.map((savedQuestion, index) => (
                   <div key={index} className="question form-control">
-                    {savedQuestion.questionText}
+                     {savedQuestion.questionText.length > 20
+                    ? savedQuestion.questionText.substring(0, 20) + '...'
+                    : savedQuestion.questionText}
                     <i
                       className="fa-solid fa-edit iconedit"
                       onClick={() => handleEditQuestion(index)}

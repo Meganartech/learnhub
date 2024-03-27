@@ -27,7 +27,7 @@ const ViewTrainerList = () => {
         <a href="/addTrainer" className='btn btn-primary'><i class="fa-solid fa-plus"></i> Add Trainer</a>
       </div>
       <div className="table-container">
-        <table className="table table-sm">
+        <table className="table table-hover table-sm">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -36,7 +36,7 @@ const ViewTrainerList = () => {
               <th scope="col">Date of Birth</th>
               <th scope="col">Phone</th>
               <th scope="col">Role</th>
-              <th colspan="2" scope="col">Action</th>
+              {/* <th colspan="2" scope="col">Action</th> */}
             </tr>
           </thead>
           <tbody>
@@ -48,7 +48,7 @@ const ViewTrainerList = () => {
                 <td className='py-2'>{user.dob}</td>
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.role.roleName}</td>
-                <td>
+                {/* <td>
                 <Link to={`/edit/${user.userId}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>
                     </Link>
@@ -58,7 +58,7 @@ const ViewTrainerList = () => {
                   <button className='hidebtn'>
                     <i className="fas fa-trash text-danger"></i>
                   </button>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>

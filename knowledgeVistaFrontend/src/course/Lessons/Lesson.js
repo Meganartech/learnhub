@@ -298,7 +298,7 @@ const Lesson = () => {
             <h3 className='mt-1'>Add Note </h3>
             <div className="mb-3 ">
               <label htmlFor="notesTitle" className=" mt-3 ">
-                <h5> Note </h5>
+                <h5> Note<span className="text-danger">*</span></h5>
               </label>
               <input
                 type="text"
@@ -316,7 +316,7 @@ const Lesson = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="notesDesc" >
-                <h5>Notes Description</h5>
+                <h5>Notes Description <span className="text-danger">*</span></h5>
               </label>
               <textarea
                 className="form-control"
@@ -335,7 +335,7 @@ const Lesson = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="notesDesc">
-                <h5>File/URL</h5>
+                <h5>File/URL <span className="text-danger">*</span></h5>
               </label>
               <div className="fileurlinput">
                 {formData.selection === "file" && (

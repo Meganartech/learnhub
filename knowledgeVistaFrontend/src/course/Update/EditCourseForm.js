@@ -134,117 +134,117 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
   };
   return (
     <div className="contentbackground">
-      <form onSubmit={handleSubmit}>
-        <div className="contentinner">
-        <div className="outer " >
-          <div className="first">
-            <div className="head">
-              <h2 className="heading ">Update Course</h2>
-              <h6>
-                <a onClick={toggleEditMode} className="btn btn-primary">
-                  <i className="fa fa-times" aria-hidden="true"></i>{" "}
-                </a>
-              </h6>
-            </div>
-            <div className="form-group">
-              <label htmlFor="courseName" >
-                Course Name
-              </label>
-              <input
-                type="text"
-                name="courseName"
-                id="courseName"
-                className="form-control "
-                placeholder="Enter the Course Name"
-                value={courseEdit.courseName}
-                onChange={handleChange}
-                required
-                autoFocus
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="courseDescription" >
-                Course Description
-              </label>
-              <textarea
-                name="courseDescription"
-                id="courseDescription"
-                rows={5}
-                className="form-control "
-                placeholder="Description about the Course"
-                value={courseEdit.courseDescription}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="courseCategory" >
-                Course Category
-              </label>
-              <input
-                type="text"
-                name="courseCategory"
-                id="courseCategory"
-                className="form-control "
-                placeholder="Category"
-                value={courseEdit.courseCategory}
-                onChange={handleChange}
-                required
-              />
-            </div>
+    <form onSubmit={handleSubmit}>
+      <div className="contentinner">
+      <div className="outer " >
+        <div className="first">
+          <div className="head">
+            <h2 className="heading ">Update Course</h2>
+            <h6>
+              <a onClick={toggleEditMode} className="btn btn-primary">
+                <i className="fa fa-times" aria-hidden="true"></i>{" "}
+              </a>
+            </h6>
           </div>
-          <div class="vertical-line"></div>
-          <div className="second">
-            <div className="form-group">
-              <label htmlFor="courseImage" >
-                <h2>Course Image</h2>
-              </label>
-              <input
-                type="file"
-                name="courseImage"
-                id="courseImage"
-                accept="image/jpeg, image/png, image/gif"
-                placeholder="Upload Image"
-                onChange={handleFileChange}
-              />{" "}
-              <br />
-              {/* Display the image */}
-              <img
-                src={img}
-                alt="selected pic of course"
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "200px",
-                  alignItems: "center",
-                }}
-              />
-              <br />
-              <div className="form-group mt-1">
-              <label htmlFor="courseAmount" >
-               Amount
-              </label>
-              <input
-                type="number"
-                name="amount"
-                id="amount"
-                className="form-control "
-                placeholder="Amount"
-                value={courseEdit.amount} 
-                onChange={handleChange}
-                required
-              />
-            </div>
-              <div>
-                <button type="submit" className="btn btn-primary w-100">
-                  Update Course
-                </button>
-              </div>
+          <div className="form-group">
+            <label htmlFor="courseName" >
+              Course Name
+            </label>
+            <input
+              type="text"
+              name="courseName"
+              id="courseName"
+              className="form-control "
+              placeholder="Enter the Course Name"
+              value={courseEdit.courseName}
+              onChange={handleChange}
+              required
+              autoFocus
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="courseDescription" >
+              Course Description
+            </label>
+            <textarea
+              name="courseDescription"
+              id="courseDescription"
+              rows={5}
+              className="form-control "
+              placeholder="Description about the Course"
+              value={courseEdit.courseDescription}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="courseCategory" >
+              Course Category
+            </label>
+            <input
+              type="text"
+              name="courseCategory"
+              id="courseCategory"
+              className="form-control "
+              placeholder="Category"
+              value={courseEdit.courseCategory}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+        <div class="vertical-line"></div>
+        <div className="second">
+          <div className="form-group">
+            <label htmlFor="courseImage" >
+              <h2>Course Image</h2>
+            </label>
+            <input
+              type="file"
+              name="courseImage"
+              id="courseImage"
+              accept="image/jpeg, image/png, image/gif"
+              placeholder="Upload Image"
+              onChange={handleFileChange}
+            />{" "}
+            <br />
+            {/* Display the image */}
+            <img
+              src={img}
+              alt="selected pic of course"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "200px",
+                alignItems: "center",
+              }}
+            />
+            <br />
+            <div className="form-group mt-1">
+            <label htmlFor="courseAmount" >
+             Amount
+            </label>
+            <input
+              type="number"
+              name="amount"
+              id="amount"
+              className="form-control "
+              placeholder="Amount"
+              value={courseEdit.amount} 
+              onChange={handleChange}
+              required
+            />
+          </div>
+            <div>
+              <button type="submit" className="btn btn-primary w-100">
+                Update Course
+              </button>
             </div>
           </div>
         </div>
-        </div>
-      </form>
-    </div>
+      </div>
+      </div>
+    </form>
+  </div>
   );
 };
 

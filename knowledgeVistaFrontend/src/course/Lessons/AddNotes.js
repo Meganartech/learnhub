@@ -20,7 +20,7 @@ const AddNotes = ({ notesField, handleNotesChange, handleFileChange }) => {
       <div className="Note mt-4" >
         <div className="mb-3">
           <label htmlFor="notesTitle" className=" deleteNote">
-            <h5> Note </h5>
+            <h5> Note Title<span className="text-danger">*</span> </h5>
           </label>
           <input
             type="text"
@@ -35,7 +35,7 @@ const AddNotes = ({ notesField, handleNotesChange, handleFileChange }) => {
         </div>
         <div className="mb-3">
           <label htmlFor="notesDesc" >
-            <h5>Notes Description</h5>
+            <h5>Notes Description<span className="text-danger">*</span></h5>
           </label>
           <textarea
             className="form-control"
@@ -51,7 +51,7 @@ const AddNotes = ({ notesField, handleNotesChange, handleFileChange }) => {
         </div>
         <div className="mb-3">
           <label  >
-            <h5>File/URL</h5>
+            <h5>File/URL<span className="text-danger">*</span></h5>
           </label>
           <div className="fileurlinput">
             {formData.selection === "file" && (

@@ -95,6 +95,7 @@ const TestList = () => {
               
               {/* Render questions if test is available */}
               {test.questions && (
+                <div className="table-container">
                 <table className='table table-hover mt-5'>
                   <thead>
                     <tr>
@@ -121,6 +122,7 @@ const TestList = () => {
                     ))}
                   </tbody>
                 </table>
+                </div>
               )}
             </div>
           )

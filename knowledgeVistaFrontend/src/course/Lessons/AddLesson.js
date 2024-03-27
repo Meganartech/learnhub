@@ -103,10 +103,10 @@ const AddLesson = () => {
       <div className="contentinner">
         <div className="outer">
           <div className="first">
-            <h4 className="heading"></h4>
+            <h2 className="heading">{courseName}</h2>
             <div className="mb-3">
               <label htmlFor="lessonTitle" className=" mt-3">
-                <h2>{courseName}</h2>
+                <h5>Lesson Title <span className="text-danger">*</span></h5>
               </label>
               <input
                 type="text"
@@ -122,7 +122,7 @@ const AddLesson = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="lessonDesc" >
-                <h5> Lesson Description </h5>
+                <h5> Lesson Description <span className="text-danger">*</span></h5>
               </label>
               <textarea
                 className="form-control"

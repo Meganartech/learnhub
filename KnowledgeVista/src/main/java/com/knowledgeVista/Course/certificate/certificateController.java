@@ -134,22 +134,21 @@ public class certificateController {
 	        Map<Long, List<MuserTestActivity>> activityByCourseId = activityDetails.stream()
 	                .collect(Collectors.groupingBy(activity -> activity.getCourse().getCourseId()));
 
-	        // Filter for highest percentage activity for each courseId
-	        List<MuserTestActivity> filteredActivityDetails = activityByCourseId.values().stream()
-	                .map(activityList -> activityList.stream()
-	                        .max(Comparator.comparing(MuserTestActivity::getPercentage))
-	                        .orElse(null)) // Handle empty list if needed
-	                .collect(Collectors.toList());
-
 	        List<HashMap<String, Object>> allActivityHashMaps = new ArrayList<>();
-	        for (MuserTestActivity act : filteredActivityDetails) {
-	            HashMap<String, Object> hashMap = new HashMap<>();
-	            hashMap.put("activityId", act.getActivityId());
-	            hashMap.put("user", act.getUser().getUsername());
-	            hashMap.put("course", act.getCourse().getCourseName());
-	            hashMap.put("testDate", act.getTestDate());
-	            hashMap.put("percentage", act.getPercentage());
-	            allActivityHashMaps.add(hashMap); // Add each HashMap to the list
+	        for (List<MuserTestActivity> activityList : activityByCourseId.values()) {
+	            for (MuserTestActivity act : activityList) {
+	                // Check if the activity percentage is greater than or equal to pass percentage
+	                if (act.getPercentage() >= act.getTest().getPassPercentage()) {
+	                    HashMap<String, Object> hashMap = new HashMap<>();
+	                    hashMap.put("activityId", act.getActivityId());
+	                    hashMap.put("user", act.getUser().getUsername());
+	                    hashMap.put("course", act.getCourse().getCourseName());
+	                    hashMap.put("testDate", act.getTestDate());
+	                    hashMap.put("percentage", act.getPercentage());
+	                    allActivityHashMaps.add(hashMap); // Add each HashMap to the list
+	                    break; // No need to check further activities for this course
+	                }
+	            }
 	        }
 
 	        // Return the list of HashMaps as the response body
