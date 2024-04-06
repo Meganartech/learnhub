@@ -75,6 +75,7 @@ ul {
 
 .maincontainer {
   width: 100%;
+  border-radius: 10px;
   background-color: white;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;

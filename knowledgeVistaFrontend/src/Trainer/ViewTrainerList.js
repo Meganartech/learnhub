@@ -20,8 +20,8 @@ const ViewTrainerList = () => {
         fetchData();
       }, []);
   return (
-    <div className='bg1'>
-    <div className='tableview'>
+    <div className='contentbackground'>
+    <div className='contentinner'>
       <div style={{ display: 'grid', gridTemplateColumns: '40fr 5fr' }} className='mb-4'>
         <h1>Trainers Details</h1>
         <a href="/addTrainer" className='btn btn-primary'><i class="fa-solid fa-plus"></i> Add Trainer</a>

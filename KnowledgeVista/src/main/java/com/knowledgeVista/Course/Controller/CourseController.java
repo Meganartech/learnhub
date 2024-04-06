@@ -1,6 +1,8 @@
 package com.knowledgeVista.Course.Controller;
 import org.springframework.http.MediaType;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -85,16 +88,23 @@ public class CourseController {
 	 //--------------------------working------------------------------------
 	
 	 @PostMapping("/add")
-	    public ResponseEntity<String> addCourse(@RequestParam("courseImage") MultipartFile file, 
+	    public ResponseEntity<?> addCourse(@RequestParam("courseImage") MultipartFile file, 
 	    		@RequestParam("courseName") String courseName,
 	    		@RequestParam("courseDescription") String description,
 	    		@RequestParam("courseCategory") String category,
+	    		@RequestParam("Trainer") String Trainer,
+	    		@RequestParam("Duration") Long Duration,
+	    		@RequestParam("Noofseats") Long Noofseats,
 	    		@RequestParam("courseAmount") Long amount) {
+		 
 	        CourseDetail courseDetail = new CourseDetail();
 	        courseDetail.setCourseName(courseName);
 	        courseDetail.setCourseDescription(description);
 	        courseDetail.setCourseCategory(category);
 	        courseDetail.setAmount(amount);
+	        courseDetail.setDuration(Duration);
+	        courseDetail.setTrainer(Trainer);
+	        courseDetail.setNoofseats(Noofseats);
 	        try {
 	        	 courseDetail.setCourseImage(ImageUtils.compressImage(file.getBytes()));
 	        } catch (IOException e) {
@@ -109,8 +119,12 @@ public class CourseController {
 	        savedCourse.setCourseUrl(courseUrl);
 	        
 	        // Save the updated CourseDetail object
-	        coursedetailrepository.save(savedCourse);
-	         return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
+	       CourseDetail saved= coursedetailrepository.save(savedCourse);
+	       Long courseId=saved.getCourseId();
+	       Map<String, Object> response = new HashMap<>();
+           response.put("message", "savedSucessfully");
+           response.put("courseId", courseId);
+	         return ResponseEntity.ok(response);
 	    }
 	//--------------------------working------------------------------------
 	 @Transactional
@@ -161,6 +175,7 @@ public class CourseController {
 		        course.setCourseImage(image);
 		        course.setCourseLessons(null);
 		        course.setUsers(null);
+	            course.setVideoLessons(null);
 		        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(course);
 		    } else {
 		        // Handle the case when the course with the given ID does not exist
@@ -180,6 +195,7 @@ public class CourseController {
 	            course.setCourseImage(images);
 	            course.setCourseLessons(null);
 	            course.setUsers(null);
+	            course.setVideoLessons(null);
 	        }
 	        return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_JSON)
@@ -228,4 +244,45 @@ public class CourseController {
 	   }
 
 		 //---------------------WORKING--------------
+
+		 @GetMapping("/getLessondetail/{courseId}")
+	   public ResponseEntity<?>getLessons(@PathVariable Long courseId){
+			 Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
+			 if(opcourse.isPresent()) {
+				 List<videoLessons> videolessonlist=opcourse.get().getVideoLessons();
+				  for (videoLessons video :videolessonlist) {
+					  video.setCourseDetail(null);
+					  video.setVideoFile(null);
+					  video.setVideofilename(null);
+					  video.setFileUrl(null);
+					  byte[] images =ImageUtils.decompressImage(video.getThumbnail());
+					  video.setThumbnail(images);
+					 
+				  }
+				  return ResponseEntity.ok(videolessonlist);
+				  
+			 }
+		   return ResponseEntity.notFound().build();
+	   }
+
+		 @GetMapping("/getLessonlist/{courseId}")
+		 public ResponseEntity<?> getLessonList(@PathVariable Long courseId) {
+			    Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
+			    if (opcourse.isPresent()) {
+			        List<videoLessons> videolessonlist = opcourse.get().getVideoLessons();
+			        List<Map<String, Object>> lessonResponseList = new ArrayList<>();
+
+			        for (videoLessons video : videolessonlist) {
+			            Map<String, Object> response = new HashMap<>();
+			            response.put("Lessontitle", video.getLessontitle());
+			            response.put("lessonId", video.getLessonId());
+			            lessonResponseList.add(response);
+			        }
+
+			        return ResponseEntity.ok(lessonResponseList);
+			    }
+
+			    return ResponseEntity.notFound().build();
+			}
+		 
 }

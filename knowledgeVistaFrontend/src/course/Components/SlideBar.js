@@ -54,7 +54,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
             onClick={() => handleClick("/mycourses")}
           >
             <i className={activeLink === "/mycourses" ? "fa-solid fa-book-open text-light" : "fa-solid fa-book-open text-muted"}></i>
-            <span>MyCourses</span>
+            <span>My Courses</span>
           </a>
         </li>
       )}
@@ -118,7 +118,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
             onClick={() => handleClick("/MyCertificateList")}
           >
             <i className={activeLink === "/MyCertificateList" ? "fa-solid fa-award text-light" : "fa-solid fa-award text-muted"}></i>
-            <span>MyCertificates</span>
+            <span>My Certificates</span>
           </a>
         </li>
       )}

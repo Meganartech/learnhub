@@ -77,8 +77,8 @@ const handleAssignCourse = async () => {
 };
   return (
     <div>
-      <div className='bg1'>
-        <div className='tableview'>
+      <div className='contentbackground'>
+        <div className='contentinner'>
           <h3>Assign Course</h3>
           <div className='mainform'>
             <div className='profile-picture'>

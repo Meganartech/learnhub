@@ -43,19 +43,30 @@ public class CourseDetail {
 	    @Lob
 	    @Column(name="courseImage" ,length=1000000)
 	    private byte[] courseImage;
+	   
 	    
 	    @OneToMany(mappedBy = "courseDetail")
 	    private List<CourseLesson> courseLessons;
 	    
 	    @ManyToMany(mappedBy = "courses")
 	    private List<Muser> users;
+	    
+	    
+	    @Column(name="Trainer")
+	    private String Trainer;
+	    
+	    @Column(name="Duration")
+	    private Long Duration;
+	    
+	    @Column(name="Noofseats")
+	    private Long Noofseats;
 
-		@Override
-		public String toString() {
-			return "CourseDetail [courseId=" + courseId + ", courseName=" + courseName + ", courseUrl=" + courseUrl
-					+ ", courseDescription=" + courseDescription + ", courseCategory=" + courseCategory
-					+ ", courseLessons=" + courseLessons + "]";
-		}
+	    @OneToMany(mappedBy = "courseDetail")
+	    private List<videoLessons> videoLessons;
+	    
+	    
+
+		
 	    
 	   
 }

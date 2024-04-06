@@ -21,8 +21,8 @@ const ViewStudentList = () => {
         fetchData();
       }, []);
   return (
-    <div className='bg1'>
-    <div className='tableview'>
+    <div className='contentbackground'>
+    <div className='contentinner'>
       <div style={{ display: 'grid', gridTemplateColumns: '40fr 5fr' }} className='mb-4'>
         <h1>Students Details</h1>
         <a href="/addStudent" className='btn btn-primary'><i class="fa-solid fa-plus"></i> Add Student</a>
@@ -50,14 +50,14 @@ const ViewStudentList = () => {
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.role.roleName}</td>
                 <td>
-                {/* <Link to={`/edit/${user.userId}`} className='hidebtn' >
+                <Link to={`/edit/${user.userId}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>
-                    </Link> */}
+                    </Link>
                 </td>
                 <td>
-                {/* <Link to={`/assignCourse/${user.userId}`} className='hidebtn' >
+                <Link to={`/assignCourse/${user.userId}`} className='hidebtn' >
                     <i className="fas fa-plus"></i>
-                    </Link> */}
+                    </Link>
                 </td>
                 <td>
                   <button className='hidebtn'>

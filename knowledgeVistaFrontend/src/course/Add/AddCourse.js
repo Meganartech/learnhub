@@ -164,7 +164,7 @@ const AddCourse = () => {
               <img
                 src={formData.base64Image}
                 alt="Selected "
-                style={{ maxWidth: "100%", maxHeight: "200px" }}
+                style={{ height:"300px",width:"400px"}}
               />
             )}
             <div>

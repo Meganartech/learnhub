@@ -79,7 +79,7 @@ const EditCourse = ({filteredCourses}) => {
       <div className={styles.createbtn}>
       {role === "ADMIN" && (    
      
-        <a href="/course/addcourse">
+        <a href="/coursecreation">
           <button type="button" className="btn btn-primary mt-4">
             Create Course
           </button>
@@ -114,7 +114,7 @@ const EditCourse = ({filteredCourses}) => {
                      data-toggle="dropdown"
                      aria-haspopup="true"
                      aria-expanded="false">
-                   <i class="fa-solid fa-plus"></i></a>
+                   <i className="fa-solid fa-plus"></i></a>
                    <div
                   className="dropdown-menu dropdown-menu-left shadow animated--grow-in"
                   aria-labelledby="userDropdown"
