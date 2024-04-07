@@ -69,6 +69,8 @@ const EditCourse = ({filteredCourses}) => {
   });
 };
   return (
+    <div className="contentbackground">
+      <div className="contentinner">
     <div className={styles.supercontainer}>
       <div className={styles.createbtn}>
       {role === "ADMIN" && (    
@@ -168,6 +170,8 @@ const EditCourse = ({filteredCourses}) => {
              <h1>No Course Found </h1>
         </div>
       )}
+    </div>
+    </div>
     </div>
   );
 };

@@ -81,7 +81,8 @@ public class AssignCourse {
 	        for (CourseDetail course : courses) {
 	            course.setCourseLessons(null);
 	            course.setUsers(null);
-	        	 byte[] images =ImageUtils.decompressImage(course.getCourseImage());
+	            course.setVideoLessons(null);
+	            byte[] images =ImageUtils.decompressImage(course.getCourseImage());
 	            course.setCourseImage(images);
 	           
 	        }

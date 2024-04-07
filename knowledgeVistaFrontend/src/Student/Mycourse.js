@@ -28,6 +28,8 @@ const Mycourse = () => {
     }, []);
 
     return (
+        <div className='contentbackground'>
+        <div className='contentinner'>
 <div className={styles.supercontainer}>
     <div className={styles.createbtn}></div>
 
@@ -71,7 +73,8 @@ const Mycourse = () => {
         )}
     </ul>
 </div>
-
+</div>
+</div>
     
     );
 };

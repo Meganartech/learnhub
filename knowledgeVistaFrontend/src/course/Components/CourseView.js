@@ -130,6 +130,8 @@ if(amount===0){
 
 
   return (
+    <div className="contentbackground">
+      <div className="contentinner">
     <div className={styles.supercontainer} >
       {filteredCourses.length > 0 ? (
         <ul className={styles.maincontainer}>
@@ -196,11 +198,14 @@ if(amount===0){
               </li>
             ))}
         </ul>
+    
       ) : (
         <div className={styles.maincontainer} style={{borderRadius:"10px",display:"flex",justifyContent:"center",alignItems:"center"}}>
              <h1>No Course Found </h1>
         </div>
       )}
+    </div>
+    </div>
     </div>
   );
 };
