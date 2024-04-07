@@ -191,9 +191,10 @@ const AddTrainer = () => {
   
     return (
      
-      <div className='background'>
-        <div className='innerFrame'>
-          <h3>Add Trainers</h3>
+      <div className='contentbackground'>
+        <div className='contentinner'>
+       <div className='innerFrame'>
+      <h2  style={{textDecoration:"underline"}}>Add Trainers</h2>
           <div className='mainform'>
           <div className='profile-picture'>
             <div className='image-group'>
@@ -349,6 +350,7 @@ const AddTrainer = () => {
         <button className={`btn btn-primary `} onClick={handleSubmit}>Register</button>
 
         </div>
+      </div>
       </div>
       </div>
     );

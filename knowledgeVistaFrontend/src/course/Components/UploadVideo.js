@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import "../../certificate/certificate.css"
+import "../../css/certificate.css"
+import "../../css/Course.css"
 import { useParams } from 'react-router-dom';
 
 import Swal from "sweetalert2";
@@ -65,12 +66,6 @@ const UploadVideo = () => {
     }else{
       formDataToSend.append("fileUrl", videodata.fileUrl);
     }
-    console.log(videodata.Lessontitle);
-    console.log(videodata.LessonDescription)
-    console.log(videodata.fileUrl)
-    console.log(videodata.thumbnail)
-    console.log(videodata.videoFile)
-
     try {
       const response = await fetch(`http://localhost:8080/lessons/save/${courseId}`, {
         method: "POST",
@@ -127,8 +122,6 @@ const UploadVideo = () => {
         setvideodata({ ...videodata, videoFile: file, fileUrl: "" });
       }
     };
-    
-    
     const handleFile = (file) => {
       if (file && file.type.includes('video')) {
         setSelectedFile(file);
@@ -139,8 +132,6 @@ const UploadVideo = () => {
     const handleUploadTypeChange = (e) => {
         setUploadType(e.target.value);
       };
-    
-  
     const handleDragOver = (e) => {
       e.preventDefault();
     };
@@ -149,13 +140,11 @@ const UploadVideo = () => {
     <div className='contentbackground'>
         <div className='contentinner'>
         <form onSubmit={handleSubmit}>
-        <div className='divider'>
         {isSubmitting && (
         <div class="loading-spinner"></div>
-
       )}
-        
-            <h2 style={{textDecoration:"underline"}}>Upload Video for {courseName}</h2>
+        <div className='divider'>
+            <h2 style={{textDecoration:"underline"}}>Upload Video for {courseName} </h2>
             <div className='innerdivider'>
             <div className='textinputs'>
             <div className='grp'>
@@ -174,7 +163,7 @@ const UploadVideo = () => {
                 name='LessonDescription'
                 value={videodata.LessonDescription}
                 placeholder='Video Description'
-                rows={5}
+                rows={4}
                 disabled={isSubmitting}
                  onChange={handleChange}
                 ></textarea>
@@ -246,7 +235,7 @@ const UploadVideo = () => {
                 onDragOver={handleDragOver}
                 >
                 <p>Drag and drop </p>
-                <p>Or</p>
+                <p>or</p>
                 <label htmlFor='videoupload' style={{width:"200px"}} className='file-upload-btn'>  upload Video</label>
                 <input
                     type="file"
@@ -263,14 +252,16 @@ const UploadVideo = () => {
             )}
                 </div>
             )}
+                
             </div>
             </div>
-            <div className='cornerbtn'>           
+        
+            <div className='cornerbtn '>           
                  <button className='btn btn-primary' type='submit'>Save</button> 
                  <button className='btn btn-primary'>Cancel</button>
             </div>
-   
        </div>
+       
        </form>
     </div>
 

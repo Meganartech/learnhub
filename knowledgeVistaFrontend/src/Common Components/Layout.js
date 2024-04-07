@@ -1,8 +1,8 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import SlideBar from './course/Components/SlideBar'
-import NavBar from './course/Components/NavBar'
-import Footer from './course/Components/Footer'
+import SlideBar from './SlideBar'
+import NavBar from './NavBar'
+import Footer from './Footer'
 
 const Layout = ({isToggled,setIsToggled,searchQuery,handleSearchChange,setSearchQuery}) => {
     

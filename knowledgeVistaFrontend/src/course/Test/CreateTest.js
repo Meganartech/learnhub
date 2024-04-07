@@ -1,6 +1,6 @@
  import { useState } from "react";
 import React from "react";
-import "../Lessons/Style.css";
+import "../../css/Style.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useParams } from "react-router-dom";
@@ -120,10 +120,10 @@ const CreateTest = () => {
   };
 
   return (
-    <div className="bg">
+    <div className="contentbackground">
       {/* Show criteria div based on showCriteria state */}
       {showCriteria ? (
-        <div className="criteria">
+        <div className="contentinner p-5">
           <h1 >Test Criteria</h1>
           <p className="text-danger"><span >*</span> By Default each Question Carries one mark</p>
           
@@ -151,7 +151,6 @@ const CreateTest = () => {
           <button className="btn btn-primary"   onClick={(e) => submitTest(e)}>save</button></div>
       </div>
       ) : (
-        <div className="contentbackground">
         <div className="contentinner">
         <div className="outer mt-3" >
           <div className="first">
@@ -238,7 +237,7 @@ const CreateTest = () => {
           </div>
         </div>
         </div>
-        </div>
+       
       )}
     </div>
   );

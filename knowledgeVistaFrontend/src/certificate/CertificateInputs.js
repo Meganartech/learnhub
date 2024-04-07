@@ -1,5 +1,7 @@
 import React, { useState,useEffect } from 'react';
-import './certificate.css';
+
+import "../css/certificate.css";
+import signature from "../images/signature.png"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -107,12 +109,20 @@ useEffect(() => {
         alert('Please fill in all fields before saving.');
     }
 };
-const certificateInputs=(<div className='innerFrame'>
+const certificateInputs=(
+
+  <div className='contentinner'>
+    <div className='innerFrame'>
 <h3>Certificate Form</h3>
 <div className='mainform'>
   <div className='profile-picture'>
   <div className='image-group'>
-      <img src={getSign} alt='signature' />
+  <img
+            src={getSign || signature}
+            alt='Signature'
+            className='profile-image'
+          />
+      
     </div>
     <label htmlFor='fileInput' className='file-upload-btn'>
       Upload
@@ -183,9 +193,11 @@ const certificateInputs=(<div className='innerFrame'>
 <div className='btngrp'>
   <button className='btn btn-primary' onClick={handleSave}>Save</button>
 </div>
+</div>
 </div>);
 
 const certificateView=(
+  <div className='contentinner'>
   <div className='innerFrame'>
         <h3>Certificate Templates</h3>
         <div className='mainform'>
@@ -248,11 +260,11 @@ const certificateView=(
           </div>
         </div>
        
-      </div>
+      </div></div>
 )
 
   return (
-    <div className='background'>
+    <div className='contentbackground'>
       {isnotFound ? certificateInputs : certificateView}
     </div>
   );

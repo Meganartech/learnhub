@@ -69,11 +69,12 @@ const CourseCreation = () => {
       console.log(formDataToSend);
       const reply=await response.json();
       const Message=reply.message;
-      const courseId=reply.courseId;
+      const Id=reply.courseId;
+      const Name=reply.coursename;
 
       if (response.ok) {
            
-            window.location.href = `/uploadvideo/${courseId}`;
+            window.location.href = `/course/Addlesson/${Name}/${Id}`;
           
         
       }

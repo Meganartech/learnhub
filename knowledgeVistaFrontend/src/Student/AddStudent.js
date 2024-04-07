@@ -189,9 +189,10 @@ const AddStudent = () => {
     
    
   return (
-    <div className='background'>
+    <div className='contentbackground'>
+      <div className='contentinner'>
     <div className='innerFrame'>
-      <h3>Add Students</h3>
+      <h2  style={{textDecoration:"underline"}}>Add Students</h2>
       <div className='mainform'>
           <div className='profile-picture'>
             <div className='image-group'>
@@ -347,6 +348,7 @@ const AddStudent = () => {
         <button className={`btn btn-primary `} onClick={handleSubmit}>Register</button>
 
         </div>
+    </div>
     </div>
   </div>
   )

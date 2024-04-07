@@ -3,7 +3,7 @@ import { useReactToPrint } from 'react-to-print';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-import "./certificate.css";
+import "../css/certificate.css";
 import { useParams } from 'react-router-dom';
 
 const Template = () => {

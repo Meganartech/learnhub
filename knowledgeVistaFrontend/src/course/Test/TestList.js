@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import "./test.css"
+import "../../css/test.css"
 import { useParams } from 'react-router-dom';
 
 const TestList = () => {
@@ -75,7 +75,7 @@ const TestList = () => {
     <div className='contentbackground'>
       <div className='contentinner'>
         {notFound ? (
-          <div className='notfound'>
+          <div className='enroll'>
             <h2>No test found for this course.</h2>
             <a href={`/course/AddTest/${courseId}`} className='btn btn-primary'>Add Test</a>
           </div>
@@ -90,22 +90,22 @@ const TestList = () => {
                   <span><b>Pass Mark:</b> {test.passPercentage}</span>
                   <span><b>Number Of Attempt:</b> {test.noofattempt}</span>
              
-                  <span onClick={() => handleDelete(test.testId)}><i className="fa-solid fa-trash"></i></span>
+                  <span onClick={() => handleDelete(test.testId)}><i className="fa-solid fa-trash text-danger"></i></span>
                 </div>
               
               {/* Render questions if test is available */}
               {test.questions && (
                 <div className="table-container">
-                <table className='table table-hover mt-5'>
-                  <thead>
+                <table className='table table-hover mt-5 table-bordered table-sm'>
+                  <thead className='thead-dark'>
                     <tr>
-                    <th scope="col" className="text-dark">S.no</th>
-                      <th scope="col" className="text-dark">Question</th>
-                      <th scope="col" className="text-dark">Option 1</th>
-                      <th scope="col" className="text-dark">Option 2</th>
-                      <th scope="col" className="text-dark">Option 3</th>
-                      <th scope="col" className="text-dark">Option 4</th>
-                      <th scope="col" className="text-dark">Answer</th>
+                    <th scope="col" >S.no</th>
+                      <th scope="col" >Question</th>
+                      <th scope="col" >Option 1</th>
+                      <th scope="col" >Option 2</th>
+                      <th scope="col" >Option 3</th>
+                      <th scope="col" >Option 4</th>
+                      <th scope="col" >Answer</th>
                     </tr>
                   </thead>
                   <tbody>

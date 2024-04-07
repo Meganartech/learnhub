@@ -121,9 +121,11 @@ public class CourseController {
 	        // Save the updated CourseDetail object
 	       CourseDetail saved= coursedetailrepository.save(savedCourse);
 	       Long courseId=saved.getCourseId();
+	       String coursename =saved.getCourseName();
 	       Map<String, Object> response = new HashMap<>();
            response.put("message", "savedSucessfully");
            response.put("courseId", courseId);
+           response.put("coursename", coursename);
 	         return ResponseEntity.ok(response);
 	    }
 	//--------------------------working------------------------------------
@@ -148,6 +150,7 @@ public class CourseController {
 	             existingCourseDetail.setAmount(amount);
 	             existingCourseDetail.setCourseLessons(null);
 	             existingCourseDetail.setUsers(null);
+	             existingCourseDetail.setVideoLessons(null);
 	             if (file != null) {
 	            	    try {
 	            	        existingCourseDetail.setCourseImage(ImageUtils.compressImage(file.getBytes()));

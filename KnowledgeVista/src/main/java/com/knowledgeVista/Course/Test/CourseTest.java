@@ -30,7 +30,6 @@ public class CourseTest {
 	    
 	    @ManyToOne
 	    @JoinColumn(name = "courseId") 
-	    
 		@JsonIgnoreProperties("courseTests")
 	    private CourseDetail courseDetail;
 	    

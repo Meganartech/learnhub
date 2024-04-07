@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Component.css";
+import "../css/Component.css"
 
 const SlideBar = ({ isToggled, setIsToggled }) => {
   const userRole = sessionStorage.getItem("role");
@@ -35,16 +35,18 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
 
       <hr className="sidebar-divider" />
 
+      {userRole === "USER" && (
       <li className="nav-item mt-4">
         <a
           className={activeLink === "/dashboard/course" ? "ActiveLink nav-link" : "nav-link text-muted"}
           href="#"
           onClick={() => handleClick("/dashboard/course")}
         >
-          <i className={activeLink === "/dashboard/course" ? "fas fa-fw fa-tachometer-alt text-light" : "fas fa-fw fa-tachometer-alt text-muted"}></i>
-          <span>Dashboard</span>
+          <i className={activeLink === "/dashboard/course" ? "fa-solid fa-book-open text-light" : "fa-solid fa-book-open text-muted"}></i>
+          <span>courses</span>
         </a>
       </li>
+      )}
 
       {userRole === "USER" && (
         <li className="nav-item mt-4">
@@ -53,10 +55,24 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
             href="#"
             onClick={() => handleClick("/mycourses")}
           >
-            <i className={activeLink === "/mycourses" ? "fa-solid fa-book-open text-light" : "fa-solid fa-book-open text-muted"}></i>
+            <i className={activeLink === "/mycourses" ? "fa-solid fa-book text-light" : "fa-solid fa-book text-muted"}></i>
             <span>My Courses</span>
           </a>
         </li>
+      )}
+      {(userRole === "ADMIN" || userRole === "TRAINER") && (
+         <li className="nav-item mt-4">
+         <a
+           className={activeLink === "/admin/dashboard" ? "ActiveLink nav-link" : "nav-link text-muted"}
+           href="#"
+          
+           onClick={() => handleClick("/admin/dashboard")}
+         >
+           <i className={activeLink === "/admin/dashboard" ? "fa-solid fa-gauge text-light" : "fa-solid fa-gauge text-muted"}></i>
+           <span>Dashboard</span>
+         </a>
+    
+       </li>
       )}
 
       {(userRole === "ADMIN" || userRole === "TRAINER") && (

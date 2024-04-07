@@ -2,7 +2,7 @@ import React from "react";
 import undraw_profile from "../images/undraw_profile.jpg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import "./Component.css"
+import "../css/Component.css"
 
 const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange}) => {
   const MySwal = withReactContent(Swal);

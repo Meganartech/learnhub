@@ -10,6 +10,7 @@ const ViewVideo = () => {
   const [videoType, setVideoType] = useState('local');
   const [videoSource, setVideoSource] = useState('');
   const [currentLesson, setCurrentLesson] = useState(null);
+  const [thumbnail,setthumbnail] =useState();
   const role=sessionStorage.getItem("role");
   useEffect(() => {
     const fetchData = async () => {
@@ -107,7 +108,11 @@ const ViewVideo = () => {
   <div className='contentinner'>
     {AllLessons.length > 0 ? (
       <div className='vdoplusbtn'>
+        <div style={{display:"grid",gridTemplateColumns:"9fr 1fr"}}>
         <h1 style={{ textAlign: 'center' }}>{courseName}</h1>
+        <Link to={`/test/start/${courseName}/${courseId}`} className='btn btn-primary' style={{height:"40px"}}> 
+                Start Test</Link>
+        </div>
         <div>
           <div className="main">
             <div className="VideoFrame">
@@ -117,7 +122,8 @@ const ViewVideo = () => {
                   height="80%"
                   url={videoSource ? URL.createObjectURL(new Blob([videoSource], { type: 'video/mp4' })) : null}
                   controls
-                  playing={false}
+                  playing
+                  light={currentLesson ? `data:image/jpeg;base64,${currentLesson.thumbnail}` : null}
                   onEnded={handleVideoEnd}
                   config={{
                     file: {
@@ -132,8 +138,8 @@ const ViewVideo = () => {
                   width="90%"
                   height="80%"
                   controls
-                  playing={false}
                   url={videoSource ? videoSource : null}
+                  light={currentLesson ? `data:image/jpeg;base64,${currentLesson.thumbnail}` : null}
                   onEnded={handleVideoEnd}
                 />
               ) : null}

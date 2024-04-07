@@ -27,8 +27,8 @@ const ViewTrainerList = () => {
         <a href="/addTrainer" className='btn btn-primary'><i class="fa-solid fa-plus"></i> Add Trainer</a>
       </div>
       <div className="table-container">
-        <table className="table table-hover table-sm">
-          <thead>
+        <table className="table table-hover table-bordered table-sm">
+          <thead className='thead-dark'>
             <tr>
               <th scope="col">#</th>
               <th scope="col">Username</th>

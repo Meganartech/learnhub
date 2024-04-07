@@ -1,7 +1,7 @@
 
 //import styles from "../course/css/CourseView.module.css";
 import React, { useState, useEffect } from 'react';
-import styles from "../course/css/CourseView.module.css";
+import styles from "../css/CourseView.module.css";
 import { Link } from 'react-router-dom';
 
 const Mycourse = () => {
@@ -36,7 +36,7 @@ const Mycourse = () => {
             <li>
                  <div className='enroll'>
                 <h3 className='mt-4'>No courses Enrolled </h3>
-                <Link to="/dashboard/course" className='btn btn-primary'>Buy Now</Link></div>
+                <Link to="/dashboard/course" className='btn btn-primary'>Enroll Now</Link></div>
             </li>
         ) : (
             <>

@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../css/CourseView.module.css";
+import styles from "../../css/CourseView.module.css";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -7,9 +7,6 @@ import withReactContent from "sweetalert2-react-content";
 const EditCourse = ({filteredCourses}) => {
   const MySwal = withReactContent(Swal);
  const role=sessionStorage.getItem("role");
-  
-  
-
  const handleDelete = (e, courseId) => {
   e.preventDefault();
   MySwal.fire({
@@ -71,17 +68,14 @@ const EditCourse = ({filteredCourses}) => {
     }
   });
 };
-
- 
-
   return (
     <div className={styles.supercontainer}>
       <div className={styles.createbtn}>
       {role === "ADMIN" && (    
      
-        <a href="/coursecreation">
+        <a href="/course/addcourse">
           <button type="button" className="btn btn-primary mt-4">
-            Create Course
+          <i className="fa-solid fa-plus"></i>  Create Course
           </button>
         </a> 
       )}
@@ -119,22 +113,12 @@ const EditCourse = ({filteredCourses}) => {
                   className="dropdown-menu dropdown-menu-left shadow animated--grow-in"
                   aria-labelledby="userDropdown"
                         >
-                  
-                  
-                    <Link to={`/course/Addlesson/${item.courseName}/${item.courseId}`}
+                    <Link to={`/lessonList/${item.courseName}/${item.courseId}`}
                       className="dropdown-item"
                       data-toggle="modal"
                       data-target="#logoutModal"   
                     >
-                    Add Lesson
-                    </Link>
-                    <div className="dropdown-divider"></div>
-                    <Link to={`/course/viewlessons/${item.courseName}/${item.courseId}`}
-                      className="dropdown-item"
-                      data-toggle="modal"
-                      data-target="#logoutModal"   
-                    >
-                    view Lessons
+                     Lessons
                     </Link>
                     <div className="dropdown-divider"></div>
                     <Link to={`/course/testlist/${item.courseId}`}
@@ -148,10 +132,6 @@ const EditCourse = ({filteredCourses}) => {
                   </div>
                       </h5>
                       <h5>
-                        {" "}
-                        {/* <Link to={`/course/Addlesson/${item.courseId}`}>
-                          <i class="fa-solid fa-edit"></i>
-                        </Link> */}
                          <Link to={`/course/edit/${item.courseId}`}>
                           <i className="fa-solid fa-edit"></i>
                         </Link>
@@ -169,7 +149,7 @@ const EditCourse = ({filteredCourses}) => {
                     <p> {item.courseDescription.length > 20
                         ? item.courseDescription.slice(0, 20) + "..."
                         : item.courseDescription}</p>
-                    <p>{item.courseCategory}</p>
+              
                     <h6>{item.amount === 0 ? <a href={item.courseUrl} className=" btn btn-outline-success w-100"> Free</a> : 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
                       <div><i className="fa-solid fa-indian-rupee-sign"></i><label className="mt-3 blockquote">{item.amount}</label>

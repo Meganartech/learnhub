@@ -30,14 +30,14 @@ const MyCertificateList = () => {
             <div className='contentinner'>
         <div className="mt-4">
             <h2>My Certificates</h2>
-            <table className="table table-hover">
-                <thead>
+            <table className="table table-hover table-bordered table-sm ">
+                <thead className='thead-dark'>
                     <tr>
-                        <th scope="col" className="text-dark">S.No</th>
-                        <th scope="col" className="text-dark">Course Name</th>
-                        <th scope="col" className="text-dark">Percentage</th>
-                        <th scope="col" className="text-dark">Test Date</th>
-                        <th scope="col" className="text-dark">Certificate</th>
+                        <th scope="col" >S.No</th>
+                        <th scope="col" >Course Name</th>
+                        <th scope="col" >Percentage</th>
+                        <th scope="col" >Test Date</th>
+                        <th scope="col" >Certificate</th>
                     </tr>
                 </thead>
                 <tbody>

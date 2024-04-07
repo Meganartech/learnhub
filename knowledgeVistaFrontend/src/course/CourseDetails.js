@@ -1,10 +1,10 @@
 import { useState ,useEffect} from "react";
 import React from "react";
-import "./Style.css";
+import "../css/Style.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-import EditCourseForm from "../Update/EditCourseForm";
+import EditCourseForm from "./Update/EditCourseForm";
 import { useParams } from "react-router-dom";
 const CourseDetails = () => {
   const [img, setimg] = useState();
@@ -113,7 +113,13 @@ const CourseDetails = () => {
             <div className="second">
               <h2>Course Image</h2>
               {courseImage && (
-                <img src={courseImage} alt="Course" className="img-fluid" />
+                <img src={courseImage} alt="Course"  
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "200px",
+                  alignItems: "center",
+                }}
+                className="img-fluid" />
               )}
               {!courseImage && <p>No image available</p>}
 

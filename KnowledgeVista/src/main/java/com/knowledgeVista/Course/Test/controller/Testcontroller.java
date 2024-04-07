@@ -13,11 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
@@ -79,8 +83,9 @@ public class Testcontroller {
 	        try {
 	            // Find the course by its ID
 	            CourseDetail courseDetail = courseDetailRepository.findById(courseId)
-	                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
-	            
+	                    .orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found with the specified ID: " + courseId));
+
+
 	            Optional<CourseTest> opcoursetest = testRepository.findByCourseDetail(courseDetail);
 	            if (opcoursetest.isPresent()) {
 	                CourseTest test = opcoursetest.get();
@@ -117,99 +122,15 @@ public class Testcontroller {
 	        } catch (Exception e) {
 	            e.printStackTrace(); // Print the stack trace for debugging
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                                 .body("Error creating test: " + e.getMessage());
+	                                 .body("Error: " + e.getMessage());
 	        }
 	    }
 
 	    
 	    
-	  //-----------------------------WORKING-------------------------
-//	    @GetMapping("/getall/{courseId}")
-//	    public ResponseEntity<?> getTestsByCourseId(@PathVariable Long courseId) {
-//	        try {
-//	            // Find the course by its ID
-//	            Optional<CourseDetail> optionalCourseDetail = courseDetailRepository.findById(courseId);
-//	            if (!optionalCourseDetail.isPresent()) {
-//	                return ResponseEntity.notFound().build();
-//	            }
-//
-//	            // Get tests related to the course
-//	            List<CourseTest> tests = testRepository.findByCourseDetail(optionalCourseDetail.get());
-//	            if (tests.isEmpty()) {
-//	                return ResponseEntity.notFound().build();	            }
-//
-//	            // Map to store test details along with questions and answers
-//	            List<Map<String, Object>> testDetails = new ArrayList<>();
-//	            for (CourseTest test : tests) {
-//	                Map<String, Object> testMap = new HashMap<>();
-//	                testMap.put("testId", test.getTestId());
-//	                testMap.put("testName", test.getTestName());
-//	                testMap.put("noofattempt", test.getNoofattempt());
-//	                testMap.put("passPercentage",test.getPassPercentage());
-//	                testMap.put("noOfQuestions",test.getNoOfQuestions());
-//	                
-//	                // Retrieve questions for the current test
-//	                List<Question> questions = test.getQuestions();
-//	                if (!questions.isEmpty()) {
-//	                    List<Map<String, Object>> questionDetails = new ArrayList<>();
-//	                    for (Question question : questions) {
-//	                        Map<String, Object> questionMap = new HashMap<>();
-//	                        questionMap.put("questionId", question.getQuestionId());
-//	                        questionMap.put("questionText", question.getQuestionText());
-//	                        questionMap.put("option1", question.getOption1());
-//	                        questionMap.put("option2", question.getOption2());
-//	                        questionMap.put("option3", question.getOption3());
-//	                        questionMap.put("option4", question.getOption4());
-//	                        questionMap.put("answer", question.getAnswer());
-//	                        questionDetails.add(questionMap);
-//	                    }
-//	                    testMap.put("questions", questionDetails);
-//	                }
-//
-//	                testDetails.add(testMap);
-//	            }
-//
-//	            return ResponseEntity.ok(testDetails);
-//	        } catch (Exception e) {
-//	            e.printStackTrace();
-//	            return ResponseEntity.status(500).body("Error retrieving test details: " + e.getMessage());
-//	        }
-//	    }
-	  //-----------------------------WORKING THIS IS FOR USER LOGIN-------------------------
-//	    @GetMapping("/getall/user/{courseId}")
-//	    public ResponseEntity<?> gettsestlistForUser(@PathVariable Long courseId) {
-//	        try {
-//	            // Find the course by its ID
-//	            Optional<CourseDetail> optionalCourseDetail = courseDetailRepository.findById(courseId);
-//	            if (!optionalCourseDetail.isPresent()) {
-//	                return ResponseEntity.notFound().build();
-//	            }
-//
-//	            // Get tests related to the course
-//	            List<CourseTest> tests = testRepository.findByCourseDetail(optionalCourseDetail.get());
-//	            if (tests.isEmpty()) {
-//	            	   return ResponseEntity.notFound().build();	
-//	            }
-//
-//	            // Map to store test details along with questions and answers
-//	            List<Map<String, Object>> testDetails = new ArrayList<>();
-//	            for (CourseTest test : tests) {
-//	                Map<String, Object> testMap = new HashMap<>();
-//	                testMap.put("testId", test.getTestId());
-//	                testMap.put("testName", test.getTestName());
-//	                testMap.put("passPercentage", test.getPassPercentage());
-//	                testDetails.add(testMap);
-//	            }
-//
-//	            return ResponseEntity.ok(testDetails);
-//	        } catch (Exception e) {
-//	            e.printStackTrace();
-//	            return ResponseEntity.status(500).body("Error retrieving test details: " + e.getMessage());
-//	        }
-//	    } 
 	  //-----------------------------WORKING FOR USER LOGIN -------------------------
 
-	    @GetMapping("/getbytestid/{courseId}")
+	    @GetMapping("/getTestByCourseid/{courseId}")
 	    public ResponseEntity<?> getTestById(@PathVariable Long courseId) {
 	        Optional<CourseDetail> opcourse = courseDetailRepository.findById(courseId);
 	        if (opcourse.isPresent()) {
@@ -266,6 +187,32 @@ public class Testcontroller {
 	        }
 	    }
 	    
+//``````````````````````Edit Test Details````````````````````````````````````
+	    @PatchMapping("/update/{testId}")
+	    public ResponseEntity<?> editTest(@PathVariable Long testId,
+	            @RequestParam(value="testName", required=false) String testName,
+	            @RequestParam(value="noofattempt", required=false) Long noOfAttempt,
+	            @RequestParam(value="passPercentage", required=false) Double passPercentage) {
+	        Optional<CourseTest> optest = testRepository.findById(testId);
+	        if (optest.isPresent()) {
+	            CourseTest test = optest.get();
+	            if (testName != null) {
+	                test.setTestName(testName);
+	            }
+	            if (noOfAttempt != null) {
+	                test.setNoofattempt(noOfAttempt);
+	            }
+	            if (passPercentage != null) {
+	                test.setPassPercentage(passPercentage);
+	            }
+	            testRepository.saveAndFlush(test);
+	            return ResponseEntity.ok("Test updated successfully");
+	        } else {
+	            return ResponseEntity.notFound().build();
+	        }
+	    }
+
+
 	    
 //----------------------WORKING------------------------------------------
 	    

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../css/CourseView.module.css";
+import styles from "../../css/CourseView.module.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -111,7 +111,7 @@ if(amount===0){
             MySwal.fire({
               icon: 'error',
               title: 'Oops...',
-              text: "cannot Access Course Buy Now"
+              text: "cannot Access Course "
           });
           } else if (response.status === 404) {
               // Handle Not Found
@@ -161,7 +161,6 @@ if(amount===0){
                         ? item.courseDescription.slice(0, 20) + "..."
                         : item.courseDescription}
                     </p>
-                    <p>{item.courseCategory} </p>
                     <h6>
                       {item.amount === 0 ? (
                         <a
@@ -187,7 +186,7 @@ if(amount===0){
                             className="btn btn-outline-primary"
                             onClick={() => handlesubmit(item.courseId, userId)}
                           >
-                            Buy Now
+                            Enroll Now
                           </a>
                         </div>
                       )}

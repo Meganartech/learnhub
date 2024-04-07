@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 import profile from "../images/profile.png"
-import "./StudentRegister.css";
-import "../certificate/certificate.css"
+import "../css/StudentRegister.css";
+import "../css/certificate.css"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -180,9 +180,11 @@ const StudentRegister = () => {
 
   return (
    
-    <div className='background'>
+    <div className='contentbackground' style={{height:"100vh"}}>
+       <div className='contentinner' style={{height:"88vh"}}>
       <div className='innerFrame'>
-        <h3>Join with us..</h3>
+      
+      <h2  style={{textDecoration:"underline"}}>Join with us</h2>
         <div className='mainform'>
           <div className='profile-picture'>
             <div className='image-group'>
@@ -343,6 +345,7 @@ const StudentRegister = () => {
             Already have an account? Login!
           </a>
         </div>
+      </div>
       </div>
     </div>
   );
