@@ -54,11 +54,7 @@ const ViewStudentList = () => {
                     <i className="fas fa-edit"></i>
                     </Link>
                 </td>
-                <td>
-                <Link to={`/assignCourse/${user.userId}`} className='hidebtn' >
-                    <i className="fas fa-plus"></i>
-                    </Link>
-                </td>
+               
                 <td>
                   <button className='hidebtn'>
                     <i className="fas fa-trash text-danger"></i>

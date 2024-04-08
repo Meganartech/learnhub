@@ -9,7 +9,10 @@ const AttenTest = () => {
     const {courseId,courseName}=useParams();
     
   const [isSubmitting, setIsSubmitting] = useState(false);
-    const [testdetails,settestdetails]=useState();
+    const [testdetails,settestdetails]=useState({
+        passPercentage:"",
+        noOfQuestions:"",
+    });
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -155,10 +158,10 @@ const AttenTest = () => {
                     </ul >
                     <h5 className='font-weight-bold'>Test Format :</h5>
                     <ul style={{ listStyleType: 'disc' }}>
-                        <li>The Test Consist of <b>{ `${testdetails ? testdetails.noOfQuestions : ""}`}</b> Multiple-choice Questions </li>
+                        <li>The Test Consist of <b>{testdetails.noOfQuestions }</b> Multiple-choice Questions </li>
                         <li>Each Question carries one Mark </li>
                         <li>Read the Question Carefully and select your Answer</li>
-                        <li>To pass this test you have to score atleast<b> {`${testdetails?(testdetails.passPercentage):("")}`}% </b>to get the certificate</li>
+                        <li>To pass this test you have to score atleast<b> {testdetails.passPercentage} % </b>to get the certificate</li>
                     </ul >
                     <h5 className='font-weight-bold'>Submission :</h5>
                     <ul style={{ listStyleType: 'disc' }}>

@@ -33,6 +33,9 @@ import CourseCreation from "./course/Components/CourseCreation";
 import ViewVideo from "./course/Components/ViewVideo";
 import LessonList from "./course/Components/LessonList";
 import Dashboard from "./course/Components/Dashboard.js";
+import License from "./AuthenticationPages/License.js";
+import Razorpay_Settings from "./AuthenticationPages/Razorpay_Settings.js";
+import Feedback from "./AuthenticationPages/Feedback.js";
 
 
 
@@ -95,12 +98,15 @@ function App() {
                       <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute>}/>
                       <Route path="/MyCertificateList" element={<PrivateRoute authenticationRequired={true}><MyCertificateList /></PrivateRoute>}/>
                       <Route path="/template/:activityId" element={<PrivateRoute authenticationRequired={true}><Template/></PrivateRoute>}/>
-                      <Route path="/assignCourse/:userId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AssignCourse /></PrivateRoute>} />
+                      <Route path="/settings/payment" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><Razorpay_Settings/></PrivateRoute>}/>
+                      {/* <Route path="/assignCourse/:userId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AssignCourse /></PrivateRoute>} /> */}
                       <Route path="/view/Students" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><ViewStudentList/></PrivateRoute>}/>
                       <Route path="/view/Trainer" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><ViewTrainerList/></PrivateRoute>}/>
                       <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute> }/>
-                  </Route>
-  
+                  </Route> 
+
+           <Route path="/License" element={<License/>}/>
+           <Route path="/Feedback" element={<Feedback/>}/>
           <Route path="/" element={<StudentRegister/>}/>
           <Route path="/unauthorized" element={<Unauthorized/>}/>
           <Route path="/forgot-password" element={<ForgetPassword />} />

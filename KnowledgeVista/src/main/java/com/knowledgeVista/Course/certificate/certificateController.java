@@ -62,9 +62,6 @@ public class certificateController {
 	         }else {
 	        	  // Compress the authorized sign image
 	 	        byte[] compressedAuthorizedSign = ImageUtils.compressImage(authorizedSign.getBytes());
-
-	 	        
-
 	 	        // Create a new Certificate object with the extracted data
 	 	        certificate certificate = new certificate();
 	 	        certificate.setInstitutionName(institutionName);

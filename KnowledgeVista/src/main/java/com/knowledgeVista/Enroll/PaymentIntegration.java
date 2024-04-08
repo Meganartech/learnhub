@@ -1,5 +1,6 @@
 package com.knowledgeVista.Enroll;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Settings.PaymentsettingRepository;
+import com.knowledgeVista.Settings.Paymentsettings;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.razorpay.Order;
@@ -29,23 +32,40 @@ import com.razorpay.RazorpayException;
 @RequestMapping("/buyCourse")
 @CrossOrigin
 public class PaymentIntegration {
-     
-	@Value("${rzp_key_id}")
-    private String razorpayApiKey;
 
-    @Value("${rzp_key_secret}")
-    private String razorpayApiSecret;
 
     @Value("${rzp_currency}")
     private String currency;
 
+
+	@Autowired
+	private PaymentsettingRepository paymentsetting;
+    
 	 @Autowired 
 	 private CourseDetailRepository coursedetail;
 	 @Autowired
 	private OrderuserRepo ordertablerepo;
 	 @Autowired
 	private MuserRepositories muserRepository;
-
+	 
+	 public Paymentsettings getpaydetails() {
+		    try {
+		        List<Paymentsettings> dataList = paymentsetting.findAll();
+		        
+		        if (dataList.isEmpty()) {
+		            return null; // or throw an exception
+		        } else {
+		            if (dataList.size() == 1) {
+		                return dataList.get(0);
+		            } else {
+		                return dataList.get(dataList.size() - 1);
+		            }
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace(); // or log the error
+		        return null; // or throw an exception
+		    }
+		}
  @PostMapping("/create")
  public ResponseEntity<?> createOrder(@RequestBody Map<String, Long> requestData) {
      try {
@@ -65,7 +85,10 @@ public class PaymentIntegration {
              }
              
              Long amt = course.getAmount(); 
-
+             if(getpaydetails()!=null) {
+             String razorpayApiKey= getpaydetails().getRazorpay_key();
+             String razorpayApiSecret=getpaydetails().getRazorpay_secret_key();
+             
              RazorpayClient client = new RazorpayClient(razorpayApiKey, razorpayApiSecret);
              JSONObject orderRequest = new JSONObject();
              orderRequest.put("amount", amt * 100); // Convert amount to paisa
@@ -83,6 +106,10 @@ public class PaymentIntegration {
              ordertablerepo.save(ordertable);
              
              return ResponseEntity.ok(orderId);
+             } else {
+                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                         .body("Payment details not found");
+             }
          } else {
              // Return an error response if the course is not found
              return ResponseEntity.notFound().build();

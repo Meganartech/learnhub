@@ -60,6 +60,22 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
           </a>
         </li>
       )}
+
+      
+{userRole === "USER" && (
+        <li className="nav-item mt-4">
+          <a
+            className={activeLink === "/MyCertificateList" ? "ActiveLink nav-link" : "nav-link text-muted"}
+            href="#"
+            onClick={() => handleClick("/MyCertificateList")}
+          >
+            <i className={activeLink === "/MyCertificateList" ? "fa-solid fa-award text-light" : "fa-solid fa-award text-muted"}></i>
+            <span>My Certificates</span>
+          </a>
+        </li>
+      )}
+
+
       {(userRole === "ADMIN" || userRole === "TRAINER") && (
          <li className="nav-item mt-4">
          <a
@@ -89,6 +105,8 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
      
         </li>
       )}
+
+
       {userRole === "ADMIN" && (
       <li className="nav-item mt-4">
         <a
@@ -126,16 +144,19 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
         </a>
       </li>
         )}
-          {userRole === "USER" && (
+        
+{(userRole === "ADMIN" || userRole === "TRAINER") && (
         <li className="nav-item mt-4">
           <a
-            className={activeLink === "/MyCertificateList" ? "ActiveLink nav-link" : "nav-link text-muted"}
+            className={activeLink === "/settings/payment" ? "ActiveLink nav-link" : "nav-link text-muted"}
             href="#"
-            onClick={() => handleClick("/MyCertificateList")}
+           
+            onClick={() => handleClick("/settings/payment")}
           >
-            <i className={activeLink === "/MyCertificateList" ? "fa-solid fa-award text-light" : "fa-solid fa-award text-muted"}></i>
-            <span>My Certificates</span>
+            <i className={activeLink === "/settings/payment" ? "fa-solid fa-gear text-light" : "fa-solid fa-gear text-muted"}></i>
+            <span>Payment settings</span>
           </a>
+     
         </li>
       )}
      
