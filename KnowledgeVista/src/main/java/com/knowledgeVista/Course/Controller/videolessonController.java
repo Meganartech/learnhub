@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.FileService.VideoFileService;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 
@@ -125,6 +127,65 @@ public class videolessonController {
 			    return ResponseEntity.notFound().build();
 			}
 		 
+		 
+		@DeleteMapping("/delete")
+		private ResponseEntity<?> deleteLessonsByLessonId(@RequestParam("lessonId")Long lessonId,
+				   @RequestParam("Lessontitle") String Lessontitle,
+		          @RequestHeader("Authorization") String token){
+			 try {
+		          // Validate the token
+		          if (!jwtUtil.validateToken(token)) {
+		              // If the token is not valid, return unauthorized status
+		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		          }
+
+		          String role = jwtUtil.getRoleFromToken(token);
+
+		          // Perform authentication based on role
+		          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+		        	  Optional<videoLessons> opvideo =lessonrepo.findById(lessonId);
+		        	  if(opvideo.isPresent()) {
+		        		  videoLessons videolesson=opvideo.get();
+		        		  
+		        		  
+		        		  if (videolesson.getVideofilename() != null) {
+			                    boolean videoFileDeleted = fileService.deleteVideoFile(videolesson.getVideofilename());
+			                    if (videoFileDeleted) {
+			                    	lessonrepo.deleteById(lessonId);
+
+						        	  return ResponseEntity.ok("{\"message\":\"Lesson " + Lessontitle + " Deleted Successfully\"}");
+						        } else {
+			                        // Video file deletion failed
+			                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			                                .body("{\"message\": \"Failed to delete video file associated with the note\"}");
+			                    }
+			                } else {
+			                    // Video file is null, delete only the note
+
+					        	  lessonrepo.deleteById(lessonId);
+					        	  return ResponseEntity.ok("{\"message\":\"Lesson " + Lessontitle + " Deleted Successfully\"}");
+					        	  }
+		        		  
+		        		  
+		        		  
+		        		  
+
+		        	  }else {
+		        		  return ResponseEntity.notFound().build();
+		        		  
+		        	  }
+		          } else {
+		              // Return unauthorized status if the role is neither ADMIN nor TRAINER
+		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		          }
+		      } catch (Exception e) {
+		          // Log any other exceptions for debugging purposes
+		          e.printStackTrace(); // You can replace this with logging framework like Log4j
+		          // Return an internal server error response
+		          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		      }
+
+		}
 
 
 }

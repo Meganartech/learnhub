@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import '../css/certificate.css';
-import { json } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Razorpay_Settings = () => {
 
-  
+  const token=sessionStorage.getItem("token")
 const [isnotFound,setisnotFound]=useState();
 const[initialsave,setinitialsave]=useState(false);
   const[defaultsettings,setdefaultsettings]=useState({
@@ -13,9 +13,14 @@ const[initialsave,setinitialsave]=useState(false);
     razorpay_secret_key:""
   })
   useEffect(() => {
+    
     const fetchpaymentsettings = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/getPaymentDetails");
+        const response = await fetch("http://localhost:8080/api/getPaymentDetails",{
+          headers:{
+          "Authorization":token
+          }
+        });
 if(response.ok){
         const data = await response.json();
         setdefaultsettings(data);
@@ -25,6 +30,8 @@ if(response.ok){
       }else if (response.status === 404) {
         setisnotFound(true);
         setinitialsave(true)
+      }else if(response.status === 401){
+        window.location.href="/unauthorized"
       }
       } catch (error) {
        console.error(error);
@@ -88,8 +95,7 @@ if(response.ok){
 
   const save = (e) => {
     e.preventDefault();
-   
-
+  
     const formData = new FormData();
     formData.append("razorpay_key",Razorpay_Key);
     formData.append("razorpay_secret_key",Razorpay_Secret_Key);
@@ -107,19 +113,29 @@ if(response.ok){
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        "Authorization":token
       },
+    
       body: JSON.stringify(data),
     })
     .then(response => {
       if (response.ok) {
+        toast.success("Payment Details Saved Sucessfully",{
+          autoClose: 3000, // Close the toast after 3 seconds
+          onClose: () => {
+            
+        window.location.reload();}
+        });
         
-      window.location.reload()
-      setisnotFound(false)
+        setisnotFound(false)
+     
 
       } else if (response.status === 400) {
         response.text().then(errorMessage => {
           console.log(errorMessage);  });
-      } else {
+      }else if(response.status === 401){
+        window.location.href="/unauthorized"
+      }  else {
         // Other error
         response.text().then(errorMessage => {
           console.log(errorMessage);  });
@@ -134,18 +150,30 @@ if(response.ok){
 
     fetch(`http://localhost:8080/api/update/${defaultsettings.id}`, {
     method: 'PATCH',
-   
+    headers:{
+      "Authorization":token
+      },
     body:formData,
   })
   .then(response => {
     if (response.ok) {
-      window.location.reload()
+      
+      toast.success("Payment Details Saved Sucessfully",{
+        autoClose: 3000, // Close the toast after 3 seconds
+        onClose: () => {
+          
+      window.location.reload();}
+      });
+      
       setisnotFound(false)
       
     } else if (response.status === 400) {
       response.text().then(errorMessage => {
         console.log(errorMessage);  });
-    } else {
+    }else if(response.status === 401){
+      window.location.href="/unauthorized"
+    }
+    else {
       // Other error
       response.text().then(errorMessage => {
         console.log(errorMessage);  });
@@ -203,12 +231,18 @@ if(response.ok){
             </div>
 
           </div>
-          <br></br>
+          
         </div>
       </div>
     </div>
-    <div className='btngrp' style={{height:"7rem"}}>
-      <button className='btn btn-primary' style={{width:"8rem"}} onClick={save} disabled={Object.values(errors).some(error => error !== "")}>Save</button>
+    <div className='btngrp'>
+      <button className='btn btn-primary'  onClick={save}   
+      disabled={
+    Object.values(errors).some(error => error !== "") || // Check for errors
+    !Razorpay_Key.trim() || // Check if Razorpay_Key is empty
+    !Razorpay_Secret_Key.trim() // Check if Razorpay_Secret_Key is empty
+  }>
+        Save</button>
     </div>
   </div>
 </div>)
@@ -238,12 +272,12 @@ const oldSettings =(<div className="contentinner">
          
 
         </div>
-        <br></br>
+       
       </div>
     </div>
   </div>
-  <div className='btngrp' style={{height:"7rem"}}>
-    <button className='btn btn-primary' style={{width:"8rem"}} onClick={Edit}>Edit</button>
+  <div className='btngrp' >
+    <button className='btn btn-primary'  onClick={Edit}>Edit</button>
   </div>
 </div>
 </div>)

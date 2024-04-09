@@ -160,7 +160,8 @@ public class Testcontroller {
 
 	                return ResponseEntity.ok(test);
 	            } else {
-	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Test not found for course with id: " + courseId);
+
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Test not found for course\"}");
 	            }
 	        } else {
 	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found with id: " + courseId);

@@ -4,6 +4,19 @@ import { useNavigate } from "react-router-dom";
 import "../css/Component.css"
 
 const SlideBar = ({ isToggled, setIsToggled }) => {
+  const [isActive, setIsActive] = useState(false);
+
+  const handleDropdownToggle = () => {
+    setIsActive(!isActive);
+  };
+
+  const handleLinkClick = (link) => {
+    setActiveLink(link);
+    setIsActive(false); // Close dropdown after selecting an option
+  };
+
+
+
   const userRole = sessionStorage.getItem("role");
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(localStorage.getItem('activeLink') || "/dashboard/course");
@@ -35,7 +48,25 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
 
       <hr className="sidebar-divider" />
 
-      {userRole === "USER" && (
+
+
+
+
+      {userRole === "ADMIN"  && (
+         <li className="nav-item mt-4">
+         <a
+           className={activeLink === "/admin/dashboard" ? "ActiveLink nav-link" : "nav-link text-muted"}
+           href="#"
+          
+           onClick={() => handleClick("/admin/dashboard")}
+         >
+           <i className={activeLink === "/admin/dashboard" ? "fa-solid fa-gauge text-light" : "fa-solid fa-gauge text-muted"}></i>
+           <span>Dashboard</span>
+         </a>
+    
+       </li>
+      )}
+      
       <li className="nav-item mt-4">
         <a
           className={activeLink === "/dashboard/course" ? "ActiveLink nav-link" : "nav-link text-muted"}
@@ -46,7 +77,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
           <span>courses</span>
         </a>
       </li>
-      )}
+    
 
       {userRole === "USER" && (
         <li className="nav-item mt-4">
@@ -76,22 +107,9 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
       )}
 
 
-      {(userRole === "ADMIN" || userRole === "TRAINER") && (
-         <li className="nav-item mt-4">
-         <a
-           className={activeLink === "/admin/dashboard" ? "ActiveLink nav-link" : "nav-link text-muted"}
-           href="#"
-          
-           onClick={() => handleClick("/admin/dashboard")}
-         >
-           <i className={activeLink === "/admin/dashboard" ? "fa-solid fa-gauge text-light" : "fa-solid fa-gauge text-muted"}></i>
-           <span>Dashboard</span>
-         </a>
-    
-       </li>
-      )}
+      
 
-      {(userRole === "ADMIN" || userRole === "TRAINER") && (
+      {userRole === "ADMIN"  && (
         <li className="nav-item mt-4">
           <a
             className={activeLink === "/course/admin/edit" ? "ActiveLink nav-link" : "nav-link text-muted"}
@@ -100,12 +118,25 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
             onClick={() => handleClick("/course/admin/edit")}
           >
             <i className={activeLink === "/course/admin/edit" ? "fa-solid fa-book-open text-light" : "fa-solid fa-book-open text-muted"}></i>
-            <span>Courses</span>
+            <span>Edit Courses</span>
           </a>
      
         </li>
       )}
+   
 
+   {userRole === "TRAINER" && (
+      <li className="nav-item mt-4">
+        <a
+          className={activeLink === "/AssignedCourses" ? "ActiveLink nav-link" : "nav-link text-muted"}
+          href="#"
+          onClick={() => handleClick("/AssignedCourses")}
+        >
+          <i className={activeLink === "/AssignedCourses" ? "fa-solid fa-book text-light" : "fa-solid fa-book text-muted"}></i>
+          <span>Assigned Courses</span>
+        </a>
+      </li>
+      )}
 
       {userRole === "ADMIN" && (
       <li className="nav-item mt-4">
@@ -145,7 +176,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
       </li>
         )}
         
-{(userRole === "ADMIN" || userRole === "TRAINER") && (
+{(userRole === "ADMIN" ) && (
         <li className="nav-item mt-4">
           <a
             className={activeLink === "/settings/payment" ? "ActiveLink nav-link" : "nav-link text-muted"}

@@ -5,14 +5,18 @@ import styles from "../css/CourseView.module.css";
 import { Link } from 'react-router-dom';
 
 const Mycourse = () => {
-    const userId = sessionStorage.getItem("userid");
+    const token = sessionStorage.getItem("token");
     const [courses, setCourses] = useState([]);
 
     useEffect(() => {
         const fetchItems = async () => {
             try {
                 // Replace {userId} with the actual user ID
-                const response = await fetch(`http://localhost:8080/AssignCourse/${userId}/courselist`);
+                const response = await fetch(`http://localhost:8080/AssignCourse/student/courselist`,{
+                    headers:{
+                        'Authorization':token
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Failed to fetch courses');
                 }

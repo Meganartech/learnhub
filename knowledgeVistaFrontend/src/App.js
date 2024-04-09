@@ -36,10 +36,16 @@ import Dashboard from "./course/Components/Dashboard.js";
 import License from "./AuthenticationPages/License.js";
 import Razorpay_Settings from "./AuthenticationPages/Razorpay_Settings.js";
 import Feedback from "./AuthenticationPages/Feedback.js";
+import TrainerProfile from "./Trainer/TrainerProfile.js";
+import StudentProfile from "./Student/StudentProfile.js";
+import AssignedCourseTRAINER from "./Trainer/AssignedCourseTRAINER.js";
+import MyAssignedcourses from "./Trainer/MyAssignedcourses.js";
 
 
 
 function App() {
+  
+  const isAuthenticated = sessionStorage.getItem('token') !== null;
   const MySwal = withReactContent(Swal);
   const [isToggled, setIsToggled] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -66,8 +72,8 @@ function App() {
        console.error(error);
       }
     };
-
-    fetchItems();
+  if(isAuthenticated){
+    fetchItems();}
   }, []);
 
   return (
@@ -80,7 +86,7 @@ function App() {
                   searchQuery={searchQuery}
                   handleSearchChange={handleSearchChange}
                   setSearchQuery={setSearchQuery}/>}>
-                    <Route path="/admin/dashboard" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><Dashboard/></PrivateRoute>}/>
+                    <Route path="/admin/dashboard" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Dashboard/></PrivateRoute>}/>
                       <Route path="/lessonList/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><LessonList/></PrivateRoute>}/> 
                       <Route path="/courses/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} ><ViewVideo/></PrivateRoute>}/>                     
                       <Route path="/course/Addlesson/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><UploadVideo/></PrivateRoute>}/>
@@ -89,7 +95,7 @@ function App() {
                       <Route path="/addStudent" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddStudent/></PrivateRoute>}/>
                       <Route path="/mycourses" element={<PrivateRoute authenticationRequired={true} ><Mycourse/></PrivateRoute>}/>
                       <Route path="/dashboard/course" element={<PrivateRoute authenticationRequired={true}><CourseView  filteredCourses={filteredCourses} /></PrivateRoute>} />
-                      <Route path="/course/admin/edit" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditCourse  filteredCourses={filteredCourses} /></PrivateRoute>} />
+                      <Route path="/course/admin/edit" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><EditCourse  filteredCourses={filteredCourses} /></PrivateRoute>} />
                       <Route path="/course/AddTest/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CreateTest /></PrivateRoute>} />
                       <Route path="/test/start/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true}><AttenTest/></PrivateRoute>}/>
                       <Route path="/course/edit/:courseId" element={<PrivateRoute authenticationRequired={true}><CourseDetails/></PrivateRoute>}/>
@@ -98,11 +104,15 @@ function App() {
                       <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute>}/>
                       <Route path="/MyCertificateList" element={<PrivateRoute authenticationRequired={true}><MyCertificateList /></PrivateRoute>}/>
                       <Route path="/template/:activityId" element={<PrivateRoute authenticationRequired={true}><Template/></PrivateRoute>}/>
-                      <Route path="/settings/payment" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><Razorpay_Settings/></PrivateRoute>}/>
-                      {/* <Route path="/assignCourse/:userId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AssignCourse /></PrivateRoute>} /> */}
+                      <Route path="/settings/payment" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Razorpay_Settings/></PrivateRoute>}/>
+                      <Route path="/assignCourse/Student/:userId" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><AssignCourse /></PrivateRoute>} />
+                      <Route path="/assignCourse/Trainer/:userId" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><AssignedCourseTRAINER /></PrivateRoute>} />
                       <Route path="/view/Students" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><ViewStudentList/></PrivateRoute>}/>
                       <Route path="/view/Trainer" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><ViewTrainerList/></PrivateRoute>}/>
                       <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute> }/>
+                      <Route path="/view/Trainer/profile/:traineremail" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TrainerProfile/></PrivateRoute>}/>
+                      <Route path="/view/Student/profile/:studentemail" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><StudentProfile/></PrivateRoute>}/>
+                      <Route path="/AssignedCourses" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} ><MyAssignedcourses/></PrivateRoute>}/>
                   </Route> 
 
            <Route path="/License" element={<License/>}/>

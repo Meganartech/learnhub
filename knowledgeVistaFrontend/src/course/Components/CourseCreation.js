@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { toast } from 'react-toastify';
 
 const CourseCreation = () => {
   const MySwal = withReactContent(Swal);
@@ -80,12 +81,14 @@ const CourseCreation = () => {
       }
     } catch (error) {
       // Handle network errors or other exceptions
-      MySwal.fire({
-        title: "Error!",
-        text: "Some Unexpected Error occured . Please try again later.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      toast.error(`Some Unexpected Error occured . Please try again later`);
+      
+      // MySwal.fire({
+      //   title: "Error!",
+      //   text: "Some Unexpected Error occured . Please try again later.",
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // });
     }
   };
   return (

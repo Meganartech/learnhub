@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 import profile from "../images/profile.png";
 
+import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -14,6 +15,7 @@ const AddTrainer = () => {
       email: "",
       dob: "",
       phone:"",
+      skills:"",
       profile: null,
       isActive: true,
     });
@@ -22,6 +24,7 @@ const AddTrainer = () => {
       email: '',
       dob: '',
       psw: '',
+      skills:'',
       confirm_password: '',
       phone: '',
       fileInput:''
@@ -48,6 +51,9 @@ const AddTrainer = () => {
         case 'username':
           error = value.length < 1 ? 'Please enter a username' : '';
           break;
+          case 'skills':
+            error = value.length < 1 ? 'Please enter a skill' : '';
+          break;
         case 'email':
           // This is a basic email validation, you can add more advanced validation if needed
           error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'Please enter a valid email address';
@@ -60,7 +66,7 @@ const AddTrainer = () => {
           error = dobDate <= maxDate && dobDate >= minDate ? '' : 'Please enter a valid date of birth';
           break;
         case 'psw':
-          error = value.length < 6 ? 'Password must be at least 8 characters long' : '';
+          error = value.length < 6 ? 'Password must be at least 6 characters long' : '';
           break;
         case 'confirm_password':
           error = value !== formData.psw ? 'Passwords do not match' : '';
@@ -123,6 +129,7 @@ const AddTrainer = () => {
         formDataToSend.append("phone", formData.phone);
         formDataToSend.append("isActive", formData.isActive);
         formDataToSend.append("profile", formData.profile);
+        formDataToSend.append("skills",formData.skills);
       
         try {
           const response = await fetch("http://localhost:8080/admin/addTrainer", {
@@ -136,18 +143,23 @@ const AddTrainer = () => {
           const data = await response.json();
       
           if (response.ok) {
-            // Display success message and redirect to login
-            MySwal.fire({
-              title: "Added !",
-              text: "New Trainer Added successfully!",
-              icon: "success",
-              confirmButtonText: "ok",
-              
-            }).then((result) => {
-              if (result.isConfirmed) {
-                  window.location.href = "/view/Trainer";
+            toast.success("New Trainer Added successfully!", {
+              autoClose: 3000, // Close the toast after 3 seconds
+              onClose: () => {
+                window.location.href = "/view/Trainer";
               }
             });
+          //   MySwal.fire({
+          //     title: "Added !",
+          //     text: "New Trainer Added successfully!",
+          //     icon: "success",
+          //     confirmButtonText: "ok",
+              
+          //   }).then((result) => {
+          //     if (result.isConfirmed) {
+          //         window.location.href = "/view/Trainer";
+          //     }
+          //   });
           } else if (response.status === 400) {
             if (data.message === "EMAIL ALREADY EXISTS") {
               setErrors(prevErrors => ({
@@ -155,36 +167,44 @@ const AddTrainer = () => {
                 email: "This email is already registered."
               }));
             } else {
-              MySwal.fire({
-                title: "Error!",
-                text: `${data.message}`,
-                icon: "error",
-                confirmButtonText: "OK",
-              });
+              toast.error(`${data.message}`);
+              // MySwal.fire({
+              //   title: "Error!",
+              //   text: `${data.message}`,
+              //   icon: "error",
+              //   confirmButtonText: "OK",
+              // });
             }
           }else if (response.status === 401) {
-            MySwal.fire({
-              title: "Un Authorized!",
-              text: "you are unable to add the trainer",
-              icon: "error",
-              confirmButtonText: "OK",
-            });
+            
+            toast.error(`you are unable to Add a student`);
+            // MySwal.fire({
+            //   title: "Un Authorized!",
+            //   text: "you are unable to add the trainer",
+            //   icon: "error",
+            //   confirmButtonText: "OK",
+            // });
           }else if (response.status === 500) {
-            MySwal.fire({
-              title: "Server Error!",
-              text: "Unexpected Error Occured",
-              icon: "error",
-              confirmButtonText: "OK",
-            });}
+            
+            toast.error(`Unexpected Error Occured`);
+            // MySwal.fire({
+            //   title: "Server Error!",
+            //   text: "Unexpected Error Occured",
+            //   icon: "error",
+            //   confirmButtonText: "OK",
+            // });
+          }
           
         } catch (error) {
+          toast.error(`An error occurred while Adding a Student. Please try again later.`);
+      
           // Display error message
-          MySwal.fire({
-            title: "Error!",
-            text: "An error occurred while Adding TRAINER. Please try again later.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: "An error occurred while Adding TRAINER. Please try again later.",
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
         }
       };
       
@@ -265,6 +285,25 @@ const AddTrainer = () => {
                     </div></div>
 
             </div>
+            <div className='inputgrp'>
+              <label htmlFor='skills'> Skills <span className="text-danger">*</span></label>
+              <span>:</span>
+            <div> <input
+               type="text"
+                id='skills'
+                value={formData.skills}
+                onChange={handleChange}
+                name="skills"
+                
+                className={`form-control form-control-lg mt-1 ${errors.skills && 'is-invalid'}`}
+                placeholder="skills"
+             
+                required
+              />
+              <div className="invalid-feedback">
+                {errors.skills}
+              </div></div> 
+            </div>
 
             <div className='inputgrp'>
               <label htmlFor='dob'>Date of Birth<span className="text-danger">*</span></label>
@@ -324,7 +363,7 @@ const AddTrainer = () => {
                       </div>
                       </div>
             </div>
-            <div className='inputgrp'>
+            <div className='inputgrp mb-5'>
               <label htmlFor='Phone'> Phone<span className="text-danger">*</span></label>
               <span>:</span>
               <div>
@@ -347,7 +386,7 @@ const AddTrainer = () => {
           </div>
         </div>
         <div className='btngrp'>
-        <button className={`btn btn-primary `} onClick={handleSubmit}>Register</button>
+        <button className={`btn btn-primary `} onClick={handleSubmit}>Add</button>
 
         </div>
       </div>

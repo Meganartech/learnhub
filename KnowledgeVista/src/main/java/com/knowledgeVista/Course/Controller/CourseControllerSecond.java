@@ -17,3 +17,4 @@ public class CourseControllerSecond {
 	 @Autowired
 	 private JwtUtil jwtUtil;
 }
+//for dashboard data

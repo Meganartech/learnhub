@@ -28,6 +28,8 @@ import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 import io.jsonwebtoken.io.DecodingException;
@@ -37,6 +39,8 @@ import jakarta.transaction.Transactional;
 @RequestMapping("/course")
 @CrossOrigin
 public class CourseController {
+	@Autowired
+	private MuserRepositories muserRepository;
 	@Autowired
 	private CourseDetailRepository coursedetailrepository;
 	 @Autowired
@@ -206,21 +210,45 @@ public class CourseController {
 	    }
 
 	 //-------------------------Under check------------------------------------
-	   @GetMapping("/assignList")
-	    public ResponseEntity<List<Map<String, Object>>> getAllCourseInfo() {
-	        List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
-	                .stream()
-	                .map(course -> {
-	                    Map<String, Object> courseInfo = Map.of(
-	                            "courseId", course.getCourseId(),
-	                            "courseName", course.getCourseName()
-	                    );
-	                    return courseInfo;
-	                })
-	                .collect(Collectors.toList());
 
-	        return ResponseEntity.ok().body(courseInfoList);
-	    }
+	   @GetMapping("/assignList")
+	   public ResponseEntity<?> getAllCourseInfo(
+		          @RequestHeader("Authorization") String token,
+		          @RequestParam("email") String email) {
+		   
+	          if (!jwtUtil.validateToken(token)) {
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+
+	          String role = jwtUtil.getRoleFromToken(token);
+
+	          if ("ADMIN".equals(role)) {
+	        	  Optional<Muser> optionalUser = muserRepository.findByEmail(email);
+	      	    if (optionalUser.isPresent()) {
+	      	        Muser user = optionalUser.get();
+	      	        List<CourseDetail> courses = user.getCourses();
+	        	  
+	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
+	               .stream()
+	               .filter(course -> course.getAmount() > 0) // Filter courses with amount greater than 0
+	               .filter(course -> !courses.contains(course)) // Filter out courses present in user.getCourses()
+	                 .map(course -> {
+	                   Map<String, Object> courseInfo = Map.of(
+	                           "courseId", course.getCourseId(),
+	                           "courseName", course.getCourseName()
+	                   );
+	                   return courseInfo;
+	               })
+	               .collect(Collectors.toList());
+	       return ResponseEntity.ok().body(courseInfoList);
+	      	    }
+	      	    return ResponseEntity.notFound().build();
+	       }else {
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    	   
+	       }
+	   }
+
 	   //---------------------WORKING--------------
 	   @DeleteMapping("/{courseId}")
 	   public ResponseEntity<String> deleteCourse(@PathVariable Long courseId) {

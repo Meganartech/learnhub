@@ -10,7 +10,6 @@ const ViewVideo = () => {
   const [videoType, setVideoType] = useState('local');
   const [videoSource, setVideoSource] = useState('');
   const [currentLesson, setCurrentLesson] = useState(null);
-  const [thumbnail,setthumbnail] =useState();
   const role=sessionStorage.getItem("role");
   useEffect(() => {
     const fetchData = async () => {
@@ -195,7 +194,7 @@ const ViewVideo = () => {
         <div className='enroll'>
         <h3 className='mt-4'>No Lessons Found for {courseName}</h3>
         
-      <Link to="javascript:window.history.back()" className='btn btn-primary'>Go Back</Link>
+      <Link to="/dashboard/course" className='btn btn-primary'>Go Back</Link>
         </div>
       )
     )}

@@ -44,6 +44,8 @@ public class MserRegistrationController {
 			                                 @RequestParam("email") String email,
 			                                 @RequestParam("dob") LocalDate dob,
 			                                 @RequestParam("phone") String phone,
+
+			                   	          @RequestParam("skills") String skills,
 			                                 @RequestParam("profile")MultipartFile profile,
 			                                 @RequestParam ("isActive") Boolean isActive
 			                                ) {
@@ -61,6 +63,7 @@ public class MserRegistrationController {
 				user.setPsw(psw);
 				user.setPhone(phone);
 				user.setDob(dob);
+				user.setSkills(skills);
 				user.setRole(roleUser);
 					try {
 			       	 user.setProfile(ImageUtils.compressImage(profile.getBytes()));
@@ -95,6 +98,7 @@ public class MserRegistrationController {
 						user.setPsw(psw);
 						user.setPhone(phone);
 						user.setDob(dob);
+						user.setSkills(skills);
 						user.setRole(savedroleadmin);
 							try {
 					       	 user.setProfile(ImageUtils.compressImage(profile.getBytes()));
@@ -119,6 +123,7 @@ public class MserRegistrationController {
 	            byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
 	            user.setProfile(profileImage);
 	           user.setCourses(null);
+	           
 	            return ResponseEntity.ok()
 	                    .contentType(MediaType.APPLICATION_JSON)
 	                    .body(user);
@@ -128,6 +133,100 @@ public class MserRegistrationController {
 	        }
 	    }
        
+
+	    @GetMapping("/admin/getTrainer/{email}")
+	    public ResponseEntity<Muser> getTrainerDetailsByEmail(@PathVariable String email,
+	                                                          @RequestHeader("Authorization") String token) {
+
+	        try {
+	            // Validate the token
+	            if (!jwtUtil.validateToken(token)) {
+	                // If the token is not valid, return unauthorized status
+	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	            }
+
+	            String role = jwtUtil.getRoleFromToken(token);
+
+	            // Perform authentication based on role
+	            if ("ADMIN".equals(role)) {
+	                Optional<Muser> userOptional = muserrepositories.findByEmail(email);
+	                if (userOptional.isPresent()) {
+	                    Muser user = userOptional.get();
+	                    if("TRAINER".equals(user.getRole().getRoleName())) {
+	                    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
+	                    user.setProfile(profileImage);
+	                    user.setCourses(null);
+
+	                    return ResponseEntity.ok()
+	                            .contentType(MediaType.APPLICATION_JSON)
+	                            .body(user);}
+	                    else {
+
+	        	                    return ResponseEntity.notFound().build();
+	                            }
+	                    
+	                } else {
+	                    return ResponseEntity.notFound().build();
+	                }
+	            } else {
+	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	            }
+	        } catch (Exception e) {
+	            // Log any other exceptions for debugging purposes
+	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            // Return an internal server error response
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        }
+	    }
+	    
+	    
+	    @GetMapping("/admin/getstudent/{email}")
+	    public ResponseEntity<Muser> getStudentDetailsByEmail(@PathVariable String email,
+	                                                          @RequestHeader("Authorization") String token) {
+
+	        try {
+	            // Validate the token
+	            if (!jwtUtil.validateToken(token)) {
+	                // If the token is not valid, return unauthorized status
+	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	            }
+
+	            String role = jwtUtil.getRoleFromToken(token);
+
+	            // Perform authentication based on role
+	            if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
+	                Optional<Muser> userOptional = muserrepositories.findByEmail(email);
+	                if (userOptional.isPresent()) {
+	                    Muser user = userOptional.get();
+	                    if("USER".equals(user.getRole().getRoleName())) {
+	                    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
+	                    user.setProfile(profileImage);
+	                    user.setCourses(null);
+
+	                    return ResponseEntity.ok()
+	                            .contentType(MediaType.APPLICATION_JSON)
+	                            .body(user);}
+	                    else {
+
+	        	                    return ResponseEntity.notFound().build();
+	                            }
+	                    
+	                } else {
+	                    return ResponseEntity.notFound().build();
+	                }
+	            } else {
+	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	            }
+	        } catch (Exception e) {
+	            // Log any other exceptions for debugging purposes
+	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            // Return an internal server error response
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        }
+	    }
+
+
+
        
       
 

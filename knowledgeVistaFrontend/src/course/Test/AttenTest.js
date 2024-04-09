@@ -7,6 +7,7 @@ const AttenTest = () => {
     const MySwal = withReactContent(Swal);
     // const {userId}=sessionStorage.getItem("userid");
     const {courseId,courseName}=useParams();
+    const role=sessionStorage.getItem("role");
     
   const [isSubmitting, setIsSubmitting] = useState(false);
     const [testdetails,settestdetails]=useState({
@@ -17,14 +18,17 @@ const AttenTest = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [proceedClicked, setProceedClicked] = useState(false);
+    const [notFound, setNotFound] = useState(false); // State to track if test is not found
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(`http://localhost:8080/test/getTestByCourseid/${courseId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch questions');
-                }
+                if (response.status === 404) {
+                    setNotFound(true); // Set notFound state to true if test is not found
+                  }
+                  if(response.ok){
                 const data = await response.json();
+                
                 settestdetails(data);
                 const transformedQuestions = data.questions.map(question => ({
                     ...question,
@@ -35,7 +39,7 @@ const AttenTest = () => {
                         { optionId: 4, optionText: question.option4 }
                     ]
                 }));
-                setQuestions(transformedQuestions);
+                setQuestions(transformedQuestions);}
             } catch (error) {
                 MySwal.fire({
                     title: "Error",
@@ -93,7 +97,7 @@ const AttenTest = () => {
           if (!response.ok) {
               throw new Error('Failed to submit the test');
               
-    setIsSubmitting(false);
+          setIsSubmitting(false);
           }
   
           setIsSubmitting(false);
@@ -133,6 +137,24 @@ const AttenTest = () => {
 };
     return (
         <div className='contentbackground'>
+              {notFound ? (  
+
+        (role === "ADMIN" || role === "TRAINER") ? (
+            <div className='contentinner'>
+        <div className='enroll'>
+            <h2>No test found for this course.</h2>
+            <a href={`/course/AddTest/${courseId}`} className='btn btn-primary'>Add Test</a>
+        </div></div>
+      ) : (
+        <div className='contentinner'>
+        <div className='enroll'> 
+        <h2>No test found for this course.</h2>
+        
+      <Link to="javascript:window.history.back()" className='btn btn-primary'>Go Back</Link>
+        </div></div>
+      )
+          
+       ) : (<>
             {!proceedClicked && (
             <div className='contentinner'>
             
@@ -241,7 +263,7 @@ const AttenTest = () => {
                         </div>
                     </div>
                 </div>
-            ) : null}
+            ) : null} </>)}
         </div>
     );
 };

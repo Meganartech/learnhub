@@ -54,7 +54,7 @@ const TestList = () => {
 
             // Check if the response is successful (status code 200-299)
             if (response.ok) {
-              console.log(`Test with ID ${testId} deleted successfully`);
+              console.log(`Test  deleted successfully`);
               window.location.reload();
               // Optionally, you can update your UI or state here
             }

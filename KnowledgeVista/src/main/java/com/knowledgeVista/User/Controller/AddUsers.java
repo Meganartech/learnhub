@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +46,7 @@ public class AddUsers {
 	          @RequestParam("email") String email,
 	          @RequestParam("dob") LocalDate dob,
 	          @RequestParam("phone") String phone,
+	          @RequestParam("skills") String skills,
 	          @RequestParam("profile") MultipartFile profile,
 	          @RequestParam("isActive") Boolean isActive,
 	          @RequestHeader("Authorization") String token) {
@@ -71,6 +74,7 @@ public class AddUsers {
 	                  trainer.setPsw(psw);
 	                  trainer.setPhone(phone);
 	                  trainer.setDob(dob);
+	                  trainer.setSkills(skills);
 	                  trainer.setRole(roletrainer);
 	                  try {
 	                      trainer.setProfile(ImageUtils.compressImage(profile.getBytes()));
@@ -104,6 +108,7 @@ public class AddUsers {
 	          @RequestParam("email") String email,
 	          @RequestParam("dob") LocalDate dob,
 	          @RequestParam("phone") String phone,
+	          @RequestParam("skills") String skills,
 	          @RequestParam("profile") MultipartFile profile,
 	          @RequestParam("isActive") Boolean isActive,
 	          @RequestHeader("Authorization") String token) {
@@ -132,6 +137,7 @@ public class AddUsers {
 	                  user.setPhone(phone);
 	                  user.setDob(dob);
 	                  user.setRole(roletrainer);
+	                  user.setSkills(skills);	                  
 	                  try {
 	                     user.setProfile(ImageUtils.compressImage(profile.getBytes()));
 	                  } catch (IOException e) {
@@ -155,6 +161,94 @@ public class AddUsers {
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	      }
 	  }
+
+	  
+	  @DeleteMapping("/delete/trainer")
+	  private ResponseEntity<?> deleteTrainer(
+	          @RequestParam("email") String email,
+	          @RequestHeader("Authorization") String token) {
+	      try {
+	          // Validate the token
+	          if (!jwtUtil.validateToken(token)) {
+	              // If the token is not valid, return unauthorized status
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+
+	          String role = jwtUtil.getRoleFromToken(token);
+
+	          // Perform authentication based on role
+	          if ("ADMIN".equals(role)) {
+	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
+	              if (existingUser.isPresent()) {
+	                  Muser user = existingUser.get();
+	                  if ("TRAINER".equals(user.getRole().getRoleName())) {
+	                      // Clear user's courses and delete the user
+	                      user.getCourses().clear();
+	                      muserrepositories.delete(user);
+	                      return ResponseEntity.ok().body("{\"message\": \"Deleted Successfully\"}");
+	                  } 
+	                  return ResponseEntity.notFound().build();
+	              } else {
+	                  // Return not found if the user with the given email does not exist
+	                  return ResponseEntity.notFound().build();
+	              }
+	          } else {
+	              // Return unauthorized status if the role is neither ADMIN nor TRAINER
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+	      } catch (Exception e) {
+	          // Log any other exceptions for debugging purposes
+	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          // Return an internal server error response
+	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	      }
+	  }
+	  
+	  @DeleteMapping("/delete/Student")
+	  private ResponseEntity<?> deleteStudent(
+	          @RequestParam("email") String email,
+	          @RequestHeader("Authorization") String token) {
+	      try {
+	          // Validate the token
+	          if (!jwtUtil.validateToken(token)) {
+	              // If the token is not valid, return unauthorized status
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+
+	          String role = jwtUtil.getRoleFromToken(token);
+
+	          // Perform authentication based on role
+	          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
+	              if (existingUser.isPresent()) {
+	                  Muser user = existingUser.get();
+	                  if ("USER".equals(user.getRole().getRoleName())) {
+	                      // Clear user's courses and delete the user
+	                      user.getCourses().clear();
+	                      muserrepositories.delete(user);
+	                      return ResponseEntity.ok().body("{\"message\": \"Deleted Successfully\"}");
+	                  } 
+
+		                  // Return not found if the user with the given email does not exist
+		                  return ResponseEntity.notFound().build();
+	                  
+	              } else {
+	                  // Return not found if the user with the given email does not exist
+	                  return ResponseEntity.notFound().build();
+	              }
+	          } else {
+	              // Return unauthorized status if the role is neither ADMIN nor TRAINER
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+	      } catch (Exception e) {
+	          // Log any other exceptions for debugging purposes
+	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          // Return an internal server error response
+	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	      }
+	  }
+
+
 
 
 }

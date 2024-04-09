@@ -73,7 +73,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange}) => {
             id="search"  
             value={searchQuery}
             onChange={handleSearchChange}
-            autoFocus placeholder="search...."/>
+            autoFocus placeholder="search Course...."/>
               {searchQuery && (  
             <i class="fa-solid fa-xmark pt-1"
             onClick={() => setSearchQuery('')}></i>)}

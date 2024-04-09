@@ -5,7 +5,16 @@ const ProfileView = () => {
   const [img, setimg] = useState();
     const email=sessionStorage.getItem("email")
     const [userData, setUserData] = useState({
-       
+
+       username:"",
+       email:"",
+       phone:"",
+       skills:"",
+       dob:"",
+       role:{
+        roleName:"",
+        roleId:""
+       }
       });
     
       useEffect(() => {
@@ -48,16 +57,21 @@ const ProfileView = () => {
              {userData.username}</label>
           </div>
           <div className='inputgrp'>
-            <label htmlFor='nName'> Email</label>
+            <label htmlFor='email'> Email</label>
             <span>:</span>
             <label>
            {userData.email}</label>
           </div>
 
           <div className='inputgrp'>
-            <label htmlFor='ownerName'>Date of Birth</label>
+            <label htmlFor='dob'>Date of Birth</label>
             <span>:</span>
             <label>{userData.dob}</label>
+          </div>
+          <div className='inputgrp'>
+            <label htmlFor='skills'>Skills</label>
+            <span>:</span>
+            <label>{userData.skills}</label>
           </div>
 
           <div className='inputgrp'>
@@ -65,7 +79,11 @@ const ProfileView = () => {
             <span>:</span>
             <label>{userData.phone}</label>
           </div>
-         
+          <div className='inputgrp'>
+            <label htmlFor='role'>RoleName</label>
+            <span>:</span>
+            <label>{userData.role.roleName}</label>
+          </div>
         </div>
       </div>
       

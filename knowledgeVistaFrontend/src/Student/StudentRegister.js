@@ -6,6 +6,8 @@ import "../css/certificate.css"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
+import { toast } from 'react-toastify';
+
 const StudentRegister = () => {
   const MySwal = withReactContent(Swal);
   const [formData, setFormData] = useState({
@@ -14,6 +16,7 @@ const StudentRegister = () => {
     email: "",
     dob: "",
     phone:"",
+    skills:"",
     profile: null,
     isActive: true,
   });
@@ -23,6 +26,7 @@ const StudentRegister = () => {
     email: '',
     dob: '',
     psw: '',
+    skills:'',
     confirm_password: '',
     phone: '',
     fileInput:''
@@ -47,9 +51,14 @@ const StudentRegister = () => {
     let error = '';
 
     switch (name) {
+
       case 'username':
         error = value.length < 1 ? 'Please enter a username' : '';
         break;
+        case 'skills':
+          error = value.length < 1 ? 'Please enter a skill' : '';
+        break;
+
       case 'email':
         // This is a basic email validation, you can add more advanced validation if needed
         error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'Please enter a valid email address';
@@ -62,7 +71,7 @@ const StudentRegister = () => {
         error = dobDate <= maxDate && dobDate >= minDate ? '' : 'Please enter a valid date of birth';
         break;
       case 'psw':
-        error = value.length < 6 ? 'Password must be at least 8 characters long' : '';
+        error = value.length < 6 ? 'Password must be at least 6 characters long' : '';
         break;
       case 'confirm_password':
         error = value !== formData.psw ? 'Passwords do not match' : '';
@@ -127,6 +136,7 @@ const StudentRegister = () => {
     formDataToSend.append("phone", formData.phone);
     formDataToSend.append("isActive", formData.isActive);
     formDataToSend.append("profile", formData.profile);
+    formDataToSend.append("skills",formData.skills);
 
     try {
       const response = await fetch("http://localhost:8080/student/register", {
@@ -149,6 +159,15 @@ const StudentRegister = () => {
           if (result.isConfirmed) {
             // Redirect to login page
             window.location.href = "/login";
+          }else{
+            setFormData({username: "",
+            psw: "",
+            email: "",
+            dob: "",
+            phone:"",
+            skills:"",
+            profile: null,
+            isActive: true})
           }
         });
       } else if (response.status === 400) {
@@ -157,24 +176,19 @@ const StudentRegister = () => {
             ...prevErrors,
             email: "This email is already registered."
           }));
-        } else {
-          MySwal.fire({
-            title: "Error!",
-            text: `${data.message}`,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
         }
       }
       
     } catch (error) {
       // Display error message
-      MySwal.fire({
-        title: "Error!",
-        text: "An error occurred while registering. Please try again later.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      
+      toast.error(`An error occurred while registering. Please try again later.`);
+      // MySwal.fire({
+      //   title: "Error!",
+      //   text: "An error occurred while registering. Please try again later.",
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // });
     }
   };
 
@@ -255,6 +269,25 @@ const StudentRegister = () => {
                     </div></div>
 
             </div>
+            <div className='inputgrp'>
+              <label htmlFor='skills'> Skills <span className="text-danger">*</span></label>
+              <span>:</span>
+            <div> <input
+               type="text"
+                id='skills'
+                value={formData.skills}
+                onChange={handleChange}
+                name="skills"
+                
+                className={`form-control form-control-lg mt-1 ${errors.skills && 'is-invalid'}`}
+                placeholder="skills"
+             
+                required
+              />
+              <div className="invalid-feedback">
+                {errors.skills}
+              </div></div> 
+            </div>
 
             <div className='inputgrp'>
               <label htmlFor='dob'>Date of Birth<span className="text-danger">*</span></label>
@@ -314,7 +347,7 @@ const StudentRegister = () => {
                       </div>
                       </div>
             </div>
-            <div className='inputgrp'>
+            <div className='inputgrp mb-4'>
               <label htmlFor='Phone'> Phone<span className="text-danger">*</span></label>
               <span>:</span>
               <div>

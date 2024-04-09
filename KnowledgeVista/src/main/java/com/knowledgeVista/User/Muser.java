@@ -27,6 +27,7 @@ public class Muser {
 	    private String email;
 	    private LocalDate dob;
 	    private String phone;
+	    private String skills;
 	    @Lob
 	    @Column(name="profile" ,length=1000000)
 	    private byte[] profile;

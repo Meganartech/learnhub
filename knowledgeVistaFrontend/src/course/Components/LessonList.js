@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import {  toast } from 'react-toastify';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const LessonList = () => {
+  
+  const MySwal = withReactContent(Swal);
     const{courseName,courseId}=useParams();
     const [lessons,setlessons]=useState([]);
+    
+  const token=sessionStorage.getItem("token");
     useEffect(() => {
         const fetchData = async () => {
           try {
@@ -20,6 +27,55 @@ const LessonList = () => {
     
         fetchData();
       }, [courseId]);
+
+      const deletelesson = async (Lesstitle, lessId) => {
+        const formData = new FormData();
+        formData.append("lessonId", lessId);
+        formData.append("Lessontitle", Lesstitle);
+        MySwal.fire({
+          title: "Delete Lesson?",
+          text: `Are you sure you want to delete Lesson ${Lesstitle}`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          confirmButtonText: "Delete",
+          cancelButtonText: "Cancel",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            if (lessId != null) {
+              try {
+                const response = await fetch("http://localhost:8080/lessons/delete", {
+                  method: "DELETE",
+                  headers: {
+                    'Authorization': token,
+                  },
+                  body: formData,
+                });
+      
+                const message = await response.json();
+                if (response.ok) {
+                  toast.success(`${message.message}`, {
+                    autoClose: 3000, // Close the toast after 3 seconds
+                    onClose: () => {
+                      // After the toast is closed, reload the page
+                      window.location.reload();
+                    },
+                  });
+                } else {
+                  toast.error(`${message.message}`);
+                }
+              } catch (error) {
+                // Handle network errors or other exceptions
+                toast.error("An error occurred while deleting the lesson.");
+              }
+            }
+          }
+        }).catch(error => {
+          toast.error("An unexpected error occurred while deleting the lesson.");
+        });
+      };
+      
+      
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
@@ -39,7 +95,7 @@ const LessonList = () => {
                 <span>{lesson.Lessontitle}</span>
                 <span> <i className="fas fa-edit text-primary"></i></span>
                 <span>
-                    <i className="fas fa-trash text-danger"></i></span>
+                    <i className="fas fa-trash text-danger" onClick={()=>deletelesson(lesson.Lessontitle,lesson.lessonId)}></i></span>
               </div>
              
             ))}
@@ -50,7 +106,7 @@ const LessonList = () => {
 
         <div className='enroll'>
           <h3 className='mt-4'>No Lessons Found for {courseName}</h3>
-          <Link to={`/uploadvideo/${courseName}/${courseId}`} className='btn btn-primary'>Add Now</Link>
+          <Link to={`/course/Addlesson/${courseName}/${courseId}`} className='btn btn-primary'>Add Now</Link>
         </div>)}
         </div>
         </div>

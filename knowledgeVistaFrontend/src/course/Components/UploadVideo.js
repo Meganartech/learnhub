@@ -3,6 +3,7 @@ import "../../css/certificate.css"
 import "../../css/Course.css"
 import { useParams } from 'react-router-dom';
 
+import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const UploadVideo = () => {
@@ -71,7 +72,6 @@ const UploadVideo = () => {
         method: "POST",
         body: formDataToSend,
       });
-      console.log(formDataToSend);
       await response.json();
       setIsSubmitting(false);
       if (response.ok) {
@@ -84,26 +84,35 @@ const UploadVideo = () => {
         base64Image: null,
        });
        setSelectedFile("")
-        MySwal.fire({
-          title: "video added",
-          text: "Video added sucessfully !",
-          icon: "success",
-        }).then((result) => {
-          if (result.isConfirmed) {
-           
-            window.location.href = `/lessonList/${courseName}/${courseId}`;
-          }
+       toast.success('Video added sucessfully !', {
+        autoClose: 3000, // Close the toast after 3 seconds
+        onClose: () => {
+          // After the toast is closed, reload the page
+          window.location.href = `/lessonList/${courseName}/${courseId}`;
+        }
         });
-      }
-    } catch (error) {
+      //   MySwal.fire({
+      //     title: "video added",
+      //     text: "Video added sucessfully !",
+      //     icon: "success",
+      //   }).then((result) => {
+      //     if (result.isConfirmed) {
+           
+      //       window.location.href = `/lessonList/${courseName}/${courseId}`;
+      //     }
+      //   });
+      // }
+    }
+   } catch (error) {
       setIsSubmitting(false);
       // Handle network errors or other exceptions
-      MySwal.fire({
-        title: "Error!",
-        text: "Some Unexpected Error occured . Please try again later.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      toast.error("Some Unexpected Error occured . Please try again later.");
+      // MySwal.fire({
+      //   title: "Error!",
+      //   text: "Some Unexpected Error occured . Please try again later.",
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // });
     }
   };
     const handleDrop = (e) => {
@@ -141,7 +150,7 @@ const UploadVideo = () => {
         <div className='contentinner'>
         <form onSubmit={handleSubmit}>
         {isSubmitting && (
-        <div class="loading-spinner"></div>
+        <div className="loading-spinner"></div>
       )}
         <div className='divider'>
             <h2 style={{textDecoration:"underline"}}>Upload Video for {courseName} </h2>

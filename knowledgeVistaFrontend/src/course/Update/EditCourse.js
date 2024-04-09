@@ -3,7 +3,7 @@ import styles from "../../css/CourseView.module.css";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
+import {  toast } from 'react-toastify';
 const EditCourse = ({filteredCourses}) => {
   const MySwal = withReactContent(Swal);
  const role=sessionStorage.getItem("role");
@@ -29,43 +29,50 @@ const EditCourse = ({filteredCourses}) => {
       })
         .then((response) => {
           if (response.ok) {
-            // Handle successful deletion
-            MySwal.fire({
-              title: "Deleted!",
-              text: "Your course has been deleted.",
-              icon: "success",
-            }).then((result) => {
-              if (result.isConfirmed) {
+            toast.success("Your course has been deleted Sucessfully", {
+              autoClose: 3000, // Close the toast after 3 seconds
+              onClose: () => {
+                // After the toast is closed, reload the page
                 window.location.reload();
               }
             });
+            // Handle successful deletion
+            // MySwal.fire({
+            //   title: "Deleted!",
+            //   text: "Your course has been deleted.",
+            //   icon: "success",
+            // }).then((result) => {
+            //   if (result.isConfirmed) {
+            //     window.location.reload();
+            //   }
+            // });
           } else {
+            
+           
             // Handle server error or unexpected response
             response.text().then((errorMessage) => {
-              MySwal.fire({
-                title: "Error!",
-                text: errorMessage,
-                icon: "error",
-                confirmButtonText: "OK",
-              });
+              toast.error(`${errorMessage}`);
+              // MySwal.fire({
+              //   title: "Error!",
+              //   text: errorMessage,
+              //   icon: "error",
+              //   confirmButtonText: "OK",
+              // });
             });
           }
         })
         .catch((error) => {
           // Handle network error or fetch API error
-          console.error("Error deleting course:", error);
-          MySwal.fire({
-            title: "Error!",
-            text:
-              "An error occurred while Deleting courses. Please try again later.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          toast.error("An error occurred while Deleting courses. Please try again later.")
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text:
+          //     "An error occurred while Deleting courses. Please try again later.",
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
         });
-    } else {
-      // If the user clicked "Cancel" or closed the dialog
-      MySwal.fire("Cancelled", "Your course is safe :)", "info");
-    }
+    } 
   });
 };
   return (
@@ -73,7 +80,7 @@ const EditCourse = ({filteredCourses}) => {
       <div className="contentinner">
     <div className={styles.supercontainer}>
       <div className={styles.createbtn}>
-      {role === "ADMIN" && (    
+      {(role === "ADMIN" || role==="TRAINER") && (    
      
         <a href="/course/addcourse">
           <button type="button" className="btn btn-primary mt-4">

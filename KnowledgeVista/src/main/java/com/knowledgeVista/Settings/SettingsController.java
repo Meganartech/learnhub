@@ -13,19 +13,22 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.certificate.certificate;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class SettingsController {
 	
-	
+	 @Autowired
+	 private JwtUtil jwtUtil;
 	@Autowired
 	private PaymentsettingRepository paymentsetting;
 	
@@ -33,19 +36,35 @@ public class SettingsController {
 	private FeedbackRepository feedback;
 	
 	@PostMapping("/Paymentsettings")
-	public ResponseEntity<?> SavePaymentDetails(@RequestBody Paymentsettings data) {
+	public ResponseEntity<?> SavePaymentDetails(@RequestBody Paymentsettings data,
+	          @RequestHeader("Authorization") String token) {
+		if (!jwtUtil.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }  String role = jwtUtil.getRoleFromToken(token);
 
+        // Perform authentication based on role
+        if ("ADMIN".equals(role)) {
         if(paymentsetting.count()>0) {
        	 return new ResponseEntity<>(" payment Data already exists", HttpStatus.BAD_REQUEST);
         }else {
         	paymentsetting.save(data);
         	return ResponseEntity.ok("saved sucessfully");
+        }}else {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 	}
 	
 	@GetMapping("/getPaymentDetails")
-	public ResponseEntity<?> GetPaymentDetails (){
+	public ResponseEntity<?> GetPaymentDetails (
+	          @RequestHeader("Authorization") String token){
 		try {
+			 if (!jwtUtil.validateToken(token)) {
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }  String role = jwtUtil.getRoleFromToken(token);
+
+	          // Perform authentication based on role
+	          if ("ADMIN".equals(role)) {
 			List<Paymentsettings> datalist=paymentsetting.findAll();
 			
 			if (datalist.isEmpty()) {
@@ -64,6 +83,8 @@ public class SettingsController {
 		                return ResponseEntity.ok()
 		                    .body(lastPayment);
 		            }
+		        }}else {
+		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		        }
 		    } catch (Exception e) {
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -75,8 +96,18 @@ public class SettingsController {
 	 @PatchMapping("/update/{payid}")
 	public ResponseEntity<?> editpayment(@PathVariable Long payid,
             @RequestParam(value="razorpay_key", required=false) String razorpay_key,
-            @RequestParam(value="razorpay_secret_key", required=false) String razorpay_secret_key
-            ){
+            @RequestParam(value="razorpay_secret_key", required=false) String razorpay_secret_key,
+	          @RequestHeader("Authorization") String token){
+		 
+	 
+		 if (!jwtUtil.validateToken(token)) {
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+         } 
+		 
+		 String role = jwtUtil.getRoleFromToken(token);
+
+         // Perform authentication based on role
+         if ("ADMIN".equals(role)) {
 		 Optional<Paymentsettings> oldsettings=paymentsetting.findById(payid);
 		 if (oldsettings.isPresent()) {
 			 Paymentsettings  updatedsettings =oldsettings.get();
@@ -88,9 +119,12 @@ public class SettingsController {
 			 }
 			 paymentsetting.saveAndFlush(updatedsettings);
 	            return ResponseEntity.ok("settings updated successfully");
-		 } else {
+		 }else {
 	            return ResponseEntity.notFound().build();
 	        }
+         }else {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        } 
 		 
 		 
 	 }
