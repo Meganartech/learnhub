@@ -136,7 +136,6 @@ public class AssignCourse {
 	        // Set courseLessons to null for each course
 	      
 	        for (CourseDetail course : courses) {
-	            course.setCourseLessons(null);
 	            course.setUsers(null);
 	            course.setVideoLessons(null);
 	            byte[] images =ImageUtils.decompressImage(course.getCourseImage());
@@ -173,7 +172,6 @@ public class AssignCourse {
 	        // Set courseLessons to null for each course
 	      
 	        for (CourseDetail course : courses) {
-	            course.setCourseLessons(null);
 	            course.setUsers(null);
 	            course.setVideoLessons(null);
 	            byte[] images =ImageUtils.decompressImage(course.getCourseImage());

@@ -152,7 +152,6 @@ public class CourseController {
 	             existingCourseDetail.setCourseDescription(description);
 	             existingCourseDetail.setCourseCategory(category);
 	             existingCourseDetail.setAmount(amount);
-	             existingCourseDetail.setCourseLessons(null);
 	             existingCourseDetail.setUsers(null);
 	             existingCourseDetail.setVideoLessons(null);
 	             if (file != null) {
@@ -180,7 +179,6 @@ public class CourseController {
 		        CourseDetail course = courseOptional.get();
 		        byte[] image= ImageUtils.decompressImage(course.getCourseImage());
 		        course.setCourseImage(image);
-		        course.setCourseLessons(null);
 		        course.setUsers(null);
 	            course.setVideoLessons(null);
 		        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(course);
@@ -200,7 +198,6 @@ public class CourseController {
 	        
 	        	 byte[] images =ImageUtils.decompressImage(course.getCourseImage());
 	            course.setCourseImage(images);
-	            course.setCourseLessons(null);
 	            course.setUsers(null);
 	            course.setVideoLessons(null);
 	        }

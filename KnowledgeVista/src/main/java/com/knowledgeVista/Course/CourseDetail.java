@@ -3,10 +3,6 @@ package com.knowledgeVista.Course;
 
 
 import java.util.List;
-
-
-
-import com.knowledgeVista.Course.Lessons.CourseLesson;
 import com.knowledgeVista.User.Muser;
 
 
@@ -45,8 +41,6 @@ public class CourseDetail {
 	    private byte[] courseImage;
 	   
 	    
-	    @OneToMany(mappedBy = "courseDetail")
-	    private List<CourseLesson> courseLessons;
 	    
 	    @ManyToMany(mappedBy = "courses")
 	    private List<Muser> users;

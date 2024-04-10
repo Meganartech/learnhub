@@ -113,7 +113,7 @@ const certificateInputs=(
 
   <div className='contentinner'>
     <div className='innerFrame'>
-<h3>Certificate Form</h3>
+<h1>Certificate Form</h1>
 <div className='mainform'>
   <div className='profile-picture'>
   <div className='image-group'>
