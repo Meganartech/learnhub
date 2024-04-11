@@ -10,6 +10,8 @@
     padding: 40px;
     height: 100vh;
 }
+
+
 .contentbackground{
   background-color:#EAEAEA;
   padding: 40px;
@@ -89,6 +91,9 @@ grid-template-columns: 6fr 1fr 12fr;
     padding: 15px;
    
 }
+.inputgrp .disabledbox{
+  border:0px;
+}
 .inputgrp textarea{
   border: 1px solid black;
 }
@@ -101,6 +106,14 @@ grid-template-columns: 6fr 1fr 12fr;
     margin-bottom: 0px;
    display: flex;
    align-items: center;
+}
+.disabledbox{
+  background-color: var(--input-bg);
+  width: 100%;
+  border:0px;
+  outline: none;
+  border-radius: 5px;
+  padding: 15px;
 }
 .btngrp{
     display: flex;

@@ -31,8 +31,8 @@ const ViewTrainerList = () => {
         const formData = new FormData();
         formData.append('email', email);
         MySwal.fire({
-          title: "Delete Test?",
-          text: `Are you sure you want to delete Student ${username}`,
+          title: "Delete ?",
+          text: `Are you sure you want to delete trainer ${username}`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#d33",
@@ -50,25 +50,38 @@ const ViewTrainerList = () => {
                   body: formData
                 });
                 if (response.ok) {
-                  toast.success(`Trainer ${username} deleted successfully`, {
-                    autoClose: 3000, // Close the toast after 3 seconds
-                    onClose: () => {
-                      // After the toast is closed, reload the page
-                      window.location.reload();
-                    }
-                  });
+                  MySwal.fire({
+                    title: "Deleted",
+                    text: `Trainer ${username} deleted successfully`,
+                    icon: "success",
+                    confirmButtonText: "OK",
+                }).then(() => {
+                    window.location.reload();
+                });
+                
+
+               
+                   
                 } else if (response.status === 404) {
-                  // Display error toast notification for 404 Not Found
-                  toast.error('Error: Trainer not found');
+                  MySwal.fire({
+                    icon: 'error',
+                    title: '404',
+                    text: 'Trainer not found'
+                });
                 } else {
-                  // Display generic error toast notification for other errors
-                  toast.error('Error deleting Trainer');
+                  MySwal.fire({
+                    icon: 'error',
+                    title: 'ERROR',
+                    text: 'Error deleting Trainer'
+                });
                 }
-              } else {toast.error('Error deleting Trainer');
-              
-              }
+              } 
             } catch (error) {
-              toast.error('Error deleting Trainer');
+              MySwal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: 'Error deleting Trainer'
+            });
             }
           } 
         });
@@ -79,7 +92,7 @@ const ViewTrainerList = () => {
     <div className='contentinner'>
       <div style={{ display: 'grid', gridTemplateColumns: '40fr 5fr' }} className='mb-4'>
         <h1>Trainers Details</h1>
-        <a href="/addTrainer" className='btn btn-primary'><i class="fa-solid fa-plus"></i> Add Trainer</a>
+        <a href="/addTrainer" className='btn btn-primary'><i className="fa-solid fa-plus"></i> Add Trainer</a>
       </div>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">
@@ -93,7 +106,7 @@ const ViewTrainerList = () => {
               <th scope="col"> Skills</th>
               <th scope="col">Role</th>
 
-              <th colspan="3" scope="col">Action</th>
+              <th colSpan="3" scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -107,19 +120,19 @@ const ViewTrainerList = () => {
                 
                 <td className='py-2'>{user.skills}</td>
                 <td className='py-2'>{user.role.roleName}</td>
-                <td>
+                {/* <td>
                 <Link to={`/edit/${user.userId}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>
                     </Link>
-                </td>
+                </td> */}
                 {userRole==="ADMIN"?(
                 <td className='text-center'>
                 <Link to={`/assignCourse/Trainer/${user.userId}`} className='hidebtn' >
                     <i className="fas fa-plus"></i>
                     </Link>
                 </td>):null}
-                <td>
-                  <button className='hidebtn' onClick={()=>handledelete(user.userId,user.username,user.email)}>
+                <td  className='text-center'>
+                  <button className='hidebtn'  onClick={()=>handledelete(user.userId,user.username,user.email)}>
                     <i className="fas fa-trash text-danger"></i>
                   </button>
                 </td>

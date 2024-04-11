@@ -29,6 +29,8 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.FileService.VideoFileService;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 
@@ -36,6 +38,9 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 @RequestMapping("/lessons")
 @CrossOrigin
 public class videolessonController {
+
+	@Autowired
+	private MuserRepositories muserRepo;
 
 		@Autowired
 		private CourseDetailRepository coursedetailrepostory;
@@ -166,44 +171,136 @@ public class videolessonController {
 		     }
 		 }
  
-		 @GetMapping("/getvideoByid/{lessId}")
-			public ResponseEntity<?> getVideoFile(@PathVariable Long lessId) {
-//			 if (!jwtUtil.validateToken(token)) {
-//	        	 System.out.println("invalid Token");
-//	    
-//	             // If the token is not valid, return unauthorized status
-//	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//	            
-//	         }
-	 
-			 Optional<videoLessons> optionallesson = lessonrepo.findById(lessId);
-			    if (optionallesson.isPresent()) {
-			    	videoLessons lesson = optionallesson.get();
-			        String filename = lesson.getVideofilename();
-			        if (filename != null) { // Check if filename is not null
-			            Path filePath = Paths.get(videoStorageDirectory, filename);
-			            try {
-			                if (filePath.toFile().exists() && filePath.toFile().isFile()) {
-			                    Resource resource = new UrlResource(filePath.toUri());
-			                    if (resource.exists() && resource.isReadable()) {
-			                        HttpHeaders headers = new HttpHeaders();
-			                        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
-			                        return ResponseEntity.ok()
-			                                .headers(headers)
-			                                .body(resource);
-			                    }
-			                }
-			            } catch (Exception e) {
-			                e.printStackTrace();
-			            }
-			        }else {
-			        	return ResponseEntity.ok(lesson.getFileUrl());
-			        }
-			    }
-			    return ResponseEntity.notFound().build();
-			}
+//		 @GetMapping("/getvideoByid/{lessId}")
+//			public ResponseEntity<?> getVideoFile(@PathVariable Long lessId) {
+////			 if (!jwtUtil.validateToken(token)) {
+////	        	 System.out.println("invalid Token");
+////	    
+////	             // If the token is not valid, return unauthorized status
+////	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+////	            
+////	         }
+//	 
+//			 Optional<videoLessons> optionallesson = lessonrepo.findById(lessId);
+//			    if (optionallesson.isPresent()) {
+//			    	videoLessons lesson = optionallesson.get();
+//			        String filename = lesson.getVideofilename();
+//			        if (filename != null) { // Check if filename is not null
+//			            Path filePath = Paths.get(videoStorageDirectory, filename);
+//			            try {
+//			                if (filePath.toFile().exists() && filePath.toFile().isFile()) {
+//			                    Resource resource = new UrlResource(filePath.toUri());
+//			                    if (resource.exists() && resource.isReadable()) {
+//			                        HttpHeaders headers = new HttpHeaders();
+//			                        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+//			                        return ResponseEntity.ok()
+//			                                .headers(headers)
+//			                                .body(resource);
+//			                    }
+//			                }
+//			            } catch (Exception e) {
+//			                e.printStackTrace();
+//			            }
+//			        }else {
+//			        	return ResponseEntity.ok(lesson.getFileUrl());
+//			        }
+//			    }
+//			    return ResponseEntity.notFound().build();
+//			}
+//		 
+//		 
+//		 
 		 
-		 
+		 @GetMapping("/getvideoByid/{lessId}/{courseId}")
+		    public ResponseEntity<?> getVideoFile(@PathVariable Long lessId,
+		                                          @PathVariable Long courseId,
+		                                          @RequestHeader("Authorization") String token) {
+		        try {
+		            if (!jwtUtil.validateToken(token)) {
+		                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		            }
+		            
+		            String role = jwtUtil.getRoleFromToken(token);
+		            String email = jwtUtil.getUsernameFromToken(token);
+		            Optional<Muser> opuser = muserRepo.findByEmail(email);
+		            
+		            if (!opuser.isPresent()) {
+		                return ResponseEntity.notFound().build();
+		            }
+		            
+		            Muser user = opuser.get();
+		            
+		            if ("USER".equals(role)) {
+		                return handleUserRole(lessId, courseId, user);
+		            } else if ("ADMIN".equals(role)) {
+		                return getVideo(lessId);
+		            } else if ("TRAINER".equals(role)) {
+		                return handleTrainerRole(lessId, courseId, user);
+		            } else {
+		                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		            }
+		            
+		        } catch (Exception e) {
+		            // Log the exception (you can use a proper logging library)
+		            e.printStackTrace();
+		            // Return an internal server error response
+		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		        }
+		    }
+
+		    private ResponseEntity<?> handleUserRole(Long lessId, Long courseId, Muser user) {
+		        Optional<CourseDetail> opcourse = coursedetailrepostory.findById(courseId);
+		        if (opcourse.isPresent() && user.getCourses().contains(opcourse.get())) {
+		            return getVideo(lessId);
+		        } else {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        }
+		    }
+
+		    private ResponseEntity<?> handleTrainerRole(Long lessId, Long courseId, Muser user) {
+		        Optional<CourseDetail> opcourse = coursedetailrepostory.findById(courseId);
+		        if (opcourse.isPresent() && user.getAllotedCourses().contains(opcourse.get())) {
+		            return getVideo(lessId);
+		        } else {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        }
+		    }
+
+		    private ResponseEntity<?> getVideo(Long lessId) {
+		        try {
+		            Optional<videoLessons> optionalLesson = lessonrepo.findById(lessId);
+		            if (!optionalLesson.isPresent()) {
+		                return ResponseEntity.notFound().build();
+		            }
+		            
+		            videoLessons lesson = optionalLesson.get();
+		            String filename = lesson.getVideofilename();
+		            
+		            if (filename != null) {
+		                Path filePath = Paths.get(videoStorageDirectory, filename);
+		                if (filePath.toFile().exists() && filePath.toFile().isFile()) {
+		                    Resource resource = new UrlResource(filePath.toUri());
+		                    if (resource.exists() && resource.isReadable()) {
+		                        HttpHeaders headers = new HttpHeaders();
+		                        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+		                        return ResponseEntity.ok()
+		                                .headers(headers)
+		                                .body(resource);
+		                    }
+		                }
+		            } else {
+		                return ResponseEntity.ok(lesson.getFileUrl());
+		            }
+		        } catch (Exception e) {
+		            // Log the exception (you can use a proper logging library)
+		            e.printStackTrace();
+		            // Return an internal server error response
+		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		        }
+		        
+		        return ResponseEntity.notFound().build();
+		    }
+				 
 		 
 		 //```````````````````````TO get Specific Lesson`````````````````````````````````````
 		 @GetMapping("/getLessonsByid/{lessonId}")

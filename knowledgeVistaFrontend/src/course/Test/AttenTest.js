@@ -8,7 +8,7 @@ const AttenTest = () => {
     // const {userId}=sessionStorage.getItem("userid");
     const {courseId,courseName}=useParams();
     const role=sessionStorage.getItem("role");
-    
+    const token =sessionStorage.getItem("token")
   const [isSubmitting, setIsSubmitting] = useState(false);
     const [testdetails,settestdetails]=useState({
         passPercentage:"",
@@ -22,7 +22,13 @@ const AttenTest = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/test/getTestByCourseid/${courseId}`);
+                const response = await fetch(`http://localhost:8080/test/getTestByCourseId/${courseId}`,{
+                    method: "GET",    
+                headers:{
+                    "Authorization":token,
+                }
+                });
+               
                 if (response.status === 404) {
                     setNotFound(true); // Set notFound state to true if test is not found
                   }

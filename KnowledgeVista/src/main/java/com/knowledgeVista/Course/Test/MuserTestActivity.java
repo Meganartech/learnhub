@@ -40,7 +40,7 @@ public class MuserTestActivity {
 	    private CourseTest test;
 	    
 	    private LocalDate testDate;
-	    private Integer nthAttempt;
+	    private Long nthAttempt;
 	   
 	    private Double percentage;
 	    

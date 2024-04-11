@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import '../css/certificate.css';
-import { toast } from 'react-toastify';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const Razorpay_Settings = () => {
+  const MySwal = withReactContent(Swal);
 
   const token=sessionStorage.getItem("token")
 const [isnotFound,setisnotFound]=useState();
@@ -99,8 +101,7 @@ if(response.ok){
     const formData = new FormData();
     formData.append("razorpay_key",Razorpay_Key);
     formData.append("razorpay_secret_key",Razorpay_Secret_Key);
-    console.log(formData.get("razorpay_key"));
-    console.log(JSON.stringify(formData));
+ 
 
     // Send the data to the server
     const data = {
@@ -120,12 +121,16 @@ if(response.ok){
     })
     .then(response => {
       if (response.ok) {
-        toast.success("Payment Details Saved Sucessfully",{
-          autoClose: 3000, // Close the toast after 3 seconds
-          onClose: () => {
-            
-        window.location.reload();}
-        });
+        MySwal.fire({
+          title: "Saved !",
+          text: "Payment Details Saved Sucessfully" ,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }   });
+        
         
         setisnotFound(false)
      
@@ -157,13 +162,16 @@ if(response.ok){
   })
   .then(response => {
     if (response.ok) {
-      
-      toast.success("Payment Details Saved Sucessfully",{
-        autoClose: 3000, // Close the toast after 3 seconds
-        onClose: () => {
-          
-      window.location.reload();}
-      });
+      MySwal.fire({
+        title: "Updated",
+        text: "Payment Details Saved Sucessfully" ,
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }   });
+     
       
       setisnotFound(false)
       
@@ -257,7 +265,10 @@ const oldSettings =(<div className="contentinner">
         <div className='inputgrp'>
           <label htmlFor='Razorpay_Key'>Razorpay Key </label>
           <span>:</span>
-         <span>{defaultsettings ? defaultsettings.razorpay_key :""}</span>
+         <input
+          className='disabledbox'
+          readOnly
+         value={defaultsettings ? defaultsettings.razorpay_key :""}/>
          
         </div>
         <br></br>
@@ -265,9 +276,13 @@ const oldSettings =(<div className="contentinner">
           <label htmlFor='Razorpay_Secret_Key'>Razorpay Secret Key</label>
           <span>:</span>
          
-          <span>
-              {defaultsettings ? defaultsettings.razorpay_secret_key : ""}
-            </span>
+          <input   
+          className='disabledbox'
+          readOnly
+          value={defaultsettings ? defaultsettings.razorpay_secret_key : ""}
+         />
+              
+          
 
          
 

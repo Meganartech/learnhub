@@ -65,20 +65,20 @@ public class Listview {
 	    }
 	 
 	 
-	 
-	 @GetMapping("/trainersforDropdown")
-	 private ResponseEntity<List<Map<String,Object>>>TrainersList(){
-		 List<Muser> totaltrainers=muserrepositories.findByRoleName("TRAINER");
-		 List<Map<String, Object>> TrainerResponseList = new ArrayList<>();
-		 for(Muser trainer : totaltrainers) {
-	         Map<String, Object> response = new HashMap<>();
-	        		 response.put("userId", trainer.getUserId());
-	        		 response.put("username", trainer.getUsername());
-	        		 TrainerResponseList.add(response);
-		 }
-       return ResponseEntity.ok(TrainerResponseList);
+//	 
+//	 @GetMapping("/trainersforDropdown")
+//	 private ResponseEntity<List<Map<String,Object>>>TrainersList(){
+//		 List<Muser> totaltrainers=muserrepositories.findByRoleName("TRAINER");
+//		 List<Map<String, Object>> TrainerResponseList = new ArrayList<>();
+//		 for(Muser trainer : totaltrainers) {
+//	         Map<String, Object> response = new HashMap<>();
+//	        		 response.put("userId", trainer.getUserId());
+//	        		 response.put("username", trainer.getUsername());
+//	        		 TrainerResponseList.add(response);
+//		 }
+//       return ResponseEntity.ok(TrainerResponseList);
 		 
-	 }
+//	 }
 //```````````````WORKING````````````````````````````````````
 
     @GetMapping("/users")

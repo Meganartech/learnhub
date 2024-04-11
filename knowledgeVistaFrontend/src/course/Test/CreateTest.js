@@ -14,7 +14,7 @@ const CreateTest = () => {
   const [answer, setAnswer] = useState("");
   const [savedQuestions, setSavedQuestions] = useState([]);
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
-  const [noofattempt,setnoofattempt]=useState(0);
+  const [noofattempt,setnoofattempt]=useState(1);
   const[passPercentage,setpassPercentage]=useState(0);
   const [showCriteria, setShowCriteria] = useState(false); // State to control showing criteria div
 
@@ -137,7 +137,8 @@ const CreateTest = () => {
           value={noofattempt}
           name="noofattempt"
           onChange={(e)=>{setnoofattempt(e.target.value)}}
-           /></div>
+           />
+           </div>
           
           <div className="inputgrp mt-5">
           <label> pass percentage</label> <span>:</span>

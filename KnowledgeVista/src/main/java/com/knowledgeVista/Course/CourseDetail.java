@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -42,9 +43,9 @@ public class CourseDetail {
 	    @Lob
 	    @Column(name="courseImage" ,length=1000000)
 	    private byte[] courseImage;
-	    @ManyToOne
-	    @JoinColumn(name = "userId")
-	    private Muser trainer;
+	   
+	    @ManyToMany(mappedBy="allotedCourses")
+	    private List<Muser> trainer;
 	    
 	    @ManyToMany(mappedBy = "courses")
 	    private List<Muser> users;

@@ -147,7 +147,7 @@ public class CourseController {
 	//--------------------------working------------------------------------
 	 @Transactional
 	 @PatchMapping("/edit/{courseId}")
-	 public ResponseEntity<CourseDetail> updateCourse(
+	 public ResponseEntity<?> updateCourse(
 	     @PathVariable Long courseId,
 	     @RequestParam(value = "courseImage", required = false) MultipartFile file,
 	     @RequestParam(value = "courseName", required = false) String courseName,
@@ -192,15 +192,14 @@ public class CourseController {
 	            	}
 
 	         CourseDetail updatedCourse = coursedetailrepository.saveAndFlush(existingCourseDetail);
-	         return ResponseEntity.ok(updatedCourse);
+	         return ResponseEntity.ok("{\"message\": \"Saved successfully\"}");
 	     } else {
 	         return ResponseEntity.notFound().build();
 	     }
 	     }
 	
 	 
-	//--------------------------working------------------------------------
-	 
+	//--------------------------working-----------------------------------
 	 @GetMapping("/get/{courseId}")
 	 public ResponseEntity<CourseDetail> getCourse(@PathVariable Long courseId) {
 		    Optional<CourseDetail> courseOptional = coursedetailrepository.findById(courseId);
@@ -250,21 +249,23 @@ public class CourseController {
 
 	          String role = jwtUtil.getRoleFromToken(token);
 
-	          if ("ADMIN".equals(role)) {
+	          if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
 	        	  Optional<Muser> optionalUser = muserRepository.findByEmail(email);
 	      	    if (optionalUser.isPresent()) {
 	      	        Muser user = optionalUser.get();
 	      	        if("USER".equals(user.getRole().getRoleName())) {
 	      	        List<CourseDetail> courses = user.getCourses();
 	        	  
-	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
+	               List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
 	               .stream()
 
-	               .filter(course -> !courses.contains(course)) // Filter out courses present in user.getCourses()
 	                 .map(course -> {
-	                   Map<String, Object> courseInfo = Map.of(
+
+			               boolean isSelected = courses.contains(course);
+	                       Map<String, Object> courseInfo = Map.of(
 	                           "courseId", course.getCourseId(),
-	                           "courseName", course.getCourseName()
+	                           "courseName", course.getCourseName(),
+	                           "selected", isSelected
 	                   );
 	                   return courseInfo;
 	               })
@@ -304,13 +305,13 @@ public class CourseController {
 	        	  
 	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
 	               .stream()
-
-	               .filter(course -> !courses.contains(course))// Filter out courses present in user.getCourses()
-	               .filter(course->course.getTrainer()==null)  
 	               .map(course -> {
+
+		               boolean isSelected = courses.contains(course);
 	                   Map<String, Object> courseInfo = Map.of(
 	                           "courseId", course.getCourseId(),
-	                           "courseName", course.getCourseName()
+	                           "courseName", course.getCourseName(),
+	                           "selected", isSelected
 	                   );
 	                   return courseInfo;
 	               })

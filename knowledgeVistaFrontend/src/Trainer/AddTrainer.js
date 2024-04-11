@@ -143,23 +143,18 @@ const AddTrainer = () => {
           const data = await response.json();
       
           if (response.ok) {
-            toast.success("New Trainer Added successfully!", {
-              autoClose: 3000, // Close the toast after 3 seconds
-              onClose: () => {
-                window.location.href = "/view/Trainer";
+         
+            MySwal.fire({
+              title: "Added !",
+              text: "New Trainer Added successfully!",
+              icon: "success",
+              confirmButtonText: "OK",
+              
+            }).then((result) => {
+              if (result.isConfirmed) {
+                  window.location.href = "/view/Trainer";
               }
             });
-          //   MySwal.fire({
-          //     title: "Added !",
-          //     text: "New Trainer Added successfully!",
-          //     icon: "success",
-          //     confirmButtonText: "ok",
-              
-          //   }).then((result) => {
-          //     if (result.isConfirmed) {
-          //         window.location.href = "/view/Trainer";
-          //     }
-          //   });
           } else if (response.status === 400) {
             if (data.message === "EMAIL ALREADY EXISTS") {
               setErrors(prevErrors => ({
@@ -167,44 +162,41 @@ const AddTrainer = () => {
                 email: "This email is already registered."
               }));
             } else {
-              toast.error(`${data.message}`);
-              // MySwal.fire({
-              //   title: "Error!",
-              //   text: `${data.message}`,
-              //   icon: "error",
-              //   confirmButtonText: "OK",
-              // });
+              MySwal.fire({
+                title: "Error!",
+                text: `${data.message}`,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
             }
           }else if (response.status === 401) {
             
-            toast.error(`you are unable to Add a student`);
-            // MySwal.fire({
-            //   title: "Un Authorized!",
-            //   text: "you are unable to add the trainer",
-            //   icon: "error",
-            //   confirmButtonText: "OK",
-            // });
+            MySwal.fire({
+              title: "Un Authorized!",
+              text: "you are unable to add the trainer",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
           }else if (response.status === 500) {
             
-            toast.error(`Unexpected Error Occured`);
-            // MySwal.fire({
-            //   title: "Server Error!",
-            //   text: "Unexpected Error Occured",
-            //   icon: "error",
-            //   confirmButtonText: "OK",
-            // });
+            MySwal.fire({
+              title: "Server Error!",
+              text: "Unexpected Error Occured",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
           }
           
         } catch (error) {
           toast.error(`An error occurred while Adding a Student. Please try again later.`);
       
           // Display error message
-          // MySwal.fire({
-          //   title: "Error!",
-          //   text: "An error occurred while Adding TRAINER. Please try again later.",
-          //   icon: "error",
-          //   confirmButtonText: "OK",
-          // });
+          MySwal.fire({
+            title: "Error!",
+            text: "An error occurred while Adding TRAINER. Please try again later.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
         }
       };
       

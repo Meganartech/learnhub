@@ -1,6 +1,6 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom';
-const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin, onlytrainer,children }) => {
+const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,onlyuser, onlytrainer,children }) => {
   
     const isAuthenticated = sessionStorage.getItem('token') !== null;
     const userRole = sessionStorage.getItem('role'); // Assuming role is stored in sessionStorage
@@ -27,6 +27,16 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
     }   
     return <Navigate to="/unauthorized" />;
     }
+
+
+
+    if(onlyuser){
+        if(userRole === "USER"){
+            return<>{children}</>
+        }
+        return <Navigate to="/unauthorized" />;
+
+    } 
 
 
     // If authentication and authorization checks pass, render the children

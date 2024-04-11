@@ -33,7 +33,7 @@ const AssignCourse = () => {
             });
             const data = await response1.json();
             // Add a 'selected' property to each course object to track selection
-            setCourses(data.map(course => ({ ...course, selected: false })));
+            setCourses(data);
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
@@ -52,36 +52,50 @@ const AssignCourse = () => {
 
   
 const handleAssignCourse = async () => {
-  const selected = courses.filter(course => course.selected);
-  console.log('Selected Courses:', selected);
-  try {
-    const response = await fetch(`http://localhost:8080/AssignCourse/${userId}/courses`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json' // Specify the content type
-      },
-      body: JSON.stringify(selected.map(course => course.courseId)) // Send only the courseIds in the body
-    });
+    const selected = courses.filter(course => course.selected);
+    console.log('Selected Courses:', selected);
 
-    if (response.ok) {
-      // Handle success response
-      await MySwal.fire({
-        icon: 'success',
-        title: 'Courses Assigned!',
-        text: 'Selected courses have been assigned successfully.'
-      });
-      window.location.href="/view/Students"
-    } else {
-      // Handle other response statuses
-      const errorMessage = await response.text();
-      console.error('Error:', errorMessage);
-      // You can choose to display an error message using Swal or handle it differently
+    try {
+        const response = await fetch(`http://localhost:8080/AssignCourse/${userId}/courses`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token, // Don't forget to add the Authorization header
+            },
+            body: JSON.stringify(selected.map(course => course.courseId)) // Send only the courseIds in the body
+        });
+
+        const data = await response.json(); // Parse the response as JSON
+
+        if (response.ok) {
+            // Handle success response
+            await MySwal.fire({
+                icon: 'success',
+                title: 'Courses Assigned!',
+                text: data.message // Accessing the message from the parsed data
+            });
+            // Redirect after success
+            window.location.href = "/view/Students";
+        } else {
+            // Handle error response
+            await MySwal.fire({
+                icon: 'error',
+                title: 'An error occurred!',
+                text: data.error // Accessing the error from the parsed data
+            });
+            window.location.reload()
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        await MySwal.fire({
+            icon: 'error',
+            title: 'An unexpected error occurred!',
+            text: error.message // Show error message
+        });
+        window.location.reload()
     }
-  } catch (error) {
-    console.error('Error:', error);
-    // Handle network errors or other exceptions
-  }
 };
+
   return (
     <div>
       <div className='contentbackground'>

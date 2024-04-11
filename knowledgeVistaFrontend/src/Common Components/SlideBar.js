@@ -43,7 +43,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
         <div className="sidebar-brand-icon rotate-n-15">
           <i className="fa-solid fa-book-open-reader text-dark"></i>
         </div>
-        <div className="sidebar-brand-text mx-3 text-dark">Knowledge Vista</div>
+        <div className="sidebar-brand-text mx-3 text-dark">Learn HUB</div>
       </a>
 
       <hr className="sidebar-divider" />
@@ -52,7 +52,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
 
 
 
-      {userRole === "ADMIN"  && (
+      {/* {userRole === "ADMIN"  && (
          <li className="nav-item mt-4">
          <a
            className={activeLink === "/admin/dashboard" ? "ActiveLink nav-link" : "nav-link text-muted"}
@@ -65,7 +65,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
          </a>
     
        </li>
-      )}
+      )} */}
       
       <li className="nav-item mt-4">
         <a

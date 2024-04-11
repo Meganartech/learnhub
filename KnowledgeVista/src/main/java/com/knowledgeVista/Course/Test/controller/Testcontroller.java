@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,8 +28,12 @@ import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.Question;
+import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.Course.Test.Repository.QuestionRepository;
 import com.knowledgeVista.Course.Test.Repository.TestRepository;
+import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.Repository.MuserRepositories;
+import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 
 
@@ -38,12 +43,19 @@ import com.knowledgeVista.Course.Test.Repository.TestRepository;
 public class Testcontroller {
 	   @Autowired
 	    private CourseDetailRepository courseDetailRepository;
-	    
+		@Autowired
+		private MusertestactivityRepo muserActivityRepo;
+		
+		@Autowired
+		private MuserRepositories muserRepo;
 	    @Autowired
 	    private QuestionRepository questionRepository;
 	    
 	    @Autowired
 	    private TestRepository testRepository;
+	    
+		 @Autowired
+		 private JwtUtil jwtUtil;
 //-----------------------------WORKING for ADMIN View-------------------------
 	    @PostMapping("/create/{courseId}")
 	    public ResponseEntity<String> createTest(@PathVariable Long courseId, @RequestBody CourseTest test) {
@@ -130,44 +142,106 @@ public class Testcontroller {
 	    
 	  //-----------------------------WORKING FOR USER LOGIN -------------------------
 
-	    @GetMapping("/getTestByCourseid/{courseId}")
-	    public ResponseEntity<?> getTestById(@PathVariable Long courseId) {
-	        Optional<CourseDetail> opcourse = courseDetailRepository.findById(courseId);
-	        if (opcourse.isPresent()) {
-	            CourseDetail course = opcourse.get();
-	            Optional<CourseTest> optest = testRepository.findByCourseDetail(course);
-	            if (optest.isPresent()) {
-	                CourseTest test = optest.get();
+	  
 
-	                test.setCourseDetail(null);
+	        @GetMapping("/getTestByCourseId/{courseId}")
+	        public ResponseEntity<?> getTestByCourseId(@PathVariable Long courseId,
+	                                                   @RequestHeader("Authorization") String token) {
+	            // Validate the JWT token
+	            if (!jwtUtil.validateToken(token)) {
+	            	System.out.println("unauthorized");
+	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                        .body("{\"error\": \"Invalid Token\"}");
+	            }
 
-	                List<Question> questions = test.getQuestions();
+	            // Retrieve role and email from token
+	            String role = jwtUtil.getRoleFromToken(token);
+	            String email = jwtUtil.getUsernameFromToken(token);
 
-	                // Shuffle the list of questions randomly
-	                shuffleList(questions);
+	            if ("ADMIN".equals(role)) {
+      	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-	                // Shuffle the options within each question
-	                for (Question question : questions) {
-	                    question.setTest(null);
-	                    question.setAnswer(null);
-	                    String[] options = {question.getOption1(), question.getOption2(), question.getOption3(), question.getOption4()};
-	                    shuffleArray(options);
-	                    question.setOption1(options[0]);
-	                    question.setOption2(options[1]);
-	                    question.setOption3(options[2]);
-	                    question.setOption4(options[3]);
+	            } else if ("USER".equals(role)) {
+	                // For User role
+	                Optional<Muser> opUser = muserRepo.findByEmail(email);
+	                if (opUser.isPresent()) {
+	                    Muser user = opUser.get();
+	                    Optional<CourseDetail> opCourse = courseDetailRepository.findById(courseId);
+                          
+	                    if (opCourse.isPresent()) {
+	                        CourseDetail course = opCourse.get();
+	                        if(!user.getCourses().contains(course)) {
+
+	        	            	System.out.println("unauthorized");
+	           	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	           	             
+	                        }
+	                        Optional<CourseTest> opTest = testRepository.findByCourseDetail(course);
+
+	                        if (opTest.isPresent()) {
+	                            CourseTest test = opTest.get();
+	                            long attemptCount = muserActivityRepo.countByUser(user);
+
+	                            // Check if user exceeds allowed attempts
+	                            if (attemptCount >= test.getNoofattempt()) {
+
+	            	            	System.out.println("limit exceeded");
+	                                return ResponseEntity.badRequest().body("{\"error\": \"Attempt Limit Exceeded\"}");
+	                                
+	                            }
+	                            
+
+	                            // Prepare test data for response
+	                            prepareTestDataForResponse(test);
+	                            return ResponseEntity.ok(test);
+	                        } else {
+
+	        	            	System.out.println("notfound");
+	                            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                                    .body("{\"error\": \"Test not found for course\"}");
+	                        }
+	                    } else {
+
+	    	            	System.out.println("notfound");
+	                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                                .body("{\"error\": \"Course not found with ID: " + courseId + "\"}");
+	                    }
+
+	                } else {
+
+		            	System.out.println("notfound");
+	                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                            .body("{\"error\": \"User not found\"}");
 	                }
 
-	                return ResponseEntity.ok(test);
 	            } else {
 
-	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Test not found for course\"}");
+	            	System.out.println("forbitten");
+	                // Handle other roles if needed
+	                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+	                        .body("{\"error\": \"Access denied\"}");
 	            }
-	        } else {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found with id: " + courseId);
+	        }
+	    private void prepareTestDataForResponse(CourseTest test) {
+	        // Remove relationships to avoid serialization issues
+	        test.setCourseDetail(null);
+
+	        // Shuffle questions and options
+	        List<Question> questions = test.getQuestions();
+	        shuffleList(questions);
+
+	        for (Question question : questions) {
+	            question.setTest(null);
+	            question.setAnswer(null);
+	            String[] options = {question.getOption1(), question.getOption2(), question.getOption3(), question.getOption4()};
+	            shuffleArray(options);
+	            question.setOption1(options[0]);
+	            question.setOption2(options[1]);
+	            question.setOption3(options[2]);
+	            question.setOption4(options[3]);
 	        }
 	    }
-
+	
 	    
 	    
 //-----------------------------WORKING--------------------------------------------------	    

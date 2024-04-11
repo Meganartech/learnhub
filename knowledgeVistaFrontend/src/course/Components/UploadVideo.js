@@ -3,7 +3,6 @@ import "../../css/certificate.css"
 import "../../css/Course.css"
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const UploadVideo = () => {
@@ -12,7 +11,7 @@ const UploadVideo = () => {
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
   const {courseId,courseName}=useParams();
-
+const token=sessionStorage.getItem("token")
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadType, setUploadType] = useState('video');
    const[videodata,setvideodata]=useState({
@@ -125,6 +124,9 @@ const UploadVideo = () => {
     try {
       const response = await fetch(`http://localhost:8080/lessons/save/${courseId}`, {
         method: "POST",
+        headers:{
+          "Authorization":token,
+        },
         body: formDataToSend,
       });
       await response.json();
@@ -139,35 +141,28 @@ const UploadVideo = () => {
         base64Image: null,
        });
        setSelectedFile("")
-       toast.success('Video added sucessfully !', {
-        autoClose: 3000, // Close the toast after 3 seconds
-        onClose: () => {
-          // After the toast is closed, reload the page
-          window.location.href = `/lessonList/${courseName}/${courseId}`;
-        }
-        });
-      //   MySwal.fire({
-      //     title: "video added",
-      //     text: "Video added sucessfully !",
-      //     icon: "success",
-      //   }).then((result) => {
-      //     if (result.isConfirmed) {
+      
+        MySwal.fire({
+          title: "video added",
+          text: "Video added sucessfully !",
+          icon: "success",
+        }).then((result) => {
+          if (result.isConfirmed) {
            
-      //       window.location.href = `/lessonList/${courseName}/${courseId}`;
-      //     }
-      //   });
-      // }
-    }
+            window.location.href = `/lessonList/${courseName}/${courseId}`;
+          }
+        });
+      }
+    
    } catch (error) {
       setIsSubmitting(false);
       // Handle network errors or other exceptions
-      toast.error("Some Unexpected Error occured . Please try again later.");
-      // MySwal.fire({
-      //   title: "Error!",
-      //   text: "Some Unexpected Error occured . Please try again later.",
-      //   icon: "error",
-      //   confirmButtonText: "OK",
-      // });
+      MySwal.fire({
+        title: "Error!",
+        text: "Some Unexpected Error occured . Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
     const handleDrop = (e) => {

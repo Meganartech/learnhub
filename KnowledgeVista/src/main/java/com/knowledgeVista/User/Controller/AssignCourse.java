@@ -41,80 +41,95 @@ public class AssignCourse {
 	    try {
 	        Optional<Muser> optionalUser = muserRepository.findById(userId);
 
-	        if (optionalUser.isPresent() ) {
-	            Muser user = optionalUser.get();
-	            if("USER".equals(user.getRole().getRoleName())) {
-
-	            List<CourseDetail> coursesToAdd = new ArrayList<>();
-
-	            for (Long courseId : courseIds) {
-	                Optional<CourseDetail> optionalCourse = courseDetailRepository.findById(courseId);
-	                if (optionalCourse.isPresent()) {
-	                    CourseDetail course = optionalCourse.get();
-	                    coursesToAdd.add(course);
-//	                    Long seats=course.getNoofseats();
-//	                    Long filled=course.getUserCount();
-//	                    System.out.println("noof seats"+seats);
-//	                    System.out.println("filled"+filled);
-//	                    if(seats>filled) {
-//	                    coursesToAdd.add(course);
-//	                    }
-	                } else {
-	                    // If a course with the specified ID doesn't exist, return 404
-	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found or Seats filled");
-	                }
-	            }
-
-	            // Add all the courses to the user's list of courses
-	            user.getCourses().addAll(coursesToAdd);
-	            muserRepository.save(user);
-	            return ResponseEntity.ok("Courses assigned to user successfully");
-	        }
-	            return ResponseEntity.notFound().build();
-	        } else {
-	            // If a user with the specified ID doesn't exist, return 404
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + userId + " not found");
-	        }
-	    } catch (Exception e) {
-	        // If an error occurs, return 500
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to assign courses to user");
-	    }
-	}
-	
-	//`````````````````````````````````Assign Course To TRAINER``````````````````````````````````
-	@PostMapping("/trainer/{userId}/courses")
-	public ResponseEntity<String> assignCoursesToTRAINER(@PathVariable Long userId, @RequestBody List<Long> courseIds) {
-	    try {
-	        Optional<Muser> optionalUser = muserRepository.findById(userId);
-
 	        if (optionalUser.isPresent()) {
 	            Muser user = optionalUser.get();
-	            if("TRAINER".equals(user.getRole().getRoleName())) {
 
+	            if ("USER".equals(user.getRole().getRoleName())) {
+	                List<CourseDetail> coursesToAdd = new ArrayList<>();
+
+	                for (Long courseId : courseIds) {
+	                    Optional<CourseDetail> optionalCourse = courseDetailRepository.findById(courseId);
+	                    if (optionalCourse.isPresent()) {
+	                        CourseDetail course = optionalCourse.get();
+
+	                        Long seats = course.getNoofseats();
+	                        Long filled = course.getUserCount();
+	                        if (seats > filled) {
+	                            coursesToAdd.add(course);
+	                        } else { 
+	                        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                                .body("{\"error\": \"Course " + course.getCourseName() + " has no available seats. Try to change the number of seats\"}");
+	                        	                        }
+	                    } else {
+	                        // If a course with the specified ID doesn't exist, return 404
+	                    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                                 .body("{\"error\": \"Course with ID " + courseId + " not found.\"}");
+	                           }
+	                }
+
+	                // Clear existing courses from the user's list
+	                user.getCourses().clear();
+
+	                // Add new courses to the user's list of courses
+	                user.getCourses().addAll(coursesToAdd);
+
+	                // Save the updated user
+	                muserRepository.save(user);
+	                return ResponseEntity.ok("{\"message\": \"Courses assigned to user successfully.\"}");
+
+	            } else {
+	            	 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                         .body("{\"error\": \"The specified user is not a USER.\"}");
+	                 }
+	        } else {
+	            // If a user with the specified ID doesn't exist, return 404
+	        	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                     .body("{\"error\": \"User with ID " + userId + " not found.\"}");
+	               }
+	    } catch (Exception e) {
+	        // If an error occurs, return 500
+	    	  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	    	            .body("{\"error\": \"An error occurred while processing the request.\"}");
+	    	     }
+	}
+	//`````````````````````````````````Assign Course To TRAINER``````````````````````````````````
+	@PostMapping("/trainer/{userId}/courses")
+	public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long userId, @RequestBody List<Long> courseIds) {
+	    Optional<Muser> optionalUser = muserRepository.findById(userId);
+
+	    if (optionalUser.isPresent()) {
+	        Muser trainer = optionalUser.get();
+
+	        if ("TRAINER".equals(trainer.getRole().getRoleName())) {
+	            // Clear the existing allotted courses
+	            trainer.getAllotedCourses().clear();
+
+	            // Prepare a list to hold the new courses to be added
 	            List<CourseDetail> coursesToAdd = new ArrayList<>();
 
+	            // Iterate through the list of course IDs
 	            for (Long courseId : courseIds) {
 	                Optional<CourseDetail> optionalCourse = courseDetailRepository.findById(courseId);
 	                if (optionalCourse.isPresent()) {
 	                    CourseDetail course = optionalCourse.get();
-	                    course.setTrainer(user);
 	                    coursesToAdd.add(course);
 	                } else {
-	                    // If a course with the specified ID doesn't exist, return 404
 	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course with ID " + courseId + " not found");
 	                }
 	            }
-	            courseDetailRepository.saveAll(coursesToAdd);
 
-	            return ResponseEntity.ok("Courses assigned to user successfully");
-	        } return ResponseEntity.notFound().build();
-        } else {
-	            // If a user with the specified ID doesn't exist, return 404
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + userId + " not found");
+	            // Add the new courses to the trainer's list of allotted courses
+	            trainer.getAllotedCourses().addAll(coursesToAdd);
+
+	            // Save the updated trainer information
+	            muserRepository.save(trainer);
+
+	            return ResponseEntity.ok("Courses assigned to trainer successfully");
+	        } else {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not a trainer");
 	        }
-	    } catch (Exception e) {
-	        // If an error occurs, return 500
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to assign courses to user");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + userId + " not found");
 	    }
 	}
 

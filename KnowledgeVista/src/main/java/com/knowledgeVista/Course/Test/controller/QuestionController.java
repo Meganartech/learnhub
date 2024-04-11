@@ -93,6 +93,9 @@ public class QuestionController {
 
 		            Double markacquired = ((double) totalMarks / noofQuestion) * 100;
 		            activity.setPercentage(markacquired);
+		            
+		           Long count= muserActivityRepo.countByUser(user);
+		           activity.setNthAttempt(count+1);
 		            muserActivityRepo.save(activity);
 
 		            String message;

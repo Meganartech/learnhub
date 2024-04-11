@@ -11,5 +11,6 @@ import com.knowledgeVista.User.Muser;
 public interface MusertestactivityRepo extends JpaRepository<MuserTestActivity, Long> {
 	
 	List<MuserTestActivity> findByuser(Muser user); 
+	  long countByUser(Muser user);
 
 }

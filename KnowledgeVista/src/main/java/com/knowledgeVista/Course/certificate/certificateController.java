@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,16 +48,26 @@ public class certificateController {
 		private MusertestactivityRepo activityrepo;
 	
 	@PostMapping("/add")
-	private ResponseEntity<String> addcertificate( @RequestParam("institutionName") String institutionName,
+	private ResponseEntity<?> addcertificate( @RequestParam("institutionName") String institutionName,
 	        @RequestParam("ownerName") String ownerName,
 	        @RequestParam("qualification") String qualification,
 	        @RequestParam("address") String address,
-	        @RequestParam("authorizedSign") MultipartFile authorizedSign
+	        @RequestParam("authorizedSign") MultipartFile authorizedSign,
+	        @RequestHeader("Authorization") String token
 	       ) {
 		// @RequestParam("certificateTemplate") MultipartFile certificateTemplate
 	    try {
+	    	
+	    	 if (!jwtUtil.validateToken(token)) {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+		                    .body("{\"message\": \"Invalid token\"}");
+	            
+	         }
+
+	         String role = jwtUtil.getRoleFromToken(token);
+	         if("ADMIN".equals(role)) {
 	         if(certificaterepo.count()>0) {
-	        	 return new ResponseEntity<>("Certificate already exists", HttpStatus.BAD_REQUEST);
+	        	 return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"Certificate already exists\"}");
 	        
 	      
 	         }else {
@@ -73,14 +84,84 @@ public class certificateController {
 
 	 	        // Save the certificate object to the database
 	 	        certificaterepo.save(certificate);
-	 	        return new ResponseEntity<>("Certificate added successfully", HttpStatus.CREATED);
+	            return ResponseEntity.ok("{\"message\": \"Certificate updated successfully.\"}");
+	 	        }
+	         }else {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+		                    .body("{\"message\": \"Unauthorized access\"}");
 	         }
 	        
 	    } catch (Exception e) {
-	        // If an error occurs, return an error response
-	        return new ResponseEntity<>("Error adding certificate: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
 	    }
 	}
+	
+//================================Edit Mapping=================================
+	@PatchMapping("/Edit")
+	public ResponseEntity<String> editcertificate(
+	    @RequestParam("institutionName") String institutionName,
+	    @RequestParam("ownerName") String ownerName,
+	    @RequestParam("qualification") String qualification,
+	    @RequestParam("address") String address,
+	    @RequestParam(value="authorizedSign", required=false) MultipartFile authorizedSign,
+	    @RequestParam("certificateId") Long certificateId,
+	    @RequestHeader("Authorization") String token
+	) {
+	    try {
+	        // Validate the token
+	        if (!jwtUtil.validateToken(token)) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                    .body("{\"message\": \"Invalid token\"}");
+	        }
+
+	        // Get the role from the token
+	        String role = jwtUtil.getRoleFromToken(token);
+
+	        // Check if the user is an admin
+	        if (!"Admin".equalsIgnoreCase(role)) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                    .body("{\"message\": \"Unauthorized access\"}");
+	        }
+
+	        // Find the certificate by ID
+	        Optional<certificate> optionalCertificate = certificaterepo.findById(certificateId);
+	        System.out.println("found");
+
+	        if (optionalCertificate.isPresent()) {
+	            certificate certificate = optionalCertificate.get();
+                if(authorizedSign!=null) {
+	            // Compress the authorized sign image
+	            byte[] compressedAuthorizedSign = ImageUtils.compressImage(authorizedSign.getBytes());
+	            System.out.println("found image");
+	            certificate.setAuthorizedSign(compressedAuthorizedSign);
+                }
+	            // Update the certificate details
+                
+	            certificate.setInstitutionName(institutionName);
+	            certificate.setOwnerName(ownerName);
+	            certificate.setQualification(qualification);
+	            certificate.setAddress(address);
+
+	            // Save the updated certificate to the database
+	            certificaterepo.saveAndFlush(certificate);
+
+	            // Return a JSON response with a success message
+	            return ResponseEntity.ok("{\"message\": \"Certificate updated successfully.\"}");
+	        } else {
+	            // Certificate not found
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                    .body("{\"message\": \"Certificate not found.\"}");
+	        }
+	    } catch (Exception e) {
+	        // Handle internal server error and return a JSON response
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
+	    }
+	}
+	
+	
+	
 //````````````````````````````WORING````````````````````````````````````````````````````````
 
 	@GetMapping("/viewAll")

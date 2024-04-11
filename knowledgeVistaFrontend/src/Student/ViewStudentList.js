@@ -49,25 +49,34 @@ const ViewStudentList = () => {
               body: formData
             });
             if (response.ok) {
-              toast.success(`Student ${username} deleted successfully`, {
-                autoClose: 3000, // Close the toast after 3 seconds
-                onClose: () => {
-                  // After the toast is closed, reload the page
-                  window.location.reload();
-                }
-              });
+              MySwal.fire({
+                title: "Deleted",
+                text: `Student ${username} deleted successfully`,
+                icon: "success",
+                confirmButtonText: "OK",
+            }).then(() => {
+                window.location.reload();
+            });
             } else if (response.status === 404) {
-              // Display error toast notification for 404 Not Found
-              toast.error('Error: Student not found');
+              MySwal.fire({
+                icon: 'error',
+                title: '404',
+                text: 'Student not found'
+            });
             } else {
-              // Display generic error toast notification for other errors
-              toast.error('Error deleting student');
+              MySwal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: 'Error deleting Student'
+            });
             }
-          } else {toast.error('Error deleting student');
-          
-          }
+          } 
         } catch (error) {
-          toast.error('Error deleting student');
+          MySwal.fire({
+            icon: 'error',
+            title: 'ERROR',
+            text: 'Error deleting Student'
+        });
         }
       } 
     });
@@ -104,17 +113,17 @@ const ViewStudentList = () => {
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.skills}</td>
                 <td className='py-2'>{user.role.roleName}</td>
-                <td className='text-center'>
+                {/* <td className='text-center'>
                 <Link to={`/edit/${user.userId}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>
                     </Link>
-                </td>
-                {userRole==="ADMIN"?(
+                </td> */}
+               
                 <td className='text-center'>
                 <Link to={`/assignCourse/Student/${user.userId}`} className='hidebtn' >
                     <i className="fas fa-plus"></i>
                     </Link>
-                </td>):null}
+                </td>
                 <td className='text-center '>
                   <button className='hidebtn ' onClick={()=>handledelete(user.userId,user.username,user.email)}>
                     <i className="fas fa-trash text-danger"></i>

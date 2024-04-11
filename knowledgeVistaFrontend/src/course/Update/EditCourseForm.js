@@ -100,6 +100,13 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
     if (courseEdit.courseImage) {
       formData.append("courseImage", courseEdit.courseImage);
     }
+    if (courseEdit.duration) {
+      formData.append("Duration", courseEdit.duration);
+    }
+    if (courseEdit.noofseats) {
+      formData.append("Noofseats", courseEdit.noofseats);
+    }
+
     e.preventDefault();
     try {
       const response = await fetch(
@@ -121,7 +128,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
         }).then((result) => {
           if (result.isConfirmed) {
             // Redirect to /course/admin/edit
-            window.location.href = "/course/admin/edit";
+            window.location.href = "/dashboard/course";
           }   });
       
       }
@@ -195,6 +202,19 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
               required
             />
           </div>
+          <div className="form-group ">
+                <label htmlFor="noofseats">No of Seats</label>
+                <input
+                  name="noofseats"
+                  type="number"
+                  id="doofseats"
+                  className="form-control "
+                  value={courseEdit.noofseats}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+          
         </div>
         <div class="vertical-line"></div>
         <div className="second">
@@ -237,6 +257,18 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
               required
             />
           </div>
+          <div className="form-group mt-1">
+                <label htmlFor="duration">Course Duration</label>
+                <input
+                  name="duration"
+                  type="number"
+                  id="duration"
+                  className="form-control "
+                  value={courseEdit.duration}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
           
             <div>
               <button type="submit" className="btn btn-primary w-100">

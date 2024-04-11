@@ -7,6 +7,8 @@ import withReactContent from "sweetalert2-react-content";
 
 
 const CertificateInputs = () => {
+
+  const token=sessionStorage.getItem("token");
   const MySwal = withReactContent(Swal);
   const [defaultcerti,setdefaultcerti]=useState({
     institutionName: '',
@@ -28,6 +30,7 @@ const CertificateInputs = () => {
 const [isnotFound,setisnotFound]=useState();
 const[sign,setsign]=useState();
 const [getSign,setgetSign]=useState();
+const[isinitial,setisinitial]=useState(true);
 useEffect(() => {
   const fetchCertificate = async () => {
     try {
@@ -37,6 +40,9 @@ useEffect(() => {
        
         setsign(`data:image/jpeg;base64,${certificateJson.authorizedSign}`);
         setdefaultcerti(certificateJson);
+        setCertificate(certificateJson);
+     
+        setisinitial(false);
       } else if (certificatedata.status === 404) {
         setisnotFound(true);
       }
@@ -46,6 +52,12 @@ useEffect(() => {
   };
   fetchCertificate();
 }, [isnotFound]);
+const handleEdit=()=>{
+setgetSign(`data:image/jpeg;base64,${certificate.authorizedSign}`)
+setisnotFound(true);
+
+}
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -79,36 +91,62 @@ useEffect(() => {
         certificate.ownerName &&
         certificate.qualification &&
         certificate.address &&
-        certificate.authorizedSign 
-      
+        certificate.authorizedSign
     ) {
         try {
-          const formData = new FormData();
-          formData.append('institutionName', certificate.institutionName);
-          formData.append('ownerName', certificate.ownerName);
-          formData.append('qualification', certificate.qualification);
-          formData.append('address', certificate.address);
-          formData.append('authorizedSign', certificate.authorizedSign);
-        
+            const formData = new FormData();
+            formData.append('institutionName', certificate.institutionName);
+            formData.append('ownerName', certificate.ownerName);
+            formData.append('qualification', certificate.qualification);
+            formData.append('address', certificate.address);
+            formData.append('authorizedSign', certificate.authorizedSign); 
+            formData.append("certificateId", certificate.certificateId);
            
-              console.log(certificate);
-            const response = await fetch("http://localhost:8080/certificate/add", {
-                method: "POST",
-                body: formData
-            });
-            if (response.ok) {
-            
-              setisnotFound(false);
-          }
 
-           
+            const url = isinitial ? "http://localhost:8080/certificate/add" : "http://localhost:8080/certificate/Edit";
+            const method = isinitial ? "POST" : "PATCH";
+
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    "Authorization": token,
+                },
+                body: formData, // Sending formData
+            });
+              const data=await response.json();
+            if (response.ok) {
+              MySwal.fire({
+                title: "Saved",
+                text: data.message ,
+                icon: "success",
+                confirmButtonText: "OK",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  setisnotFound(false);
+                }   });
+            
+            }else{
+              MySwal.fire({
+                title: "Error!",
+                text: data.message,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            }
         } catch (error) {
-            console.error(error);
+          MySwal.fire({
+            title: "Error!",
+            text: "An error occurred . Please try again later.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+
         }
     } else {
         alert('Please fill in all fields before saving.');
     }
 };
+
 const certificateInputs=(
 
   <div className='contentinner'>
@@ -217,8 +255,8 @@ const certificateView=(
                 id='institutionName'
                 placeholder='Institution Name'
                 value={defaultcerti.institutionName}
+                className='disabledbox'
                 readOnly
-                
               />
             </div>
 
@@ -229,6 +267,7 @@ const certificateView=(
                 id='ownerName'
                 placeholder='Owner Name'
                 value={defaultcerti.ownerName}
+                className='disabledbox'
                 readOnly
               />
             </div>
@@ -240,6 +279,7 @@ const certificateView=(
                 id='qualification'
                 placeholder='Qualification'
                 value={defaultcerti.qualification}
+                className='disabledbox'
                 readOnly
               />
             </div>
@@ -251,6 +291,7 @@ const certificateView=(
                 id='address'
                 placeholder='Address'
                 value={defaultcerti.address}
+                className='disabledbox'
                 readOnly
                
               />
@@ -259,8 +300,11 @@ const certificateView=(
            
           </div>
         </div>
-       
-      </div></div>
+        <div className='btngrp'>
+  <button className='btn btn-primary' onClick={handleEdit}>Edit</button>
+</div>
+      </div>
+      </div>
 )
 
   return (

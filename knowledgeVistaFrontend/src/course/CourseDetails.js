@@ -41,6 +41,7 @@ const CourseDetails = () => {
         }
         const data = await response.json(); // Convert response to JSON format
         setimg(`data:image/jpeg;base64,${data.courseImage}`);
+       
         setCourseEdit(data);
       } catch (error) {
         MySwal.fire({
@@ -58,7 +59,8 @@ const CourseDetails = () => {
    const  courseDescription=courseEdit.courseDescription;
    const amount=courseEdit.amount;
    const  courseImage=img;
-   
+   const Duration=courseEdit.duration;
+   const Noofseats=courseEdit.noofseats;
 
   return (
     <div>
@@ -67,7 +69,7 @@ const CourseDetails = () => {
       ) : (
         <div className="contentbackground">
           <div className="contentinner">
-          <div className="outer mb-3">
+          <div className="outer ">
             <div className="first">
               <div className="head">
                 <h2>Course Details</h2>{" "}
@@ -84,7 +86,8 @@ const CourseDetails = () => {
                   type="text"
                   id="courseName"
                   value={courseName}
-                  className="form-control"
+                  className='disabledbox'
+              
                   
                 />
               </div>
@@ -93,9 +96,9 @@ const CourseDetails = () => {
                 <textarea
                   readOnly
                   id="courseDescription"
-                  rows={5}
+                  rows={4}
                   value={courseDescription}
-                  className="form-control"
+                  className='disabledbox'
                 />
               </div>
               <div className="form-group">
@@ -105,7 +108,17 @@ const CourseDetails = () => {
                   type="text"
                   id="courseCategory"
                   value={courseCategory}
-                  className="form-control"
+                  className='disabledbox'
+                />
+              </div>
+              <div className="form-group mt-1">
+                <label htmlFor="Noofseats">No of Seats</label>
+                <input
+                  readOnly
+                  type="number"
+                  id="Noofseats"
+                  value={Noofseats}
+                  className='disabledbox'
                 />
               </div>
             </div>
@@ -130,7 +143,18 @@ const CourseDetails = () => {
                   type="text"
                   id="courseAmount"
                   value={amount}
-                  className="form-control"
+                  className='disabledbox'
+                />
+              </div>
+              
+              <div className="form-group mt-1">
+                <label htmlFor="Duration">Course Duration</label>
+                <input
+                  readOnly
+                  type="number"
+                  id="Duration"
+                  value={Duration}
+                  className='disabledbox'
                 />
               </div>
             </div>

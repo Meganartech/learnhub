@@ -29,48 +29,37 @@ const EditCourse = ({filteredCourses}) => {
       })
         .then((response) => {
           if (response.ok) {
-            toast.success("Your course has been deleted Sucessfully", {
-              autoClose: 3000, // Close the toast after 3 seconds
-              onClose: () => {
-                // After the toast is closed, reload the page
+          
+            MySwal.fire({
+              title: "Deleted!",
+              text: "Your course has been deleted.",
+              icon: "success",
+            }).then((result) => {
+              if (result.isConfirmed) {
                 window.location.reload();
               }
             });
-            // Handle successful deletion
-            // MySwal.fire({
-            //   title: "Deleted!",
-            //   text: "Your course has been deleted.",
-            //   icon: "success",
-            // }).then((result) => {
-            //   if (result.isConfirmed) {
-            //     window.location.reload();
-            //   }
-            // });
           } else {
             
-           
-            // Handle server error or unexpected response
             response.text().then((errorMessage) => {
-              toast.error(`${errorMessage}`);
-              // MySwal.fire({
-              //   title: "Error!",
-              //   text: errorMessage,
-              //   icon: "error",
-              //   confirmButtonText: "OK",
-              // });
+              MySwal.fire({
+                title: "Error!",
+                text: errorMessage,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
             });
+           
           }
         })
         .catch((error) => {
-          // Handle network error or fetch API error
-          toast.error("An error occurred while Deleting courses. Please try again later.")
-          // MySwal.fire({
-          //   title: "Error!",
-          //   text:
-          //     "An error occurred while Deleting courses. Please try again later.",
-          //   icon: "error",
-          //   confirmButtonText: "OK",
-          // });
+           MySwal.fire({
+            title: "Error!",
+            text:
+              "An error occurred while Deleting courses. Please try again later.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
         });
     } 
   });

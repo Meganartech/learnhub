@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import { Link, useParams } from 'react-router-dom';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const ViewVideo = () => {
+  const MySwal = withReactContent(Swal);
   const { courseId, courseName } = useParams();
   const [lessonId, setLessonId] = useState(null);
   const [AllLessons, setAllLessons] = useState([]);
@@ -11,6 +14,7 @@ const ViewVideo = () => {
   const [videoSource, setVideoSource] = useState('');
   const [currentLesson, setCurrentLesson] = useState(null);
   const role=sessionStorage.getItem("role");
+  const token=sessionStorage.getItem("token")
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,7 +62,13 @@ const ViewVideo = () => {
 
   const fetchVideo = async (lessId) => {
     try {
-      const response = await fetch(`http://localhost:8080/lessons/getvideoByid/${lessId}`);
+      // const response = await fetch(`http://localhost:8080/lessons/getvideoByid/${lessId}`);
+
+      const response = await fetch(`http://localhost:8080/lessons/getvideoByid/${lessId}/${courseId}`,{
+        headers:{
+          "Authorization":token
+        }
+      });
       if (response.ok) {
         const contentType = response.headers.get('Content-Type');
         if (contentType && contentType.includes('application/octet-stream')) {
@@ -72,11 +82,16 @@ const ViewVideo = () => {
         } else {
           console.error('Unsupported video type');
         }
-      } else {
-        console.error('Failed to fetch video:', response.status, response.statusText);
+      } else if(response.status===401) {
+        window.location.href="/unauthorized"
       }
     } catch (error) {
-      console.error('Error fetching video:', error);
+      MySwal.fire({
+        title: "Error!",
+        text: "Some Unexpected Error occured . Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 

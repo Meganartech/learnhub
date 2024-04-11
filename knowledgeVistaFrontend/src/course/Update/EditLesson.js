@@ -64,15 +64,28 @@ useEffect(() => {
                 }))
                 }
             } else if (response.status === 404) {
-                toast.error(`No lessons found with lesson name ${Lessontitle}`);
-                navigate(-1);
+              MySwal.fire({
+                title: "Not Found",
+                text: `No lessons found with lesson name ${Lessontitle}`,
+                icon: "error",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  navigate(-1);
+                   }
+              });
+                
             } else if (response.status === 401) {
-              toast.error('you are UnAuthorized to access this Page Redirecting to  back',{
-              autoClose: 3000, // Close the toast after 3 seconds
-              onClose: () => {
+             
+            MySwal.fire({
+              title: "Un Authorized",
+              text: "you are UnAuthorized to access this Page Redirecting to  back",
+              icon: "error",
+            }).then((result) => {
+              if (result.isConfirmed) {
                 navigate(-1);
-              } 
-            } );
+                 }
+            });
+
             } 
         } catch (error) {
             console.error('Error:', error);
@@ -191,11 +204,20 @@ useEffect(() => {
         } else if (response.status === 401) {
             window.location.href = "/unauthorized";
         } else if (response.status === 404) {
-            toast.error('not found');
+          MySwal.fire({
+            title: "Not Found!",
+            text: " The Lesson Not FOund",
+            icon: "Warning",
+            confirmButtonText: "OK",
+          });
         } 
-    } catch (error) {
-        console.error('Error:', error);
-        toast.error('An error occurred. Please try again later.');
+    } catch (error) { 
+       MySwal.fire({
+      title: "Error!",
+      text: "Some Unexpected Error occured . Please try again later.",
+      icon: "error",
+      confirmButtonText: "OK",
+    });
         setIsSubmitting(false);
     }
 };

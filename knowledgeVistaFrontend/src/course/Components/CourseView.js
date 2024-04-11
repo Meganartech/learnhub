@@ -34,8 +34,7 @@ const CourseView = ({ filteredCourses }) => {
 
             const options = {
                 order_id: order, 
-                name: "KnowledgeVista", 
-                description: "This is for my final year project",
+                name: "Learn HUB", 
                 handler: function (response) {
                     if (response.error) {
                         console.log('Payment canceled or failed:', response.error);

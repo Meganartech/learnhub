@@ -36,7 +36,12 @@ public class Muser {
 	    @JoinColumn(name = "roleId")
 	    private MuserRoles role;
 	    
-	    @OneToMany(mappedBy = "trainer")
+	    @ManyToMany
+	    @JoinTable(
+	        name = "user_allotedCourse",
+	        joinColumns = @JoinColumn(name = "user_id"),
+	        inverseJoinColumns = @JoinColumn(name = "course_id")
+	        )
 	    private List<CourseDetail> allotedCourses;
 
 	    

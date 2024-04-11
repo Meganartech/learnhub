@@ -141,24 +141,19 @@ const AddStudent = () => {
           const data = await response.json();
       
           if (response.ok) {
-            toast.success("New Student Added successfully!", {
-              autoClose: 3000, // Close the toast after 3 seconds
-              onClose: () => {
-                window.location.href = "/view/Students";
-              }
-            });
+           
             // Display success message and reset form fields
-            // MySwal.fire({
-            //   title: "Added !",
-            //   text: "New Student Added successfully!",
-            //   icon: "success",
-            //   confirmButtonText: "OK",
+            MySwal.fire({
+              title: "Added !",
+              text: "New Student Added successfully!",
+              icon: "success",
+              confirmButtonText: "OK",
               
-            // }).then((result) => {
-            //     if (result.isConfirmed) {
-            //         window.location.href = "/view/Students";
-            //     }
-            //   });
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/view/Students";
+                }
+              });
           } else if (response.status === 400) {
             if (data.message === "EMAIL ALREADY EXISTS") {
               setErrors(prevErrors => ({
@@ -168,44 +163,39 @@ const AddStudent = () => {
               
             } else {
               
-            toast.error(`${data.message}`);
-              // MySwal.fire({
-              //   title: "Error!",
-              //   text: `${data.message}`,
-              //   icon: "error",
-              //   confirmButtonText: "OK",
-              // });
+              MySwal.fire({
+                title: "Error!",
+                text: `${data.message}`,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
             }
           } else if (response.status === 401) {
-            toast.error(`you are unable to Add a student`);
       
-            // MySwal.fire({
-            //   title: "Un Authorized!",
-            //   text: "you are unable to Add a student",
-            //   icon: "error",
-            //   confirmButtonText: "OK",
-            // });
+            MySwal.fire({
+              title: "Un Authorized!",
+              text: "you are unable to Add a student",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
           } else if (response.status === 500) {
             
-            toast.error(`Unexpected Error Occured`);
-            // MySwal.fire({
-            //   title: "Server Error!",
-            //   text: "Unexpected Error Occured",
-            //   icon: "error",
-            //   confirmButtonText: "OK",
-            // });
+            MySwal.fire({
+              title: "Server Error!",
+              text: "Unexpected Error Occured",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
           }
           
         } catch (error) {
-          // Display error message
-          toast.error(`An error occurred while Adding a Student. Please try again later.`);
       
-          // MySwal.fire({
-          //   title: "Error!",
-          //   text: "An error occurred while adding STUDENT. Please try again later.",
-          //   icon: "error",
-          //   confirmButtonText: "OK",
-          // });
+          MySwal.fire({
+            title: "Error!",
+            text: "An error occurred while adding STUDENT. Please try again later.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
         }
     };
     

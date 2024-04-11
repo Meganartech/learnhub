@@ -32,7 +32,7 @@ const AssignCourseTRAINER = () => {
             });
             const data = await response1.json();
             // Add a 'selected' property to each course object to track selection
-            setCourses(data.map(course => ({ ...course, selected: false })));
+            setCourses(data);
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
@@ -106,22 +106,25 @@ const handleAssignCourse = async () => {
                 </div>
               </div>
             </div>
-  {courses.length <= 0 ? (
+            {courses.length <= 0 ? (
   <div className='formgroup rounded p-5 ' style={{ backgroundColor: '#F2E1F5' }}>
-  <h1 className='text-center' style={{marginTop:"130px"}}>No courses found  to assign</h1>
+    <h1 className='text-center' style={{marginTop: "130px"}}>No courses found to assign</h1>
   </div>
 ) : (
   <div className='formgroup rounded p-5' style={{ backgroundColor: '#F2E1F5', display: 'grid', gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
     {courses.map(course => (
-      <div key={course.courseId} className='checkboxes' >
-        <input type="checkbox" checked={course.selected} onChange={() => handleToggleCourse(course.courseId)} />
-        <label>
-          {course.courseName}
-        </label>
+      <div key={course.courseId} className='checkboxes'>
+        <input
+          type="checkbox"
+          checked={course.selected} // The checkbox state is controlled by course.selected
+          onChange={() => handleToggleCourse(course.courseId)} // Toggle course selection on change
+        />
+        <label>{course.courseName}</label>
       </div>
     ))}
   </div>
 )}
+
 
 
           </div>

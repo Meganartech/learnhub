@@ -32,48 +32,66 @@ const LessonList = () => {
         const formData = new FormData();
         formData.append("lessonId", lessId);
         formData.append("Lessontitle", Lesstitle);
+    
         MySwal.fire({
-          title: "Delete Lesson?",
-          text: `Are you sure you want to delete Lesson ${Lesstitle}`,
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#d33",
-          confirmButtonText: "Delete",
-          cancelButtonText: "Cancel",
+            title: "Delete Lesson?",
+            text: `Are you sure you want to delete Lesson ${Lesstitle}?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            confirmButtonText: "Delete",
+            cancelButtonText: "Cancel",
         }).then(async (result) => {
-          if (result.isConfirmed) {
-            if (lessId != null) {
-              try {
-                const response = await fetch("http://localhost:8080/lessons/delete", {
-                  method: "DELETE",
-                  headers: {
-                    'Authorization': token,
-                  },
-                  body: formData,
-                });
-      
-                const message = await response.json();
-                if (response.ok) {
-                  toast.success(`${message.message}`, {
-                    autoClose: 3000, // Close the toast after 3 seconds
-                    onClose: () => {
-                      // After the toast is closed, reload the page
-                      window.location.reload();
-                    },
-                  });
-                } else {
-                  toast.error(`${message.message}`);
+            if (result.isConfirmed && lessId != null) {
+                try {
+                    const response = await fetch("http://localhost:8080/lessons/delete", {
+                        method: "DELETE",
+                        headers: {
+                            Authorization: token,
+                        },
+                        body: formData,
+                    });
+    
+                    const message = await response.json();
+    
+                    if (response.ok) {
+                        MySwal.fire({
+                            title: "Deleted Successfully",
+                            text: `Lesson ${Lesstitle} was deleted successfully.`,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        }).then(() => {
+                            // After the modal is closed, reload the page
+                            window.location.reload();
+                        });
+                    } else {
+                        MySwal.fire({
+                            title: "Deletion Failed",
+                            text: `${message.message}`,
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        });
+                    }
+                } catch (error) {
+                    // Handle network errors or other exceptions
+                    MySwal.fire({
+                        title: "Error",
+                        text: "An error occurred while deleting the lesson.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
                 }
-              } catch (error) {
-                // Handle network errors or other exceptions
-                toast.error("An error occurred while deleting the lesson.");
-              }
             }
-          }
         }).catch(error => {
-          toast.error("An unexpected error occurred while deleting the lesson.");
+            MySwal.fire({
+                title: "Unexpected Error",
+                text: "An unexpected error occurred while deleting the lesson.",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
         });
-      };
+    };
+    
       
       
   return (
@@ -92,7 +110,7 @@ const LessonList = () => {
             {lessons.map((lesson, index) => (
               <div key={lesson.lessonId} className='listbackinner'>
                 <span>{index+1} .</span>
-                <Link to={`/edit/${courseName}/${lesson.lessonId}`}>{lesson.Lessontitle}</Link>
+                <span>{lesson.Lessontitle}</span>
                
                 <Link to={`/edit/${courseName}/${courseId}/${lesson.Lessontitle}/${lesson.lessonId}`}> <i className="fas fa-edit text-primary"></i></Link>
                 <span>
