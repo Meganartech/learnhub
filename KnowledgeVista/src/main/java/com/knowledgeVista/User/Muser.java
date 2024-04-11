@@ -12,6 +12,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,6 +35,10 @@ public class Muser {
 	    @ManyToOne
 	    @JoinColumn(name = "roleId")
 	    private MuserRoles role;
+	    
+	    @OneToMany(mappedBy = "trainer")
+	    private List<CourseDetail> allotedCourses;
+
 	    
 	    @ManyToMany
 	    @JoinTable(

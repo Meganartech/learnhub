@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,7 +29,6 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.FileService.VideoFileService;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
-import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 
@@ -56,8 +56,16 @@ public class videolessonController {
 		                                          @RequestParam("LessonDescription") String LessonDescription,
 		                                          @RequestParam(value = "videoFile", required = false) MultipartFile videoFile,
 		                                          @RequestParam(value = "fileUrl", required = false) String fileUrl,
-		                                          @PathVariable Long courseId) {
+		                                          @PathVariable Long courseId,
+		                                          @RequestHeader("Authorization") String token
+		                                          ) {
 		      try {
+		    	  if (!jwtUtil.validateToken(token)) {
+				         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				     }
+
+				     String role = jwtUtil.getRoleFromToken(token);
+				     if ("ADMIN".equals(role)|| "TRAINER".equals(role)) {
 		          Optional<CourseDetail> courseDetailOptional = coursedetailrepostory.findById(courseId);
 		          if (!courseDetailOptional.isPresent()) {
 		              return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"CourseDetail not found for courseId: " + courseId + "\"}");
@@ -82,14 +90,82 @@ public class videolessonController {
 
 		         lessonrepo.save(lesson);
 
-		              return ResponseEntity.ok("{\"message\": \"Note saved successfully\"}");
-		          
+		              return ResponseEntity.ok("{\"message\": \"Lesson saved successfully\"}");
+				     }else {
+				    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				     }
+				   
 		      } catch (Exception e) {
 		          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Failed to save note: " + e.getMessage() + "\"}");
 		      }
 		  }
 			 
 		 
+		 
+		 @PatchMapping("/edit/{lessonId}")
+		 public ResponseEntity<?> EditLessons(@PathVariable Long lessonId,
+		     @RequestParam(value="thumbnail" , required = false) MultipartFile file,
+		     @RequestParam(value="Lessontitle" , required = false) String Lessontitle,
+		     @RequestParam(value="LessonDescription" , required = false) String LessonDescription,
+		     @RequestParam(value = "videoFile", required = false) MultipartFile videoFile,
+		     @RequestParam(value = "fileUrl", required = false) String fileUrl,
+		     @RequestHeader("Authorization") String token) {
+		     
+		     if (!jwtUtil.validateToken(token)) {
+		         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
+
+		     String role = jwtUtil.getRoleFromToken(token);
+		     if ("ADMIN".equals(role)) {
+		         try {
+		             Optional<videoLessons> opvideo = lessonrepo.findById(lessonId);
+		             if (opvideo.isPresent()) {
+		                 videoLessons video = opvideo.get();
+		                 if (Lessontitle != null && !Lessontitle.isEmpty()) {
+		                	    video.setLessontitle(Lessontitle);
+		                	}
+		                	if (LessonDescription != null && !LessonDescription.isEmpty()) {
+		                	    video.setLessonDescription(LessonDescription);
+		                	}
+
+		                 if (file != null && !file.isEmpty()) {
+		                     video.setThumbnail(ImageUtils.compressImage(file.getBytes()));
+		                 }
+		                 if (videoFile != null) {
+		                     String videoFilePath = fileService.saveVideoFile(videoFile);
+		                     video.setVideofilename(videoFilePath);
+		                     video.setVideoFile(videoFile);
+		                     video.setFileUrl(null);
+		                 } else if (fileUrl != null && !fileUrl.isEmpty()) {
+		                	 
+		                	 if(video.getVideofilename()!=null) {
+		                	 boolean videoFileDeleted= fileService.deleteVideoFile(video.getVideofilename());
+		                	  if (videoFileDeleted) {
+		                		  video.setVideofilename(null);
+		                		  video.setFileUrl(fileUrl);  
+		                	  }
+		                	  }else {
+		                		  video.setFileUrl(fileUrl);
+		                	  }
+		                	 
+		                     
+		                 } else {
+		                     return ResponseEntity.badRequest().body("{\"error\": \"Either video file or file URL must be provided\"}");
+		                 }
+		                 lessonrepo.saveAndFlush(video);
+		                 return ResponseEntity.ok("{\"message\": \"Lessons Edited successfully\"}");
+		             } else {
+		                 return ResponseEntity.notFound().build();
+		             }
+		         } catch (Exception e) {
+		             e.printStackTrace();
+		             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		         }
+		     } else {
+		         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
+		 }
+ 
 		 @GetMapping("/getvideoByid/{lessId}")
 			public ResponseEntity<?> getVideoFile(@PathVariable Long lessId) {
 //			 if (!jwtUtil.validateToken(token)) {
@@ -128,6 +204,46 @@ public class videolessonController {
 			}
 		 
 		 
+		 
+		 //```````````````````````TO get Specific Lesson`````````````````````````````````````
+		 @GetMapping("/getLessonsByid/{lessonId}")
+		 private ResponseEntity<?>getlessonfromId(@PathVariable("lessonId")Long lessonId,
+				@RequestHeader("Authorization") String token){
+			 try {
+				 if (!jwtUtil.validateToken(token)) {
+		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		          }
+
+		          String role = jwtUtil.getRoleFromToken(token);
+		          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+		        	  Optional<videoLessons> oplesson =lessonrepo.findById(lessonId);
+		        	  if(oplesson.isPresent()) {
+		        		  videoLessons video=oplesson.get();
+		        		  video.setCourseDetail(null);
+						  video.setVideoFile(null);
+						  
+						  byte[] images =ImageUtils.decompressImage(video.getThumbnail());
+						  video.setThumbnail(images);
+		        		  return ResponseEntity.ok(video);		        	  
+		        		  }
+		        	  return ResponseEntity.notFound().build();
+		        	  
+		          }
+		       
+			 else {
+		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		          }
+		      } catch (Exception e) {
+		          e.printStackTrace(); 
+		          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		      }
+				 
+			 }
+			 
+		 
+		 
+		 
+		 
 		@DeleteMapping("/delete")
 		private ResponseEntity<?> deleteLessonsByLessonId(@RequestParam("lessonId")Long lessonId,
 				   @RequestParam("Lessontitle") String Lessontitle,
@@ -135,13 +251,10 @@ public class videolessonController {
 			 try {
 		          // Validate the token
 		          if (!jwtUtil.validateToken(token)) {
-		              // If the token is not valid, return unauthorized status
 		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		          }
 
 		          String role = jwtUtil.getRoleFromToken(token);
-
-		          // Perform authentication based on role
 		          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 		        	  Optional<videoLessons> opvideo =lessonrepo.findById(lessonId);
 		        	  if(opvideo.isPresent()) {

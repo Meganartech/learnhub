@@ -42,7 +42,6 @@ public class SettingsController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }  String role = jwtUtil.getRoleFromToken(token);
 
-        // Perform authentication based on role
         if ("ADMIN".equals(role)) {
         if(paymentsetting.count()>0) {
        	 return new ResponseEntity<>(" payment Data already exists", HttpStatus.BAD_REQUEST);

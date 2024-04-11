@@ -51,11 +51,17 @@ public class AssignCourse {
 	                Optional<CourseDetail> optionalCourse = courseDetailRepository.findById(courseId);
 	                if (optionalCourse.isPresent()) {
 	                    CourseDetail course = optionalCourse.get();
-	                    // Add the course to the list to be assigned to the user
 	                    coursesToAdd.add(course);
+//	                    Long seats=course.getNoofseats();
+//	                    Long filled=course.getUserCount();
+//	                    System.out.println("noof seats"+seats);
+//	                    System.out.println("filled"+filled);
+//	                    if(seats>filled) {
+//	                    coursesToAdd.add(course);
+//	                    }
 	                } else {
 	                    // If a course with the specified ID doesn't exist, return 404
-	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course with ID " + courseId + " not found");
+	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found or Seats filled");
 	                }
 	            }
 
@@ -91,17 +97,15 @@ public class AssignCourse {
 	                Optional<CourseDetail> optionalCourse = courseDetailRepository.findById(courseId);
 	                if (optionalCourse.isPresent()) {
 	                    CourseDetail course = optionalCourse.get();
-	                    // Add the course to the list to be assigned to the user
+	                    course.setTrainer(user);
 	                    coursesToAdd.add(course);
 	                } else {
 	                    // If a course with the specified ID doesn't exist, return 404
 	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course with ID " + courseId + " not found");
 	                }
 	            }
+	            courseDetailRepository.saveAll(coursesToAdd);
 
-	            // Add all the courses to the user's list of courses
-	            user.getCourses().addAll(coursesToAdd);
-	            muserRepository.save(user);
 	            return ResponseEntity.ok("Courses assigned to user successfully");
 	        } return ResponseEntity.notFound().build();
         } else {
@@ -138,6 +142,7 @@ public class AssignCourse {
 	        for (CourseDetail course : courses) {
 	            course.setUsers(null);
 	            course.setVideoLessons(null);
+	            course.setTrainer(null);
 	            byte[] images =ImageUtils.decompressImage(course.getCourseImage());
 	            course.setCourseImage(images);
 	           
@@ -167,13 +172,14 @@ public class AssignCourse {
 	    if (optionalUser.isPresent()) {
 	        Muser user = optionalUser.get();
 	        
-	        List<CourseDetail> courses = user.getCourses();
+	        List<CourseDetail> courses = user.getAllotedCourses();
 	        
 	        // Set courseLessons to null for each course
 	      
 	        for (CourseDetail course : courses) {
 	            course.setUsers(null);
 	            course.setVideoLessons(null);
+	        	course.setTrainer(null);
 	            byte[] images =ImageUtils.decompressImage(course.getCourseImage());
 	            course.setCourseImage(images);
 	           

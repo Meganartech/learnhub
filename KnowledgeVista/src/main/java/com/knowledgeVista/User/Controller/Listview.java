@@ -1,6 +1,9 @@
 package com.knowledgeVista.User.Controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,6 +63,22 @@ public class Listview {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
+	 
+	 
+	 
+	 @GetMapping("/trainersforDropdown")
+	 private ResponseEntity<List<Map<String,Object>>>TrainersList(){
+		 List<Muser> totaltrainers=muserrepositories.findByRoleName("TRAINER");
+		 List<Map<String, Object>> TrainerResponseList = new ArrayList<>();
+		 for(Muser trainer : totaltrainers) {
+	         Map<String, Object> response = new HashMap<>();
+	        		 response.put("userId", trainer.getUserId());
+	        		 response.put("username", trainer.getUsername());
+	        		 TrainerResponseList.add(response);
+		 }
+       return ResponseEntity.ok(TrainerResponseList);
+		 
+	 }
 //```````````````WORKING````````````````````````````````````
 
     @GetMapping("/users")
@@ -87,6 +106,8 @@ public class Listview {
             byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
             user.setProfile(decompressedImage);
             user.setCourses(null);
+
+        	user.setAllotedCourses(null);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -100,6 +121,7 @@ public ResponseEntity<List<Muser>> getTrainerByRoleName() {
         List<Muser> users = muserrepositories.findByRoleName("TRAINER");
        
         users.forEach(user -> {
+        	user.setAllotedCourses(null);
             byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
             user.setProfile(decompressedImage);
             user.setCourses(null);

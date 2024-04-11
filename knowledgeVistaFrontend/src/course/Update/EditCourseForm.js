@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-
+import "../../css/CreateApplication.css"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+
+import { toast } from 'react-toastify';
 const EditCourseForm = ({ id, toggleEditMode }) => {
   const MySwal = withReactContent(Swal);
   const  courseId=id
@@ -25,23 +27,24 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
         );
         if (!response.ok) {
           // If response is not successful (HTTP status code not in the range 200-299)
-          MySwal.fire({
-            icon: "error",
-            title: "HTTP Error!",
-            text: `HTTP error! Status: ${response.status}`,
-          });
+          toast.error(`HTTP error! Status: ${response.status}`);
+          // MySwal.fire({
+          //   icon: "error",
+          //   title: "HTTP Error!",
+          //   text: `HTTP error! Status: ${response.status}`,
+          // });
         }
         const data = await response.json();
-        console.log(data, "data"); // Convert response to JSON format
         setimg(`data:image/jpeg;base64,${data.courseImage}`);
         setCourseEdit(data);
       } catch (error) {
-        MySwal.fire({
-          title: "Error!",
-          text: "An error occurred while Fetching course in Edit Form. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        toast.error("An error occurred while Fetching course in Edit Form. Please try again later.");
+        // MySwal.fire({
+        //   title: "Error!",
+        //   text: "An error occurred while Fetching course in Edit Form. Please try again later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
       }
     };
     fetchcourse();
@@ -234,6 +237,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
               required
             />
           </div>
+          
             <div>
               <button type="submit" className="btn btn-primary w-100">
                 Update Course

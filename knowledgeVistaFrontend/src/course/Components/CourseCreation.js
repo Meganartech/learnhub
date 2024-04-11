@@ -1,22 +1,55 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { toast } from 'react-toastify';
 
 const CourseCreation = () => {
+  
+  const token=sessionStorage.getItem("token")
   const MySwal = withReactContent(Swal);
+  const [errors, setErrors] = useState();
   const [formData, setFormData] = useState({
     courseName: "",
     courseDescription: "",
     courseCategory: "",
     courseAmount:"",
-    Trainer:"",
+   // Trainer:"",
     Duration:"",
     Noofseats:"",
     courseImage: null,
     base64Image: null,
   });
+
+  // const [trainers, setTrainers] = useState([]);
+  // const [selectedTrainer, setSelectedTrainer] = useState('');
+  
+// useEffect(() => {
+//   const fetchtrainers= async () => {
+//     const response = await fetch("http://localhost:8080/view/trainersforDropdown",{
+//      headers:{
+//       "Authorization": token
+//      }
+//     });
+//     const  data=await response.json();
+//     setTrainers(data);
+   
+//   }
+//   fetchtrainers();
+// },[]
+//   );
+//   const handleChangetrainer = (event) => {
+//     const selectedTrainerId = event.target.value; // Get the selected trainer's user ID directly from the event
+
+//     // Update the state for the selected trainer
+//     setSelectedTrainer(selectedTrainerId);
+
+//     // Update form data with the selected trainer's user ID
+//     setFormData({ ...formData, Trainer: selectedTrainerId });
+
+//     // Log the selected trainer's user ID
+//     console.log(selectedTrainerId);
+// };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,6 +94,9 @@ const CourseCreation = () => {
     formDataToSend.append("Trainer",formData.Trainer);
     formDataToSend.append("Duration",formData.Duration);
     formDataToSend.append("Noofseats",formData.Noofseats);
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(`${key}: ${value}`);
+  }
    
     try {
       const response = await fetch("http://localhost:8080/course/add", {
@@ -125,8 +161,9 @@ const CourseCreation = () => {
               <label htmlFor='courseDescription'> Course description <span className="text-danger">*</span></label>
               <span>:</span>
              <div> 
-                <input
+                <textarea
                type="text"
+               rows={3}
                style={{width:"400px"}}
                id='courseDescription'
                 name="courseDescription"
@@ -164,29 +201,31 @@ const CourseCreation = () => {
               </div>
             </div> 
             </div>
-
+{/* 
             <div className='inputgrp'>
               <label htmlFor='Trainer'>  Trainer <span className="text-danger">*</span></label>
               <span>:</span>
              <div> 
-                <input
-               type="text"
-               style={{width:"400px"}}
-               id='Trainer'
-                name="Trainer"
-                value={formData.Trainer}
-                onChange={handleChange}
-                className='form-control form-control-lg '
-               // className={`form-control form-control-lg mt-1 ${errors.trainer && 'is-invalid'}`}
-                placeholder="Course trainer"
-            
-                required
-              />
+                
+             <select
+              value={selectedTrainer}
+              style={{ width: '400px' }}
+              className='form-control form-control-lg'
+              onChange={handleChangetrainer} // Directly passing the handler
+          >
+              <option value=''>Select a trainer</option>
+              {trainers.map((trainer) => (
+                  <option key={trainer.userId} value={trainer.userId}>
+                      {trainer.username}
+                  </option>
+              ))}
+          </select>
+
               <div className="invalid-feedback">
-              {/* {errors.trainer} */}
+              {/* {errors.trainer} 
               </div>
             </div> 
-            </div>
+            </div> */}
             <div className='inputgrp'>
               <label htmlFor='courseimage'>  Course Image <span className="text-danger">*</span></label>
               <span>:</span>

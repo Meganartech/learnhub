@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import "../../css/certificate.css"
 import "../../css/Course.css"
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
@@ -10,7 +10,7 @@ const UploadVideo = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const MySwal = withReactContent(Swal);
-  
+  const navigate = useNavigate();
   const {courseId,courseName}=useParams();
 
     const [selectedFile, setSelectedFile] = useState(null);
@@ -23,10 +23,59 @@ const UploadVideo = () => {
     videoFile:null,
     base64Image: null,
    })
+   
+   const [errors, setErrors] = useState({
+  Lessontitle:"",
+   LessonDescription:'',
+   fileUrl:'',
+   thumbnail:null,
+   videoFile:null,
+   base64Image: null,
+  })
    const handleChange = (e) => {
     const { name, value } = e.target;
+    let error = '';
+    switch (name) {
+      case 'Lessontitle':
+        error = value.length < 1 ? 'Please enter a Video Title' : '';
+        break;
+      case 'LessonDescription':
+          error = value.length < 1 ? 'Please enter a Video Description' : '';
+          break;
+      case 'fileUrl':
+        error = /^(https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+\??[\w-=&]*)$/.test(value) ? '' : 'Please enter the youtube Embed src url only ';
+            break;
+
+            default:
+              break;
+    }
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: error
+    }));
     setvideodata({ ...videodata, [name]: value });
+  
   };
+
+  const isSaveDisabled = () => {
+    // Check if video title and description have values
+    const isVideoTitleValid = videodata.Lessontitle.trim().length > 0;
+    const isVideoDescriptionValid = videodata.LessonDescription.trim().length > 0;
+
+    // Check if image is selected and converted to base64
+    const isThumbnailValid = videodata.base64Image !== null;
+
+    // Check if either video file is selected or URL is present and valid
+    let isVideoValid = false;
+    if (uploadType === 'video') {
+        isVideoValid = selectedFile !== null;
+    } else if (uploadType === 'url') {
+        isVideoValid = /^(https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+\??[\w-=&]*)$/.test(videodata.fileUrl);
+    }
+
+    // Enable save button only if all conditions are met
+    return !(isVideoTitleValid && isVideoDescriptionValid && isThumbnailValid && isVideoValid);
+};
   const convertImageToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -36,8 +85,9 @@ const UploadVideo = () => {
     });
   };
   const handleFileChange = (e) => {
+   
     const file = e.target.files[0];
-    
+   
     // Update formData with the new file
     setvideodata((prevVideodata) => ({ ...prevVideodata, thumbnail: file }));
     
@@ -62,11 +112,16 @@ const UploadVideo = () => {
     formDataToSend.append("LessonDescription", videodata.LessonDescription);
     formDataToSend.append("thumbnail",videodata.thumbnail)
     
-    if (videodata.videoFile) {
+    if (uploadType === 'video') {
       formDataToSend.append("videoFile", videodata.videoFile);
+      formDataToSend.append("fileUrl",null);
     }else{
       formDataToSend.append("fileUrl", videodata.fileUrl);
+      formDataToSend.append("videoFile",null);
     }
+    for (const [key, value] of formDataToSend.entries()) {
+      console.log(`${key}: ${value}`);
+  }
     try {
       const response = await fetch(`http://localhost:8080/lessons/save/${courseId}`, {
         method: "POST",
@@ -158,24 +213,35 @@ const UploadVideo = () => {
             <div className='textinputs'>
             <div className='grp'>
                 <label>Video Title</label>
-                <input type='text'
+                <div>                <input type='text'
                  placeholder='Video Title'
                  name='Lessontitle'
                  value={videodata.Lessontitle}
                  onChange={handleChange}
                  disabled={isSubmitting}
+                 className={`form-control form-control-lg mt-1 ${errors.Lessontitle && 'is-invalid'}`}
+                
                  required/>
+                  <div className="invalid-feedback">
+                {errors.Lessontitle}
+              </div>
+              </div>
+
             </div>
             <div className='grp'>
                 <label>Description</label>
+                <div>
                 <textarea 
                 name='LessonDescription'
                 value={videodata.LessonDescription}
                 placeholder='Video Description'
-                rows={4}
+                rows={4} className={`form-control form-control-lg mt-1 ${errors.LessonDescription && 'is-invalid'}`}
                 disabled={isSubmitting}
                  onChange={handleChange}
-                ></textarea>
+                ></textarea>  <div className="invalid-feedback">
+                {errors.LessonDescription}
+              </div>
+              </div>
             </div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 0fr 1fr",gap:"10px",padding:"20px"}}>
                 <label>Thumbnail</label>
@@ -188,9 +254,11 @@ const UploadVideo = () => {
                     name='thumbnail'
                     type='file'
                     id='fileInput'
-                    className='file-upload'
+                    className={`file-upload ${errors.fileInput && 'is-invalid'}`}
+                 
                     accept='image/*'
-                    />  {videodata.base64Image && ( 
+                    />
+                      {videodata.base64Image && ( 
                       <img
                         src={videodata.base64Image}
                         alt="Selected "
@@ -229,14 +297,20 @@ const UploadVideo = () => {
             </div>
 
             {uploadType === 'url' ? (
+              <div>
                 <input 
                 type="text"
                  placeholder="Enter Youtube URL" 
                  name='fileUrl'
                  value={videodata.fileUrl} 
                  onChange={handleChange}
+                 className={`form-control form-control-lg mt-1 urlinput ${errors.fileUrl && 'is-invalid'}`}
                   disabled={isSubmitting}
-              className='urlinput' />
+               />
+               <div className="invalid-feedback">
+               {errors.fileUrl}
+             </div>
+             </div>
             ) : (
                 <div
                 className="dropzone"
@@ -266,8 +340,8 @@ const UploadVideo = () => {
             </div>
         
             <div className='cornerbtn '>           
-                 <button className='btn btn-primary' type='submit'>Save</button> 
-                 <button className='btn btn-primary'>Cancel</button>
+                 <button className='btn btn-primary'  disabled={isSaveDisabled()} type='submit'>Save</button> 
+                 <button className='btn btn-primary' onClick={()=>{    navigate(-1);}}>Cancel</button>
             </div>
        </div>
        

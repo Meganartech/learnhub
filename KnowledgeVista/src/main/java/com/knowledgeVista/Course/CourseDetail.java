@@ -12,9 +12,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,15 +42,16 @@ public class CourseDetail {
 	    @Lob
 	    @Column(name="courseImage" ,length=1000000)
 	    private byte[] courseImage;
-	   
-	    
+	    @ManyToOne
+	    @JoinColumn(name = "userId")
+	    private Muser trainer;
 	    
 	    @ManyToMany(mappedBy = "courses")
 	    private List<Muser> users;
 	    
 	    
-	    @Column(name="Trainer")
-	    private String Trainer;
+//	    @Column(name="Trainer")
+//	    private String Trainer;
 	    
 	    @Column(name="Duration")
 	    private Long Duration;
@@ -60,7 +64,14 @@ public class CourseDetail {
 	    
 	    
 
-		
+	    public long getUserCount() {
+	        if (users != null) {
+	            return (long) users.size();
+	        } else {
+	            return 0L;
+	        }
+	    }
+
 	    
 	   
 }

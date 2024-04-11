@@ -39,6 +39,8 @@ import jakarta.transaction.Transactional;
 @RequestMapping("/course")
 @CrossOrigin
 public class CourseController {
+
+	
 	@Autowired
 	private MuserRepositories muserRepository;
 	@Autowired
@@ -96,7 +98,7 @@ public class CourseController {
 	    		@RequestParam("courseName") String courseName,
 	    		@RequestParam("courseDescription") String description,
 	    		@RequestParam("courseCategory") String category,
-	    		@RequestParam("Trainer") String Trainer,
+	    		//@RequestParam("Trainer") Long Trainer,
 	    		@RequestParam("Duration") Long Duration,
 	    		@RequestParam("Noofseats") Long Noofseats,
 	    		@RequestParam("courseAmount") Long amount) {
@@ -107,7 +109,13 @@ public class CourseController {
 	        courseDetail.setCourseCategory(category);
 	        courseDetail.setAmount(amount);
 	        courseDetail.setDuration(Duration);
-	        courseDetail.setTrainer(Trainer);
+	        
+//	      Optional<Muser> optrainer=  muserRepository.findById(Trainer);
+//	      
+//	      if(optrainer.isPresent()) {
+//	    	 Muser trainer=optrainer.get();
+//	    	 courseDetail.setTrainer(trainer);
+//	      }
 	        courseDetail.setNoofseats(Noofseats);
 	        try {
 	        	 courseDetail.setCourseImage(ImageUtils.compressImage(file.getBytes()));
@@ -121,7 +129,8 @@ public class CourseController {
 	        // Update the courseUrl based on the saved course's ID
 	        String courseUrl = "/courses/"+savedCourse.getCourseName()+"/" + savedCourse.getCourseId();
 	        savedCourse.setCourseUrl(courseUrl);
-	        
+	       
+
 	        // Save the updated CourseDetail object
 	       CourseDetail saved= coursedetailrepository.save(savedCourse);
 	       Long courseId=saved.getCourseId();
@@ -132,6 +141,9 @@ public class CourseController {
            response.put("coursename", coursename);
 	         return ResponseEntity.ok(response);
 	    }
+	
+	 
+	 
 	//--------------------------working------------------------------------
 	 @Transactional
 	 @PatchMapping("/edit/{courseId}")
@@ -141,17 +153,34 @@ public class CourseController {
 	     @RequestParam(value = "courseName", required = false) String courseName,
 	     @RequestParam(value = "courseDescription", required = false) String description,
 	     @RequestParam(value = "courseCategory", required = false) String category,
+	     @RequestParam(value ="Noofseats",required = false) Long Noofseats,
+ 		@RequestParam(value ="Duration",required = false)Long Duration,
 	      @RequestParam(value="courseAmount",required=false) Long amount){
 
 	     Optional<CourseDetail> courseDetailOptional = coursedetailrepository.findById(courseId);
 	     if (courseDetailOptional.isPresent()) {
 	         CourseDetail existingCourseDetail = courseDetailOptional.get();
+	         if(courseName!="") {
 	             existingCourseDetail.setCourseName(courseName);
 	             String courseUrl="/courses/"+existingCourseDetail.getCourseName()+"/"+existingCourseDetail.getCourseId();
+	         
 	             existingCourseDetail.setCourseUrl(courseUrl);
+	         }
+	         if(description!="") {
 	             existingCourseDetail.setCourseDescription(description);
+	         }
+	         if(category !="") {
 	             existingCourseDetail.setCourseCategory(category);
+	         }
+	         if(Duration !=null) {
+	        	 existingCourseDetail.setDuration(Duration);
+	         }
+	         if(Noofseats !=null) {
+	        	 existingCourseDetail.setNoofseats(Noofseats);
+	         }
+	         if(amount !=null) {
 	             existingCourseDetail.setAmount(amount);
+	         }
 	             existingCourseDetail.setUsers(null);
 	             existingCourseDetail.setVideoLessons(null);
 	             if (file != null) {
@@ -180,6 +209,7 @@ public class CourseController {
 		        byte[] image= ImageUtils.decompressImage(course.getCourseImage());
 		        course.setCourseImage(image);
 		        course.setUsers(null);
+		        course.setTrainer(null);
 	            course.setVideoLessons(null);
 		        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(course);
 		    } else {
@@ -199,6 +229,7 @@ public class CourseController {
 	        	 byte[] images =ImageUtils.decompressImage(course.getCourseImage());
 	            course.setCourseImage(images);
 	            course.setUsers(null);
+		        course.setTrainer(null);
 	            course.setVideoLessons(null);
 	        }
 	        return ResponseEntity.ok()
@@ -223,11 +254,12 @@ public class CourseController {
 	        	  Optional<Muser> optionalUser = muserRepository.findByEmail(email);
 	      	    if (optionalUser.isPresent()) {
 	      	        Muser user = optionalUser.get();
+	      	        if("USER".equals(user.getRole().getRoleName())) {
 	      	        List<CourseDetail> courses = user.getCourses();
 	        	  
 	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
 	               .stream()
-	               .filter(course -> course.getAmount() > 0) // Filter courses with amount greater than 0
+
 	               .filter(course -> !courses.contains(course)) // Filter out courses present in user.getCourses()
 	                 .map(course -> {
 	                   Map<String, Object> courseInfo = Map.of(
@@ -237,7 +269,10 @@ public class CourseController {
 	                   return courseInfo;
 	               })
 	               .collect(Collectors.toList());
-	       return ResponseEntity.ok().body(courseInfoList);
+	       return ResponseEntity.ok().body(courseInfoList);}
+	      	        else {
+	    	   return ResponseEntity.notFound().build();
+	       }
 	      	    }
 	      	    return ResponseEntity.notFound().build();
 	       }else {
@@ -245,6 +280,55 @@ public class CourseController {
 	    	   
 	       }
 	   }
+	   
+	   
+	   
+	   @GetMapping("/allotList")
+	   public ResponseEntity<?> getAllAllotelistInfo(
+		          @RequestHeader("Authorization") String token,
+		          @RequestParam("email") String email) {
+		   
+	          if (!jwtUtil.validateToken(token)) {
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+
+	          String role = jwtUtil.getRoleFromToken(token);
+
+	          if ("ADMIN".equals(role)) {
+	        	  Optional<Muser> optionalUser = muserRepository.findByEmail(email);
+	      	    if (optionalUser.isPresent()) {
+	      	    	
+	      	        Muser user = optionalUser.get();
+	      	        if("TRAINER".equals(user.getRole().getRoleName())) {
+	      	        List<CourseDetail> courses = user.getAllotedCourses();
+	        	  
+	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
+	               .stream()
+
+	               .filter(course -> !courses.contains(course))// Filter out courses present in user.getCourses()
+	               .filter(course->course.getTrainer()==null)  
+	               .map(course -> {
+	                   Map<String, Object> courseInfo = Map.of(
+	                           "courseId", course.getCourseId(),
+	                           "courseName", course.getCourseName()
+	                   );
+	                   return courseInfo;
+	               })
+	               .collect(Collectors.toList());
+	       return ResponseEntity.ok().body(courseInfoList);
+	       }
+	      	        else {
+	    	      	    return ResponseEntity.notFound().build();
+	      	        	
+	      	        }
+	      	    }
+	      	    return ResponseEntity.notFound().build();
+	       }else {
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    	   
+	       }
+	   }
+
 
 	   //---------------------WORKING--------------
 	   @DeleteMapping("/{courseId}")
