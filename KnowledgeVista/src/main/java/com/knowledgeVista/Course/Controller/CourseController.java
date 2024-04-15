@@ -98,7 +98,6 @@ public class CourseController {
 	    		@RequestParam("courseName") String courseName,
 	    		@RequestParam("courseDescription") String description,
 	    		@RequestParam("courseCategory") String category,
-	    		//@RequestParam("Trainer") Long Trainer,
 	    		@RequestParam("Duration") Long Duration,
 	    		@RequestParam("Noofseats") Long Noofseats,
 	    		@RequestParam("courseAmount") Long amount) {
@@ -110,12 +109,7 @@ public class CourseController {
 	        courseDetail.setAmount(amount);
 	        courseDetail.setDuration(Duration);
 	        
-//	      Optional<Muser> optrainer=  muserRepository.findById(Trainer);
-//	      
-//	      if(optrainer.isPresent()) {
-//	    	 Muser trainer=optrainer.get();
-//	    	 courseDetail.setTrainer(trainer);
-//	      }
+
 	        courseDetail.setNoofseats(Noofseats);
 	        try {
 	        	 courseDetail.setCourseImage(ImageUtils.compressImage(file.getBytes()));
@@ -142,7 +136,69 @@ public class CourseController {
 	         return ResponseEntity.ok(response);
 	    }
 	
-	 
+//``````````````````````````````````````````FOR TRAINER COURSE CREATION````````````````````````````````````````
+	 @PostMapping("/create/trainer")
+	    public ResponseEntity<?> addCourseByTrainer(@RequestParam("courseImage") MultipartFile file, 
+	    		@RequestParam("courseName") String courseName,
+	    		@RequestParam("courseDescription") String description,
+	    		@RequestParam("courseCategory") String category,
+	    		@RequestParam("Duration") Long Duration,
+	    		@RequestParam("Noofseats") Long Noofseats,
+	    		@RequestParam("courseAmount") Long amount,
+                @RequestHeader("Authorization") String token) {
+		 if (!jwtUtil.validateToken(token)) {
+	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	     }
+
+	     String role = jwtUtil.getRoleFromToken(token);
+	     String email=jwtUtil.getUsernameFromToken(token);
+	     if ( "TRAINER".equals(role)) {
+	    	
+		 
+	        CourseDetail courseDetail = new CourseDetail();
+	        courseDetail.setCourseName(courseName);
+	        courseDetail.setCourseDescription(description);
+	        courseDetail.setCourseCategory(category);
+	        courseDetail.setAmount(amount);
+	        courseDetail.setDuration(Duration);
+	        courseDetail.setNoofseats(Noofseats);
+	        try {
+	        	 courseDetail.setCourseImage(ImageUtils.compressImage(file.getBytes()));
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	        
+	        // Save the CourseDetail object
+	        CourseDetail savedCourse = coursedetailrepository.save(courseDetail);
+	        
+	        // Update the courseUrl based on the saved course's ID
+	        String courseUrl = "/courses/"+savedCourse.getCourseName()+"/" + savedCourse.getCourseId();
+	        savedCourse.setCourseUrl(courseUrl);
+	       
+
+	        // Save the updated CourseDetail object
+	       CourseDetail saved= coursedetailrepository.save(savedCourse);
+	       
+	       
+	       Long courseId=saved.getCourseId();
+	       String coursename =saved.getCourseName();
+	       Optional<Muser> optrainer=muserRepository.findByEmail(email);
+	    	if(optrainer.isPresent()) {
+	    		Muser trainer =optrainer.get();
+	    		trainer.getAllotedCourses().add(saved);
+	    		  muserRepository.save(trainer);
+	    	}
+	       Map<String, Object> response = new HashMap<>();
+        response.put("message", "savedSucessfully");
+        response.put("courseId", courseId);
+        response.put("coursename", coursename);
+	         return ResponseEntity.ok(response);
+	     }else {
+	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	     }
+	    }
+	
+
 	 
 	//--------------------------working------------------------------------
 	 @Transactional

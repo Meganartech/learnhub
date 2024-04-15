@@ -1,4 +1,4 @@
- import { useState } from "react";
+import { useState } from "react";
 import React from "react";
 import "../../css/Style.css";
 import Swal from "sweetalert2";
@@ -14,13 +14,44 @@ const CreateTest = () => {
   const [answer, setAnswer] = useState("");
   const [savedQuestions, setSavedQuestions] = useState([]);
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
-  const [noofattempt,setnoofattempt]=useState(1);
-  const[passPercentage,setpassPercentage]=useState(0);
-  const [showCriteria, setShowCriteria] = useState(false); // State to control showing criteria div
+  const [noofattempt, setNoOfAttempt] = useState(1);
+  const [passPercentage, setPassPercentage] = useState(0);
+  const [showCriteria, setShowCriteria] = useState(false);
 
-  const handleChange = (e) => {
-    setTestName(e.target.value);
+  const [errors, setErrors] = useState({
+    noofattempt: "",
+    passPercentage: ""
+  });
+
+  // Function to handle changes in noofattempt and passPercentage fields
+  const handleCriteriaChange = (e) => {
+    const { name, value } = e.target;
+    let error = "";
+
+    // Convert value to a number if it is an attempt count or percentage
+    const numericValue = name === "noofattempt" || name === "passPercentage" ? parseFloat(value) : value;
+
+    switch (name) {
+      case "noofattempt":
+        error = numericValue < 1 ? "Number of attempt must be at least 1." : "";
+        setNoOfAttempt(numericValue);
+        break;
+      case "passPercentage":
+        error = numericValue < 1 || numericValue > 100 ? "Pass percentage must be between 1 and 100." : "";
+        setPassPercentage(numericValue);
+        break;
+      default:
+        break;
+    }
+
+    // Update error state
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error
+    }));
   };
+
+  // Other functions such as handleDelete, handleEditQuestion, addQuestion, and submitTest remain unchanged
 
   const handleDelete = (index) => {
     const newSavedQuestions = savedQuestions.filter((ques, i) => i !== index);
@@ -36,10 +67,11 @@ const CreateTest = () => {
   };
 
   const addQuestion = () => {
-    if (!questionText || options.some(option => !option) || !answer) {
+    if (!questionText || options.some((option) => !option) || !answer) {
       // If any field is empty, do not add the question
       return;
-  }
+    }
+
     const newQuestion = {
       questionText: questionText,
       option1: options[0],
@@ -60,16 +92,16 @@ const CreateTest = () => {
       setSavedQuestions([...savedQuestions, newQuestion]);
     }
 
-    // Clear input fields after adding or updating question
+    // Clear input fields after adding or updating a question
     setQuestionText("");
     setOptions(["", "", "", ""]);
     setAnswer("");
   };
-  const noOfQuestions = savedQuestions.length;
+
   const submitTest = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-    console.log(passPercentage);
-    console.log(noofattempt);
+
+
     try {
       const noOfQuestions = savedQuestions.length; // Count the number of questions
       const requestBody = {
@@ -79,17 +111,17 @@ const CreateTest = () => {
         noofattempt,
         passPercentage
       };
-     console.log(JSON.stringify(requestBody))
+
       const response = await fetch(`http://localhost:8080/test/create/${courseId}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json' 
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit test');
+        throw new Error("Failed to submit test");
       }
 
       // Reset state after successful submission
@@ -109,7 +141,6 @@ const CreateTest = () => {
 
     } catch (error) {
       // Handle error
-      // Example: show error message
       Swal.fire({
         title: "Error",
         text: error.message,
@@ -124,121 +155,151 @@ const CreateTest = () => {
       {/* Show criteria div based on showCriteria state */}
       {showCriteria ? (
         <div className="contentinner p-5">
-          <h1 >Test Criteria</h1>
-          <p className="text-danger"><span >*</span> By Default each Question Carries one mark</p>
+          <h1>Test Criteria</h1>
+          <p className="text-danger"><span>*</span> By default, each question carries one mark</p>
           
           <div className="inputgrp mt-3">
-          <label>Number of Questions</label><span>:</span><input value={noOfQuestions}  readOnly/></div>
+            <label>Number of Questions</label>
+            <span>:</span>
+            <input value={savedQuestions.length} readOnly />
+          </div>
           
           <div className="inputgrp mt-5">
-          <label>Number of attempt</label><span>:</span>
-          <input
-          type="number"
-          value={noofattempt}
-          name="noofattempt"
-          onChange={(e)=>{setnoofattempt(e.target.value)}}
-           />
-           </div>
+            <label>Number of Attempt</label>
+            <span>:</span>
+            <div>
+            <input
+              type="number"
+              value={noofattempt}
+              name="noofattempt"
+              className={errors.noofattempt && "is-invalid"}
+              onChange={handleCriteriaChange}
+            />
+            {errors.noofattempt && (
+              <div className="invalid-feedback">{errors.noofattempt}</div>
+            )}</div>
+          </div>
           
           <div className="inputgrp mt-5">
-          <label> pass percentage</label> <span>:</span>
-          <input
-          type="number"
-          value={passPercentage}
-          name="passPercentage"
-          onChange={(e)=>{setpassPercentage(e.target.value)}} /></div>
+            <label>Pass Percentage</label>
+            <span>:</span>
+            <div>
+            <input
+              type="number"
+              value={passPercentage}
+              name="passPercentage"
+              className={errors.passPercentage && "is-invalid"}
+              onChange={handleCriteriaChange}
+            />
+            {errors.passPercentage && (
+              <div className="invalid-feedback">{errors.passPercentage}</div>
+            )}
+            </div>
+          </div>
 
-         <div className="btngrp mt-5">
-          <button className="btn btn-primary"   onClick={(e) => submitTest(e)}>save</button></div>
-      </div>
+          <div className="btngrp mt-5">
+            <button
+              className="btn btn-primary"
+              onClick={submitTest}
+              disabled={!!errors.noofattempt || !!errors.passPercentage || !noofattempt || !passPercentage}
+            >
+              Save
+            </button>
+          </div>
+        </div>
       ) : (
         <div className="contentinner">
-        <div className="outer mt-3" >
-          <div className="first">
-            <h3>Create Test</h3>
-            <input
-              className="form-control"
-              value={testName}
-              placeholder="Test Name"
-              onChange={handleChange}
-            />
-            <textarea
-              className="form-control w-100 mt-4"
-              value={questionText}
-              placeholder="Add Question here"
-              onChange={(e) => setQuestionText(e.target.value)}
-              rows={3}
-              required
-            />
-            {options.map((option, index) => (
-              <div key={index} className="option">
-                <input
-                  className="form-control w-100"
-                  type="text"
-                  value={option}
-                  placeholder={`Option ${index + 1}`}
-                  onChange={(e) => {
-                    const newOptions = [...options];
-                    newOptions[index] = e.target.value;
-                    setOptions(newOptions);
-                  }}
-                  required
-                />
-              </div>
-            ))}
-            <div>
-              <select
-                value={answer}
+          <div className="outer mt-3">
+            <div className="first">
+              <h3>Create Test</h3>
+              <input
+                className="form-control"
+                value={testName}
+                placeholder="Test Name"
+                onChange={(e) => setTestName(e.target.value)}
+              />
+              <textarea
                 className="form-control w-100 mt-4"
-                onChange={(e) => setAnswer(e.target.value)}
+                value={questionText}
+                placeholder="Add Question here"
+                onChange={(e) => setQuestionText(e.target.value)}
+                rows={3}
                 required
+              />
+              {options.map((option, index) => (
+                <div key={index} className="option">
+                  <input
+                    className="form-control w-100"
+                    type="text"
+                    value={option}
+                    placeholder={`Option ${index + 1}`}
+                    onChange={(e) => {
+                      const newOptions = [...options];
+                      newOptions[index] = e.target.value;
+                      setOptions(newOptions);
+                    }}
+                    required
+                  />
+                </div>
+              ))}
+              <div>
+                <select
+                  value={answer}
+                  className="form-control w-100 mt-4"
+                  onChange={(e) => setAnswer(e.target.value)}
+                  required
+                >
+                  <option value="">Select answer</option>
+                  {options.map((option, index) => (
+                    <option key={index} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+              <button
+                onClick={addQuestion}
+                className="btn btn-primary mt-4"
               >
-                <option value="">Select answer</option>
-                {options.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
+                {selectedQuestionIndex !== null ? "Update Question" : "Add Question"}
+              </button>
             </div>
-            <button onClick={addQuestion} className="btn btn-primary mt-4">
-              {selectedQuestionIndex !== null ? 'Update Question' : 'Add Question'}
-            </button>
 
-          </div>
+            <div></div>
+            <div className="second">
+              <h3>Saved Questions:</h3>
+              <div className="questions">
+                {savedQuestions.length > 0 &&
+                  savedQuestions.map((savedQuestion, index) => (
+                    <div key={index} className="question form-control">
+                      {savedQuestion.questionText.length > 20
+                        ? savedQuestion.questionText.substring(0, 20) + "..."
+                        : savedQuestion.questionText}
+                      <i
+                        className="fa-solid fa-edit iconedit"
+                        onClick={() => handleEditQuestion(index)}
+                      ></i>
+                      <i
+                        className="fas fa-trash icontrash"
+                        onClick={() => handleDelete(index)}
+                      ></i>
+                    </div>
+                  ))}
+              </div>
 
-          <div></div>
-          <div className="second">
-            <h3 >Saved Questions:</h3>
-            <div className="questions">
               {savedQuestions.length > 0 && (
-                savedQuestions.map((savedQuestion, index) => (
-                  <div key={index} className="question form-control">
-                     {savedQuestion.questionText.length > 20
-                    ? savedQuestion.questionText.substring(0, 20) + '...'
-                    : savedQuestion.questionText}
-                    <i
-                      className="fa-solid fa-edit iconedit"
-                      onClick={() => handleEditQuestion(index)}
-                    ></i>
-                    <i
-                      className="fas fa-trash icontrash"
-                      onClick={() => handleDelete(index)}
-                    ></i>
-                  </div>
-                ))
+                <div className="buttondiv">
+                  {/* Show criteria button */}
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setShowCriteria(true)}
+                  >
+                    Submit Test
+                  </button>
+                  <button className="btn btn-warning">Cancel</button>
+                </div>
               )}
             </div>
-
-            {savedQuestions.length > 0 && (
-              <div className="buttondiv">
-                {/* Show criteria button */}
-                <button className="btn btn-primary" onClick={() => setShowCriteria(true)}>Submit Test</button>
-                <button className="btn btn-warning">Cancel</button>
-              </div>
-            )}
           </div>
         </div>
-        </div>
-       
       )}
     </div>
   );

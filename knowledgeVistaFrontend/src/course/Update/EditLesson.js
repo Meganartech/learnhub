@@ -171,20 +171,27 @@ useEffect(() => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    
     const formDataToSend = new FormData();
     if (videodata.lessontitle) {
-    formDataToSend.append("Lessontitle", videodata.lessontitle);}
+        formDataToSend.append("Lessontitle", videodata.lessontitle);
+    }
     if (videodata.lessonDescription) {
-    formDataToSend.append("LessonDescription", videodata.lessonDescription);}
+        formDataToSend.append("LessonDescription", videodata.lessonDescription);
+    }
    
-    formDataToSend.append("thumbnail", videodata.thumbnail);
+    if (videodata.thumbnail) {
+        formDataToSend.append("thumbnail", videodata.thumbnail);
+    }
 
-    if (uploadType === 'video') {
+    // Send video file if available
+    if (videodata.videoFile) {
         formDataToSend.append("videoFile", videodata.videoFile);
-        formDataToSend.append("fileUrl",null);
-    } else {
+    }
+
+    // Send file URL if available
+    if (videodata.fileUrl) {
         formDataToSend.append("fileUrl", videodata.fileUrl);
-        formDataToSend.append("videoFile",null);
     }
     for (const [key, value] of formDataToSend.entries()) {
         console.log(`${key}: ${value}`);

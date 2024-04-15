@@ -100,7 +100,14 @@ const MyAssignedcourses = () => {
     <div className='contentbackground'>
     <div className='contentinner'>
 <div className={styles.supercontainer}>
-<div className={styles.createbtn}></div>
+<div className={styles.createbtn}>  
+{(role === "ADMIN" || role==="TRAINER") && (    
+     <a href="/course/Trainer/addcourse">
+       <button type="button" className="btn btn-primary mt-4">
+       <i className="fa-solid fa-plus"></i>  Create Course
+       </button>
+     </a> 
+   )}</div>
 
 <ul className={styles.maincontainer}>
     {courses.length === 0 ? (

@@ -41,6 +41,7 @@ import StudentProfile from "./Student/StudentProfile.js";
 import MyAssignedcourses from "./Trainer/MyAssignedcourses.js";
 import EditLesson from "./course/Update/EditLesson.js";
 import AssignCourseTRAINER from "./Trainer/AssignCourseTRAINER.js";
+import CreateCourseTrainer from "./Trainer/CreateCourseTrainer.js";
 
 
 
@@ -103,6 +104,7 @@ function App() {
                       <Route path="/courses/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} ><ViewVideo/></PrivateRoute>}/>                     
                       <Route path="/course/Addlesson/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><UploadVideo/></PrivateRoute>}/>
                       <Route path="/course/addcourse" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CourseCreation/></PrivateRoute>}/>
+                      <Route path="/course/Trainer/addcourse" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} onlytrainer={true}><CreateCourseTrainer/></PrivateRoute>}/>
                       <Route path="/addTrainer" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddTrainer/></PrivateRoute>}/>
                       <Route path="/addStudent" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddStudent/></PrivateRoute>}/>
                       <Route path="/mycourses" element={<PrivateRoute authenticationRequired={true} ><Mycourse/></PrivateRoute>}/>

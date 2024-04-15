@@ -1,198 +1,201 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { toast } from 'react-toastify';
 
-const CourseCreation = () => {
-    const token = sessionStorage.getItem("token");
-    const MySwal = withReactContent(Swal);
-    
-    // Initial state for form errors
-    const [errors, setErrors] = useState({
-        courseName: "",
-        courseDescription: "",
-        courseCategory: "",
-        courseAmount: "",
-        Duration: "",
-        Noofseats: "",
-        courseImage: "",
-    });
-
-    // Initial state for form data
-    const [formData, setFormData] = useState({
-        courseName: "",
-        courseDescription: "",
-        courseCategory: "",
-        courseAmount: "",
-        Duration: "",
-        Noofseats: "",
-        courseImage: null,
-        base64Image: null,
-    });
-
-    // Handle changes to form inputs
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        let error = '';
-
-        // Parse value to a number where necessary
-        const numericValue = name === 'courseAmount' || name === 'Duration' || name === 'Noofseats' ? parseFloat(value) : value;
-
-        switch (name) {
-            case 'courseName':
-                error = value.length < 1 ? 'Please enter a Course Title' : '';
-                break;
-            case 'courseCategory':
-                error = value.length < 1 ? 'Please enter a Course Category' : '';
-                break;
-            case 'courseDescription':
-                error = value.length < 1 ? 'Please enter a Course Description' : '';
-                break;
-            case 'courseAmount':
-                error = numericValue < 0 ? 'Course amount must be greater than or equal to 0' : '';
-                break;
-            case 'Duration':
-                error = numericValue < 1 ? 'Duration must be greater than 0' : '';
-                break;
-            case 'Noofseats':
-                error = numericValue < 1 ? 'Number of seats must be greater than 0' : '';
-                break;
-            default:
-                break;
-        }
-
-        // Update errors state
-        setErrors((prevErrors) => ({
-            ...prevErrors,
-            [name]: error,
-        }));
-
-        // Update form data state
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-        }));
-    };
-
-    // Convert image file to base64
-    const convertImageToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
-    };
-
-    // Handle changes to the file input
-    const handleFileChange = (e) => {
-      const file = e.target.files[0];
+const CreateCourseTrainer = () => {
+  const token = sessionStorage.getItem("token");
+  const MySwal = withReactContent(Swal);
   
-      // Define allowed MIME types for images
-      const allowedImageTypes = ['image/jpeg', 'image/png'];
-  
-      // Check file type (MIME type)
-      if (!allowedImageTypes.includes(file.type)) {
-          setErrors((prevErrors) => ({
-              ...prevErrors,
-              courseImage: 'Please select an image of type JPG or PNG',
-          }));
-          return;
+  // Initial state for form errors
+  const [errors, setErrors] = useState({
+      courseName: "",
+      courseDescription: "",
+      courseCategory: "",
+      courseAmount: "",
+      Duration: "",
+      Noofseats: "",
+      courseImage: "",
+  });
+
+  // Initial state for form data
+  const [formData, setFormData] = useState({
+      courseName: "",
+      courseDescription: "",
+      courseCategory: "",
+      courseAmount: "",
+      Duration: "",
+      Noofseats: "",
+      courseImage: null,
+      base64Image: null,
+  });
+
+  // Handle changes to form inputs
+  const handleChange = (e) => {
+      const { name, value } = e.target;
+      let error = '';
+
+      // Parse value to a number where necessary
+      const numericValue = name === 'courseAmount' || name === 'Duration' || name === 'Noofseats' ? parseFloat(value) : value;
+
+      switch (name) {
+          case 'courseName':
+              error = value.length < 1 ? 'Please enter a Course Title' : '';
+              break;
+          case 'courseCategory':
+              error = value.length < 1 ? 'Please enter a Course Category' : '';
+              break;
+          case 'courseDescription':
+              error = value.length < 1 ? 'Please enter a Course Description' : '';
+              break;
+          case 'courseAmount':
+              error = numericValue < 0 ? 'Course amount must be greater than or equal to 0' : '';
+              break;
+          case 'Duration':
+              error = numericValue < 1 ? 'Duration must be greater than 0' : '';
+              break;
+          case 'Noofseats':
+              error = numericValue < 1 ? 'Number of seats must be greater than 0' : '';
+              break;
+          default:
+              break;
       }
-  
-      // Check file size (should be 1 MB or less)
-      if (file.size > 1 * 1024 * 1024) {
-          setErrors((prevErrors) => ({
-              ...prevErrors,
-              courseImage: 'Image size must be 1 MB or smaller',
-          }));
-          return;
-      }
-  
-      // Update formData with the new file
+
+      // Update errors state
+      setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: error,
+      }));
+
+      // Update form data state
       setFormData((prevFormData) => ({
           ...prevFormData,
-          courseImage: file,
+          [name]: value,
       }));
-  
-      // Convert the file to base64
-      convertImageToBase64(file)
-          .then((base64Data) => {
-              // Set the base64 encoded image in the state
-              setFormData((prevFormData) => ({
-                  ...prevFormData,
-                  base64Image: base64Data,
-              }));
-              setErrors((prevErrors) => ({
-                  ...prevErrors,
-                  courseImage: "",
-              }));
-          })
-          .catch((error) => {
-              console.error("Error converting image to base64:", error);
-              setErrors((prevErrors) => ({
-                  ...prevErrors,
-                  courseImage: 'Error converting image to base64',
-              }));
-          });
   };
 
-    // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  // Convert image file to base64
+  const convertImageToBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+      });
+  };
 
-        // Create a FormData object to send the form data
-        const formDataToSend = new FormData();
-        formDataToSend.append("courseName", formData.courseName);
-        formDataToSend.append("courseDescription", formData.courseDescription);
-        formDataToSend.append("courseCategory", formData.courseCategory);
-        formDataToSend.append("courseAmount", formData.courseAmount);
-        formDataToSend.append("courseImage", formData.courseImage);
-        formDataToSend.append("Trainer", formData.Trainer);
-        formDataToSend.append("Duration", formData.Duration);
-        formDataToSend.append("Noofseats", formData.Noofseats);
+  // Handle changes to the file input
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
 
-        // Send the form data
-        try {
-            const response = await fetch("http://localhost:8080/course/add", {
-                method: "POST",
-                body: formDataToSend,
-            });
+    // Define allowed MIME types for images
+    const allowedImageTypes = ['image/jpeg', 'image/png'];
 
-            if (response.ok) {
-                const reply = await response.json();
-                const { message, courseId, coursename } = reply;
-                window.location.href = `/course/Addlesson/${coursename}/${courseId}`;
-            } else {
-                MySwal.fire({
-                    title: "Error!",
-                    text: "Some unexpected error occurred. Please try again later.",
-                    icon: "error",
-                    confirmButtonText: "OK",
-                });
-            }
-        } catch (error) {
-            MySwal.fire({
-                title: "Error!",
-                text: "Some unexpected error occurred. Please try again later.",
-                icon: "error",
-                confirmButtonText: "OK",
-            });
-        }
-    };
+    // Check file type (MIME type)
+    if (!allowedImageTypes.includes(file.type)) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            courseImage: 'Please select an image of type JPG or PNG',
+        }));
+        return;
+    }
 
-    // Calculate if the form can be submitted
-    const canSubmit = () => {
-        // Check if all form data fields are filled and there are no errors
-        const hasNoErrors = Object.values(errors).every((error) => error === '');
-        const hasNoEmptyFields = Object.values(formData).every((value) => value !== '' && value !== null);
-        
-        return hasNoErrors && hasNoEmptyFields;
-    };
+    // Check file size (should be 1 MB or less)
+    if (file.size > 1 * 1024 * 1024) {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            courseImage: 'Image size must be 1 MB or smaller',
+        }));
+        return;
+    }
 
-    return (
-        <div className='contentbackground'>
+    // Update formData with the new file
+    setFormData((prevFormData) => ({
+        ...prevFormData,
+        courseImage: file,
+    }));
+
+    // Convert the file to base64
+    convertImageToBase64(file)
+        .then((base64Data) => {
+            // Set the base64 encoded image in the state
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                base64Image: base64Data,
+            }));
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                courseImage: "",
+            }));
+        })
+        .catch((error) => {
+            console.error("Error converting image to base64:", error);
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                courseImage: 'Error converting image to base64',
+            }));
+        });
+};
+
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      // Create a FormData object to send the form data
+      const formDataToSend = new FormData();
+      formDataToSend.append("courseName", formData.courseName);
+      formDataToSend.append("courseDescription", formData.courseDescription);
+      formDataToSend.append("courseCategory", formData.courseCategory);
+      formDataToSend.append("courseAmount", formData.courseAmount);
+      formDataToSend.append("courseImage", formData.courseImage);
+      formDataToSend.append("Trainer", formData.Trainer);
+      formDataToSend.append("Duration", formData.Duration);
+      formDataToSend.append("Noofseats", formData.Noofseats);
+
+      // Send the form data
+      try {
+          const response = await fetch("http://localhost:8080/course/create/trainer", {
+              method: "POST",
+              body: formDataToSend,
+              headers:{
+                "Authorization":token
+              }
+          });
+
+          if (response.ok) {
+              const reply = await response.json();
+              const { message, courseId, coursename } = reply;
+              window.location.href = `/course/Addlesson/${coursename}/${courseId}`;
+          } else {
+              MySwal.fire({
+                  title: "Error!",
+                  text: "Some unexpected error occurred. Please try again later.",
+                  icon: "error",
+                  confirmButtonText: "OK",
+              });
+          }
+      } catch (error) {
+          MySwal.fire({
+              title: "Error!",
+              text: "Some unexpected error occurred. Please try again later.",
+              icon: "error",
+              confirmButtonText: "OK",
+          });
+      }
+  };
+
+  // Calculate if the form can be submitted
+  const canSubmit = () => {
+      // Check if all form data fields are filled and there are no errors
+      const hasNoErrors = Object.values(errors).every((error) => error === '');
+      const hasNoEmptyFields = Object.values(formData).every((value) => value !== '' && value !== null);
+      
+      return hasNoErrors && hasNoEmptyFields;
+  };
+
+  return (
+    <div className='contentbackground'>
             <div className='contentinner'>
                 <div className='divider ml-2'>
                     <h1 style={{ textDecoration: "underline" }}>Setting up a Course</h1>
@@ -272,7 +275,7 @@ const CourseCreation = () => {
                                 <label htmlFor='courseImage'>Course Image <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
-                                <label
+                                    <label
                                         htmlFor='courseImage'
                                         style={{ width: "400px" }}
                                         className={`file-upload-btn ${errors.courseImage && `is-invalid`}`}
@@ -290,6 +293,7 @@ const CourseCreation = () => {
                                         name="courseImage"
                                         accept='image/*'
                                         className='file-upload'
+                                       
                                     />
                                   
                                 </div>
@@ -396,7 +400,7 @@ const CourseCreation = () => {
                 </div>
             </div>
         </div>
-    );
-};
+  )
+}
 
-export default CourseCreation;
+export default CreateCourseTrainer

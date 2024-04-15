@@ -27,24 +27,23 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
         );
         if (!response.ok) {
           // If response is not successful (HTTP status code not in the range 200-299)
-          toast.error(`HTTP error! Status: ${response.status}`);
-          // MySwal.fire({
-          //   icon: "error",
-          //   title: "HTTP Error!",
-          //   text: `HTTP error! Status: ${response.status}`,
-          // });
+      
+          MySwal.fire({
+            icon: "error",
+            title: "HTTP Error!",
+            text: `HTTP error! Status: ${response.status}`,
+          });
         }
         const data = await response.json();
         setimg(`data:image/jpeg;base64,${data.courseImage}`);
         setCourseEdit(data);
       } catch (error) {
-        toast.error("An error occurred while Fetching course in Edit Form. Please try again later.");
-        // MySwal.fire({
-        //   title: "Error!",
-        //   text: "An error occurred while Fetching course in Edit Form. Please try again later.",
-        //   icon: "error",
-        //   confirmButtonText: "OK",
-        // });
+        MySwal.fire({
+          title: "Error!",
+          text: "An error occurred while Fetching course in Edit Form. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     };
     fetchcourse();

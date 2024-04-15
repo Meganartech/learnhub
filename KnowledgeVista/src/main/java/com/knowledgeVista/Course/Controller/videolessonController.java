@@ -121,7 +121,7 @@ public class videolessonController {
 		     }
 
 		     String role = jwtUtil.getRoleFromToken(token);
-		     if ("ADMIN".equals(role)) {
+		     if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
 		         try {
 		             Optional<videoLessons> opvideo = lessonrepo.findById(lessonId);
 		             if (opvideo.isPresent()) {
