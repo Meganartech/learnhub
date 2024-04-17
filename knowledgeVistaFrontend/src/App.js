@@ -12,7 +12,6 @@ import Unauthorized from "./AuthenticationPages/Unauthorized";
 import AttenTest from "./course/Test/AttenTest";
 import CertificateInputs from "./certificate/CertificateInputs";
 import Template from "./certificate/Template";
-import ProfileView from "./Student/ProfileView";
 import EditCourse from "./course/Update/EditCourse";
 import CourseView from "./course/Components/CourseView";
 import Swal from "sweetalert2";
@@ -42,6 +41,9 @@ import MyAssignedcourses from "./Trainer/MyAssignedcourses.js";
 import EditLesson from "./course/Update/EditLesson.js";
 import AssignCourseTRAINER from "./Trainer/AssignCourseTRAINER.js";
 import CreateCourseTrainer from "./Trainer/CreateCourseTrainer.js";
+import EditStudent from "./Student/EditStudent.js";
+import EditTrainer from "./Trainer/EditTrainer.js";
+import ProfileView from "./Common Components/ProfileView.js";
 
 
 
@@ -126,6 +128,8 @@ function App() {
                       <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute> }/>
                       <Route path="/view/Trainer/profile/:traineremail" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TrainerProfile/></PrivateRoute>}/>
                       <Route path="/view/Student/profile/:studentemail" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><StudentProfile/></PrivateRoute>}/>
+                      <Route path="/student/edit/:email" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditStudent/></PrivateRoute>}/>
+                      <Route path="/trainer/edit/:email" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditTrainer/></PrivateRoute>}/>
                       <Route path="/AssignedCourses" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} ><MyAssignedcourses/></PrivateRoute>}/>
                   </Route> 
 

@@ -113,11 +113,11 @@ const ViewStudentList = () => {
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.skills}</td>
                 <td className='py-2'>{user.role.roleName}</td>
-                {/* <td className='text-center'>
-                <Link to={`/edit/${user.userId}`} className='hidebtn' >
+                <td className='text-center'>
+                <Link to={`/student/edit/${user.email}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>
                     </Link>
-                </td> */}
+                </td>
                
                 <td className='text-center'>
                 <Link to={`/assignCourse/Student/${user.userId}`} className='hidebtn' >

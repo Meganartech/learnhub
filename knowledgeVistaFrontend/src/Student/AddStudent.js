@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import profile from "../images/profile.png"
-import { toast } from 'react-toastify';
 
 const AddStudent = () => {
     const token=sessionStorage.getItem("token")

@@ -113,29 +113,46 @@ public class MserRegistrationController {
 	
 	
 
-	    @GetMapping("/users/{email}")
-	    public ResponseEntity<Muser> getUserByEmail(@PathVariable String email) {
+	@GetMapping("/users/{email}")
+	public ResponseEntity<Muser> getUserByEmail(@PathVariable String email) {
+	    try {
+	        // Attempt to find a user by email
 	        Optional<Muser> userOptional = muserrepositories.findByEmail(email);
+	        
+	        // If the user is found, process the user data
 	        if (userOptional.isPresent()) {
 	            Muser user = userOptional.get();
-	          
-	        
+
+	            // Decompress the profile image and set it in the user object
 	            byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
 	            user.setProfile(profileImage);
-	           user.setCourses(null);
-	           
+               user.setAllotedCourses(null);
+	            user.setCourses(null);
+	            user.setPsw(null);
+	            user.setRole(null);
+	            // Return the user object in the response
 	            return ResponseEntity.ok()
 	                    .contentType(MediaType.APPLICATION_JSON)
 	                    .body(user);
-	           
 	        } else {
+	            // If the user is not found, return a 404 not found response
 	            return ResponseEntity.notFound().build();
 	        }
+	    } catch (Exception e) {
+	        // Log the exception for debugging and auditing purposes
+	        e.printStackTrace(); // Consider using a proper logging framework in production code
+
+	        // Return a 500 internal server error response
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .contentType(MediaType.APPLICATION_JSON)
+	                .body(null);
 	    }
+	}
+
        
 
 	    @GetMapping("/admin/getTrainer/{email}")
-	    public ResponseEntity<Muser> getTrainerDetailsByEmail(@PathVariable String email,
+	    public ResponseEntity<?> getTrainerDetailsByEmail(@PathVariable String email,
 	                                                          @RequestHeader("Authorization") String token) {
 
 	        try {
@@ -155,18 +172,18 @@ public class MserRegistrationController {
 	                    if("TRAINER".equals(user.getRole().getRoleName())) {
 	                    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
 	                    user.setProfile(profileImage);
+	                    user.setAllotedCourses(null);
 	                    user.setCourses(null);
 
 	                    return ResponseEntity.ok()
 	                            .contentType(MediaType.APPLICATION_JSON)
 	                            .body(user);}
 	                    else {
-
-	        	                    return ResponseEntity.notFound().build();
+	   	   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Trainer not found\"}");
 	                            }
 	                    
 	                } else {
-	                    return ResponseEntity.notFound().build();
+	   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Trainer not found\"}");
 	                }
 	            } else {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -181,7 +198,7 @@ public class MserRegistrationController {
 	    
 	    
 	    @GetMapping("/admin/getstudent/{email}")
-	    public ResponseEntity<Muser> getStudentDetailsByEmail(@PathVariable String email,
+	    public ResponseEntity<?> getStudentDetailsByEmail(@PathVariable String email,
 	                                                          @RequestHeader("Authorization") String token) {
 
 	        try {
@@ -202,17 +219,18 @@ public class MserRegistrationController {
 	                    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
 	                    user.setProfile(profileImage);
 	                    user.setCourses(null);
+	                    user.setAllotedCourses(null);
 
 	                    return ResponseEntity.ok()
 	                            .contentType(MediaType.APPLICATION_JSON)
 	                            .body(user);}
 	                    else {
 
-	        	                    return ResponseEntity.notFound().build();
+	   	   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Student not found\"}");
 	                            }
 	                    
 	                } else {
-	                    return ResponseEntity.notFound().build();
+		   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Student not found\"}");
 	                }
 	            } else {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -226,11 +244,7 @@ public class MserRegistrationController {
 	    }
 
 
-
-       
-      
-
-       
+    
   @Transactional
 	  @GetMapping("/viewall")
 	  public  ResponseEntity<List<Muser>> viewUsers() {
@@ -265,82 +279,5 @@ public class MserRegistrationController {
 	      }
 	  }
 	  
-		  
-	  
-	  
-
-	
 }
 	
-//	@Autowired
-//	private MuserDetailRepository muserdetailrepository;
-//	@Autowired
-//	private OccupationDetailsRepository occupationdetailrepository;
-//	@Autowired
-//	private OrgDetailRepository orgdetailrepository;
-//	@Autowired
-//	private SkillDetailRepository skilldetailrepository;
-	
-//	@PostMapping("/register")
-//	public ResponseEntity<String> registerStudent(@RequestBody RegisterRequestDTO registrationrequestdto) {
-//		
-//		
-//		   Muser user = registrationrequestdto.getMuser();
-//		 String   email=user.getEmail();
-//		    
-//		 long userCount = muserrepositories.count();
-//		    // Check if email exists
-//		    Muser existingUser = muserrepositories.findByEmail(email);
-//		muserrepositories.findByEmail(email);
-//		
-//		 if ( userCount > 0) {
-//			if(existingUser!=null) {
-//			   
-//				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"EMAIL ALREADY EXISTS\"}");
-//
-//			}else {
-//			MuserRoles roleUser=muserrolerepository.findByroleName("USER");
-//			 user.setRole(roleUser);
-//			 }
-//		}else{
-//			MuserRoles roleuser= new MuserRoles();
-//			roleuser.setRoleName("USER");
-//			roleuser.setIsActive(true);
-//			 muserrolerepository.save(roleuser); 
-//			 
-//			 MuserRoles role= new MuserRoles();
-//			 role.setRoleName("ADMIN");
-//			 role.setIsActive(true);
-//			 MuserRoles savedroleadmin = muserrolerepository.save(role);
-//			 user.setRole(savedroleadmin);
-//		}
-//		 
-////	        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-////			String encodedPassword = passwordEncoder.encode(user.getPsw());
-////			user.setPsw(encodedPassword);
-//		    
-//		
-//		  		    // Save Muser
-//		    muserrepositories.save(user);
-//		    
-//	  
-//		   MuserDetails muserdetail=  registrationrequestdto.getMuserDetails();
-//		   muserdetail.setUserId(user);
-//		   OccupationDetails occ= registrationrequestdto.getOccupationDetails();
-//		    occupationdetailrepository.save(occ);
-//		    muserdetail.setOccupationId(occ);
-//////		   OrgDetails org=orgdetailrepository.save(registrationrequestdto.getOrgDetails());
-//////		   muserdetail.setOrgId(org);
-//	       SkillDetails skill=skilldetailrepository.save(registrationrequestdto.getSkillDetails());
-//	       muserdetail.setSkillId(skill);
-//	       muserdetailrepository.save(registrationrequestdto.getMuserDetails());
-//	
-//	
-//	
-//	
-//	 return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
-//	
-//	}
-	
-	
-
