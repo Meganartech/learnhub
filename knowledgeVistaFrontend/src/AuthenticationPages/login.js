@@ -98,10 +98,8 @@ const Login = () => {
             const data = await response.json(); // Retrieve JSON data
             const jwtToken = data.token;
             const role = data.role;
-            const name = data.name;
             const userId=data.userid;
             const email=data.email;
-            const img=data.profileImage;
 
 //             const tokenParts = jwtToken.split('.');
 // const decodedPayload = JSON.parse(atob(tokenParts[1]));
@@ -111,13 +109,10 @@ const Login = () => {
 
 // console.log('User role:', userRole);
 
-            // Store token, name, and role in session storage
-            sessionStorage.setItem("name", name);
             sessionStorage.setItem('token', jwtToken);
             sessionStorage.setItem('role', role);
             sessionStorage.setItem('userid',userId);
             sessionStorage.setItem('email',email);
-            sessionStorage.setItem("image",img);
 
           
                 // Redirect to dashboard or home page

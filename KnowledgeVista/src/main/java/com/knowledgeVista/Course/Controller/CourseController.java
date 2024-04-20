@@ -314,7 +314,6 @@ public class CourseController {
 	        	  
 	               List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
 	               .stream()
-
 	                 .map(course -> {
 
 			               boolean isSelected = courses.contains(course);
@@ -423,7 +422,7 @@ public class CourseController {
 					  video.setCourseDetail(null);
 					  video.setVideoFile(null);
 					  video.setVideofilename(null);
-					  video.setFileUrl(null);
+					  
 					  byte[] images =ImageUtils.decompressImage(video.getThumbnail());
 					  video.setThumbnail(images);
 					 

@@ -1,12 +1,16 @@
 package com.knowledgeVista.User.Controller;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -263,7 +267,26 @@ public class Edituser {
 	 }
 
 	 
-	 
+	 @GetMapping("/profiledetails")
+	 private ResponseEntity<?> NameandProfile(
+	     @RequestHeader("Authorization") String token) {
+		 
+		 String email= jwtUtil.getUsernameFromToken(token);
+		 
+		Optional<Muser> opuser= muserrepositories.findByEmail(email);
+		if(opuser.isPresent()) {
+			Muser user=opuser.get();
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("name", user.getUsername());
+            // Add profile image if needed
+            byte[] images = ImageUtils.decompressImage(user.getProfile());
+            responseBody.put("profileImage", images);
+
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseBody);
+			
+		}
+		return ResponseEntity.notFound().build();
+	 }
 
 	
 }

@@ -110,7 +110,7 @@ const LessonList = () => {
             {lessons.map((lesson, index) => (
               <div key={lesson.lessonId} className='listbackinner'>
                 <span>{index+1} .</span>
-                <span>{lesson.Lessontitle}</span>
+                <Link to= {`/courses/${courseName}/${courseId}/${lesson.lessonId}`}>{lesson.Lessontitle}</Link>
                
                 <Link to={`/edit/${courseName}/${courseId}/${lesson.Lessontitle}/${lesson.lessonId}`}> <i className="fas fa-edit text-primary"></i></Link>
                 <span>

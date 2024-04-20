@@ -44,6 +44,8 @@ import CreateCourseTrainer from "./Trainer/CreateCourseTrainer.js";
 import EditStudent from "./Student/EditStudent.js";
 import EditTrainer from "./Trainer/EditTrainer.js";
 import ProfileView from "./Common Components/ProfileView.js";
+import VideoCheck from "./VideoCheck.js";
+import CustomViewvideo from "./course/Components/CustomViewvideo.js";
 
 
 
@@ -103,7 +105,8 @@ function App() {
                     {/* <Route path="/admin/dashboard" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Dashboard/></PrivateRoute>}/> */}
                       <Route path="/lessonList/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><LessonList/></PrivateRoute>}/> 
                       <Route path="/edit/:courseName/:courseId/:Lessontitle/:lessonId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditLesson/></PrivateRoute>}/>
-                      <Route path="/courses/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} ><ViewVideo/></PrivateRoute>}/>                     
+                      <Route path="/courses/:courseName/:courseId/" element={<PrivateRoute authenticationRequired={true} ><ViewVideo/></PrivateRoute>}/>                     
+                      <Route path="/courses/:courseName/:courseId/:current" element={<PrivateRoute authenticationRequired={true} ><CustomViewvideo/></PrivateRoute>}/>                 
                       <Route path="/course/Addlesson/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><UploadVideo/></PrivateRoute>}/>
                       <Route path="/course/addcourse" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CourseCreation/></PrivateRoute>}/>
                       <Route path="/course/Trainer/addcourse" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} onlytrainer={true}><CreateCourseTrainer/></PrivateRoute>}/>
@@ -141,8 +144,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/resetpassword" element={<ResetPassword />}></Route>
           <Route path="*" element={<Missing/>}/>
-       
-        </Routes>
+          <Route path="/videocheck" element={<VideoCheck/>}/>
+                  </Routes>
       </div>
     </Router>  );
 }

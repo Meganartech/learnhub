@@ -42,7 +42,7 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 @CrossOrigin
 public class Testcontroller {
 	   @Autowired
-	    private CourseDetailRepository courseDetailRepository;
+	    private CourseDetailRepository courseDetailRepo;
 		@Autowired
 		private MusertestactivityRepo muserActivityRepo;
 		
@@ -61,7 +61,7 @@ public class Testcontroller {
 	    public ResponseEntity<String> createTest(@PathVariable Long courseId, @RequestBody CourseTest test) {
 	        try {
 	            // Find the course by its ID
-	            CourseDetail courseDetail = courseDetailRepository.findById(courseId)
+	            CourseDetail courseDetail = courseDetailRepo.findById(courseId)
 	                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
 	            
 	            Optional <CourseTest> opcoursetest= testRepository.findByCourseDetail(courseDetail);
@@ -94,7 +94,7 @@ public class Testcontroller {
 	    public ResponseEntity<?> getTestsByCourseId(@PathVariable Long courseId) {
 	        try {
 	            // Find the course by its ID
-	            CourseDetail courseDetail = courseDetailRepository.findById(courseId)
+	            CourseDetail courseDetail = courseDetailRepo.findById(courseId)
 	                    .orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found with the specified ID: " + courseId));
 
 
@@ -166,7 +166,7 @@ public class Testcontroller {
 	                Optional<Muser> opUser = muserRepo.findByEmail(email);
 	                if (opUser.isPresent()) {
 	                    Muser user = opUser.get();
-	                    Optional<CourseDetail> opCourse = courseDetailRepository.findById(courseId);
+	                    Optional<CourseDetail> opCourse = courseDetailRepo.findById(courseId);
                           
 	                    if (opCourse.isPresent()) {
 	                        CourseDetail course = opCourse.get();

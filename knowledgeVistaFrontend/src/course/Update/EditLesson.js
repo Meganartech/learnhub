@@ -193,9 +193,9 @@ useEffect(() => {
     if (videodata.fileUrl) {
         formDataToSend.append("fileUrl", videodata.fileUrl);
     }
-    for (const [key, value] of formDataToSend.entries()) {
-        console.log(`${key}: ${value}`);
-    }
+    // for (const [key, value] of formDataToSend.entries()) {
+    //     console.log(`${key}: ${value}`);
+    // }
     try {
         const response = await fetch(`http://localhost:8080/lessons/edit/${videodata.lessonId}`, {
             method: "PATCH",
@@ -204,28 +204,38 @@ useEffect(() => {
             },
             body: formDataToSend
         });
-
+        const data =await response.json();
         if (response.ok) {
             window.location.href = `/lessonList/${courseName}/${courseId}`;
             setIsSubmitting(false);
         } else if (response.status === 401) {
+          setIsSubmitting(false);
             window.location.href = "/unauthorized";
         } else if (response.status === 404) {
+          setIsSubmitting(false);
           MySwal.fire({
             title: "Not Found!",
             text: " The Lesson Not FOund",
-            icon: "Warning",
+            icon: "warning",
             confirmButtonText: "OK",
           });
-        } 
+        } else{
+          setIsSubmitting(false);
+          MySwal.fire({
+            icon: "warning",
+            title: "error !",
+            text: data.message,
+            confirmButtonText: "OK",
+          });
+        }
     } catch (error) { 
+      setIsSubmitting(false);
        MySwal.fire({
-      title: "Error!",
+      title: "error!",
       text: "Some Unexpected Error occured . Please try again later.",
       icon: "error",
       confirmButtonText: "OK",
     });
-        setIsSubmitting(false);
     }
 };
 

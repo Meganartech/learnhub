@@ -73,12 +73,8 @@ public class AuthenticationController {
 	                Map<String, Object> responseBody = new HashMap<>();
 	                responseBody.put("token", jwtToken);
 	                responseBody.put("message", "Login successful");
-	                responseBody.put("name", user.getUsername());
 	                responseBody.put("role", user.getRole().getRoleName());
 	                responseBody.put("email", user.getEmail());
-	                // Add profile image if needed
-	                byte[] images = ImageUtils.decompressImage(user.getProfile());
-	                responseBody.put("profileImage", images);
 	                responseBody.put("userid",user.getUserId());
 
 	                // Return response with JSON body

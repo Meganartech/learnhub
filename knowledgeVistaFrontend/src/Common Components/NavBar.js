@@ -1,14 +1,42 @@
-import React from "react";
-import undraw_profile from "../images/undraw_profile.jpg";
+import React, { useEffect, useState } from "react";
+import undraw_profile from "../images/profile.png";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "../css/Component.css"
 
 const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange}) => {
+  const [data,setdata]=useState({
+    name:"",
+    profileImage:null
+  })
+  const token =sessionStorage.getItem("token");
+  useEffect(() => {
+    const fetchItems = async () => {
+        try {
+            const response = await fetch("http://localhost:8080/Edit/profiledetails", {
+                headers: {
+                    "Authorization": token,
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setdata(data);
+            } else {
+                console.error("Server responded with status:", response.status);
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    fetchItems();
+}, [token]);  // Ensure to include token in the dependencies array if it changes
+
+ 
+
   const MySwal = withReactContent(Swal);
-  const username=sessionStorage.getItem("name");
-  const image=sessionStorage.getItem("image");
-  const imageSource = image ? `data:image/jpeg;base64,${image}` : undraw_profile;
+  const imageSource = data.profileImage ? `data:image/jpeg;base64,${data.profileImage}` : undraw_profile;
   const handleLogout = async () => {
     Swal.fire({
       title: "Logout",
@@ -19,8 +47,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange}) => {
       cancelButtonText: "Cancel",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const token = sessionStorage.getItem("token"); // Retrieve token from session storage
-        if (!token) {
+         if (!token) {
           console.error("Token not found");
           return;
         }
@@ -92,7 +119,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange}) => {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <h5 className="username">{username}</h5>
+            <h5 className="username">{data.name}</h5>
             <img
               className="img-profile rounded-circle  borderimg "
               src={imageSource}
