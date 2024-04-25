@@ -134,6 +134,7 @@ const handleOnSeek = (progress) => {
               // If URL is null or doesn't contain 'youtube.com' or 'youtu.be', consider it as a local video
               setVideoType('local');
               setVideoSource(`http://localhost:8080/lessons/getvideoByid/${lessId}/${courseId}/${token}`);
+             
           }
               }
       

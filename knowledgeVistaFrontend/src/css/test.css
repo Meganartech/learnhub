@@ -46,7 +46,7 @@
     padding-bottom: 2px;
     display: grid;
     align-items: center;
-    grid-template-columns: 3fr 3fr 3fr 3fr 3fr 1fr;
+    grid-template-columns:  3fr 3fr 3fr 3fr 1fr;
     gap: 20px;
 }
 /* .Questionstable{
@@ -135,7 +135,23 @@
     margin-bottom: 20px; 
    
 }
-
+.choice{
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 1fr 20fr;
+}
+.smalltextbox{
+height: 30px;
+}
+.edititems{
+  display: grid;
+  grid-template-columns: 5fr 8fr 1fr;
+}
+.atgrid input{
+  border: 1px solid black;
+  
+  border-radius: 5px;
+}
 .lielement input[type="radio"] {
     margin-right: 5px; /* Add margin-right to create space between the radio button and label */
 }

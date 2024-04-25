@@ -120,7 +120,7 @@ const ViewTrainerList = () => {
                 
                 <td className='py-2'>{user.skills}</td>
                 <td className='py-2'>{user.role.roleName}</td>
-                <td>
+                <td className='text-center'>
                 <Link to={`/trainer/edit/${user.email}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>
                     </Link>

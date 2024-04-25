@@ -102,8 +102,7 @@ const AttenTest = () => {
   
           if (!response.ok) {
               throw new Error('Failed to submit the test');
-              
-          setIsSubmitting(false);
+            setIsSubmitting(false);
           }
   
           setIsSubmitting(false);

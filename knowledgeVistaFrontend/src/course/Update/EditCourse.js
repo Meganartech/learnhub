@@ -79,7 +79,7 @@ const EditCourse = ({filteredCourses}) => {
       )}
       </div>
       {filteredCourses.length > 0 ? (
-        <ul className={styles.maincontainer} style={{height:"70vh"}}>
+        <ul className={styles.maincontainer} style={{height:"65vh"}}>
           {filteredCourses
             .slice()
             .reverse()

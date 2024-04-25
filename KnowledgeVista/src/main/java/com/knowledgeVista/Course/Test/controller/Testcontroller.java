@@ -263,30 +263,50 @@ public class Testcontroller {
 	    }
 	    
 //``````````````````````Edit Test Details````````````````````````````````````
-	    @PatchMapping("/update/{testId}")
-	    public ResponseEntity<?> editTest(@PathVariable Long testId,
-	            @RequestParam(value="testName", required=false) String testName,
-	            @RequestParam(value="noofattempt", required=false) Long noOfAttempt,
-	            @RequestParam(value="passPercentage", required=false) Double passPercentage) {
-	        Optional<CourseTest> optest = testRepository.findById(testId);
-	        if (optest.isPresent()) {
-	            CourseTest test = optest.get();
-	            if (testName != null) {
-	                test.setTestName(testName);
-	            }
-	            if (noOfAttempt != null) {
-	                test.setNoofattempt(noOfAttempt);
-	            }
-	            if (passPercentage != null) {
-	                test.setPassPercentage(passPercentage);
-	            }
-	            testRepository.saveAndFlush(test);
-	            return ResponseEntity.ok("Test updated successfully");
-	        } else {
-	            return ResponseEntity.notFound().build();
-	        }
-	    }
 
+@PatchMapping("/update/{testId}")
+public ResponseEntity<?> editTest(@PathVariable Long testId,
+        @RequestParam(value="testName", required=false) String testName,
+        @RequestParam(value="noofattempt", required=false) Long noOfAttempt,
+        @RequestParam(value="passPercentage", required=false) Double passPercentage,
+        @RequestHeader("Authorization") String token) {
+    try {
+    	System.out.println("hi");
+    	System.out.println(passPercentage);
+    	 if (!jwtUtil.validateToken(token)) {
+         	System.out.println("unauthorized");
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                     .body("{\"error\": \"Invalid Token\"}");
+         }
+
+         // Retrieve role and email from token
+         String role = jwtUtil.getRoleFromToken(token);
+         if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
+        Optional<CourseTest> optest = testRepository.findById(testId);
+        if (optest.isPresent()) {
+            CourseTest test = optest.get();
+            if (testName != null) {
+                test.setTestName(testName);
+            }
+            if (noOfAttempt != null) {
+                test.setNoofattempt(noOfAttempt);
+            }
+            if (passPercentage != null) {
+                test.setPassPercentage(passPercentage);
+            }
+            testRepository.saveAndFlush(test);
+            return ResponseEntity.ok().body("{\"message\": \"Test updated successfully\"}");
+        } else {
+            return ResponseEntity.notFound().build();
+        }}else {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("{\"error\": \"Invalid Token\"}");
+        }
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error updating test: " + e.getMessage() + "\"}");
+    }
+}
 
 	    
 //----------------------WORKING------------------------------------------

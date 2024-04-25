@@ -122,50 +122,122 @@ public class QuestionController {
 		    }
 		}
 
-	    
-	 
-	 
-	 
-	    @DeleteMapping("/questions/{questionId}")
-	    public String deleteQuestion(@PathVariable Long questionId) {
-	        // Find the question by its ID
-	        Question question = questionRepository.findById(questionId).orElse(null);
-	        
-	        // If question exists, delete it
-	        if (question != null) {
-	            questionRepository.delete(question);
-	            return "Question with ID " + questionId + " deleted successfully";
-	        } else {
-	            return "Question with ID " + questionId + " not found";
-	        }
+	    @GetMapping("/getQuestion/{questionId}")
+		public ResponseEntity<?> getQuestion(@PathVariable Long questionId,
+                @RequestHeader("Authorization") String token) {
+	    	  try {
+			        // Validate JWT token
+			        if (!jwtUtil.validateToken(token)) {
+			            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			        }
+			        // Extract role from JWT token
+			        String role = jwtUtil.getRoleFromToken(token);
+
+			        // Check if user has admin or trainer role
+			        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+			        	Question existingQuestion = questionRepository.findById(questionId)
+				                .orElse(null);
+				     
+				        if (existingQuestion == null) {
+				            return ResponseEntity.notFound().build();
+				        }else {
+				        	existingQuestion.setTest(null);
+				        	return ResponseEntity.ok(existingQuestion);
+				        }
+			        }else {
+
+			            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			        }
+	    	  }catch (Exception e) {
+			        // Handle any unexpected exceptions here
+			        // You can log the error or return an appropriate response
+			        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+			    }
+
 	    }
+	 
+	 
+		@DeleteMapping("/questions/{questionId}")
+		public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId,
+		                                        @RequestHeader("Authorization") String token) {
+		    try {
+		        // Validate JWT token
+		        if (!jwtUtil.validateToken(token)) {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        }
+
+		        // Extract role from JWT token
+		        String role = jwtUtil.getRoleFromToken(token);
+
+		        // Check if user has admin or trainer role
+		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+		            // Fetch the question from the repository based on the provided ID
+		            Question question = questionRepository.findById(questionId).orElse(null);
+
+		            // If question exists, delete it
+		            if (question != null) {
+		                questionRepository.delete(question);
+		                // Return a response indicating successful deletion
+		                return ResponseEntity.ok("Question with ID " + questionId + " deleted successfully");
+		            } else {
+		                // Return a response indicating that the question was not found
+		                return ResponseEntity.notFound().build();
+		            }
+		        } else {
+		            // Return unauthorized response if user does not have required role
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        }
+		    } catch (Exception e) {
+		        // Handle any unexpected exceptions here
+		        // You can log the error or return an appropriate response
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+		    }
+		}
+
 	    //--------------------WORKING--------
-	    @PutMapping("/edit/{questionId}")
-	    public ResponseEntity<Question> updateQuestion(
-	            @PathVariable Long questionId,
-	            @RequestParam String questionText,
-	            @RequestParam String option1,
-	            @RequestParam String option2,
-	            @RequestParam String option3,
-	            @RequestParam String option4,
-	            @RequestParam String answer
+		@PatchMapping("/edit/{questionId}")
+		public ResponseEntity<?> updateQuestion(
+		        @PathVariable Long questionId,
+		        @RequestParam String questionText,
+		        @RequestParam String option1,
+		        @RequestParam String option2,
+		        @RequestParam String option3,
+		        @RequestParam String option4,
+		        @RequestParam String answer,
+		        @RequestHeader("Authorization") String token) {
+		    try {
+		        // Validate JWT token
+		        if (!jwtUtil.validateToken(token)) {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        }
+		        // Extract role from JWT token
+		        String role = jwtUtil.getRoleFromToken(token);
 
-	    ) {
-	        Question existingQuestion = questionRepository.findById(questionId)
-	                .orElse(null);
-	     
-	        if (existingQuestion == null) {
-	            return ResponseEntity.notFound().build();
-	        }
-	        existingQuestion.setQuestionText(questionText);
-	        existingQuestion.setOption1(option1);
-	        existingQuestion.setOption2(option2);
-	        existingQuestion.setOption3(option3);
-	        existingQuestion.setOption4(option4);
-	        existingQuestion.setAnswer(answer);
-	        Question savedQuestion = questionRepository.save(existingQuestion);
+		        // Check if user has admin or trainer role
+		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+		            Question existingQuestion = questionRepository.findById(questionId)
+		                    .orElse(null);
+		         
+		            if (existingQuestion == null) {
+		                return ResponseEntity.notFound().build();
+		            }
+		            existingQuestion.setQuestionText(questionText);
+		            existingQuestion.setOption1(option1);
+		            existingQuestion.setOption2(option2);
+		            existingQuestion.setOption3(option3);
+		            existingQuestion.setOption4(option4);
+		            existingQuestion.setAnswer(answer);
+		            Question savedQuestion = questionRepository.save(existingQuestion);
 
-	        // Return the updated Question object in the response
-	        return ResponseEntity.ok(savedQuestion);
-	    }
+		            // Return the updated Question object in the response
+		            return ResponseEntity.ok().body("{\"message\": \"Question updated successfully\"}");
+		        } else {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        } 
+		    } catch (Exception e) {
+		        // Handle any unexpected exceptions here
+		        // You can log the error or return an appropriate response
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"" + e.getMessage() + "\"}");
+		    }
+		}
 }
