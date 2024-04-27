@@ -240,4 +240,55 @@ public class QuestionController {
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"" + e.getMessage() + "\"}");
 		    }
 		}
+		
+		
+		@PostMapping("/add/{testId}")
+		public ResponseEntity<?> Addmore(
+		        @PathVariable Long testId,
+		        @RequestParam String questionText,
+		        @RequestParam String option1,
+		        @RequestParam String option2,
+		        @RequestParam String option3,
+		        @RequestParam String option4,
+		        @RequestParam String answer,
+		        @RequestHeader("Authorization") String token) {
+		    try {
+		        // Validate JWT token
+		        if (!jwtUtil.validateToken(token)) {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        }
+		        // Extract role from JWT token
+		        String role = jwtUtil.getRoleFromToken(token);
+
+		        // Check if user has admin or trainer role
+		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+		            CourseTest test = testrepo.findById(testId)
+		                    .orElse(null);
+		         
+		            if (test == null) {
+		                return ResponseEntity.notFound().build();
+		            }
+		            Question ques=new Question();
+		            ques.setQuestionText(questionText);
+		            ques.setOption1(option1);
+		            ques.setOption2(option2);
+		            ques.setOption3(option3);
+		            ques.setOption4(option4);
+		            ques.setAnswer(answer);
+		            ques.setTest(test);
+		            Question savedQuestion = questionRepository.save(ques);
+
+		            // Return the updated Question object in the response
+		            return ResponseEntity.ok().body("{\"message\": \"Question updated successfully\"}");
+		        } else {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        } 
+		    } catch (Exception e) {
+		        // Handle any unexpected exceptions here
+		        // You can log the error or return an appropriate response
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"" + e.getMessage() + "\"}");
+		    }
+		}
 }
+
+

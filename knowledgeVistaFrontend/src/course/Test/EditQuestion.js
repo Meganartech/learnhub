@@ -9,7 +9,6 @@ const EditQuestion = () => {
   const token = sessionStorage.getItem("token");
   const location = useLocation();
   
-  // State variables to hold question data
   const [questionText, setQuestionText] = useState('');
   const [options, setOptions] = useState({
     option1: '',
@@ -18,6 +17,15 @@ const EditQuestion = () => {
     option4: ''
   });
   const [selectedOption, setSelectedOption] = useState('');
+  const [saveEnabled, setSaveEnabled] = useState(false); // Initially disable save button
+  const [errors, setErrors] = useState({
+    option1: '',
+    option2: '',
+    option3: '',
+    option4: '',
+    questionText: '',
+    selectedOption: ''
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +47,10 @@ const EditQuestion = () => {
             option3: data.option3,
             option4: data.option4
           });
-          setSelectedOption(data.answer);
+  
+          // Move setting selectedOption inside the 'then' block
+          const selectedOption = Object.keys(data).find(optionKey => data[optionKey] === data.answer);
+          setSelectedOption(selectedOption); 
         }
       } catch (error) {
         MySwal.fire({
@@ -50,9 +61,14 @@ const EditQuestion = () => {
         });
       }
     };
-
+  
     fetchData();
   }, [questionId, token]);
+  
+
+  useEffect(() => {
+    validateForm(); // Validate the form whenever any state changes
+  }, [questionText, options, selectedOption]);
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
@@ -64,10 +80,61 @@ const EditQuestion = () => {
       ...prevOptions,
       [name]: value
     }));
+    validateInput(name, value);
   };
 
   const handleQuestionTextChange = (e) => {
-    setQuestionText(e.target.value);
+    const { value } = e.target;
+    setQuestionText(value);
+    validateInput('questionText', value);
+  };
+
+  const validateInput = (name, value) => {
+    if (value.trim() === '') {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: 'This field is required.'
+      }));
+    } else {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = { ...errors };
+
+    // Check if question text is empty
+    if (questionText.trim() === '') {
+      newErrors.questionText = 'This field is required.';
+      isValid = false;
+    } else {
+      newErrors.questionText = '';
+    }
+
+    // Check if any option is empty
+    Object.keys(options).forEach(option => {
+      if (options[option].trim() === '') {
+        newErrors[option] = 'This field is required.';
+        isValid = false;
+      } else {
+        newErrors[option] = '';
+      }
+    });
+
+    // Check if an answer is selected
+    if (selectedOption === '') {
+      newErrors.selectedOption = 'Please select an answer.';
+      isValid = false;
+    } else {
+      newErrors.selectedOption = '';
+    }
+
+    setErrors(newErrors);
+    setSaveEnabled(isValid);
   };
 
   const handleSave = async () => {
@@ -78,8 +145,8 @@ const EditQuestion = () => {
       formData.append("option2", options.option2);
       formData.append("option3", options.option3);
       formData.append("option4", options.option4);
-      formData.append("answer", selectedOption);
-  
+      formData.append("answer", options[selectedOption]);
+
       const response = await fetch(`http://localhost:8080/test/edit/${questionId}`, {
         method: "PATCH",
         headers: {
@@ -96,18 +163,15 @@ const EditQuestion = () => {
           confirmButtonText: "OK"
         });
         window.history.back();
-        
       } else if(response.status===401){
-        
         MySwal.fire({
           title: "Error",
-          text: "you are unauthorized to access this page",
+          text: "You are unauthorized to access this page",
           icon: "error",
           confirmButtonText: "OK"
         });
-        window.location.href="/unauthorized" // Redirect to previous page
-      }else{
-        
+        window.location.href="/unauthorized"; // Redirect to previous page
+      } else {
         const data=await response.json();
         MySwal.fire({
           title: "Error",
@@ -126,35 +190,38 @@ const EditQuestion = () => {
     }
   };
   
-
   return (
     <div className='contentbackground'>
       <div className='contentinner'>
-        <div className='atdiv'>
-          <div className='atgrid'>
+        <div className='atdiv'  style={{padding:"30px"}}>
+          <div className='atgrid' style={{height:"400px"}}>
             <input 
-              className='form-control form-control-lg'
+              className={`form-control form-control-lg ${errors.questionText && 'is-invalid'}`}
               autoFocus
               value={questionText}
               onChange={handleQuestionTextChange}
             />
+            {errors.questionText && <div className="invalid-feedback">{errors.questionText}</div>}
             <ul className='listgroup'>
               {Object.keys(options).map((optionKey, index) => (
                 <li className='choice' key={index}>
                   <input
-                    className='mt-2'
+                    className={`mt-2 ${errors[optionKey] && 'is-invalid'}`}
                     type="radio"
-                    value={options[optionKey]}
-                    checked={selectedOption === options[optionKey]}
-                    onChange={() => handleOptionChange(options[optionKey])}
+                    value={optionKey} 
+                    checked={selectedOption === optionKey} 
+                    onChange={() => handleOptionChange(optionKey)} 
                   />
+                  <div>
                   <input
                     type='text'
                     value={options[optionKey]}
                     name={optionKey}
-                    className="form-control form-control-lg"
+                    className={`form-control form-control-lg ${errors[optionKey] && 'is-invalid'}`}
                     onChange={handleInputChange}
                   />
+                  {errors[optionKey] && <div className="invalid-feedback">{errors[optionKey]}</div>}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -162,7 +229,13 @@ const EditQuestion = () => {
           <div className='atbtndiv'>
             <button className='btn btn-primary' onClick={() => window.history.back()}>Cancel</button>
             <div></div>
-            <button className='btn btn-primary' onClick={handleSave}>Save</button>
+            <button
+              className='btn btn-primary'
+              onClick={handleSave}
+              disabled={!saveEnabled}
+            >
+              Save
+            </button>
           </div>
         </div>
       </div>

@@ -47,6 +47,7 @@ import ProfileView from "./Common Components/ProfileView.js";
 import VideoCheck from "./VideoCheck.js";
 import CustomViewvideo from "./course/Components/CustomViewvideo.js";
 import EditQuestion from "./course/Test/EditQuestion.js";
+import AddMoreQuestion from "./course/Test/AddMoreQuestion.js";
 
 
 
@@ -119,7 +120,8 @@ function App() {
                       <Route path="/course/AddTest/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CreateTest /></PrivateRoute>} />
                       <Route path="/test/start/:courseName/:courseId" element={<PrivateRoute onlyuser={true} authenticationRequired={true}><AttenTest/></PrivateRoute>}/>
                       <Route path="/test/Edit/:questionId" element={<PrivateRoute authorizationRequired={true} authenticationRequired={true}><EditQuestion/></PrivateRoute>}/>
-                     <Route path="/course/edit/:courseId" element={<PrivateRoute authenticationRequired={true}><CourseDetails/></PrivateRoute>}/>
+                      <Route path="/test/AddMore/:testId" element={<PrivateRoute authorizationRequired={true} authenticationRequired={true}><AddMoreQuestion/></PrivateRoute>}/>
+                      <Route path="/course/edit/:courseId" element={<PrivateRoute authenticationRequired={true}><CourseDetails/></PrivateRoute>}/>
                       <Route path="/course/testlist/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TestList /></PrivateRoute>} />
                       <Route path="/course/dashboard/profile" element={<PrivateRoute authenticationRequired={true}><ProfileView/></PrivateRoute>}/>
                       <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute>}/>

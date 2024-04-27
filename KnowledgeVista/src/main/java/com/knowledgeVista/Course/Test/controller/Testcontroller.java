@@ -271,7 +271,6 @@ public ResponseEntity<?> editTest(@PathVariable Long testId,
         @RequestParam(value="passPercentage", required=false) Double passPercentage,
         @RequestHeader("Authorization") String token) {
     try {
-    	System.out.println("hi");
     	System.out.println(passPercentage);
     	 if (!jwtUtil.validateToken(token)) {
          	System.out.println("unauthorized");

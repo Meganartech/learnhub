@@ -265,14 +265,21 @@ const TestList = () => {
                 <span>
                   <b>Number of Questions:</b> {test.noOfQuestions}
                 </span>
-                <span onClick={() => handleDelete(test.testId)}>
-                  <i className="fa-solid fa-trash text-danger"></i>
-                </span>
+              
               </div>
+              <span className='atbtndiv' >
+                <span onClick={() => handleDelete(test.testId)}>
+                  <i className="fa-solid fa-trash text-danger" style={{ fontSize: '20px',paddingTop:"20px" }}></i>
+                </span>
+                <div></div>
+                <div>
+                <Link to={`/test/AddMore/${test.testId}`} className='btn btn-primary mr-2' style={{width:"150px"}}><i className='fa fa-plus'></i> Add more </Link>
+                </div>
+                </span>
               {/* Render questions if test is available */}
               {test.questions && (
                 <div className="table-container">
-                  <table className='table table-hover mt-5 table-bordered table-sm'>
+                  <table className='table table-hover  table-bordered table-sm'>
                     <thead className='thead-dark'>
                       <tr>
                         <th scope="col">S.no</th>
