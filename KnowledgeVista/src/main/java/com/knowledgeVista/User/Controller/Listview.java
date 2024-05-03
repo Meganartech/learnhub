@@ -28,58 +28,6 @@ public class Listview {
 	
 	
 //```````````````WORKING````````````````````````````````````
-	 @GetMapping("/countstudent")
-	    public ResponseEntity<Long> countStudent() {
-	        try {
-	            Long count = muserrepositories.countByRoleName("USER");
-	            return ResponseEntity.ok().body(count);
-	        } catch (Exception e) {
-	            // Log the exception for debugging purposes
-	            e.printStackTrace();
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	        }
-	    }
-//```````````````WORKING`````````````````````````````````````
-	 @GetMapping("/countadmin")
-	    public ResponseEntity<Long> countAdmin() {
-	        try {
-	            Long count = muserrepositories.countByRoleName("ADMIN");
-	            return ResponseEntity.ok().body(count);
-	        } catch (Exception e) {
-	            // Log the exception for debugging purposes
-	            e.printStackTrace();
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	        }
-	    }
-//```````````WORKING```````````````````````````````````````
-	 @GetMapping("/counttrainer")
-	    public ResponseEntity<Long> countTrainer() {
-	        try {
-	            Long count = muserrepositories.countByRoleName("TRAINER");
-	            return ResponseEntity.ok().body(count);
-	        } catch (Exception e) {
-	            // Log the exception for debugging purposes
-	            e.printStackTrace();
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	        }
-	    }
-	 
-	 
-//	 
-//	 @GetMapping("/trainersforDropdown")
-//	 private ResponseEntity<List<Map<String,Object>>>TrainersList(){
-//		 List<Muser> totaltrainers=muserrepositories.findByRoleName("TRAINER");
-//		 List<Map<String, Object>> TrainerResponseList = new ArrayList<>();
-//		 for(Muser trainer : totaltrainers) {
-//	         Map<String, Object> response = new HashMap<>();
-//	        		 response.put("userId", trainer.getUserId());
-//	        		 response.put("username", trainer.getUsername());
-//	        		 TrainerResponseList.add(response);
-//		 }
-//       return ResponseEntity.ok(TrainerResponseList);
-		 
-//	 }
-//```````````````WORKING````````````````````````````````````
 
     @GetMapping("/users")
     public ResponseEntity<List<Muser>> getUsersByRoleName() {

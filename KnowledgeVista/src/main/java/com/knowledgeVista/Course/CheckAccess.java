@@ -9,12 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
+import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
 @RequestMapping("/CheckAccess")
@@ -24,34 +26,55 @@ public class CheckAccess {
 	private CourseDetailRepository coursedetailrepository;
 	@Autowired
 	private MuserRepositories muserRepository;
+	 @Autowired
+	 private JwtUtil jwtUtil;
 
-	@PostMapping("/match")
-	public ResponseEntity<?> checkAccess(@RequestBody Map<String, Long> requestData) {
-	    try {
-	        Long courseId = requestData.get("courseId");
-	        Long userId = requestData.get("userId");
-	        Optional<CourseDetail> courseOptional = coursedetailrepository.findById(courseId);
-	        Optional<Muser> optionalUser = muserRepository.findById(userId);
-	        
-	        if (courseOptional.isPresent() && optionalUser.isPresent()) {
-	            Muser user = optionalUser.get();
-	            CourseDetail course = courseOptional.get();
-	            String courseUrl=course.getCourseUrl();
-	            
-	            if (user.getCourses().contains(course)) {
-	                // User is already enrolled in the course
-	                return ResponseEntity.ok().body(courseUrl);
-	            } else {
-	                // User is not enrolled in the course
-	                return ResponseEntity.badRequest().build();
-	            }
-	        } else {
-	            // Course or user not found
-	            return ResponseEntity.notFound().build();
-	        }
-	    } catch (Exception e) {
-	        // Handle any exceptions
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	    }
-	}
+	 @PostMapping("/match")
+	 public ResponseEntity<?> checkAccess(@RequestBody Map<String, Long> requestData, @RequestHeader("Authorization") String token) {
+	     try {
+	         if (!jwtUtil.validateToken(token)) {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	         }
+
+	         String role = jwtUtil.getRoleFromToken(token);
+	         String email = jwtUtil.getUsernameFromToken(token);
+
+	         Long courseId = requestData.get("courseId");
+	         Optional<CourseDetail> courseOptional = coursedetailrepository.findById(courseId);
+	         Optional<Muser> optionalUser = muserRepository.findByEmail(email);
+
+	         if ("ADMIN".equals(role)) {
+	             if (courseOptional.isPresent()) {
+	                 CourseDetail course = courseOptional.get();
+	                 String courseUrl = course.getCourseUrl();
+	                 return ResponseEntity.ok().body(courseUrl);
+	             }
+	         } else if ("TRAINER".equals(role)) {
+	             if (optionalUser.isPresent() && courseOptional.isPresent()) {
+	                 Muser user = optionalUser.get();
+	                 CourseDetail course = courseOptional.get();
+	                 if (user.getAllotedCourses().contains(course)) {
+	                     String courseUrl = course.getCourseUrl();
+	                     return ResponseEntity.ok().body(courseUrl);
+	                 }
+	             }
+	         } else if ("USER".equals(role)) {
+	             if (optionalUser.isPresent() && courseOptional.isPresent()) {
+	                 Muser user = optionalUser.get();
+	                 CourseDetail course = courseOptional.get();
+	                 if (user.getCourses().contains(course)) {
+	                     String courseUrl = course.getCourseUrl();
+	                     return ResponseEntity.ok().body(courseUrl);
+	                 }
+	             }
+	         }
+	         
+	         // If role is not ADMIN, TRAINER, or USER, or if course or user not found
+	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+	     } catch (Exception e) {
+	         // Handle any exceptions
+	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	     }
+	 }
 }

@@ -7,7 +7,7 @@ const CourseView = ({ filteredCourses }) => {
   const MySwal = withReactContent(Swal);
   const role = sessionStorage.getItem("role");
   const userId = sessionStorage.getItem("userid");
-
+  const token = sessionStorage.getItem("token");
 
   const handlesubmit = async (courseId, userId) => {
     try {
@@ -92,11 +92,11 @@ if(amount===0){
       const response = await fetch('http://localhost:8080/CheckAccess/match', {
           method: 'POST',
           headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              "Authorization":token
           },
           body: JSON.stringify({
-              courseId: id,
-              userId: userId,
+              courseId: id  
           })
       });
     
@@ -106,7 +106,7 @@ if(amount===0){
           window.location.href = message;
       } else {
           // Handle different HTTP status codes appropriately
-          if (response.status === 400) {
+          if (response.status === 401) {
             MySwal.fire({
               icon: 'error',
               title: 'Oops...',
@@ -114,15 +114,20 @@ if(amount===0){
           });
           } else if (response.status === 404) {
               // Handle Not Found
-              console.error('Not Found:', await response.text());
-          } else {
-              // Handle other errors
-              console.error('Error:', response.status, await response.text());
-          }
+              MySwal.fire({
+                icon: 'error',
+                title: 'Not Found',
+                text: `${response.text()}`
+            });
+          } 
       }
   } catch (error) {
-      // Handle fetch operation errors
-      console.error('Error sending request to server:', error);
+    
+    MySwal.fire({
+      icon: 'error',
+      title: 'Not Found',
+      text: error
+  });
   }
 }
 };

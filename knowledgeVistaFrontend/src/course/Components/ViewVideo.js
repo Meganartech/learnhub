@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -18,16 +18,35 @@ const ViewVideo = () => {
   const role=sessionStorage.getItem("role");
   const token=sessionStorage.getItem("token")
  
+  const navigate = useNavigate();
   useEffect(() => {
+    
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/course/getLessondetail/${courseId}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
+        const response = await fetch(`http://localhost:8080/course/getLessondetail/${courseId}`,{
+          headers :{
+           "Authorization":token
+          }
+        });
+       if(response.ok){
         const lessonList = await response.json();
         setAllLessons(lessonList);
-        console.log(AllLessons)
+       } else if (response.status === 401) { 
+        window.location.href = '/unauthorized'; // Redirect to unauthorized page
+        return; // Stop further execution
+      } else {
+        await MySwal.fire({
+          icon: 'error',
+          title: 'Some Error Occurred',
+          text: 'Please Try Again Later',
+          confirmButtonText: "OK",
+        }).then( (result) => {
+          if (result.isConfirmed) {
+             navigate(-1); // Navigate back after user confirmation
+          }
+        });
+      
+      }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -259,7 +278,7 @@ const handleOnSeek = (progress) => {
 
         </div>
         <div style={{ textAlign: 'right' }}>
-          {currentLessonIndex > 0 && (
+          {AllLessons.length > 1 && currentLessonIndex > 0 && (
             <button onClick={handlePreviousButtonClick} className='btn btn-primary'>Previous</button>
           )}
           {currentLessonIndex < AllLessons.length - 1 && (

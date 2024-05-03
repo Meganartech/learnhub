@@ -72,7 +72,11 @@ public class CourseDetail {
 	            return 0L;
 	        }
 	    }
-
+	    public long getAvailableSeats() {
+	        long totalSeats = Noofseats != null ? Noofseats : 0L;
+	        long occupiedSeats = users != null ? users.size() : 0L;
+	        return totalSeats - occupiedSeats;
+	    }
 	    
 	   
 }

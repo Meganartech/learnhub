@@ -48,6 +48,8 @@ import VideoCheck from "./VideoCheck.js";
 import CustomViewvideo from "./course/Components/CustomViewvideo.js";
 import EditQuestion from "./course/Test/EditQuestion.js";
 import AddMoreQuestion from "./course/Test/AddMoreQuestion.js";
+import Dashboard from "./course/Components/Dashboard.js";
+import AboutUs from "./Common Components/AboutUs.js";
 
 
 
@@ -104,11 +106,12 @@ function App() {
                   searchQuery={searchQuery}
                   handleSearchChange={handleSearchChange}
                   setSearchQuery={setSearchQuery}/>}>
-                    {/* <Route path="/admin/dashboard" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Dashboard/></PrivateRoute>}/> */}
+                    <Route path="/Aboutus" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><AboutUs/></PrivateRoute>}/>
+                    <Route path="/admin/dashboard" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Dashboard/></PrivateRoute>}/>
                       <Route path="/lessonList/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><LessonList/></PrivateRoute>}/> 
                       <Route path="/edit/:courseName/:courseId/:Lessontitle/:lessonId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditLesson/></PrivateRoute>}/>
                       <Route path="/courses/:courseName/:courseId/" element={<PrivateRoute authenticationRequired={true} ><ViewVideo/></PrivateRoute>}/>                     
-                      <Route path="/courses/:courseName/:courseId/:current" element={<PrivateRoute authenticationRequired={true} ><CustomViewvideo/></PrivateRoute>}/>                 
+                      <Route path="/courses/:courseName/:courseId/:current" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} ><CustomViewvideo/></PrivateRoute>}/>                 
                       <Route path="/course/Addlesson/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><UploadVideo/></PrivateRoute>}/>
                       <Route path="/course/addcourse" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CourseCreation/></PrivateRoute>}/>
                       <Route path="/course/Trainer/addcourse" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} onlytrainer={true}><CreateCourseTrainer/></PrivateRoute>}/>

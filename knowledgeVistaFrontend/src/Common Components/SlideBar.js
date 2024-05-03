@@ -6,14 +6,6 @@ import "../css/Component.css"
 const SlideBar = ({ isToggled, setIsToggled }) => {
   const [isActive, setIsActive] = useState(false);
 
-  const handleDropdownToggle = () => {
-    setIsActive(!isActive);
-  };
-
-  const handleLinkClick = (link) => {
-    setActiveLink(link);
-    setIsActive(false); // Close dropdown after selecting an option
-  };
 
 
 
@@ -52,7 +44,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
 
 
 
-      {/* {userRole === "ADMIN"  && (
+      {userRole === "ADMIN"  && (
          <li className="nav-item mt-4">
          <a
            className={activeLink === "/admin/dashboard" ? "ActiveLink nav-link" : "nav-link text-muted"}
@@ -65,7 +57,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
          </a>
     
        </li>
-      )} */}
+      )} 
       
       <li className="nav-item mt-4">
         <a
@@ -186,6 +178,22 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
           >
             <i className={activeLink === "/settings/payment" ? "fa-solid fa-gear text-light" : "fa-solid fa-gear text-muted"}></i>
             <span>Payment settings</span>
+          </a>
+     
+        </li>
+      )}
+       
+
+       {userRole === "ADMIN"  && (
+        <li className="nav-item mt-4">
+          <a
+            className={activeLink === "/Aboutus" ? "ActiveLink nav-link" : "nav-link text-muted"}
+            href="#"
+           
+            onClick={() => handleClick("/Aboutus")}
+          >
+            <i className={activeLink === "/Aboutus" ? "fa-solid fa-circle-info text-light" : "fa-solid fa-circle-info text-muted"}></i>
+            <span>About us </span>
           </a>
      
         </li>

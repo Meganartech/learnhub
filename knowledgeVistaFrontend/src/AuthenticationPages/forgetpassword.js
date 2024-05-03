@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import login from "../images/login.png"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
 const ForgetPassword = () => {
+  
+  const navigate = useNavigate();
   const [isResetPassword, setIsResetPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [formData, setFormData] = useState({
@@ -15,32 +18,47 @@ const ForgetPassword = () => {
   const [forgetPasswordFormData, setForgetPasswordFormData] = useState({
     email: "",
   });
+  // State variables for errors
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Update form data
     setFormData({
       ...formData,
       [name]: value,
     });
+    // Reset error message for the field being changed
+    if (name === "password") {
+      setPasswordError(value.length < 6 ? "Password must be at least 6 characters long" : "");
+    } else if (name === "confirmPassword") {
+      setConfirmPasswordError(value !== formData.password ? "Passwords do not match" : "");
+    }
   };
 
   const handleForgetPasswordChange = (e) => {
     const { name, value } = e.target;
+    // Update forget password form data
     setForgetPasswordFormData({
       ...forgetPasswordFormData,
       [name]: value,
     });
+    // Reset email error when changing email field
+    setEmailError(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "" : "Please enter a valid email address");
   };
 
   const handleResetPasswordSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if passwords match
+    // Check if passwords match and have minimum length
     if (formData.password !== formData.confirmPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Passwords do not match!",
-      });
+      setConfirmPasswordError("Passwords do not match");
+      return;
+    }
+    if (formData.password.length < 6) {
+      setPasswordError("Password must be at least 6 characters long");
       return;
     }
 
@@ -48,7 +66,7 @@ const ForgetPassword = () => {
     formDataToSend.append("email", email);
     formDataToSend.append("password", formData.password);
 
-    // If passwords match, proceed with reset password request
+    // If passwords match and have minimum length, proceed with reset password request
     try {
       const response = await fetch("http://localhost:8080/resetpassword", {
         method: "POST",
@@ -68,14 +86,20 @@ const ForgetPassword = () => {
           }
         });
       } else if (response.status === 404) {
-        Swal.fire({
-          icon: "error",
-          title: "User Not Found",
-          text: "The provided email address is not registered.",
-        });
+        setEmailError("User not found");
       }
     } catch (error) {
-      console.error("Error:", error);
+      MySwal.fire({
+        title: "error",
+        text: error,
+        icon: "error",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to login page
+          window.location.href = "/login";
+        }
+      });
     }
   };
 
@@ -92,21 +116,29 @@ const ForgetPassword = () => {
       if (response.ok) {
         setEmail(forgetPasswordFormData.email);
         setIsResetPassword(true);
+      } else if (response.status==404){
+        setEmailError("User not found");
       }
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        // Display error message if user not found
-        Swal.fire({
-          icon: "error",
-          title: "User Not Found",
-          text: "The provided email address is not registered.",
-        });
-      } else {
-        // Handle other errors
-        console.error("Error:", error.message);
+      MySwal.fire({
+        title: "error",
+        text: error.message,
+        icon: "error",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to login page
+          window.location.href = "/login";
+        }
+      });
+      
       }
-    }
-  };
+    };
+
+
+  // Button disabling logic
+  const isResetButtonDisabled = !email || emailError || !formData.password || !formData.confirmPassword || passwordError || confirmPasswordError;
+  const isForgetButtonDisabled = !forgetPasswordFormData.email || emailError;
 
   const resetPasswordForm = (
     <form className="user" onSubmit={handleResetPasswordSubmit}>
@@ -128,33 +160,36 @@ const ForgetPassword = () => {
           type="password"
           name="password"
           id="password"
-          className="form-control form-control-lg"
+          className={`form-control form-control-lg ${passwordError && 'is-invalid'}`}
           placeholder="New Password"
           autoComplete="new-password"
           value={formData.password}
           onChange={handleChange}
+          required
         />
+        {passwordError && <div className="invalid-feedback">{passwordError}</div>}
       </div>
       <div className="form-outline mb-4">
         <input
           type="password"
           name="confirmPassword"
           id="confirmPassword"
-          className="form-control form-control-lg"
+          className={`form-control form-control-lg ${confirmPasswordError && 'is-invalid'}`}
           placeholder="Confirm Password"
           autoComplete="new-password"
           value={formData.confirmPassword}
           onChange={handleChange}
+          required
         />
+        {confirmPasswordError && <div className="invalid-feedback">{confirmPasswordError}</div>}
       </div>
-      <button className="btn btn-primary btn-lg btn-block" type="submit">
+      <button className="btn btn-primary btn-lg btn-block" type="submit" disabled={isResetButtonDisabled}>
         Reset Password
       </button>
-      <button className="btn btn-warning btn-lg btn-block">Cancel</button>
+      <button className="btn btn-warning btn-lg btn-block" onClick={()=>{navigate("/login")}}>Cancel</button>
       <hr className="my-4" />
     </form>
   );
-  
 
   const forgetPasswordForm = (
     <form className="user" onSubmit={handleForgetPasswordSubmit}>
@@ -164,48 +199,46 @@ const ForgetPassword = () => {
           type="text"
           name="email"
           id="username"
-          className="form-control form-control-lg"
+          className={`form-control form-control-lg ${emailError ? 'is-invalid' : ''}`}
           placeholder="Enter Email Address..."
           autoComplete="username"
           autoFocus
           value={forgetPasswordFormData.email}
           onChange={handleForgetPasswordChange}
+          required
         />
+        {emailError && <div className="invalid-feedback">{emailError}</div>}
       </div>
-      <button className="btn btn-primary btn-lg btn-block" type="submit">
+      <button className="btn btn-primary btn-lg btn-block" type="submit" disabled={isForgetButtonDisabled}>
         Login
       </button>
-      <Link className="btn btn-warning btn-lg btn-block" to="/">
+      <button className="btn btn-warning btn-lg btn-block" onClick={()=>{navigate("/login")}}>
         Cancel
-      </Link>
+      </button>
       <hr className="my-4" />
     </form>
   );
 
   return (
-    <section className="vh-100 vw-100" style={{ backgroundColor: "#508bfc" }}>
-      <div className="container py-5 h-100">
-        <div className="row d-flex justify-content-center align-items-center h-100">
-          <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-            <div
-              className="card shadow-2-strong"
-              style={{ borderRadius: "1rem" }}
-            >
-              <div className="card-body p-5 text-center shadow-lg">
-                {isResetPassword ? resetPasswordForm : forgetPasswordForm}
-                {!isResetPassword && (
-                  <div className="text-center">
-                    <Link className="small" to="/login">
-                      Go to Login page!
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="d-flex flex-row justify-content-center align-items-center ">
+      <div className="card-body  text-center pt-5">
+        <img 
+          style={{width:"700px",height:"700px"}}
+          src={login} 
+          alt='boy-pic'
+        />
       </div>
-    </section>
+      <div className="card-body p-5 text-center ">
+        {isResetPassword ? resetPasswordForm : forgetPasswordForm}
+        {!isResetPassword && (
+          <div className="text-center">
+            <Link className="small" to="/login">
+              Go to Login page!
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

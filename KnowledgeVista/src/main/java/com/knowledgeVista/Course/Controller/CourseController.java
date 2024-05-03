@@ -52,41 +52,37 @@ public class CourseController {
 //`````````````````````````WORKING``````````````````````````````````
 
 	 @GetMapping("/countcourse")
-	 public ResponseEntity<Long> countCourse(@RequestHeader("Authorization") String token) {
+	 public ResponseEntity<?> countCourse(@RequestHeader("Authorization") String token) {
 	     try {
-	         // Validate the token
-	    	 
 	         if (!jwtUtil.validateToken(token)) {
-	        	 System.out.println("invalid Token");
-	    
-	             // If the token is not valid, return unauthorized status
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	            
 	         }
-
 	         String role = jwtUtil.getRoleFromToken(token);
-	         
-
 	         // Perform authentication based on role
 	         if (!"ADMIN".equals(role)) {
 	        		
 	             // If the role is not ADMIN, return unauthorized status
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	         }
-
 	         Long count = coursedetailrepository.count();
-	         return ResponseEntity.ok().body(count);
+	            Long trainercount = muserRepository.countByRoleName("TRAINER");
+	            Long usercount = muserRepository.countByRoleName("USER");
+	            Long  totalAvailableSeats = coursedetailrepository.countTotalAvailableSeats();
+	            
+
+	 	       Map<String, Long> response = new HashMap<>();
+	 	       response.put("coursecount",count);
+	 	       response.put("trainercount",trainercount);
+	 	       response.put("usercount", usercount);
+	 	       response.put("availableseats", totalAvailableSeats);
+	 	       
+	         return ResponseEntity.ok().body(response);
 	     } catch (DecodingException ex) {
 	         // Log the decoding exception
-	         ex.printStackTrace(); // You can replace this with logging framework like Log4j
-
-	         // Return an error response indicating invalid token
+	         ex.printStackTrace(); 
 	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	     } catch (Exception e) {
-	         // Log any other exceptions for debugging purposes
 	         e.printStackTrace(); // You can replace this with logging framework like Log4j
-
-	         // Return an internal server error response
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	     }
 	 }
@@ -413,25 +409,59 @@ public class CourseController {
 
 		 //---------------------WORKING--------------
 
-		 @GetMapping("/getLessondetail/{courseId}")
-	   public ResponseEntity<?>getLessons(@PathVariable Long courseId){
-			 Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
-			 if(opcourse.isPresent()) {
-				 List<videoLessons> videolessonlist=opcourse.get().getVideoLessons();
-				  for (videoLessons video :videolessonlist) {
-					  video.setCourseDetail(null);
-					  video.setVideoFile(null);
-					  video.setVideofilename(null);
-					  
-					  byte[] images =ImageUtils.decompressImage(video.getThumbnail());
-					  video.setThumbnail(images);
-					 
-				  }
-				  return ResponseEntity.ok(videolessonlist);
-				  
-			 }
-		   return ResponseEntity.notFound().build();
+	   @GetMapping("/getLessondetail/{courseId}")
+	   public ResponseEntity<?> getLessons(@PathVariable Long courseId,
+	                                        @RequestHeader("Authorization") String token) {
+	       try {
+	           if (!jwtUtil.validateToken(token)) {
+	               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	           }
+
+	           String role = jwtUtil.getRoleFromToken(token);
+
+	           if (!"ADMIN".equals(role)) {
+	               String email = jwtUtil.getUsernameFromToken(token);
+	               Optional<Muser> opuser = muserRepository.findByEmail(email);
+	               if (!opuser.isPresent()) {
+	                   return ResponseEntity.notFound().build();
+	               }
+	               Muser user = opuser.get();
+	               
+	               if ("TRAINER".equals(role)) {
+	                   if (user.getAllotedCourses().stream().anyMatch(course -> course.getCourseId().equals(courseId))) {
+	                       return getVideoLessonsResponse(courseId);
+	                   }
+	               } else if ("USER".equals(role)) {
+	                   if (user.getCourses().stream().anyMatch(course -> course.getCourseId().equals(courseId))) {
+	                       return getVideoLessonsResponse(courseId);
+	                   }
+	               }
+	               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	           } else {
+	               return getVideoLessonsResponse(courseId);
+	           }
+	       } catch (Exception e) {
+	           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	       }
 	   }
+
+	   private ResponseEntity<?> getVideoLessonsResponse(Long courseId) {
+	       Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
+	       if (opcourse.isPresent()) {
+	           List<videoLessons> videolessonlist = opcourse.get().getVideoLessons();
+	           for (videoLessons video : videolessonlist) {
+	               video.setCourseDetail(null);
+	               video.setVideoFile(null);
+	               video.setVideofilename(null);
+
+	               byte[] images = ImageUtils.decompressImage(video.getThumbnail());
+	               video.setThumbnail(images);
+	           }
+	           return ResponseEntity.ok(videolessonlist);
+	       }
+	       return ResponseEntity.notFound().build();
+	   }
+
 
 		 @GetMapping("/getLessonlist/{courseId}")
 		 public ResponseEntity<?> getLessonList(@PathVariable Long courseId) {
