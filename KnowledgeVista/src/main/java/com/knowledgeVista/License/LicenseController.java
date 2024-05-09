@@ -79,15 +79,15 @@ public class LicenseController {
 	    	
 	    	
 	    	  boolean isEmpty = licenseList.isEmpty();
-			    boolean valid =this.getall();
+			boolean valid = !(licenseList.isEmpty())?this.getall():false;
 	    	boolean type=true;
-	    	System.out.println("licenseList.get(0).getType()"+(licenseList.get(0).getType().equals("Demo")));
-//	    			if (!(licenseList.isEmpty())) {	
+	    	
+	    			if (!(licenseList.isEmpty())) {	
 	    				if(licenseList.get(0).getType().equals("Demo")) {
 	    				type=false;
 	    				System.out.println("licenseList.get(0).getType()"+licenseList.get(0).getType());
 	    				}
-//	    			}	
+	    			}	
 	    			List<Map<String, Object>> dataList = new ArrayList<>();
     		        Map<String, Object> data1 = new HashMap<>();
 	    			 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
