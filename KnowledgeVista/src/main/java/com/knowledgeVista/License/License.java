@@ -29,16 +29,26 @@ public class License {
     @Column(name="key_value")
     private String key ;
     
+    @Column(name="course")
+    private String course ;
+    
+    
+    @Column(name="type")
+    private String type ;
+    
     @Column(name="start_date")
     private Date start_date ;
     
     @Column(name="end_date")
     private Date end_date ;
     
+    @Column(name="file_name")
+    private String filename ;
+    
     @Transient
 	 private MultipartFile LicenseFile;
     
-
+    
 	public long getId() {
 		return id;
 	}
@@ -54,6 +64,46 @@ public class License {
 
 	public void setLicenseFile(MultipartFile licenseFile) {
 		LicenseFile = licenseFile;
+	}
+	
+	
+	public License(long id, String company_name, String product_name, String key, String course, String type,
+			Date start_date, Date end_date, String filename, MultipartFile licenseFile) {
+		super();
+		this.id = id;
+		this.company_name = company_name;
+		this.product_name = product_name;
+		this.key = key;
+		this.course = course;
+		this.type = type;
+		this.start_date = start_date;
+		this.end_date = end_date;
+		this.filename = filename;
+		LicenseFile = licenseFile;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public String getCourse() {
+		return course;
+	}
+
+	public void setCourse(String course) {
+		this.course = course;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getCompany_name() {
@@ -99,22 +149,14 @@ public class License {
 	public License() {
 		super();
 	}
+	
 
-	public License(long id, String company_name, String product_name,MultipartFile LicenseFile, String key, Date start_date, Date end_date) {
-		super();
-		this.id = id;
-		this.company_name = company_name;
-		this.product_name = product_name;
-		this.key = key;
-		this.start_date = start_date;
-		this.LicenseFile = LicenseFile;
-		this.end_date = end_date;
-	}
+	
 
 	@Override
 	public String toString() {
 		return "License [id=" + id + ", company_name=" + company_name + ", product_name=" + product_name + ", key="
-				+ key + ", start_date=" + start_date +",LicenseFile="+LicenseFile+ ", end_date=" + end_date + "]";
+				+ key +"type="+type+"course="+course+", filename= "+ filename +", start_date=" + start_date +",LicenseFile="+LicenseFile+ ", end_date=" + end_date+"]";
 	}
 
 	

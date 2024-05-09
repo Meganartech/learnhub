@@ -5,7 +5,9 @@ import withReactContent from "sweetalert2-react-content";
 
 const Razorpay_Settings = () => {
   const MySwal = withReactContent(Swal);
-
+  const [valid, setValid] = useState(true);
+  const data=sessionStorage.getItem("type");
+  
   const token=sessionStorage.getItem("token")
 const [isnotFound,setisnotFound]=useState();
 const[initialsave,setinitialsave]=useState(false);
@@ -15,6 +17,7 @@ const[initialsave,setinitialsave]=useState(false);
     razorpay_secret_key:""
   })
   useEffect(() => {
+    data==="false"?setValid(false):setValid(true)
     
     const fetchpaymentsettings = async () => {
       try {
@@ -243,15 +246,17 @@ if(response.ok){
         </div>
       </div>
     </div>
-    <div className='btngrp'>
-      <button className='btn btn-primary'  onClick={save}   
-      disabled={
-    Object.values(errors).some(error => error !== "") || // Check for errors
-    !Razorpay_Key.trim() || // Check if Razorpay_Key is empty
-    !Razorpay_Secret_Key.trim() // Check if Razorpay_Secret_Key is empty
-  }>
-        Save</button>
-    </div>
+    {valid?
+      <div className='btngrp'>
+        <button className='btn btn-primary' onClick={save}
+          disabled={
+            Object.values(errors).some(error => error !== "") || // Check for errors
+            !Razorpay_Key.trim() || // Check if Razorpay_Key is empty
+            !Razorpay_Secret_Key.trim() // Check if Razorpay_Secret_Key is empty
+          }>
+          Save</button>
+      </div>:<div></div>
+    }
   </div>
 </div>)
 
@@ -291,9 +296,11 @@ const oldSettings =(<div className="contentinner">
       </div>
     </div>
   </div>
-  <div className='btngrp' >
-    <button className='btn btn-primary'  onClick={Edit}>Edit</button>
-  </div>
+  {valid?
+      <div className='btngrp' >
+        <button className='btn btn-primary' onClick={Edit}>Edit</button>
+      </div>:<div></div>
+      }
 </div>
 </div>)
   return (

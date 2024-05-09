@@ -50,6 +50,7 @@ import EditQuestion from "./course/Test/EditQuestion.js";
 import AddMoreQuestion from "./course/Test/AddMoreQuestion.js";
 import Dashboard from "./course/Components/Dashboard.js";
 import AboutUs from "./Common Components/AboutUs.js";
+import About_Us from "./AuthenticationPages/About_Us";
 
 
 
@@ -141,6 +142,7 @@ function App() {
                       <Route path="/student/edit/:email" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditStudent/></PrivateRoute>}/>
                       <Route path="/trainer/edit/:email" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditTrainer/></PrivateRoute>}/>
                       <Route path="/AssignedCourses" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} ><MyAssignedcourses/></PrivateRoute>}/>
+                      <Route path="/about" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><About_Us/></PrivateRoute>}/>
                   </Route> 
 
            <Route path="/License" element={<License/>}/>

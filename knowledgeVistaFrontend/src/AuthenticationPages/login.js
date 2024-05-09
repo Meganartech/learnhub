@@ -38,47 +38,8 @@ const Login = () => {
     }));
   };
 
-  useEffect(() => {
-    // fetchUsers();
 
-    fetch('http://localhost:8080/api/v2/GetAllUser')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-        setValid(response.data.valid);
-      setIsEmpty(response.data.empty);
-      console.log("Is empty: " + isEmpty); // Corrected from empty to isEmpty
-      console.log("Valid: " + valid);
-      console.log("--------------------------------------------------------------------");
-      
-      }
-      return response.json();
-    })
-    .then(data => {
-      setTag(data);
-      setValid(data.valid);
-      setIsEmpty(data.empty);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
-  }, []);
-
-  // const fetchUsers = async () => {
-  //   try {
-  //     const response = await fetch('http://localhost:8080/api/v2/GetAllUser');
-
-  //     console.log(Tag);
-  //     console.log("Is empty: " + isEmpty); // Corrected from empty to isEmpty
-  //     console.log("Valid: " + valid);
-  //     console.log("--------------------------------------------------------------------");
-  //     // After setting the users state, check if the username exists
-  //     // const userFound = response.data.find(userData => userData.username === user.username);
-  //   } catch (error) {
-  //     console.log('Error fetching users:', error);
-  //   }
-
-  // }
+ 
 
 
   const handleSubmit = async (e) => {
@@ -95,7 +56,7 @@ const Login = () => {
             body: JSON.stringify(formData),
         });
 
-        if (response.ok && !isEmpty && valid ) {
+        if (response.ok) {
             // Await the JSON response
             // fetchUsers();
             console.log("in the login")
@@ -112,14 +73,6 @@ const Login = () => {
                 window.location.href = "/dashboard/course";
          
         } 
-        else if (isEmpty) {
-          alert("Licence required")
-          window.location.href = "/License";
-        } else if (!valid) {
-    
-          alert("Licence Expired")
-          window.location.href = "/License";
-        }
         else if (response.status === 401) {
           setErrors(prevErrors => ({
             ...prevErrors,

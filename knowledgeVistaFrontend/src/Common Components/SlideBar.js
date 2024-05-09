@@ -1,25 +1,70 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import "../css/Component.css"
 
 const SlideBar = ({ isToggled, setIsToggled }) => {
   const [isActive, setIsActive] = useState(false);
-
-
-
-
+  const [isvalid, setIsvalid] = useState();
+  const [isEmpty, setIsEmpty] = useState();
   const userRole = sessionStorage.getItem("role");
+  const [activeLink, setActiveLink] =  useState(localStorage.getItem('activeLink') ||(userRole==="ADMIN"?"admin/dashboard":"/dashboard/course"));
   const navigate = useNavigate();
-  const [activeLink, setActiveLink] = useState(localStorage.getItem('activeLink') || "/dashboard/course");
+  useEffect(() => {
+   
 
+    fetch('http://localhost:8080/api/v2/GetAllUser')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+          .then(data => {
+            setIsEmpty(data.empty);
+            setIsvalid(data.valid);
+            const type = data.type;
+            // data.dataList.map((item, index) => {
+              // console.log("key 1"+data.dataList[0].key1);
+              // console.log("value 1"+data.dataList[0].key2);
+            // });
+
+
+      sessionStorage.setItem('type',type);
+     
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+  }, []);
   const handleSetActiveLink = (linkName) => {
     setActiveLink(linkName);
     localStorage.setItem("activeLink",linkName)
   };
   const handleClick = (link) => {
+    
+    if(userRole==="ADMIN")
+    {
+    if((link==="/about" || link==="/admin/dashboard")&& isEmpty)
+    {
+      handleSetActiveLink(link);
+      navigate(link);
+    }
+    else if ((link==="/about" || link==="/admin/dashboard")&& !isEmpty && !isvalid) 
+    {
+      handleSetActiveLink(link);
+        navigate(link);
+    } 
+    else if (!isEmpty && isvalid)
+     {
+      handleSetActiveLink(link);
+        navigate(link);
+    } 
+  }
+  else if(userRole==="USER")
+  {
     handleSetActiveLink(link);
     navigate(link);
+  }
   };
 
   return (
@@ -187,12 +232,12 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
        {userRole === "ADMIN"  && (
         <li className="nav-item mt-4">
           <a
-            className={activeLink === "/Aboutus" ? "ActiveLink nav-link" : "nav-link text-muted"}
+            className={activeLink === "/about" ? "ActiveLink nav-link" : "nav-link text-muted"}
             href="#"
            
-            onClick={() => handleClick("/Aboutus")}
+            onClick={() => handleClick("/about")}
           >
-            <i className={activeLink === "/Aboutus" ? "fa-solid fa-circle-info text-light" : "fa-solid fa-circle-info text-muted"}></i>
+            <i className={activeLink === "/about" ? "fa-solid fa-circle-info text-light" : "fa-solid fa-circle-info text-muted"}></i>
             <span>About us </span>
           </a>
      

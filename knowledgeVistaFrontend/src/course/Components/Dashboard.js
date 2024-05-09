@@ -16,6 +16,28 @@ const Dashboard = () => {
     usercount:"",
     availableseats:""
   });
+  const [isvalid, setIsvalid] = useState();
+  const [isEmpty, setIsEmpty] = useState();
+
+  useEffect(() => {
+   
+
+    fetch('http://localhost:8080/api/v2/GetAllUser')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      setIsEmpty(response.data.empty);
+      }
+      return response.json();
+    })
+    .then(data => {
+      setIsEmpty(data.empty);
+      setIsvalid(data.valid)
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+  }, []);
   useEffect(() => {
     const fetchCounts = async () => {
       try {
@@ -100,6 +122,15 @@ const Dashboard = () => {
   
   return (
     <div className='contentbackground'>
+      <div className="marquee-container">
+      <div className="marquee-content">
+        {/* Your scrolling content goes here */}
+        {!isvalid?<a
+         href="/about" style={{color:"darkred"}}>
+          License has been expired Need to uploard new License or contact "111111111111"
+        </a>:<div></div>}
+      </div>
+    </div>
         <div className='contentinner'>
           <div style={{display:"flex"}}>
             <div style={{flex:"3"}}>

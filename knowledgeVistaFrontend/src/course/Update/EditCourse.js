@@ -7,6 +7,29 @@ import {  toast } from 'react-toastify';
 const EditCourse = ({filteredCourses}) => {
   const MySwal = withReactContent(Swal);
  const role=sessionStorage.getItem("role");
+ const createCourse = async () => {
+  try {
+ const response = await fetch('http://localhost:8080/api/v2/count', {
+      method: 'GET',
+    });
+    console.log(response)
+    if (response.ok) {
+      window.location.href = "/course/addcourse";
+    }
+    else{
+      Swal.fire({
+        title: "Course Limit is Reached",
+        text: "Need to upgrade your lisense",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ok",
+      })
+
+    }
+  } catch (error) {
+    console.error('Error ', error);
+  }
+};
  const handleDelete = (e, courseId) => {
   e.preventDefault();
   MySwal.fire({
@@ -71,7 +94,7 @@ const EditCourse = ({filteredCourses}) => {
       <div className={styles.createbtn}>
       {(role === "ADMIN" || role==="TRAINER") && (    
      
-        <a href="/course/addcourse">
+        <a href="#" onClick={(e) => createCourse()}>
           <button type="button" className="btn btn-primary mt-4">
           <i className="fa-solid fa-plus"></i>  Create Course
           </button>
