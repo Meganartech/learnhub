@@ -77,9 +77,9 @@ const About_Us = () => {
 
   return (
     <div className="contentbackground">
-      <div className="contentinner" style={{ height: "100%" }}>
+      <div className="contentinner" >
 
-        <div className='innerFrame p-5' style={{ gridTemplateColumns: "none", gridTemplateRows: "none" }}>
+        <div className='innerFrame ' style={{ gridTemplateColumns: "none", gridTemplateRows: "none" }}>
           <div className='mainform' style={{ gridTemplateColumns: "none", gridTemplateRows: "none" }}>
             <div className='formgroup' style={{ overflow: "unset" }}>
               <h2 style={{ textDecoration: "underline", textAlign: "center" }}>Product Info</h2>
@@ -170,7 +170,7 @@ const About_Us = () => {
                       <div className='inputgrp'>
                         <label className='labl' >Add New License File </label>
                         <span>:</span>
-                        <br></br>
+                 
                         <input
                           type='file'
                           className=''
@@ -185,7 +185,7 @@ const About_Us = () => {
                       <div className='inputgrp'>
                         <label className='lab' > Feedback</label>
                         <span>:</span>
-                        <br></br>
+                       
                         <input
                           className='disabledbox'
                           readOnly
@@ -193,27 +193,12 @@ const About_Us = () => {
                       </div>
                     </div>
                   </div>
-                  {/* <div className='modal-body text-center'>
-                  <br />
-                  <br />
-                  <h5 className='modal-title modal-header bg-info' id='exampleModalLongTitle'>
-                    Add New License File
-                  </h5>
-                  <input
-                    type='file'
-                    className='form-control'
-                    placeholder='Choose Audio File'
-                    name='audioFile'
-                    onChange={(e) => setAudioFile(e.target.files[0])}
-                  />
-                  {errors.audioFile && <div className="error-message">{errors.audioFile}</div>}
-                  <br />
-                </div> */}
+                 
                   <div className='modal-footer'>
                     <input
                       type='submit'
                       value='Upload'
-                      className='btn' style={{ backgroundColor: "#17a2b8", color: "White", fontWeight: "500" }}
+                      className='btn btn-primary'
                     />
                   </div>
                 </form>

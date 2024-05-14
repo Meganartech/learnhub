@@ -391,7 +391,24 @@ public class CourseController {
 	           
 	           if (optionalCourse.isPresent()) {
 	               CourseDetail course = optionalCourse.get();
+	               
+	               // Clear the lists of trainers and users associated with the course
+	               course.getTrainer().clear();
 	               course.getUsers().clear();
+	               
+	               // Save the changes to ensure they are reflected in the database
+	               coursedetailrepository.save(course);
+	               
+	               // Remove references to the course from the user_course table
+	               for (Muser user : course.getUsers()) {
+	                   user.getCourses().remove(course);
+	               }
+	               for (Muser user :course.getTrainer()) {
+
+	                   user.getAllotedCourses().remove(course);
+	               }
+	               
+	               // Delete the course
 	               coursedetailrepository.delete(course);
 
 	               return ResponseEntity.ok("Course deleted successfully");
@@ -403,7 +420,7 @@ public class CourseController {
 	           // If a foreign key constraint violation occurs
 	           // Return a custom error response with an appropriate status code and message
 	           return ResponseEntity.status(HttpStatus.FORBIDDEN)
-	                   .body("The course cannot be deleted. Delete all associated lessons and tests first.");
+	                   .body("The course cannot be deleted. Delete all associated lessons, test.");
 	       }
 	   }
 

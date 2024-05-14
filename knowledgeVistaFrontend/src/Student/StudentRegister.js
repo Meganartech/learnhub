@@ -5,8 +5,8 @@ import "../css/StudentRegister.css";
 import "../css/certificate.css"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from "../api/utils";
 
-import { toast } from 'react-toastify';
 
 const StudentRegister = () => {
   const MySwal = withReactContent(Swal);
@@ -139,48 +139,44 @@ const StudentRegister = () => {
     formDataToSend.append("skills",formData.skills);
 
     try {
-      const response = await fetch("http://localhost:8080/student/register", {
-        method: "POST",
-        body: formDataToSend,
-      });
+      const response = await baseUrl.post("/student/register", formDataToSend);
+    const data = response.data;
+   
 
-      const data = await response.json();
-
-      if (response.ok) {
+    if (response.status === 200) {
         // Display success message and redirect to login
         MySwal.fire({
-          title: "welcome to our Family !",
-          text: "You have been registered successfully!",
-          icon: "success",
-          confirmButtonText: "Go to Login",
-          showCancelButton: true,
-          cancelButtonText: "Cancel",
+            title: "Welcome to our Family!",
+            text: "You have been registered successfully!",
+            icon: "success",
+            confirmButtonText: "Go to Login",
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
         }).then((result) => {
-          if (result.isConfirmed) {
-            // Redirect to login page
-            window.location.href = "/login";
-          }else{
-            setFormData({username: "",
-            psw: "",
-            email: "",
-            dob: "",
-            phone:"",
-            skills:"",
-            profile: null,
-            isActive: true})
-          }
+            if (result.isConfirmed) {
+                // Redirect to login page
+                window.location.href = "/login";
+            } else {
+                setFormData({
+                    username: "",
+                    psw: "",
+                    email: "",
+                    dob: "",
+                    phone: "",
+                    skills: "",
+                    profile: null,
+                    isActive: true
+                });
+            }
         });
-      } else if (response.status === 400) {
-        if (data.message === "EMAIL ALREADY EXISTS") {
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            email: "This email is already registered."
-          }));
-        }
-      }
-      
+    }
     } catch (error) {
-      // Display error message
+      if (error.response && error.response.status === 400) {
+        setErrors(prevErrors => ({
+                        ...prevErrors,
+                        email: "This email is already registered."
+                    }));
+    } else{
       
       MySwal.fire({
         title: "Error!",
@@ -188,6 +184,7 @@ const StudentRegister = () => {
         icon: "error",
         confirmButtonText: "OK",
       });
+    }
     }
   };
 

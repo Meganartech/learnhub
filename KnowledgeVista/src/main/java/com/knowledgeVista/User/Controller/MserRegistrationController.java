@@ -40,77 +40,80 @@ public class MserRegistrationController {
 
 	@PostMapping("/register")
 	public ResponseEntity<?> registerStudent(@RequestParam("username") String username,
-			                                 @RequestParam("psw") String psw,
-			                                 @RequestParam("email") String email,
-			                                 @RequestParam("dob") LocalDate dob,
-			                                 @RequestParam("phone") String phone,
+	                                          @RequestParam("psw") String psw,
+	                                          @RequestParam("email") String email,
+	                                          @RequestParam("dob") LocalDate dob,
+	                                          @RequestParam("phone") String phone,
+	                                          @RequestParam("skills") String skills,
+	                                          @RequestParam("profile") MultipartFile profile,
+	                                          @RequestParam("isActive") Boolean isActive) {
+	    try {
+	        long userCount = muserrepositories.count();
+	        Optional<Muser> existingUser = muserrepositories.findByEmail(email);
+	        if (userCount > 0) {
+	            if (existingUser.isPresent()) {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"EMAIL ALREADY EXISTS\"}");
+	            } else {
+	                MuserRoles roleUser = muserrolerepository.findByroleName("USER");
+	                Muser user = new Muser();
+	                user.setUsername(username);
+	                user.setEmail(email);
+	                user.setIsActive(isActive);
+	                user.setPsw(psw);
+	                user.setPhone(phone);
+	                user.setDob(dob);
+	                user.setSkills(skills);
+	                user.setRole(roleUser);
+	                try {
+	                    user.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
+	                }
+	                muserrepositories.save(user);
+	            }
+	        } else {
+	            MuserRoles roleuser = new MuserRoles();
+	            roleuser.setRoleName("USER");
+	            roleuser.setIsActive(true);
+	            roleuser.setUsers(null);
+	            muserrolerepository.save(roleuser);
 
-			                   	          @RequestParam("skills") String skills,
-			                                 @RequestParam("profile")MultipartFile profile,
-			                                 @RequestParam ("isActive") Boolean isActive
-			                                ) {
-		long userCount = muserrepositories.count();
-		Optional<Muser> existingUser = muserrepositories.findByEmail(email);
-		 if ( userCount > 0) {
-			 if(existingUser.isPresent()) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"EMAIL ALREADY EXISTS\"}");
-				}else {
-				MuserRoles roleUser=muserrolerepository.findByroleName("USER");
-				Muser user=new Muser();
-		        user.setUsername(username);
-				user.setEmail(email);
-				user.setIsActive(isActive);
-				user.setPsw(psw);
-				user.setPhone(phone);
-				user.setDob(dob);
-				user.setSkills(skills);
-				user.setRole(roleUser);
-					try {
-			       	 user.setProfile(ImageUtils.compressImage(profile.getBytes()));
-			       } catch (IOException e) {
-			           e.printStackTrace();
-			       }
-					 muserrepositories.save(user);
-				}
-		 }else{
-					MuserRoles roleuser= new MuserRoles();
-					 roleuser.setRoleName("USER");
-					 roleuser.setIsActive(true);
-					 roleuser.setUsers(null);
-					 muserrolerepository.save(roleuser); 
-					 
-					 MuserRoles roletrainer= new MuserRoles();
-					 roletrainer.setRoleName("TRAINER");
-					 roletrainer.setIsActive(true);
-					 roletrainer.setUsers(null);
-					 muserrolerepository.save(roletrainer); 
-					 
-					 
-					 MuserRoles role= new MuserRoles();
-					 role.setRoleName("ADMIN");
-					 role.setIsActive(true);
-					 role.setUsers(null);
-					 MuserRoles savedroleadmin = muserrolerepository.save(role);
-					 Muser user=new Muser();
-				        user.setUsername(username);
-						user.setEmail(email);
-						user.setIsActive(isActive);
-						user.setPsw(psw);
-						user.setPhone(phone);
-						user.setDob(dob);
-						user.setSkills(skills);
-						user.setRole(savedroleadmin);
-							try {
-					       	 user.setProfile(ImageUtils.compressImage(profile.getBytes()));
-					       } catch (IOException e) {
-					           e.printStackTrace();
-					       }
-							 muserrepositories.save(user);
-				}
-		 return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
+	            MuserRoles roletrainer = new MuserRoles();
+	            roletrainer.setRoleName("TRAINER");
+	            roletrainer.setIsActive(true);
+	            roletrainer.setUsers(null);
+	            muserrolerepository.save(roletrainer);
+
+	            MuserRoles role = new MuserRoles();
+	            role.setRoleName("ADMIN");
+	            role.setIsActive(true);
+	            role.setUsers(null);
+	            MuserRoles savedroleadmin = muserrolerepository.save(role);
+	            Muser user = new Muser();
+	            user.setUsername(username);
+	            user.setEmail(email);
+	            user.setIsActive(isActive);
+	            user.setPsw(psw);
+	            user.setPhone(phone);
+	            user.setDob(dob);
+	            user.setSkills(skills);
+	            user.setRole(savedroleadmin);
+	            try {
+	                user.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
+	            }
+	            muserrepositories.save(user);
+	        }
+	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
+	    }
 	}
-	
-	
+
 	
 
 	@GetMapping("/users/{email}")

@@ -88,8 +88,12 @@ const Login = () => {
            
         }
     } catch (error) {
-        toast.error('An error occurred while logging in. Please try again later.');
-       
+        MySwal.fire({
+          title: "Error Occured!",
+          text: "An error occurred while logging in. Please try again later." ,
+          icon: "error",
+         
+        })
     }
 };
 

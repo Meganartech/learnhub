@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-
 import io.jsonwebtoken.io.DecodingException;
 
 
@@ -34,8 +33,9 @@ public class AddUsers {
 	@Autowired
 	private MuserRepositories muserrepositories;
 	 @Autowired
-	 private JwtUtil jwtUtil;
-
+	    private JwtUtil jwtUtil;
+    @Autowired
+    private MusertestactivityRepo activityrepo;
 	@Autowired
 	private MuserRoleRepository muserrolerepository;
 //===========================================ADMIN ADDING TRAINER==========================================	
@@ -183,6 +183,7 @@ public class AddUsers {
 	                  Muser user = existingUser.get();
 	                  if ("TRAINER".equals(user.getRole().getRoleName())) {
 	                      // Clear user's courses and delete the user
+	                	  user.getAllotedCourses().clear();
 	                      user.getCourses().clear();
 	                      muserrepositories.delete(user);
 	                      return ResponseEntity.ok().body("{\"message\": \"Deleted Successfully\"}");
@@ -205,6 +206,7 @@ public class AddUsers {
 	  }
 	  
 	  @DeleteMapping("/delete/Student")
+	  
 	  private ResponseEntity<?> deleteStudent(
 	          @RequestParam("email") String email,
 	          @RequestHeader("Authorization") String token) {
@@ -225,6 +227,7 @@ public class AddUsers {
 	                  if ("USER".equals(user.getRole().getRoleName())) {
 	                      // Clear user's courses and delete the user
 	                      user.getCourses().clear();
+	                      activityrepo.deleteByUser(user);
 	                      muserrepositories.delete(user);
 	                      return ResponseEntity.ok().body("{\"message\": \"Deleted Successfully\"}");
 	                  } 

@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
-import "../../css/Style.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 const CreateTest = () => {
   const { courseId } = useParams();
@@ -11,18 +10,49 @@ const CreateTest = () => {
   const [testName, setTestName] = useState("");
   const [questionText, setQuestionText] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
-  const [answer, setAnswer] = useState("");
+  const [answer, setAnswer] = useState('');
   const [savedQuestions, setSavedQuestions] = useState([]);
-  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
   const [noofattempt, setNoOfAttempt] = useState(1);
   const [passPercentage, setPassPercentage] = useState(0);
   const [showCriteria, setShowCriteria] = useState(false);
 
   const [errors, setErrors] = useState({
     noofattempt: "",
-    passPercentage: ""
+    passPercentage: "",
+    testName:'',
+    questionText: '',
+    options: {
+        option1: '',
+        option2: '',
+        option3: '',
+        option4: ''
+    },
+    selectedOption: ''
   });
+ const showprevious=(e)=>{
+    const index=selectedQuestionIndex-1;
+    console.log(index)
+    if(index >=0){
+    const { questionText, option1, option2, option3, option4, answer } = savedQuestions[index];
+    setQuestionText(questionText);
+    setOptions([option1, option2, option3, option4]);
+    setAnswer(answer);
+    setSelectedQuestionIndex(index)
+    }
+ }
+ const shownext=(e)=>{
+    const nextindex=selectedQuestionIndex+1;
+    console.log(nextindex)
+    if(nextindex<savedQuestions.length){
+        const { questionText, option1, option2, option3, option4, answer } = savedQuestions[nextindex];
+    setQuestionText(questionText);
+    setOptions([option1, option2, option3, option4]);
+    setAnswer(answer);
+    setSelectedQuestionIndex(nextindex)
 
+    }
+ }
   // Function to handle changes in noofattempt and passPercentage fields
   const handleCriteriaChange = (e) => {
     const { name, value } = e.target;
@@ -56,15 +86,21 @@ const CreateTest = () => {
   const handleDelete = (index) => {
     const newSavedQuestions = savedQuestions.filter((ques, i) => i !== index);
     setSavedQuestions(newSavedQuestions);
-  };
-
-  const handleEditQuestion = (index) => {
-    setSelectedQuestionIndex(index);
-    const { questionText, option1, option2, option3, option4, answer } = savedQuestions[index];
+    if(index!==0){
+    setSelectedQuestionIndex(index-1)
+    const { questionText, option1, option2, option3, option4, answer } = savedQuestions[index-1];
     setQuestionText(questionText);
     setOptions([option1, option2, option3, option4]);
     setAnswer(answer);
+    }else{
+        setSelectedQuestionIndex(0)
+        setQuestionText("");
+    setOptions(["", "", "", ""]);
+    setAnswer("");
+    }
   };
+
+
 
   const addQuestion = () => {
     if (!questionText || options.some((option) => !option) || !answer) {
@@ -82,14 +118,17 @@ const CreateTest = () => {
     };
 
     if (selectedQuestionIndex !== null) {
+        console.log("edit ")
+        console.log("index",selectedQuestionIndex)
+        console.log(savedQuestions)
       // Update the existing question
       const updatedQuestions = [...savedQuestions];
       updatedQuestions[selectedQuestionIndex] = newQuestion;
-      setSavedQuestions(updatedQuestions);
-      setSelectedQuestionIndex(null); // Reset selected question index
-    } else {
-      // Add a new question
-      setSavedQuestions([...savedQuestions, newQuestion]);
+      setSavedQuestions(updatedQuestions)
+      
+    setSelectedQuestionIndex(prevIndex => prevIndex + 1);
+    console.log("index",selectedQuestionIndex)
+    console.log(savedQuestions)
     }
 
     // Clear input fields after adding or updating a question
@@ -97,7 +136,7 @@ const CreateTest = () => {
     setOptions(["", "", "", ""]);
     setAnswer("");
   };
-
+ 
   const submitTest = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
 
@@ -149,6 +188,60 @@ const CreateTest = () => {
       });
     }
   };
+  
+const handleTestNameChange =(e)=>{
+    const { value } = e.target;
+    setTestName(value)
+    if (value.trim() === '') {
+      setErrors(prevErrors => ({
+          ...prevErrors,
+          testName  : 'This field is required'
+      }));
+  } else {
+      setErrors(prevErrors => ({
+          ...prevErrors,
+          testName: ''
+      }));
+  }
+  }
+  const handleQuestionTextChange = (e) => {
+
+    setQuestionText(e.target.value)
+
+    // Validate question text
+    if (e.target.value.trim() === '') {
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            questionText: 'This field is required'
+        }));
+    } else {
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            questionText: ''
+        }));
+    }
+};
+const handleOptionChange = (e, index) => {
+    const { value } = e.target;
+
+    // Update the option value
+    const newOptions = [...options];
+    newOptions[index] = value;
+    setOptions(newOptions);
+
+    // Clear any previous error message for the current option
+    const newErrors = { ...errors };
+    newErrors.options[index] = '';
+
+    // Perform validation for the current option
+    if (!value.trim()) {
+        newErrors.options[index] = 'Option cannot be empty';
+    }
+
+    // Update the state with new errors
+    setErrors(newErrors);
+};
+
 
   return (
     <div className="contentbackground">
@@ -197,11 +290,18 @@ const CreateTest = () => {
             </div>
           </div>
 
-          <div className="btngrp mt-5">
+          <div className="atbtndiv mt-5">
+            <button  className="btn btn-primary" onClick={()=>{setShowCriteria(false)}}>Back</button>
+            <div></div>
             <button
               className="btn btn-primary"
               onClick={submitTest}
-              disabled={!!errors.noofattempt || !!errors.passPercentage || !noofattempt || !passPercentage}
+              disabled={
+                !!errors.noofattempt ||
+                !!errors.passPercentage ||
+                !noofattempt ||
+                !passPercentage
+              }
             >
               Save
             </button>
@@ -209,94 +309,113 @@ const CreateTest = () => {
         </div>
       ) : (
         <div className="contentinner">
-          <div className="outer mt-3">
-            <div className="first">
-              <h3>Create Test</h3>
+         <div className="atdiv" style={{ padding: "30px" }}>
+              
+              <div className='atgrid ' style={{height:"400px"}}>
+             <div>
+              <div className="mb-3" > 
               <input
-                className="form-control"
+                className={`form-control form-control-lg  ${errors.testName && 'is-invalid'}`}
                 value={testName}
                 placeholder="Test Name"
-                onChange={(e) => setTestName(e.target.value)}
+                onChange={handleTestNameChange}
               />
-              <textarea
-                className="form-control w-100 mt-4"
-                value={questionText}
+              {errors.testName && <div className="invalid-feedback">{errors.testName}</div>}
+              
+  </div>
+  {selectedQuestionIndex < savedQuestions.length &&(
+              <i className="fas fa-trash text-danger  "
+                style={{ float: "right" ,fontSize:"20px",padding:"10px"}}
+                        onClick={() => handleDelete(selectedQuestionIndex)}
+                      ></i>)}
+        <div>
+              <input 
+              className={`form-control form-control-lg ${errors.questionText && 'is-invalid'}`}       
+              type="text"  
+              value={questionText}
                 placeholder="Add Question here"
-                onChange={(e) => setQuestionText(e.target.value)}
-                rows={3}
+                onChange={handleQuestionTextChange}
+                rows={2}
                 required
               />
-              {options.map((option, index) => (
-                <div key={index} className="option">
-                  <input
-                    className="form-control w-100"
-                    type="text"
-                    value={option}
-                    placeholder={`Option ${index + 1}`}
-                    onChange={(e) => {
-                      const newOptions = [...options];
-                      newOptions[index] = e.target.value;
-                      setOptions(newOptions);
-                    }}
-                    required
-                  />
-                </div>
-              ))}
-              <div>
-                <select
-                  value={answer}
-                  className="form-control w-100 mt-4"
-                  onChange={(e) => setAnswer(e.target.value)}
-                  required
-                >
-                  <option value="">Select answer</option>
-                  {options.map((option, index) => (
-                    <option key={index} value={option}>{option}</option>
-                  ))}
-                </select>
-              </div>
+               {errors.questionText && <div className="invalid-feedback">{errors.questionText}</div>}
+<ul className='listgroup' >                
+             
+{options.map((option, index) => (
+  <li className='choice' key={index} >
+    <input
+   className='mt-2'
+      type="radio"
+      name="answer"
+      value={option}
+      checked={option !== "" && answer === option}
+      onChange={(e) => setAnswer(e.target.value)}
+      required
+    /> 
+    <div>
+    <input
+    className={`form-control form-control-lg ${errors.options[index] && 'is-invalid'}`}
+    type="text"
+    value={option}
+    placeholder={`Option ${index + 1}`}
+    onChange={(e) => handleOptionChange(e, index)}
+    required
+/>
+{/* Display error message for the current option */}
+{errors.options[index] && (
+    <div className="invalid-feedback">{errors.options[index]}</div>
+)}
+
+    </div>
+  </li>
+))}
+</ul>
+{errors.selectedOption && <div className="invalid-feedback">{errors.selectedOption}</div>}
+                    </div>
+
+
+<div className="atbtndiv">
               <button
                 onClick={addQuestion}
                 className="btn btn-primary mt-4"
               >
-                {selectedQuestionIndex !== null ? "Update Question" : "Add Question"}
+                {selectedQuestionIndex === savedQuestions.length ? "Add " : "update "}
               </button>
+           
+
+            <div className="atbtndiv">
+            <div>
+            {selectedQuestionIndex !==0 &&(    <button 
+                className="btn btn-primary mt-4" 
+                onClick={showprevious}
+                disabled={selectedQuestionIndex===0}
+                >
+                &lt;
+                </button>)}
             </div>
-
-            <div></div>
-            <div className="second">
-              <h3>Saved Questions:</h3>
-              <div className="questions">
-                {savedQuestions.length > 0 &&
-                  savedQuestions.map((savedQuestion, index) => (
-                    <div key={index} className="question form-control">
-                      {savedQuestion.questionText.length > 20
-                        ? savedQuestion.questionText.substring(0, 20) + "..."
-                        : savedQuestion.questionText}
-                      <i
-                        className="fa-solid fa-edit iconedit"
-                        onClick={() => handleEditQuestion(index)}
-                      ></i>
-                      <i
-                        className="fas fa-trash icontrash"
-                        onClick={() => handleDelete(index)}
-                      ></i>
-                    </div>
-                  ))}
-              </div>
-
-              {savedQuestions.length > 0 && (
-                <div className="buttondiv">
-                  {/* Show criteria button */}
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => setShowCriteria(true)}
-                  >
-                    Submit Test
-                  </button>
-                  <button className="btn btn-warning">Cancel</button>
-                </div>
-              )}
+                       <div></div>
+            {selectedQuestionIndex < savedQuestions.length-1 &&(
+            <button 
+                className="btn btn-primary mt-4" 
+                onClick={shownext}
+                disabled={selectedQuestionIndex > savedQuestions.length}
+                >
+                &gt;
+                </button>)}
+            
+            </div>
+            <div>
+            {savedQuestions.length > 0 && (
+                            <button
+                            className="btn btn-primary mt-4"
+                            onClick={() => setShowCriteria(true)}
+                            >
+                            Save
+                            </button>
+                        )} 
+                        </div>
+                      </div>   
+                   </div>     
             </div>
           </div>
         </div>
@@ -304,5 +423,4 @@ const CreateTest = () => {
     </div>
   );
 };
-
 export default CreateTest;

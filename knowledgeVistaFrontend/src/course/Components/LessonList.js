@@ -102,7 +102,7 @@ const LessonList = () => {
          <div style={{display:"grid",gridTemplateColumns:"9fr 1fr"}}>
         <h2 style={{textDecoration:"underline"}}>Lessons of {courseName}</h2>
         <Link to={`/course/Addlesson/${courseName}/${courseId}`} className='btn btn-primary' style={{height:"40px"}}> 
-                 <i className="fas fa-plus"></i> Add Lesson</Link>
+                 <i className="fas fa-plus"></i> Add </Link>
         </div>
         <div className='scrolldiv'>
         <div className='listback'>       

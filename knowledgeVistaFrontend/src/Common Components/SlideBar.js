@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import "../css/Component.css"
 
-const SlideBar = ({ isToggled, setIsToggled }) => {
-  const [isActive, setIsActive] = useState(false);
+const SlideBar = ({activeLink,setActiveLink}) => {
   const [isvalid, setIsvalid] = useState();
   const [isEmpty, setIsEmpty] = useState();
   const userRole = sessionStorage.getItem("role");
-  const [activeLink, setActiveLink] =  useState(localStorage.getItem('activeLink') ||(userRole==="ADMIN"?"admin/dashboard":"/dashboard/course"));
   const navigate = useNavigate();
   useEffect(() => {
    
@@ -42,7 +40,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
   };
   const handleClick = (link) => {
     
-    if(userRole==="ADMIN")
+    if(userRole==="ADMIN" || userRole === "TRAINER")
     {
     if((link==="/about" || link==="/admin/dashboard")&& isEmpty)
     {
@@ -59,7 +57,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
       handleSetActiveLink(link);
         navigate(link);
     } 
-  }
+  } 
   else if(userRole==="USER")
   {
     handleSetActiveLink(link);
@@ -69,28 +67,23 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
 
   return (
     <ul
-      className={
-        isToggled
-          ? "navbar-nav   sidebar sidebar-dark accordion toggled"
-          : "navbar-nav  sidebar sidebar-dark accordion"
-      }
+      className=
+         "navbar-nav   sidebar sidebar-dark accordion "
+          
       id="accordionSidebar"
     >
       <a href="#" className="sidebar-brand d-flex align-items-center justify-content-center">
         <div className="sidebar-brand-icon rotate-n-15">
+          
           <i className="fa-solid fa-book-open-reader text-dark"></i>
         </div>
-        <div className="sidebar-brand-text mx-3 text-dark">Learn HUB</div>
+        <div className="sidebar-brand-text mx-3 text-dark ">Learn HUB</div>
       </a>
 
-      <hr className="sidebar-divider" />
-
-
-
-
-
+      <hr className="sidebar-divider mb-4" />
+     
       {userRole === "ADMIN"  && (
-         <li className="nav-item mt-4">
+         <li className="nav-item mt-2">
          <a
            className={activeLink === "/admin/dashboard" ? "ActiveLink nav-link" : "nav-link text-muted"}
            href="#"
@@ -102,22 +95,81 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
          </a>
     
        </li>
-      )} 
-      
-      <li className="nav-item mt-4">
-        <a
-          className={activeLink === "/dashboard/course" ? "ActiveLink nav-link" : "nav-link text-muted"}
-          href="#"
-          onClick={() => handleClick("/dashboard/course")}
-        >
-          <i className={activeLink === "/dashboard/course" ? "fa-solid fa-book-open text-light" : "fa-solid fa-book-open text-muted"}></i>
-          <span>courses</span>
-        </a>
-      </li>
-    
+       )} 
+        {userRole === "ADMIN"  && (
+       
+       <div className={`mt-2 ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "ActiveLink" : ""}`}>
+  <li className="nav-item">
+    <a
+      className={`nav-link ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "text-light" : "text-muted"}`}
+      href="#"
+      onClick={() => {
+        setActiveLink("/course");
+        const collapseTwo = document.getElementById("collapseTwo");
+        if (collapseTwo.classList.contains("show")) {
+          collapseTwo.classList.remove("show");
+        } else {
+          collapseTwo.classList.add("show");
+        }
+      }}
+    >
+      <i className={`fa-solid fa-book-open ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "text-light" : "text-muted"}`}></i>
+      <span>Courses</span>
+    </a>
+  </li>
+  <div  style={{width:"100%"}} id="collapseTwo" className={`collapse ml-3 newnav ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "show" : ""}`} aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+    <div style={{width:"100%"}} className="text-light collapse-inner">
+      <a className={activeLink === "/course/admin/edit" ? "collapse-item text-light SubActiveLink nav-link mb-2" : "collapse-item text-light mb-2 nav-link "}
+        href="#"
 
+        onClick={() => {
+          handleClick("/course/admin/edit");
+          setActiveLink("/course/admin/edit");
+        }}>
+        <i className={activeLink === "/course/admin/edit" ? "p-1 fa-solid fa-edit text-light" : "p-1 fa-solid fa-edit text-light"}></i>
+        <span>Edit Courses</span>
+      </a>
+
+      <a className={activeLink === "/course/addcourse" ? "collapse-item text-light mb-2 SubActiveLink nav-link" : "collapse-item mb-2 text-light nav-link "}
+        href="#"
+        onClick={() => {
+          handleClick("/course/addcourse");
+          setActiveLink("/course/addcourse");
+        }} >
+        <i className={activeLink === "/course/addcourse" ? " p-1 fa-solid fa-plus text-light" : "pl-1 fa-solid fa-plus text-light"}></i>
+        <span> Create course</span>
+      </a>
+
+      <a className={activeLink === "/dashboard/course" ? "collapse-item text-light SubActiveLink nav-link" : "collapse-item text-light nav-link"}
+        href="#"
+        onClick={() => {
+          handleClick("/dashboard/course");
+          setActiveLink("/dashboard/course");
+        }}>
+        <i className={activeLink === "/dashboard/course" ? " pl-1 fa-solid fa-eye text-light" : " pl-1 fa-solid fa-eye text-light"}></i>
+        <span> View Course</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+     
+ )} 
+
+{(userRole === "USER" || userRole === "TRAINER") && (
+        <li className="nav-item mt-2">
+          <a
+            className={activeLink === "/dashboard/course" ? "ActiveLink nav-link" : "nav-link text-muted"}
+            href="#"
+            onClick={() => handleClick("/dashboard/course")}
+          >
+            <i className={activeLink === "/dashboard/course" ? "fa-solid fa-book text-light" : "fa-solid fa-book text-muted"}></i>
+            <span>Courses</span>
+          </a>
+        </li>
+      )}
       {userRole === "USER" && (
-        <li className="nav-item mt-4">
+        <li className="nav-item mt-2">
           <a
             className={activeLink === "/mycourses" ? "ActiveLink nav-link" : "nav-link text-muted"}
             href="#"
@@ -129,9 +181,10 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
         </li>
       )}
 
+
       
 {userRole === "USER" && (
-        <li className="nav-item mt-4">
+        <li className="nav-item mt-2">
           <a
             className={activeLink === "/MyCertificateList" ? "ActiveLink nav-link" : "nav-link text-muted"}
             href="#"
@@ -146,24 +199,11 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
 
       
 
-      {userRole === "ADMIN"  && (
-        <li className="nav-item mt-4">
-          <a
-            className={activeLink === "/course/admin/edit" ? "ActiveLink nav-link" : "nav-link text-muted"}
-            href="#"
-           
-            onClick={() => handleClick("/course/admin/edit")}
-          >
-            <i className={activeLink === "/course/admin/edit" ? "fa-solid fa-book-open text-light" : "fa-solid fa-book-open text-muted"}></i>
-            <span>Edit Courses</span>
-          </a>
      
-        </li>
-      )}
    
 
    {userRole === "TRAINER" && (
-      <li className="nav-item mt-4">
+      <li className="nav-item mt-2">
         <a
           className={activeLink === "/AssignedCourses" ? "ActiveLink nav-link" : "nav-link text-muted"}
           href="#"
@@ -176,7 +216,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
       )}
 
       {userRole === "ADMIN" && (
-      <li className="nav-item mt-4">
+      <li className="nav-item mt-2">
         <a
           className={activeLink === "/view/Trainer" ? "ActiveLink nav-link" : "nav-link text-muted"}
           href="#"
@@ -187,8 +227,8 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
         </a>
       </li>
       )}
-        {(userRole === "ADMIN" || userRole === "TRAINER") && (
-      <li className="nav-item mt-4">
+        {(userRole === "TRAINER" || userRole === "ADMIN") && (
+      <li className="nav-item mt-2">
         <a
           className={activeLink === "/view/Students" ? "ActiveLink nav-link" : "nav-link text-muted"}
           href="#"
@@ -201,7 +241,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
         )}
 
      {userRole === "ADMIN" && (
-      <li className="nav-item mt-4">
+      <li className="nav-item mt-2">
         <a
           className={activeLink === "/certificate" ? "ActiveLink nav-link" : "nav-link text-muted"}
           href="#"
@@ -214,7 +254,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
         )}
         
 {(userRole === "ADMIN" ) && (
-        <li className="nav-item mt-4">
+        <li className="nav-item mt-2">
           <a
             className={activeLink === "/settings/payment" ? "ActiveLink nav-link" : "nav-link text-muted"}
             href="#"
@@ -230,7 +270,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
        
 
        {userRole === "ADMIN"  && (
-        <li className="nav-item mt-4">
+        <li className="nav-item mt-2">
           <a
             className={activeLink === "/about" ? "ActiveLink nav-link" : "nav-link text-muted"}
             href="#"
@@ -245,13 +285,7 @@ const SlideBar = ({ isToggled, setIsToggled }) => {
       )}
      
       <hr className="sidebar-divider d-none d-md-block" />
-      <div className="text-center d-none d-md-inline mt-4">
-        <button
-          className="rounded-circle border-0  bg-secondary text-white"
-          onClick={() => setIsToggled((prevState) => !prevState)}
-          id="sidebarToggle"
-        ></button>
-      </div>
+      
     </ul>
   );
 };

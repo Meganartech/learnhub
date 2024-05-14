@@ -31,10 +31,8 @@ import UploadVideo from "./course/Components/UploadVideo";
 import CourseCreation from "./course/Components/CourseCreation";
 import ViewVideo from "./course/Components/ViewVideo";
 import LessonList from "./course/Components/LessonList";
-//import Dashboard from "./course/Components/Dashboard.js";
 import License from "./AuthenticationPages/License.js";
 import Razorpay_Settings from "./AuthenticationPages/Razorpay_Settings.js";
-//import Feedback from "./AuthenticationPages/Feedback.js";
 import TrainerProfile from "./Trainer/TrainerProfile.js";
 import StudentProfile from "./Student/StudentProfile.js";
 import MyAssignedcourses from "./Trainer/MyAssignedcourses.js";
@@ -44,21 +42,18 @@ import CreateCourseTrainer from "./Trainer/CreateCourseTrainer.js";
 import EditStudent from "./Student/EditStudent.js";
 import EditTrainer from "./Trainer/EditTrainer.js";
 import ProfileView from "./Common Components/ProfileView.js";
-import VideoCheck from "./VideoCheck.js";
 import CustomViewvideo from "./course/Components/CustomViewvideo.js";
 import EditQuestion from "./course/Test/EditQuestion.js";
 import AddMoreQuestion from "./course/Test/AddMoreQuestion.js";
 import Dashboard from "./course/Components/Dashboard.js";
-import AboutUs from "./Common Components/AboutUs.js";
 import About_Us from "./AuthenticationPages/About_Us";
-
+import baseUrl from "./api/utils.js";
 
 
 function App() {
   
   const isAuthenticated = sessionStorage.getItem('token') !== null;
   const MySwal = withReactContent(Swal);
-  const [isToggled, setIsToggled] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [course, setCourse] = useState([{
     courseId:"",
@@ -83,10 +78,8 @@ function App() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch("http://localhost:8080/course/viewAll");
-
-        const data = await response.json();
-
+        const response = await baseUrl.get("/course/viewAll");
+        const data = response.data;
         setCourse(data);
    
       } catch (error) {
@@ -102,12 +95,10 @@ function App() {
       <div className="App ">
         <Routes>
                   <Route element={<Layout  
-                  isToggled={isToggled}
-                  setIsToggled={setIsToggled}
+                
                   searchQuery={searchQuery}
                   handleSearchChange={handleSearchChange}
                   setSearchQuery={setSearchQuery}/>}>
-                    <Route path="/Aboutus" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><AboutUs/></PrivateRoute>}/>
                     <Route path="/admin/dashboard" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Dashboard/></PrivateRoute>}/>
                       <Route path="/lessonList/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><LessonList/></PrivateRoute>}/> 
                       <Route path="/edit/:courseName/:courseId/:Lessontitle/:lessonId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditLesson/></PrivateRoute>}/>
@@ -153,7 +144,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/resetpassword" element={<ResetPassword />}></Route>
           <Route path="*" element={<Missing/>}/>
-          <Route path="/videocheck" element={<VideoCheck/>}/>
                   </Routes>
       </div>
     </Router>  );

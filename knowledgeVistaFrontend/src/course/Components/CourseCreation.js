@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { toast } from 'react-toastify';
 
 const CourseCreation = () => {
     const token = sessionStorage.getItem("token");
@@ -308,10 +306,8 @@ const CourseCreation = () => {
                                     </div>
                                 </div>
                             )}
-
-                            {/* Duration */}
                             <div className='inputgrp'>
-                                <label htmlFor='Duration'>Duration <span className="text-danger">*</span></label>
+                                <label htmlFor='Duration'>Duration (Hours) <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
                                     <input

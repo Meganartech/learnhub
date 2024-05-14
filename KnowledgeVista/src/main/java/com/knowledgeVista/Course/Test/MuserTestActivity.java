@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.User.Muser;
 
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -27,8 +27,7 @@ public class MuserTestActivity {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long activityId;
 
-	    @ManyToOne
-	  
+	   @ManyToOne
 	    @JoinColumn(name = "userId")
 	    private Muser user;
         @ManyToOne

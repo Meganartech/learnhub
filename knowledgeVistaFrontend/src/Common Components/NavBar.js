@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "../css/Component.css"
 
-const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange}) => {
+const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) => {
   const [data,setdata]=useState({
     name:"",
     profileImage:null
@@ -92,20 +92,27 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange}) => {
     <nav className="navbar navbar-expand  navcolor topbar static-top navgrid ">
       {/* <!-- Sidebar Toggle (Topbar) --> */}
     <div className="searchgrid">
+      
+    {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
       <div className="searchbar">
     <i className="fa fa-search pt-1 pl-1" aria-hidden="true"></i>
-    <input className="searchinput" 
-            type="text"
-            name="search"
-            id="search"  
-            value={searchQuery}
-            onChange={handleSearchChange}
-            autoFocus placeholder="search Course...."/>
+    
+        <input
+          className="searchinput"
+          type="text"
+          name="search"
+          id="search"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          autoFocus
+          placeholder="Search Course...."
+        />
+      
               {searchQuery && (  
             <i class="fa-solid fa-xmark pt-1"
             onClick={() => setSearchQuery('')}></i>)}
     </div>
-    
+    )}
     </div> 
 
       <ul className="navbar-nav ml-auto">

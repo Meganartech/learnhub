@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import '../css/certificate.css';
 import { useNavigate } from 'react-router-dom';
+import baseUrl from '../api/utils';
 const License = () => {
     //.....................................Admin Function............................................
  
@@ -80,14 +81,8 @@ const License = () => {
         formData.append(key, audioData[key]);
       }
   
-      const response = await fetch('http://localhost:8080/api/v2/uploadfile', {
-        method: 'POST',
-        body: formData,
-        // headers: { // Uncomment these headers if needed
-        //   'Content-Type': 'multipart/form-data',
-        // },
-      });
-  
+     
+      const response = await baseUrl.post("/api/v2/uploadfile", formData);
       if (!response.ok) {
         throw new Error('Failed to upload audio file');
       }
