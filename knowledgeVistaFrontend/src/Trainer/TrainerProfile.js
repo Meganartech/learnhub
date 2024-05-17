@@ -2,6 +2,8 @@
 import { error } from 'jquery';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const TrainerProfile = () => {
   
@@ -28,26 +30,22 @@ const TrainerProfile = () => {
           if(role==="ADMIN"){
           try {
             console.log(traineremail)
-            const response = await fetch(`http://localhost:8080/student/admin/getTrainer/${traineremail}`,{
-              method:"GET",
+            const response = await axios.get(`${baseUrl}/student/admin/getTrainer/${traineremail}`,{
                headers: {
                 'Authorization': token,
               },
             });
             if (response.status === 200) {
-              const userData = await response.json();
+              const userData = response.data;
               setimg(`data:image/jpeg;base64,${userData.profile}`);
               setUserData(userData);
-          } else if (response.status === 404) {
-              setnotfound(true);
-          } else if (response.status === 401) {
-              // Unauthorized, redirect to login page
-              window.location.href = '/unauthorized';
-          } else {
-              console.error('Error fetching user data. Status:', response.status);
-          }
+          } 
           } catch (error) {
-            console.error('Error fetching user data:', error);
+            if(error.response && error.response.status===404){
+              setnotfound(true);
+            }else if(error.response && error.response.status===401){
+              window.location.href = '/unauthorized';
+            }
           }}
           
           else if(role==="TRAINER"){

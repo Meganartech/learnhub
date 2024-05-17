@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "../../css/test.css"
 import { Link, useParams } from 'react-router-dom';
+import baseUrl from '../../api/utils';
+import axios from 'axios';
 
 const TestList = () => {
   const { courseId } = useParams();
@@ -22,23 +24,23 @@ const TestList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/test/getall/${courseId}`);
-        if (response.status === 404) {
-          setNotFound(true); // Set notFound state to true if test is not found
-        } else if (!response.ok) {
-          throw new Error('Failed to fetch test');
-        } else {
-          const data = await response.json();
+        const response = await axios.get(`${baseUrl}/test/getall/${courseId}`);
+          if (response.status===200) {
+          const data =  response.data;
           setTest(data);
           setEditedTest(data)
         }
       } catch (error) {
+        if(error.response && error.response.status===404){
+          setNotFound(true);
+        }else{
         MySwal.fire({
           title: "Error",
-          text: error.message,
+          text: error.response,
           icon: "error",
           confirmButtonText: "OK"
         });
+      }
       }
     };
 
@@ -60,14 +62,12 @@ const TestList = () => {
       if (!errors[name] && value !== null) {
         const formData = new FormData();
         formData.append(name, value);
-        const response = await fetch(`http://localhost:8080/test/update/${test.testId}`, {
-          method: "PATCH",
+        const response = await axios.patch(`${baseUrl}/test/update/${test.testId}`, formData,{
           headers: {
             "Authorization": token
-          },
-          body: formData
+          }
         });
-        if (response.ok) {
+        if (response.status===200) {
           window.location.reload();
         }
       }
@@ -89,24 +89,15 @@ const TestList = () => {
       if (result.isConfirmed) {
         try {
           if (testId != null) {
-            const response = await fetch(`http://localhost:8080/test/${testId}`, {
-              method: "DELETE"
-            });
-
-            // Check if the response is successful (status code 200-299)
-            if (response.ok) {
-              console.log(`Test  deleted successfully`);
+            const response = await axios.delete(`${baseUrl}/test/${testId}`);
+            if (response.status===200) {
               window.location.reload();
-              // Optionally, you can update your UI or state here
             }
           }
         } catch (error) {
           console.error('Error deleting test:', error);
         }
-      } else {
-        // Handle the case when the user cancels the deletion
-        console.log('Deletion cancelled');
-      }
+      } 
     });
   };
 
@@ -123,27 +114,19 @@ const TestList = () => {
       if (result.isConfirmed) {
         try {
           if (questionId != null) {
-            const response = await fetch(`http://localhost:8080/test/questions/${questionId}`, {
-              method: "DELETE",
+            const response = await axios.delete(`${baseUrl}/test/questions/${questionId}`, {
               headers:{
                 "Authorization":token
               }
             });
-
-            // Check if the response is successful (status code 200-299)
-            if (response.ok) {
-              console.log(`Test  deleted successfully`);
+            if (response.status===200) {
               window.location.reload();
-              // Optionally, you can update your UI or state here
             }
           }
         } catch (error) {
           console.error('Error deleting test:', error);
         }
-      } else {
-        // Handle the case when the user cancels the deletion
-        console.log('Deletion cancelled');
-      }
+      } 
     });
   };
 
@@ -276,7 +259,6 @@ const TestList = () => {
                 <Link to={`/test/AddMore/${test.testId}`} className='btn btn-primary mr-2' style={{width:"150px"}}><i className='fa fa-plus'></i> Add more </Link>
                 </div>
                 </span>
-              {/* Render questions if test is available */}
               {test.questions && (
                 <div className="table-container">
                   <table className='table table-hover  table-bordered table-sm'>
@@ -308,11 +290,9 @@ const TestList = () => {
                             </Link>
                           </td>
                           <td className='text-center'>
-                            {/* Conditionally render delete button */}
                             {test.questions.length > 1 ? (
                               <i className='fa fa-trash text-danger' onClick={() => DeleteQuestion(question.questionId)}></i>
                             ) : (
-                              // Render disabled delete button
                               <i className='fa fa-trash text-danger' style={{ cursor: 'not-allowed', opacity: 0.5 }}></i>
                             )}
                           </td>

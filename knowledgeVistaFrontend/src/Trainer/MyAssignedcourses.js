@@ -3,6 +3,8 @@ import styles from "../css/CourseView.module.css";
 import { Link } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 
 const MyAssignedcourses = () => {
@@ -16,15 +18,15 @@ const MyAssignedcourses = () => {
         const fetchItems = async () => {
             try {
                 // Replace {userId} with the actual user ID
-                const response = await fetch(`http://localhost:8080/AssignCourse/Trainer/courselist`, {
+                const response = await axios.get(`${baseUrl}/AssignCourse/Trainer/courselist`, {
                  headers:{
                     'Authorization':token
                 }
             });
-                if (!response.ok) {
+                if (!response.status===200) {
                     throw new Error('Failed to fetch courses');
                 }
-                const data = await response.json();
+                const data = response.data;
                 setCourses(data);
             } catch (error) {
                 console.error('Error fetching courses:', error);
@@ -47,15 +49,13 @@ const MyAssignedcourses = () => {
      }).then((result) => {
        if (result.isConfirmed) {
          // If the user clicked "Delete"
-         fetch(`http://localhost:8080/course/${courseId}`, {
-           method: "DELETE",
+         axios.delete(`${baseUrl}/course/${courseId}`, {
            headers: {
              "Content-Type": "application/json",
-             // Add any additional headers if needed
            },
          })
            .then((response) => {
-             if (response.ok) {
+             if (response.status===200) {
                // Handle successful deletion
                MySwal.fire({
                  title: "Deleted!",
@@ -66,21 +66,9 @@ const MyAssignedcourses = () => {
                    window.location.reload();
                  }
                });
-             } else {
-               // Handle server error or unexpected response
-               response.text().then((errorMessage) => {
-                 MySwal.fire({
-                   title: "Error!",
-                   text: errorMessage,
-                   icon: "error",
-                   confirmButtonText: "OK",
-                 });
-               });
              }
            })
            .catch((error) => {
-             // Handle network error or fetch API error
-             console.error("Error deleting course:", error);
              MySwal.fire({
                title: "Error!",
                text:

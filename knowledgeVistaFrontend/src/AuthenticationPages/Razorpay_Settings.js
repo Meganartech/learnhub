@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import '../css/certificate.css';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const Razorpay_Settings = () => {
   const MySwal = withReactContent(Swal);
   const [valid, setValid] = useState(true);
   const data=sessionStorage.getItem("type");
-  
   const token=sessionStorage.getItem("token")
 const [isnotFound,setisnotFound]=useState();
 const[initialsave,setinitialsave]=useState(false);
@@ -17,34 +18,36 @@ const[initialsave,setinitialsave]=useState(false);
     razorpay_secret_key:""
   })
   useEffect(() => {
-    data==="false"?setValid(true):setValid(false)
-    
+    data === "false" ? setValid(true) : setValid(false);
+  
     const fetchpaymentsettings = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/getPaymentDetails",{
-          headers:{
-          "Authorization":token
+        const response = await axios.get(`${baseUrl}/api/getPaymentDetails`, {
+          headers: {
+            "Authorization": token
           }
         });
-if(response.ok){
-        const data = await response.json();
-        setdefaultsettings(data);
-        setRazorpay_Key(data.razorpay_key);
-        setRazorpay_Secret_Key(data.razorpay_secret_key);
-        
-      }else if (response.status === 404) {
-        setisnotFound(true);
-        setinitialsave(true)
-      }else if(response.status === 401){
-        window.location.href="/unauthorized"
-      }
+  
+        if (response.status === 200) {
+          const data = response.data;
+          setdefaultsettings(data);
+          setRazorpay_Key(data.razorpay_key);
+          setRazorpay_Secret_Key(data.razorpay_secret_key);
+        } 
       } catch (error) {
-       console.error(error);
+        if (error.response) {
+          if (error.response.status === 404) {
+            setisnotFound(true);
+            setinitialsave(true);
+          } else if (error.response.status === 401) {
+            window.location.href = "/unauthorized";
+          }
+        }
       }
     };
-
+  
     fetchpaymentsettings();
-  }, []);
+  }, []); 
   
   const [errors, setErrors] = useState({
     Razorpay_Key: "",
@@ -55,16 +58,13 @@ if(response.ok){
   
   const changeRazorpay_KeyHandler = (event) => {
     const newValue = event.target.value;
-    setRazorpay_Key(newValue); // Update the state with the new value
-
-    // Clear the error for Razorpay Key if the value is not empty
+    setRazorpay_Key(newValue); 
     if (newValue.trim() !== '') {
       setErrors(prevErrors => ({
         ...prevErrors,
         Razorpay_Key: ""
       }));
     } else {
-      // Show error message if Razorpay Key is empty
       setErrors(prevErrors => ({
         ...prevErrors,
         Razorpay_Key: "Please enter a valid Razorpay Key."
@@ -75,16 +75,13 @@ if(response.ok){
   const [Razorpay_Secret_Key, setRazorpay_Secret_Key] = useState('');
   const changeRazorpay_Secret_KeyHandler = (event) => {
     const newValue = event.target.value;
-    setRazorpay_Secret_Key(newValue); // Update the state with the new value
-
-    // Clear the error for Razorpay Secret Key if the value is not empty
+    setRazorpay_Secret_Key(newValue); 
     if (newValue.trim() !== '') {
       setErrors(prevErrors => ({
         ...prevErrors,
         Razorpay_Secret_Key: ""
       }));
     } else {
-      // Show error message if Razorpay Secret Key is empty
       setErrors(prevErrors => ({
         ...prevErrors,
         Razorpay_Secret_Key: "Please enter a valid Razorpay Secret Key."
@@ -104,26 +101,20 @@ if(response.ok){
     const formData = new FormData();
     formData.append("razorpay_key",Razorpay_Key);
     formData.append("razorpay_secret_key",Razorpay_Secret_Key);
- 
-
-    // Send the data to the server
     const data = {
       razorpay_key: Razorpay_Key,
       razorpay_secret_key: Razorpay_Secret_Key
     };
     if(initialsave){
 
-    fetch('http://localhost:8080/api/Paymentsettings', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization":token
-      },
-    
-      body: JSON.stringify(data),
-    })
+      axios.post(`${baseUrl}/api/Paymentsettings`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
     .then(response => {
-      if (response.ok) {
+      if (response.status === 200) {
         MySwal.fire({
           title: "Saved !",
           text: "Payment Details Saved Sucessfully" ,
@@ -133,38 +124,31 @@ if(response.ok){
           if (result.isConfirmed) {
             window.location.reload();
           }   });
-        
-        
         setisnotFound(false)
-     
-
-      } else if (response.status === 400) {
-        response.text().then(errorMessage => {
-          console.log(errorMessage);  });
-      }else if(response.status === 401){
-        window.location.href="/unauthorized"
-      }  else {
-        // Other error
-        response.text().then(errorMessage => {
-          console.log(errorMessage);  });
-      }
+      } 
     })
     .catch(error => {
-      console.error('Error:', error);
-      alert('An error occurred. Please try again later.');
+      if(error.response.status===401){
+
+        window.location.href="/unauthorized"
+      }else{
+        MySwal.fire({
+          icon: 'error',
+          title: 'Some Error Occurred',
+          text: error.data
+        });
+      }
     });
   }else{ 
     if(defaultsettings.id){
 
-    fetch(`http://localhost:8080/api/update/${defaultsettings.id}`, {
-    method: 'PATCH',
+    axios.patch(`${baseUrl}/api/update/${defaultsettings.id}`,formData ,{
     headers:{
       "Authorization":token
-      },
-    body:formData,
+      }
   })
   .then(response => {
-    if (response.ok) {
+    if (response.status=== 200) {
       MySwal.fire({
         title: "Updated",
         text: "Payment Details Saved Sucessfully" ,
@@ -174,25 +158,20 @@ if(response.ok){
         if (result.isConfirmed) {
           window.location.reload();
         }   });
-     
-      
       setisnotFound(false)
-      
-    } else if (response.status === 400) {
-      response.text().then(errorMessage => {
-        console.log(errorMessage);  });
-    }else if(response.status === 401){
-      window.location.href="/unauthorized"
     }
-    else {
-      // Other error
-      response.text().then(errorMessage => {
-        console.log(errorMessage);  });
-    }
+    
   })
   .catch(error => {
-    console.error('Error:', error);
-    alert('An error occurred. Please try again later.');
+   if(error.response.status===401){
+    window.location.href="/unauthorized"
+   } else{
+    MySwal.fire({
+      icon: 'error',
+      title: 'Some Error Occurred',
+      text: error.data
+    });
+   } 
   });
     
   }}

@@ -4,7 +4,6 @@ import "./css/StudentRegister.css"
 import StudentRegister from "./Student/StudentRegister";
 import ForgetPassword from "./AuthenticationPages/forgetpassword";
 import Login from "./AuthenticationPages/login";
-import ResetPassword from "./AuthenticationPages/ResetPassword";
 import React from "react";
 import PrivateRoute from "./AuthenticationPages/PrivateRoute";
 import Missing from "./AuthenticationPages/Missing";
@@ -16,7 +15,7 @@ import EditCourse from "./course/Update/EditCourse";
 import CourseView from "./course/Components/CourseView";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import CourseDetails from "./course/CourseDetails.js";
+import CourseDetails from "./course/Update/CourseDetails.js";
 import Layout from "./Common Components/Layout.js";
 import CreateTest from "./course/Test/CreateTest";
 import TestList from "./course/Test/TestList";
@@ -45,9 +44,10 @@ import ProfileView from "./Common Components/ProfileView.js";
 import CustomViewvideo from "./course/Components/CustomViewvideo.js";
 import EditQuestion from "./course/Test/EditQuestion.js";
 import AddMoreQuestion from "./course/Test/AddMoreQuestion.js";
-import Dashboard from "./course/Components/Dashboard.js";
+import Dashboard from "./AuthenticationPages/Dashboard.js";
 import About_Us from "./AuthenticationPages/About_Us";
 import baseUrl from "./api/utils.js";
+import axios from "axios";
 
 
 function App() {
@@ -78,7 +78,7 @@ function App() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await baseUrl.get("/course/viewAll");
+        const response = await axios.get(`${baseUrl}/course/viewAll`);
         const data = response.data;
         setCourse(data);
    
@@ -137,12 +137,10 @@ function App() {
                   </Route> 
 
            <Route path="/License" element={<License/>}/>
-           {/* <Route path="/Feedback" element={<Feedback/>}/> */}
           <Route path="/" element={<StudentRegister/>}/>
           <Route path="/unauthorized" element={<Unauthorized/>}/>
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/resetpassword" element={<ResetPassword />}></Route>
           <Route path="*" element={<Missing/>}/>
                   </Routes>
       </div>

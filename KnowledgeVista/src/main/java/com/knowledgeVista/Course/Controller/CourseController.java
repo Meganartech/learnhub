@@ -96,8 +96,14 @@ public class CourseController {
 	    		@RequestParam("courseCategory") String category,
 	    		@RequestParam("Duration") Long Duration,
 	    		@RequestParam("Noofseats") Long Noofseats,
-	    		@RequestParam("courseAmount") Long amount) {
-		 
+	    		@RequestParam("courseAmount") Long amount,
+	    		@RequestHeader("Authorization") String token) {
+		     try {
+		         if (!jwtUtil.validateToken(token)) {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		         }
+		         String role = jwtUtil.getRoleFromToken(token);
+		 if("ADMIN".equals(role)) {
 	        CourseDetail courseDetail = new CourseDetail();
 	        courseDetail.setCourseName(courseName);
 	        courseDetail.setCourseDescription(description);
@@ -130,7 +136,15 @@ public class CourseController {
            response.put("courseId", courseId);
            response.put("coursename", coursename);
 	         return ResponseEntity.ok(response);
+	    
+		 }else {
+
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    }
+		     }catch (Exception e) {
+			        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+		        }
+		     }
 	
 //``````````````````````````````````````````FOR TRAINER COURSE CREATION````````````````````````````````````````
 	 @PostMapping("/create/trainer")

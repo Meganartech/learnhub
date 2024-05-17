@@ -149,7 +149,6 @@ public class Testcontroller {
 	                                                   @RequestHeader("Authorization") String token) {
 	            // Validate the JWT token
 	            if (!jwtUtil.validateToken(token)) {
-	            	System.out.println("unauthorized");
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 	                        .body("{\"error\": \"Invalid Token\"}");
 	            }
@@ -184,8 +183,6 @@ public class Testcontroller {
 
 	                            // Check if user exceeds allowed attempts
 	                            if (attemptCount >= test.getNoofattempt()) {
-
-	            	            	System.out.println("limit exceeded");
 	                                return ResponseEntity.badRequest().body("{\"error\": \"Attempt Limit Exceeded\"}");
 	                                
 	                            }
@@ -254,7 +251,6 @@ public class Testcontroller {
 	        if (courseTest != null) {
 	            // Delete associated questions first
 	            questionRepository.deleteByTest(courseTest);
-	            // Then delete the CourseTest itself
 	            testRepository.delete(courseTest);
 	            return "CourseTest with ID " + testId + " and its associated questions deleted successfully";
 	        } else {

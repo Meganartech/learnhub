@@ -1,7 +1,8 @@
 
-import { error } from 'jquery';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 const StudentProfile = () => {
     const token=sessionStorage.getItem("token");
   const role=sessionStorage.getItem("role");
@@ -24,25 +25,23 @@ const StudentProfile = () => {
         const fetchData = async () => {
           if(role==="ADMIN" ||role==="TRAINER"){
           try {
-            const response = await fetch(`http://localhost:8080/student/admin/getstudent/${studentemail}`,{
-              method:"GET",
+            const response = await axios.get(`${baseUrl}/student/admin/getstudent/${studentemail}`,{
                headers: {
-                'Authorization': token,
+                Authorization: token,
               },
             });
             if (response.status === 200) {
-                const userData = await response.json();
+                const userData = response.data;
                 setimg(`data:image/jpeg;base64,${userData.profile}`);
                 setUserData(userData);
-            } else if (response.status === 404) {
-                setnotfound(true);
-            } else if (response.status === 401) {
-                // Unauthorized, redirect to login page
-                window.location.href = '/unauthorized';
-            } else {
-                console.error('Error fetching user data. Status:', response.status);
-            }} catch (error) {
-            console.error('Error fetching user data:', error);
+            } } catch (error) {
+              if(error.response){
+                if(error.response.status===404){
+                  setnotfound(true);
+                }else if(error.response.status===401){
+                  window.location.href = '/unauthorized';
+                }
+              }
           }}
           
           else{
@@ -57,17 +56,16 @@ const StudentProfile = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
-        {notfound ? (<h1 style={{textAlign:"center",marginTop:"250px"}}>No Student found with the email</h1>) : (
-
-  <div className='innerFrame '>
-    <h2 style={{textDecoration:"underline"}}> Trainer Profile</h2>
-    <div className='mainform'>
-      <div className='profile-picture'>
-        <div className='image-group' >
-          <img id="preview"  src={img} alt='profile' />
-        </div>
-        
-      </div>
+        {notfound ? (
+        <h1 style={{textAlign:"center",marginTop:"250px"}}>No Student found with the email</h1>) : (
+            <div className='innerFrame '>
+              <h2 style={{textDecoration:"underline"}}> Trainer Profile</h2>
+              <div className='mainform'>
+                <div className='profile-picture'>
+                  <div className='image-group' >
+                    <img id="preview"  src={img} alt='profile' />
+                  </div>
+                </div>
 
       <div className='formgroup' style={{backgroundColor:"#F2E1F5",padding:"10px",paddingLeft:"20px",borderRadius:"20px" }} >
         <div className='inputgrp' >

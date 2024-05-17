@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
-import { toast } from 'react-toastify';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 const ViewTrainerList = () => {
   const MySwal = withReactContent(Swal);
     const [users, setUsers] = useState([]);
@@ -16,8 +16,8 @@ const ViewTrainerList = () => {
         const fetchData = async () => {
           try {
             // Fetch data from server
-            const response = await fetch("http://localhost:8080/view/Trainer");
-            const data = await response.json();
+            const response = await axios.get(`${baseUrl}/view/Trainer`);
+            const data = response.data;
             setUsers(data);
           } catch (error) {
             console.error('Error fetching data:', error);
@@ -42,14 +42,13 @@ const ViewTrainerList = () => {
           if (result.isConfirmed) {
             try {
               if (userId != null) {
-                const response = await fetch("http://localhost:8080/admin/delete/trainer", {
-                  method: "DELETE",
+                const response = await axios.delete(`${baseUrl}/admin/delete/trainer`,{
+                 data:formData,
                   headers: {
                     'Authorization': token
-                  },
-                  body: formData
+                  }
                 });
-                if (response.ok) {
+                if (response.status===200) {
                   MySwal.fire({
                     title: "Deleted",
                     text: `Trainer ${username} deleted successfully`,
@@ -58,31 +57,24 @@ const ViewTrainerList = () => {
                 }).then(() => {
                     window.location.reload();
                 });
-                
-
-               
-                   
-                } else if (response.status === 404) {
-                  MySwal.fire({
-                    icon: 'error',
-                    title: '404',
-                    text: 'Trainer not found'
-                });
-                } else {
-                  MySwal.fire({
-                    icon: 'error',
-                    title: 'ERROR',
-                    text: 'Error deleting Trainer'
-                });
-                }
-              } 
+              }
+            }
+              
             } catch (error) {
+              if(error.response && error.response.status===404){
+                MySwal.fire({
+                  icon: 'error',
+                  title: '404',
+                  text: 'Trainer not found'
+              });
+              }else{
               MySwal.fire({
                 icon: 'error',
                 title: 'ERROR',
                 text: 'Error deleting Trainer'
             });
             }
+          }
           } 
         });
       };

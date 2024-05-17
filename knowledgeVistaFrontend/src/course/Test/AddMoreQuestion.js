@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useParams, useLocation } from 'react-router-dom';
+import baseUrl from '../../api/utils';
+import axios from 'axios';
 
 const AddMoreQuestion = () => {
     const MySwal = withReactContent(Swal);
@@ -149,19 +151,13 @@ const AddMoreQuestion = () => {
                 Object.keys(questionData.options).forEach((optionKey, index) => {
                     formData.append(`option${index + 1}`, questionData.options[optionKey]);
                 });
-
-                
-
-
-                const response = await fetch(`http://localhost:8080/test/add/${testId}`, {
-                    method: "POST",
+                const response = await axios.post(`${baseUrl}/test/add/${testId}`,formData, {
                     headers: {
                         "Authorization": token
-                    },
-                    body: formData
+                    }
                 });
-                if (response.ok) {
-                    const data = await response.json();
+                if (response.status===200) {
+                    const data =  response.data;
                     MySwal.fire({
                         title: "Success",
                         text: "Question updated successfully",
@@ -170,8 +166,9 @@ const AddMoreQuestion = () => {
                     });
                     window.history.back();
 
-                } else if (response.status === 401) {
-
+                } 
+            } catch (error) {
+                if(error.response && error.response.status===401){
                     MySwal.fire({
                         title: "Error",
                         text: "you are unauthorized to access this page",
@@ -179,24 +176,16 @@ const AddMoreQuestion = () => {
                         confirmButtonText: "OK"
                     });
                     window.location.href = "/unauthorized"; // Redirect to previous page
-                } else {
-
-                    const data = await response.json();
-                    MySwal.fire({
-                        title: "Error",
-                        text: data.message,
-                        icon: "error",
-                        confirmButtonText: "OK"
-                    });
-                }
-            } catch (error) {
+               
+                }else{
                 MySwal.fire({
                     title: "Error",
-                    text: error.message,
+                    text: error,
                     icon: "error",
                     confirmButtonText: "OK"
                 });
             }
+        }
         }
     };
 

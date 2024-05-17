@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../api/utils';
+import axios from 'axios';
 const AssignCourseTRAINER = () => {
     
   const { userId } = useParams();
@@ -15,23 +17,19 @@ const AssignCourseTRAINER = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/view/users/${userId}`);
-            const userData = await response.json();
-            if (!response.ok) {
+            const response = await axios.get(`${baseUrl}/view/users/${userId}`);
+            const userData = response.data;
+            if (!response.status===200) {
                 throw new Error('Failed to fetch user data');
             }
             setImg(`data:image/jpeg;base64,${userData.profile}`);
             setUserData(userData);
-
-            // Fetch course data without including a body in the GET request
-            const response1 = await fetch(`http://localhost:8080/course/allotList?email=${userData.email}`, {
-                method: "GET",
+            const response1 = await axios.get(`${baseUrl}/course/allotList?email=${userData.email}`, {
                 headers: {
                     'Authorization': token
                 }
             });
-            const data = await response1.json();
-            // Add a 'selected' property to each course object to track selection
+            const data =  response1.data;
             setCourses(data);
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -52,33 +50,50 @@ const AssignCourseTRAINER = () => {
   
 const handleAssignCourse = async () => {
   const selected = courses.filter(course => course.selected);
-  console.log('Selected Courses:', selected);
+ const datatosend=JSON.stringify(selected.map(course => course.courseId))
   try {
-    const response = await fetch(`http://localhost:8080/AssignCourse/trainer/${userId}/courses`, {
-      method: "POST",
+    const response = await axios.post(`${baseUrl}/AssignCourse/trainer/${userId}/courses`,datatosend, {
       headers: {
-        'Content-Type': 'application/json' // Specify the content type
-      },
-      body: JSON.stringify(selected.map(course => course.courseId)) // Send only the courseIds in the body
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+      
     });
 
-    if (response.ok) {
-      // Handle success response
+    if (response.status===200) {
       await MySwal.fire({
         icon: 'success',
         title: 'Courses Assigned!',
         text: 'Selected courses have been assigned successfully.'
       });
       window.location.href="/view/Trainer"
-    } else {
-      // Handle other response statuses
-      const errorMessage = await response.text();
-      console.error('Error:', errorMessage);
-      // You can choose to display an error message using Swal or handle it differently
-    }
+    } 
   } catch (error) {
-    console.error('Error:', error);
-    // Handle network errors or other exceptions
+    if(error.response){
+      if(error.response.status===401){
+        MySwal.fire({
+          title: "Un Authorized!",
+          text: "you are unable to Assign course to  a Trainer",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if(error.response.status===404){
+        MySwal.fire({
+          title: " Not Found!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+      else if(error.response.status===500){
+        MySwal.fire({
+          title: "Server Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    }
   }
 };
   return (

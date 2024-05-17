@@ -33,12 +33,11 @@
    box-shadow: 5px 5px 6px 0px #d6d6d6;
   }
   .navcolor{
-    background:D2D0D0;
     opacity: 1;
     border: none;
   }
   .searchgrid{
-    padding-left: 600px;
+    padding-left: 500px;
   }
   .searchbar{
     width:50%;

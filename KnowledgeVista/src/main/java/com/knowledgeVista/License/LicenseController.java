@@ -2,6 +2,7 @@ package com.knowledgeVista.License;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,11 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
+import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +34,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
-
+import com.knowledgeVista.FileService.LicenceService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -58,9 +56,16 @@ public class LicenseController {
 	 
 	 @Autowired
 		private CourseDetailRepository coursedetailrepository;
+	 @Autowired
+	 private LicenceService licenceservice;
 	
 	 @Value("${upload.video.directory}")
 	    private String audioUploadDirectory;
+	 
+
+	    @Value("${upload.licence.directory}")
+	    private String licenceUploadDirectory;
+	 
 	 
 
 	 
@@ -93,7 +98,9 @@ public class LicenseController {
 	    			 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    			 try {
 	    			DocumentBuilder builder = factory.newDocumentBuilder();
-					Document document = builder.parse(new File("video/product_info.xml"));
+	    			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("product_info.xml");
+	    			if (inputStream != null) {
+	    			 Document document = builder.parse(inputStream);
 					 Element rootElement=document.getDocumentElement();
 					 NodeList personList = rootElement.getElementsByTagName("data");
 					 Element person4 = (Element) personList.item(0);
@@ -135,6 +142,12 @@ public class LicenseController {
 
 	    		       
 	    		        dataList.add(data1);
+	    		        inputStream.close();
+	    			} else {
+	    				System.out.println("Failed to read xml");
+	    				 throw new IllegalStateException("Failed to load product_info.xml");
+
+	    			}
 	    			 }
 	    			 catch(Exception e) {
 		                 e.printStackTrace();
@@ -155,6 +168,7 @@ public class LicenseController {
 		    return new ResponseEntity<>(userListWithStatus,HttpStatus.OK);
 		}
 		
+	
 		
 		@GetMapping("/count")
 		public ResponseEntity<Integer> count() {
@@ -228,10 +242,10 @@ public class LicenseController {
 		    	 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				  try {
 						 DocumentBuilder builder = factory.newDocumentBuilder();
-							Document document = builder.parse(new File("video/"+localFile));
+							Document document = builder.parse(new File(licenceUploadDirectory+localFile));
 							 Element rootElement=document.getDocumentElement();
 							 NodeList personList = rootElement.getElementsByTagName("data");
-							File file = new File("video/"+localFile);
+							File file = new File(licenceUploadDirectory+localFile);
 							long lastModified = file.lastModified();
 							System.out.println("----------------------------------------------------------------");
 							System.out.println("Last modified string"+lastModified);
@@ -361,7 +375,7 @@ public class LicenseController {
 		            DocumentBuilder builder = factory.newDocumentBuilder();
 		    		
 		    		
-					Document document = builder.parse(new File("video/"+file));
+					Document document = builder.parse(new File(licenceUploadDirectory+file));
 					
 					Element rootElement=document.getDocumentElement();
 					System.out.println("Root Element ="+rootElement.getNodeName());
@@ -407,33 +421,39 @@ public class LicenseController {
 			
 			 public  License saveFile(MultipartFile File) throws IOException {
 			        // Save the audio file to the server and get the file path
-			         this.savFile(File);
+			        // this.savFile(File);
+				   this.file=File.getOriginalFilename();
+				licenceservice.saveLicence(File);
+				 
+				 
 //			        license
 			          
 			        return null ;
 			    }
-			 public String savFile(MultipartFile File) throws IOException {
-			        // Generate a unique file name (you can use other strategies)
-			        String uniqueFileName =File.getOriginalFilename();
-			        System.out.println("audioFile.getOriginalFilename()");
-			        System.out.println(File.getOriginalFilename());
-			        this.file=File.getOriginalFilename();
-			        logger.info(file);
-			        
-			        // Define the file path where the audio file will be stored
-			        String filePath = Paths.get(audioUploadDirectory).resolve(uniqueFileName).toString();
-//			        String modifiedPath = filePath.replace("Audio\\", "");
-//			        System.out.println(modifiedPath);
-	
-	
-			        // Save the file to the server
-			        Files.copy(File.getInputStream(), Path.of(filePath), StandardCopyOption.REPLACE_EXISTING);
-	
-			        return "modifiedPath";   
-			        
-			    }
-			   
-		//   -------------------------------
+//			 public String savFile(MultipartFile File) throws IOException {
+//			        // Generate a unique file name (you can use other strategies)
+//			        String uniqueFileName =File.getOriginalFilename();
+//			        System.out.println("audioFile.getOriginalFilename()");
+//			        System.out.println(File.getOriginalFilename());
+//			        this.file=File.getOriginalFilename();
+////			        logger.info(file);
+//			        Path uploadPath = Paths.get(audioUploadDirectory);
+//			        if (!Files.exists(uploadPath)) {
+//			            Files.createDirectories(uploadPath);
+//			        }
+//			        // Define the file path where the audio file will be stored
+//			        String filePath = Paths.get(audioUploadDirectory).resolve(uniqueFileName).toString();
+////			        String modifiedPath = filePath.replace("Audio\\", "");
+////			        System.out.println(modifiedPath);
+//	
+//			        // Save the file to the server
+//			        Files.copy(File.getInputStream(), Path.of(filePath), StandardCopyOption.REPLACE_EXISTING);
+//	
+//			        return "modifiedPath";   
+//			        
+//			    }
+//			   
+//		//   -------------------------------
 		    public String licensedetails(String product_name, String company_name, String key, String validity,String course,String type,String file) {
 		    	
 		    	Iterable<License> licenseIterable = licenseRepository.findAll();
@@ -465,7 +485,7 @@ public class LicenseController {
 		    			license.getFilename();
 		    		System.out.println("file are same  :"+(file.equals(license.getFilename())));
 		    			
-		    			 String filePath = "video/"+license.getFilename();
+		    			 String filePath = licenceUploadDirectory+license.getFilename();
 		    		        File file1 = new File(filePath);
 		    		        if (file1.exists()&& !(file.equals(license.getFilename()))) {
 		    		            // Attempt to delete the file

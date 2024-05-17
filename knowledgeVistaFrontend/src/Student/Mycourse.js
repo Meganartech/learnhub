@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from "../css/CourseView.module.css";
 import { Link } from 'react-router-dom';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const Mycourse = () => {
     const token = sessionStorage.getItem("token");
@@ -12,15 +14,15 @@ const Mycourse = () => {
         const fetchItems = async () => {
             try {
                 // Replace {userId} with the actual user ID
-                const response = await fetch(`http://localhost:8080/AssignCourse/student/courselist`,{
+                const response = await axios.get(`${baseUrl}/AssignCourse/student/courselist`,{
                     headers:{
                         'Authorization':token
                     }
                 });
-                if (!response.ok) {
+                if (!response.status===200) {
                     throw new Error('Failed to fetch courses');
                 }
-                const data = await response.json();
+                const data =  response.data;
                 setCourses(data);
             } catch (error) {
                 console.error('Error fetching courses:', error);

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import login from "../images/login.png"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from "../api/utils";
+import axios from "axios";
 
 const MySwal = withReactContent(Swal);
 
@@ -51,7 +53,6 @@ const ForgetPassword = () => {
 
   const handleResetPasswordSubmit = async (e) => {
     e.preventDefault();
-
     // Check if passwords match and have minimum length
     if (formData.password !== formData.confirmPassword) {
       setConfirmPasswordError("Passwords do not match");
@@ -68,12 +69,9 @@ const ForgetPassword = () => {
 
     // If passwords match and have minimum length, proceed with reset password request
     try {
-      const response = await fetch("http://localhost:8080/resetpassword", {
-        method: "POST",
-        body: formDataToSend,
-      });
+      const response = await axios.post(`${baseUrl}/resetpassword`,formDataToSend);
 
-      if (response.ok) {
+      if (response.status===200) {
         MySwal.fire({
           title: "Success",
           text: "Your password has been reset successfully!",
@@ -108,18 +106,16 @@ const ForgetPassword = () => {
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("email", forgetPasswordFormData.email);
-      const response = await fetch("http://localhost:8080/forgetpassword", {
-        method: "POST",
-        body: formDataToSend,
-      });
+      const response = await axios.post(`${baseUrl}/forgetpassword`,formDataToSend);
 
-      if (response.ok) {
+      if (response.status===200) {
         setEmail(forgetPasswordFormData.email);
         setIsResetPassword(true);
-      } else if (response.status==404){
-        setEmailError("User not found");
-      }
+      } 
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setEmailError("User not found");
+    } else{
       MySwal.fire({
         title: "error",
         text: error.message,
@@ -131,7 +127,7 @@ const ForgetPassword = () => {
           window.location.href = "/login";
         }
       });
-      
+    }
       }
     };
 

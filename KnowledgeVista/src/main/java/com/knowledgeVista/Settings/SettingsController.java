@@ -75,12 +75,14 @@ public class SettingsController {
 		            Paymentsettings pay = datalist.get(0);
 		            return ResponseEntity.ok()
 		                .body(pay);
+		            
 		        }
 		        else {
 		        	
 		        	 Paymentsettings lastPayment = datalist.get(datalist.size() - 1);
 		                return ResponseEntity.ok()
 		                    .body(lastPayment);
+		        	
 		            }
 		        }}else {
 		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

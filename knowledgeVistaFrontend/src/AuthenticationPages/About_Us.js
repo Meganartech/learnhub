@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const About_Us = () => {
   const [audioFile, setAudioFile] = useState(null);
@@ -7,30 +8,28 @@ const About_Us = () => {
   const [isDataList, setIsDataList] = useState(null);
 
   useEffect(() => {
-
-
-    fetch('http://localhost:8080/api/v2/GetAllUser')
-      .then(response => {
-        if (!response.ok) {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`);
+  
+        if (response.status !== 200) {
           throw new Error('Network response was not ok');
         }
-        return response.json();
-      })
-      .then(data => {
-        // const type = data.dataList;
-       
+  
+        const data = response.data;
         setIsDataList(data.dataList);
-
-
-
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error fetching data:', error);
-      });
-  }, []);
+      }
+    };
+  
+    fetchData();
+  
+  }, []); 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const formData = new FormData();
       const audioData = {
@@ -39,31 +38,23 @@ const About_Us = () => {
       for (const key in audioData) {
         formData.append(key, audioData[key]);
       }
-
-      const response = await fetch('http://localhost:8080/api/v2/uploadfile', {
-        method: 'POST',
-        body: formData,
-        // headers: { // Uncomment these headers if needed
-        //   'Content-Type': 'multipart/form-data',
-        // },
-      });
-
-      if (!response.ok) {
+  
+      const response = await axios.post(`${baseUrl}/api/v2/uploadfile`, formData);
+  
+      if (!response.status === 200) {
         throw new Error('Failed to upload audio file');
       }
-
-      // Handle response if needed
-      const data = await response.json();
+  
+      const data = response.data;
       console.log('Upload successful:', data);
     } catch (error) {
-      console.error('Error uploading audio:', error);
+     
+        console.error('Error uploading audio:', error);
+      
     }
-
-    // Reset state after upload
-
+  
     setAudioFile(null);
     window.location.href = "/login";
-    // navigate('/admin'); // Uncomment if navigation is needed
   };
 
 

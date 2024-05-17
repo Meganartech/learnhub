@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import React from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import baseUrl from "../../api/utils";
+import axios from "axios";
 
 const CreateTest = () => {
   const { courseId } = useParams();
@@ -118,10 +120,7 @@ const CreateTest = () => {
     };
 
     if (selectedQuestionIndex !== null) {
-        console.log("edit ")
-        console.log("index",selectedQuestionIndex)
-        console.log(savedQuestions)
-      // Update the existing question
+     
       const updatedQuestions = [...savedQuestions];
       updatedQuestions[selectedQuestionIndex] = newQuestion;
       setSavedQuestions(updatedQuestions)
@@ -150,16 +149,14 @@ const CreateTest = () => {
         noofattempt,
         passPercentage
       };
-
-      const response = await fetch(`http://localhost:8080/test/create/${courseId}`, {
-        method: "POST",
+  const res=JSON.stringify(requestBody)
+      const response = await axios.post(`${baseUrl}/test/create/${courseId}`,res, {
         headers: {
           "Content-Type": "application/json"
-        },
-        body: JSON.stringify(requestBody)
+        }
       });
 
-      if (!response.ok) {
+      if (!response.status===200) {
         throw new Error("Failed to submit test");
       }
 
@@ -182,7 +179,7 @@ const CreateTest = () => {
       // Handle error
       Swal.fire({
         title: "Error",
-        text: error.message,
+        text: error,
         icon: "error",
         confirmButtonText: "OK"
       });

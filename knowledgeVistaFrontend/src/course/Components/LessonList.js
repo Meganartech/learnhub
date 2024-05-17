@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import {  toast } from 'react-toastify';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../../api/utils';
+import axios from 'axios';
 
 const LessonList = () => {
   
@@ -14,11 +15,11 @@ const LessonList = () => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch(`http://localhost:8080/course/getLessonlist/${courseId}`);
-            if (!response.ok) {
+            const response = await axios.get(`${baseUrl}/course/getLessonlist/${courseId}`);
+            if (!response.status===200) {
               throw new Error('Failed to fetch data');
             }
-            const lessonList = await response.json();
+            const lessonList = response.data;
            setlessons(lessonList);
           } catch (error) {
             console.error('Error fetching data:', error);
@@ -44,17 +45,16 @@ const LessonList = () => {
         }).then(async (result) => {
             if (result.isConfirmed && lessId != null) {
                 try {
-                    const response = await fetch("http://localhost:8080/lessons/delete", {
-                        method: "DELETE",
+                    const response = await axios.delete(`${baseUrl}/lessons/delete`, {
                         headers: {
-                            Authorization: token,
-                        },
-                        body: formData,
+                            Authorization: token
+                           },
+                        data: formData,
                     });
     
-                    const message = await response.json();
+                    const message =  response.data;
     
-                    if (response.ok) {
+                    if (response.status===200) {
                         MySwal.fire({
                             title: "Deleted Successfully",
                             text: `Lesson ${Lesstitle} was deleted successfully.`,
@@ -64,16 +64,16 @@ const LessonList = () => {
                             // After the modal is closed, reload the page
                             window.location.reload();
                         });
-                    } else {
-                        MySwal.fire({
-                            title: "Deletion Failed",
-                            text: `${message.message}`,
-                            icon: "error",
-                            confirmButtonText: "OK",
-                        });
                     }
                 } catch (error) {
-                    // Handle network errors or other exceptions
+                  if(error.response && error.response.status===401){
+                    MySwal.fire({
+                      title: "Deletion Failed",
+                      text: "you are UnAuthorized to delete this lesson",
+                      icon: "error",
+                      confirmButtonText: "OK",
+                  });
+                  }else{
                     MySwal.fire({
                         title: "Error",
                         text: "An error occurred while deleting the lesson.",
@@ -81,6 +81,7 @@ const LessonList = () => {
                         confirmButtonText: "OK",
                     });
                 }
+              }
             }
         }).catch(error => {
             MySwal.fire({
@@ -123,7 +124,7 @@ const LessonList = () => {
  
         </div>):(
 
-        <div className='enroll'>
+        <div className='enroll' style={{marginLeft:"400px",marginTop:"150px"}}>
           <h3 className='mt-4'>No Lessons Found for {courseName}</h3>
           <Link to={`/course/Addlesson/${courseName}/${courseId}`} className='btn btn-primary'>Add Now</Link>
         </div>)}

@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import login from "../images/login.png"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import {  toast } from 'react-toastify';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const Login = () => {
   const MySwal = withReactContent(Swal);
@@ -44,58 +45,51 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (Object.values(errors).some(error => error) || !formData.username || !formData.password) {
       return;
-  }
+    }
+  
     try {
-        const response = await fetch("http://localhost:8080/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-        });
-
-        if (response.ok) {
-            // Await the JSON response
-            // fetchUsers();
-            console.log("in the login")
-            const data = await response.json(); // Retrieve JSON data
-            const jwtToken = data.token;
-            const role = data.role;
-            const userId=data.userid;
-            const email=data.email;
-            sessionStorage.setItem('token', jwtToken);
-            sessionStorage.setItem('role', role);
-            sessionStorage.setItem('userid',userId);
-            sessionStorage.setItem('email',email);
-                // Redirect to dashboard or home page
-                window.location.href = "/dashboard/course";
-         
-        } 
-        else if (response.status === 401) {
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            password: "Incorrect password"
-          }));
-            // Incorrect password
-           
-        } else if (response.status === 404) {
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            username: "User not found"
-          }));
-           
+      const response = await axios.post(`${baseUrl}/login`, formData, {
+        headers: {
+          "Content-Type": "application/json",
         }
+      });
+  
+      if (response.status === 200) {
+        const data = response.data; 
+        const jwtToken = data.token;
+        const role = data.role;
+        const userId = data.userid;
+        const email = data.email;
+        sessionStorage.setItem('token', jwtToken);
+        sessionStorage.setItem('role', role);
+        sessionStorage.setItem('userid', userId);
+        sessionStorage.setItem('email', email);
+       window.location.href = "/dashboard/course";
+      } 
     } catch (error) {
+      if (error.response && error.response.status === 404 ){
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          username: "User not found"
+        }));
+      } else if (error.response && error.response.status === 401){
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          password: "Incorrect password"
+        }));
+      } else {
         MySwal.fire({
           title: "Error Occured!",
-          text: "An error occurred while logging in. Please try again later." ,
+          text: "An error occurred while logging in. Please try again later.",
           icon: "error",
-         
         })
+      }
     }
-};
+  };
+  
 
 
 

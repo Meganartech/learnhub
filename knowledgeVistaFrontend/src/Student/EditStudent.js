@@ -3,6 +3,8 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import profile from "../images/profile.png"
 import { useNavigate, useParams } from 'react-router-dom';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 const EditStudent = () => {
   const{email}=useParams()
   const navigate = useNavigate();
@@ -39,31 +41,32 @@ const EditStudent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/student/admin/getstudent/${email}`,{
+        const response = await axios.get(`${baseUrl}/student/admin/getstudent/${email}`,{
           headers:{
             "Authorization":token
           }
         });
-        const userData = await response.json();
-        if(response.ok){
+        const userData =  response.data;
+        if(response.status===200){
   
           setFormData(userData);
           setFormData((prevFormData) => ({
             ...prevFormData, 
             base64Image: `data:image/jpeg;base64,${userData.profile}` 
         }));
-    }else if(response.status===404){
-        setNotFound(true)
     }
-      
-      
-      } catch (error) { MySwal.fire({
+      } catch (error) { 
+        if(error.response && error.response.status===404){
+          setNotFound(true)
+        }else{
+        MySwal.fire({
         title: "Error!",
-        text: error,
+        text: error.response.data.message,
         icon: "error",
         confirmButtonText: "OK",
       });
       }
+    }
     };
 
     fetchData();
@@ -158,22 +161,19 @@ const EditStudent = () => {
       formDataToSend.append("skills",formData.skills);
     
       try {
-        const response = await fetch(`http://localhost:8080/Edit/Student/${email}`, {
-          method: "PATCH",
+        const response = await axios.patch(`${baseUrl}/Edit/Student/${email}`,formDataToSend, {
+         
           headers: {
             Authorization: token,
-          },
-          body: formDataToSend,
+          }
         });
        
-        const data = await response.json();
+        const data = response.data;
     
-        if (response.ok) {
-         
-          // Display success message and reset form fields
+        if (response.status===200) {
           MySwal.fire({
             title: "Updated !",
-            text: "Student Information successfully!",
+            text: "Student Information updated successfully!",
             icon: "success",
             confirmButtonText: "OK",
             
@@ -182,42 +182,32 @@ const EditStudent = () => {
                   window.location.href = "/view/Students";
               }
             });
-        } else if (response.status === 400) {
-          if (data.message === "EMAIL ALREADY EXISTS") {
-            setErrors(prevErrors => ({
-              ...prevErrors,
-              email: "This email is already registered."
-            }));
-            
-          } else {
-            
-            MySwal.fire({
-              title: "Error!",
-              text: `${data.message}`,
-              icon: "error",
-              confirmButtonText: "OK",
-            });
-          }
-        } else if (response.status === 401) {
-    
-          MySwal.fire({
-            title: "Un Authorized!",
-            text: "you are unable to Update a student",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        } else if (response.status === 500) {
-          
-          MySwal.fire({
-            title: "Server Error!",
-            text: "Unexpected Error Occured",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        }
-        
+        } 
+                 
       } catch (error) {
-    
+    let errorres=error.response
+    if(errorres){
+      if(error.response.status===400){
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          email: "This email is already registered."
+        }));
+      }else if(error.response.status===500){
+        MySwal.fire({
+          title: "Server Error!",
+          text: "Unexpected Error Occured",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }else if(error.response.status===401){
+        MySwal.fire({
+          title: "Un Authorized!",
+          text: "you are unable to Update a student",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    }else{
         MySwal.fire({
           title: "Error!",
           text: "An error occurred while Updating STUDENT. Please try again later.",
@@ -225,6 +215,7 @@ const EditStudent = () => {
           confirmButtonText: "OK",
         });
       }
+    }
   };
  
   return (

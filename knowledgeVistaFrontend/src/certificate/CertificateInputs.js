@@ -1,9 +1,10 @@
 import React, { useState,useEffect } from 'react';
-
 import "../css/certificate.css";
 import signature from "../images/signature.png"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 
 const CertificateInputs = () => {
@@ -25,33 +26,35 @@ const CertificateInputs = () => {
     ownerName: '',
     qualification: '',
     address: '',
-    authorizedSign: null, // Change to file input
+    authorizedSign: null, 
   });
 const [isnotFound,setisnotFound]=useState();
 const[sign,setsign]=useState();
 const [getSign,setgetSign]=useState();
 const[isinitial,setisinitial]=useState(true);
+
 useEffect(() => {
   const fetchCertificate = async () => {
     try {
-      const certificatedata = await fetch("http://localhost:8080/certificate/viewAll");
-      if (certificatedata.ok) {
-        const certificateJson = await certificatedata.json();
-       
+      const certificatedata = await axios.get(`${baseUrl}/certificate/viewAll`);
+      if (certificatedata.status === 200) {
+        const certificateJson = certificatedata.data;
         setsign(`data:image/jpeg;base64,${certificateJson.authorizedSign}`);
         setdefaultcerti(certificateJson);
         setCertificate(certificateJson);
-     
         setisinitial(false);
-      } else if (certificatedata.status === 404) {
-        setisnotFound(true);
       }
     } catch (error) {
-      console.error("Error fetching certificate:", error);
+      if (error.response && error.response.status === 404) {
+        setisnotFound(true);
+        
+      }
     }
   };
   fetchCertificate();
-}, [isnotFound]);
+}, []);
+
+
 const handleEdit=()=>{
 setgetSign(`data:image/jpeg;base64,${certificate.authorizedSign}`)
 setisnotFound(true);
@@ -93,56 +96,55 @@ setisnotFound(true);
         certificate.address &&
         certificate.authorizedSign
     ) {
-        try {
-            const formData = new FormData();
-            formData.append('institutionName', certificate.institutionName);
-            formData.append('ownerName', certificate.ownerName);
-            formData.append('qualification', certificate.qualification);
-            formData.append('address', certificate.address);
-            formData.append('authorizedSign', certificate.authorizedSign); 
-            formData.append("certificateId", certificate.certificateId);
-           
-
-            const url = isinitial ? "http://localhost:8080/certificate/add" : "http://localhost:8080/certificate/Edit";
-            const method = isinitial ? "POST" : "PATCH";
-
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    "Authorization": token,
-                },
-                body: formData, // Sending formData
-            });
-              const data=await response.json();
-            if (response.ok) {
-              MySwal.fire({
-                title: "Saved",
-                text: data.message ,
-                icon: "success",
-                confirmButtonText: "OK",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  setisnotFound(false);
-                }   });
-            
-            }else{
-              MySwal.fire({
-                title: "Error!",
-                text: data.message,
-                icon: "error",
-                confirmButtonText: "OK",
-              });
-            }
-        } catch (error) {
-          MySwal.fire({
-            title: "Error!",
-            text: "An error occurred . Please try again later.",
-            icon: "error",
-            confirmButtonText: "OK",
+      try {
+        const formData = new FormData();
+        formData.append('institutionName', certificate.institutionName);
+        formData.append('ownerName', certificate.ownerName);
+        formData.append('qualification', certificate.qualification);
+        formData.append('address', certificate.address);
+        formData.append('authorizedSign', certificate.authorizedSign); 
+        formData.append("certificateId", certificate.certificateId);
+      
+        const url = isinitial ? `${baseUrl}/certificate/add` : `${baseUrl}/certificate/Edit`;
+        const method = isinitial ? "POST" : "PATCH";
+      let response;
+        if (method === 'POST') {
+           response = await axios.post(url, formData, {
+              headers: {
+                  "Authorization": token,
+              }
           });
-
+      } else if (method === 'PATCH') {
+           response = await axios.patch(url, formData, {
+              headers: {
+                  "Authorization": token,
+              }
+          });
+      }
+        
+        const data = response.data;
+        if (response.status===200) {
+          MySwal.fire({
+            title: "Saved",
+            text: data.message,
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
         }
-    } else {
+      } catch (error) {
+        console.error(error)
+        MySwal.fire({
+          title: "Error!",
+          text: "An error occurred. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+          } else {
         alert('Please fill in all fields before saving.');
     }
 };

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const AssignCourse = () => {
 
@@ -16,23 +18,20 @@ const AssignCourse = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/view/users/${userId}`);
-            const userData = await response.json();
-            if (!response.ok) {
+            const response = await axios.get(`${baseUrl}/view/users/${userId}`);
+            const userData =  response.data;
+            if (!response.status===200) {
                 throw new Error('Failed to fetch user data');
             }
             setImg(`data:image/jpeg;base64,${userData.profile}`);
             setUserData(userData);
 
-            // Fetch course data without including a body in the GET request
-            const response1 = await fetch(`http://localhost:8080/course/assignList?email=${userData.email}`, {
-                method: "GET",
+            const response1 = await axios.get(`${baseUrl}/course/assignList?email=${userData.email}`, {
                 headers: {
                     'Authorization': token
                 }
             });
-            const data = await response1.json();
-            // Add a 'selected' property to each course object to track selection
+            const data = response1.data;
             setCourses(data);
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -53,44 +52,35 @@ const AssignCourse = () => {
   
 const handleAssignCourse = async () => {
     const selected = courses.filter(course => course.selected);
-    console.log('Selected Courses:', selected);
+    const datatosend=JSON.stringify(selected.map(course => course.courseId))
 
     try {
-        const response = await fetch(`http://localhost:8080/AssignCourse/${userId}/courses`, {
-            method: "POST",
+        const response = await axios.post(`${baseUrl}/AssignCourse/${userId}/courses`,datatosend, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token, // Don't forget to add the Authorization header
-            },
-            body: JSON.stringify(selected.map(course => course.courseId)) // Send only the courseIds in the body
+                'Authorization': token
+            }
         });
 
-        const data = await response.json(); // Parse the response as JSON
+        const data =  response.data;
 
-        if (response.ok) {
+        if (response.status===200) {
             // Handle success response
             await MySwal.fire({
                 icon: 'success',
                 title: 'Courses Assigned!',
-                text: data.message // Accessing the message from the parsed data
+                text: response.data.message
             });
             // Redirect after success
             window.location.href = "/view/Students";
-        } else {
-            // Handle error response
-            await MySwal.fire({
-                icon: 'error',
-                title: 'An error occurred!',
-                text: data.error // Accessing the error from the parsed data
-            });
-            window.location.reload()
-        }
+        } 
     } catch (error) {
-        console.error('Error:', error);
-        await MySwal.fire({
+      
+         MySwal.fire({
             icon: 'error',
             title: 'An unexpected error occurred!',
-            text: error.message // Show error message
+            text: error.response.data.message ,
+            confirmButtonText: "OK"
         });
         window.location.reload()
     }

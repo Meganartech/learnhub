@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "../../css/CourseView.module.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from "../../api/utils";
+import axios from "axios";
 
 const CourseView = ({ filteredCourses }) => {
   const MySwal = withReactContent(Swal);
@@ -11,35 +13,33 @@ const CourseView = ({ filteredCourses }) => {
 
   const handlesubmit = async (courseId, userId) => {
     try {
-        const response = await fetch('http://localhost:8080/buyCourse/create', {
-            method: 'POST',
+      const data=JSON.stringify({
+        courseId: courseId,
+        userId: userId
+    })
+        const response = await axios.post(`${baseUrl}/buyCourse/create`,data, {
+      
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                courseId: courseId,
-                userId: userId
-            })
+            }
         });
 
-        if (!response.ok) {
-            const errorMessage = await response.text();
-            MySwal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: errorMessage
-            });
+        if (!response.status===200) {
+            const errorMessage =  response.data;
+           
         } else {
-            const order = await response.text();
+            const order =  response.data;
 
             const options = {
-                order_id: order, 
-                name: "Learn HUB", 
+                order_id: order,  
                 handler: function (response) {
                     if (response.error) {
-                        console.log('Payment canceled or failed:', response.error);
+                      MySwal.fire({
+                        icon: 'error',
+                        title: ' Payment canceled or failed:', 
+                        text: response.error
+                    }); 
                     } else {
-                        console.log('Payment successful:', response.razorpay_payment_id);
                         sendPaymentIdToServer(response.razorpay_payment_id, order);
                     }
                 },
@@ -52,35 +52,46 @@ const CourseView = ({ filteredCourses }) => {
             pay.open();
         }
     } catch (error) {
-        console.error('Error creating order:', error);
+      MySwal.fire({
+        icon: 'error',
+        title: 'Error creating order:', 
+        text: error
+    });
     }
 };
 
   const sendPaymentIdToServer = async (paymentId, order) => {
     try {
-        const response = await fetch('http://localhost:8080/buyCourse/payment', {
-            method: 'POST',
+      const paydata=JSON.stringify({
+        paymentId: paymentId,
+        orderId: order,
+    })
+        const response = await axios.post(`${baseUrl}/buyCourse/payment`,paydata, {
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                paymentId: paymentId,
-                orderId: order,
-            })
+            }
         });
 
-        if (response.ok) {
+        if (response.status===200) {
             // Success response
-            const message = await response.text();
+            const message =  response.data;
              window.location.href=message;
         
         } else {
-            // Error response
-            const errorMessage = await response.text();
-            console.error('Error updating payment ID:', errorMessage);
+          
+            const errorMessage =  response.data;
+            MySwal.fire({
+              icon: 'error',
+              title: 'Error updating payment ID:', 
+              text: errorMessage
+          });
         }
     } catch (error) {
-        console.error('Error sending payment ID to server:', error);
+      MySwal.fire({
+        icon: 'error',
+        title: 'Error sending payment ID to server:', 
+        text: error
+    });
     }
 };
 const handleClick = async (event, id,amount,url) => {
@@ -89,45 +100,35 @@ if(amount===0){
   window.location.href=url;
 }else{
   try {
-      const response = await fetch('http://localhost:8080/CheckAccess/match', {
-          method: 'POST',
+    const formdata=JSON.stringify({ courseId: id})
+      const response = await axios.post(`${baseUrl}/CheckAccess/match`, formdata,{
+
           headers: {
               'Content-Type': 'application/json',
               "Authorization":token
-          },
-          body: JSON.stringify({
-              courseId: id  
-          })
+          } 
       });
     
-      if (response.ok) {
-          const message = await response.text();
-          // Redirect to the URL provided in the response
+      if (response.status==200) {
+          const message = response.data;
           window.location.href = message;
-      } else {
-          // Handle different HTTP status codes appropriately
-          if (response.status === 401) {
-            MySwal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: "cannot Access Course "
-          });
-          } else if (response.status === 404) {
-              // Handle Not Found
-              MySwal.fire({
-                icon: 'error',
-                title: 'Not Found',
-                text: `${response.text()}`
-            });
-          } 
-      }
+      } 
   } catch (error) {
+    if(error.response.status===401){
+      MySwal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "cannot Access Course "
+    });
+    
+    }else{
     
     MySwal.fire({
       icon: 'error',
       title: 'Not Found',
       text: error
   });
+}
   }
 }
 };

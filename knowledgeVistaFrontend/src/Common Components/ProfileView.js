@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useNavigate, useParams } from 'react-router-dom';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const ProfileView = () => {
   
@@ -18,7 +19,7 @@ const ProfileView = () => {
     dob: "",
     base64Image:null,
   });
-  const [isEditing, setIsEditing] = useState(false); // State variable to control which view to show
+  const [isEditing, setIsEditing] = useState(false); 
   const [errors, setErrors] = useState({
     username: '',
     email: '',
@@ -38,13 +39,8 @@ const ProfileView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/student/users/${email}`);
-        const userData = await response.json();
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-
-        console.log(userData);
+        const response = await axios.get(`${baseUrl}/student/users/${email}`);
+        const userData = response.data;
         setImg(`data:image/jpeg;base64,${userData.profile}`);
         setUserData(userData);
       } catch (error) {
@@ -55,14 +51,8 @@ const ProfileView = () => {
     fetchData();
   }, [email,isEditing]);
 
-  // Function to handle the edit button click
   const handleEditClick = () => {
     setIsEditing(true);
-  };
-
-  // Function to handle the save button click (you can add save logic here)
-  const handleSaveClick = () => {
-    setIsEditing(false);
   };
 
   const handleChange = (e) => {
@@ -77,8 +67,7 @@ const ProfileView = () => {
           error = value.length < 1 ? 'Please enter a skill' : '';
         break;
       case 'email':
-        // This is a basic email validation, you can add more advanced validation if needed
-        error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'Please enter a valid email address';
+       error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'Please enter a valid email address';
         break;
       case 'dob':
         const dobDate = new Date(value);
@@ -89,7 +78,6 @@ const ProfileView = () => {
         break;
      
       case 'phone':
-        // This is a basic phone number validation, you can add more advanced validation if needed
         error = /^\d{10}$/.test(value) ? '' : 'Please enter a valid phone number';
         break;
         
@@ -120,17 +108,16 @@ const ProfileView = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     
-    // Convert the file to base64
     convertImageToBase64(file)
       .then((base64Data) => {
-        // Set the base64 encoded image and the file in the state
         setUserData((prevFormData) => ({
           ...prevFormData,
           profile: file,
           base64Image: base64Data,
         }));
       })
-      .catch((error) => { MySwal.fire({
+      .catch((error) => { 
+        MySwal.fire({
         title: "Error!",
         text: error ,
         icon: "error",
@@ -150,23 +137,16 @@ const ProfileView = () => {
       formDataToSend.append("phone", userData.phone);
       formDataToSend.append("profile", userData.profile);
       formDataToSend.append("skills",userData.skills);
-      
       formDataToSend.append("isActive", userData.isActive);
     
       try {
-        const response = await fetch('http://localhost:8080/Edit/self', {
-          method: "PATCH",
+        const response = await axios.patch(`${baseUrl}/Edit/self`,formDataToSend, {
           headers: {
             Authorization: token,
           },
-          body: formDataToSend,
         });
-       
-        const data = await response.json();
-    
-        if (response.ok) {
-         
-          // Display success message and reset form fields
+        const data = response.data;
+        if (response.status === 200 ) {
           MySwal.fire({
             title: "Updated !",
             text: "Profile Updated successfully!",
@@ -178,54 +158,37 @@ const ProfileView = () => {
                 setIsEditing(false)
               }
             });
-        } else if (response.status === 400) {
-          if (data.message === "EMAIL ALREADY EXISTS") {
+          }
+        
+      } catch (error) {
+        if(error.response && error.response.status === 400){
             setErrors(prevErrors => ({
               ...prevErrors,
               email: "This email is already registered."
             }));
-            
-          } else {
-            
-            MySwal.fire({
-              title: "Error!",
-              text: `${data.message}`,
-              icon: "error",
-              confirmButtonText: "OK",
-            });
-          }
-        } else if (response.status === 401) {
-    
-          MySwal.fire({
-            title: "Un Authorized!",
-            text: "you are unable to Update a student",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        } else if (response.status === 500) {
-          
+        
+      }else if(error.response && error.response.status === 500){
           MySwal.fire({
             title: "Server Error!",
             text: "Unexpected Error Occured",
             icon: "error",
             confirmButtonText: "OK",
           });
+        }else {
+            
+          MySwal.fire({
+            title: "Error!",
+            text: `${error.response.data}`,
+            icon: "error",
+            confirmButtonText: "OK",
+          });
         }
-        
-      } catch (error) {
-    
-        MySwal.fire({
-          title: "Error!",
-          text: "An error occurred while Updating STUDENT. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
       }
   };
  
 
 
-  // Profile view
+
   const profileView = (
     <div className='innerFrame'>
       <h2 style={{ textDecoration: "underline" }}>Profile</h2>
@@ -284,7 +247,6 @@ const ProfileView = () => {
     </div>
   );
 
-  // Edit profile view
   const editProfileView = (
     <div className='innerFrame'>
       <h2 style={{ textDecoration: "underline" }}>Edit Profile</h2>

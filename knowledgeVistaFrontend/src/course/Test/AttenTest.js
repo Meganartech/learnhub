@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../../api/utils';
+import axios from 'axios';
 
 const AttenTest = () => {
+    const navigate =useNavigate();
     const MySwal = withReactContent(Swal);
-    // const {userId}=sessionStorage.getItem("userid");
     const {courseId,courseName}=useParams();
     const role=sessionStorage.getItem("role");
     const token =sessionStorage.getItem("token")
@@ -14,6 +16,7 @@ const AttenTest = () => {
         passPercentage:"",
         noOfQuestions:"",
     });
+    const [attemplimit,setattemptlimit]=useState(false);
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -22,18 +25,16 @@ const AttenTest = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/test/getTestByCourseId/${courseId}`,{
-                    method: "GET",    
+                const response = await axios.get(`${baseUrl}/test/getTestByCourseId/${courseId}`,{
+                     
                 headers:{
                     "Authorization":token,
                 }
                 });
                
-                if (response.status === 404) {
-                    setNotFound(true); // Set notFound state to true if test is not found
-                  }
-                  if(response.ok){
-                const data = await response.json();
+               
+                  if(response.status===200){
+                const data =  response.data;
                 
                 settestdetails(data);
                 const transformedQuestions = data.questions.map(question => ({
@@ -47,12 +48,20 @@ const AttenTest = () => {
                 }));
                 setQuestions(transformedQuestions);}
             } catch (error) {
+                if(error.response && error.response.status===404)
+                {
+                    setNotFound(true); 
+                  }
+                  if(error.response && error.response.status===400){
+                    setattemptlimit(true);
+                  }else{
+                  const message=error.response.data
                 MySwal.fire({
                     title: "Error",
-                    text: error.message,
+                    text: message.error,
                     icon: "error",
                     confirmButtonText: "OK"
-                });
+                });}
             }
         };
 
@@ -73,14 +82,9 @@ const AttenTest = () => {
     const handlePrevQuestion = () => {
         setCurrentQuestionIndex(currentQuestionIndex - 1);
     };
-
     const handleSubmit = async () => {
-        
     setIsSubmitting(true);
-      // Create an array to store question IDs with selected answers
       const selectedAnswersArray = [];
-      
-      // Iterate over selectedAnswers object to populate the array
       for (const questionIndex in selectedAnswers) {
           const questionId = questions[questionIndex].questionId;
           const selectedAnswer = selectedAnswers[questionIndex];
@@ -89,34 +93,23 @@ const AttenTest = () => {
   
       try {
         const token = sessionStorage.getItem("token");
-     
-          // Send the selectedAnswersArray to the server
-          const response = await fetch(`http://localhost:8080/test/calculateMarks/${courseId}`, {
-              method: 'POST',
+      const datatosend= JSON.stringify(selectedAnswersArray)
+          const response = await axios.post(`${baseUrl}/test/calculateMarks/${courseId}`,datatosend, {
+            
               headers: {
                 "Authorization": token,
                   'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(selectedAnswersArray)
+              }
           });
-  
-          if (!response.ok) {
-              throw new Error('Failed to submit the test');
-            setIsSubmitting(false);
-          }
-  
           setIsSubmitting(false);
-          // Handle the response from the server
-          const data = await response.json();
-          if(data.result === "pass"){
-
-          
+          const data = response.data;
+          if(data.result === "pass"){          
             MySwal.fire({
                 icon: 'success',
                 title: 'Congratulations!',
                 text: `${data.message}`,
             }).then(() => {
-                window.location.href="/MyCertificateList"; // Redirect after the user clicks "OK"
+                window.location.href="/MyCertificateList"; 
             });
         }
           else{
@@ -132,8 +125,13 @@ const AttenTest = () => {
       } catch (error) {
         
         setIsSubmitting(false);
-          // Handle any errors that occur during the fetch
-          console.error('Error:', error);
+        const message=error.response.data
+        MySwal.fire({
+            title: "Error",
+            text: message.error,
+            icon: "error",
+            confirmButtonText: "OK"
+        });
       }
   };
   
@@ -142,6 +140,14 @@ const AttenTest = () => {
 };
     return (
         <div className='contentbackground'>
+          {attemplimit?(<div className='contentinner'>
+            <div className='enroll ' style={{marginLeft:"400px",marginTop:"200px"}}> 
+        <h2 className='mt-2'>Your Attempt Limit Exceeded for this test </h2>
+        <p>Contact your Trainer</p>
+        <button className='btn btn-primary' onClick={()=>{navigate(-1)}}>Go Back</button>
+        </div>
+            </div>):(  
+                <>
               {notFound ? (  
 
         (role === "ADMIN" || role === "TRAINER") ? (
@@ -269,6 +275,7 @@ const AttenTest = () => {
                     </div>
                 </div>
             ) : null} </>)}
+            </>)}
         </div>
     );
 };

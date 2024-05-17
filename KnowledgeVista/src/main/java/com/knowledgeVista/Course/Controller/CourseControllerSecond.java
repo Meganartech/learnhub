@@ -28,6 +28,11 @@ public class CourseControllerSecond {
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	 
+		@GetMapping("/hello")
+		public String hello() {
+			return "hello";
+		}
+	 
 	 @GetMapping("/popularCourse")
 	 public ResponseEntity<List<CourseDetail>> popular(@RequestHeader("Authorization") String token) {
 	     try {

@@ -1,11 +1,12 @@
 import { useState ,useEffect} from "react";
 import React from "react";
-import "../css/Style.css";
+import "../../css/Style.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
-import EditCourseForm from "./Update/EditCourseForm";
+import baseUrl from "../../api/utils"
+import EditCourseForm from "./EditCourseForm";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 const CourseDetails = () => {
   const [img, setimg] = useState();
   const MySwal = withReactContent(Swal);
@@ -22,16 +23,16 @@ const CourseDetails = () => {
     const fetchcourse = async () => {
       try {
         console.log(courseId);
-        const response = await fetch(
-          `http://localhost:8080/course/get/${courseId}`,
+        const response = await axios.get(
+          `${baseUrl}/course/get/${courseId}`,
           {
-            method: "GET",
+            
             headers: {
               "Content-Type": "application/json", // Set appropriate headers if needed
             },
           }
         );
-        if (!response.ok) {
+        if (!response.status===200) {
           // If response is not successful (HTTP status code not in the range 200-299)
           MySwal.fire({
             icon: "error",
@@ -39,7 +40,7 @@ const CourseDetails = () => {
             text: `HTTP error! Status: ${response.status}`,
           });
         }
-        const data = await response.json(); // Convert response to JSON format
+        const data =  response.data; // Convert response to JSON format
         setimg(`data:image/jpeg;base64,${data.courseImage}`);
        
         setCourseEdit(data);

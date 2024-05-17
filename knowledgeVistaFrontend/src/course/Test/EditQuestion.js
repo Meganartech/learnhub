@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import baseUrl from '../../api/utils';
+import axios from 'axios';
 
 const EditQuestion = () => {
   const MySwal = withReactContent(Swal);
   const { questionId } = useParams();
   const token = sessionStorage.getItem("token");
-  const location = useLocation();
-  
+ 
+  const navigate =useNavigate();
   const [questionText, setQuestionText] = useState('');
   const [options, setOptions] = useState({
     option1: '',
@@ -30,16 +32,16 @@ const EditQuestion = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/test/getQuestion/${questionId}`, {
-          method: "GET",
+        const response = await axios.get(`${baseUrl}/test/getQuestion/${questionId}`, {
+       
           headers: {
             "Authorization": token
           }
         });
-        if (!response.ok) {
+        if (!response.status===200) {
           throw new Error('Failed to fetch test');
         } else {
-          const data = await response.json();
+          const data =  response.data;
           setQuestionText(data.questionText);
           setOptions({
             option1: data.option1,
@@ -47,18 +49,20 @@ const EditQuestion = () => {
             option3: data.option3,
             option4: data.option4
           });
-  
-          // Move setting selectedOption inside the 'then' block
           const selectedOption = Object.keys(data).find(optionKey => data[optionKey] === data.answer);
           setSelectedOption(selectedOption); 
         }
       } catch (error) {
         MySwal.fire({
           title: "Error",
-          text: error.message,
+          text: "Some error occurred. Please try again later.",
           icon: "error",
           confirmButtonText: "OK"
-        });
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(-1);
+          }
+      })
       }
     };
   
@@ -147,15 +151,13 @@ const EditQuestion = () => {
       formData.append("option4", options.option4);
       formData.append("answer", options[selectedOption]);
 
-      const response = await fetch(`http://localhost:8080/test/edit/${questionId}`, {
-        method: "PATCH",
+      const response = await axios.patch(`${baseUrl}/test/edit/${questionId}`, formData,{
         headers: {
           "Authorization": token
-        },
-        body: formData
+        }
       });
-      if (response.ok) {
-        const data=await response.json();
+      if (response.status===200) {
+     
         MySwal.fire({
           title: "Success",
           text: "Question updated successfully",
@@ -163,31 +165,24 @@ const EditQuestion = () => {
           confirmButtonText: "OK"
         });
         window.history.back();
-      } else if(response.status===401){
+      } 
+    } catch (error) {
+      if(error.response && error.response.status===401){
         MySwal.fire({
           title: "Error",
           text: "You are unauthorized to access this page",
           icon: "error",
           confirmButtonText: "OK"
         });
-        window.location.href="/unauthorized"; // Redirect to previous page
+        window.location.href="/unauthorized";
       } else {
-        const data=await response.json();
         MySwal.fire({
           title: "Error",
-          text: data.message,
+          text: error,
           icon: "error",
           confirmButtonText: "OK"
         });
-      }
-    } catch (error) {
-      MySwal.fire({
-        title: "Error",
-        text: error.message,
-        icon: "error",
-        confirmButtonText: "OK"
-      });
-    }
+      }}
   };
   
   return (

@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -55,6 +56,9 @@ public class videolessonController {
 		private videoLessonRepo lessonrepo;
 		 @Autowired
 		 private JwtUtil jwtUtil;
+//
+//		 @Value("${upload.video.directory}")
+//		 private  String videoStorageDirectory;
 		private final String videoStorageDirectory = "video/";
 		
 		
@@ -244,6 +248,7 @@ public class videolessonController {
 		            
 		            if (filename != null) {
 		            	Path filePath = Paths.get(videoStorageDirectory, filename);
+		            	System.out.println("filePath"+ filePath);
 		    		    try {
 		    		        if (filePath.toFile().exists() && filePath.toFile().isFile()) {
 		    		            Resource resource = new UrlResource(filePath.toUri());
@@ -323,6 +328,9 @@ public class videolessonController {
 		    		                    }
 		    		                }
 		    		            }
+		    		        }else {
+
+				            	System.out.println("file is null");
 		    		        }
 		    		    } catch (Exception e) {
 		    		        // Handle exceptions

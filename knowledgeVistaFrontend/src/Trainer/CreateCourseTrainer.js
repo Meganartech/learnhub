@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
+import baseUrl from "../api/utils"
+import axios from 'axios';
 const CreateCourseTrainer = () => {
   const token = sessionStorage.getItem("token");
   const MySwal = withReactContent(Swal);
@@ -155,37 +155,38 @@ const CreateCourseTrainer = () => {
 
       // Send the form data
       try {
-          const response = await fetch("http://localhost:8080/course/create/trainer", {
-              method: "POST",
-              body: formDataToSend,
+          const response = await axios.post(`${baseUrl}/course/create/trainer`,formDataToSend, {
               headers:{
-                "Authorization":token
+                "Authorization": token
               }
           });
 
-          if (response.ok) {
-              const reply = await response.json();
+          if (response.status===200) {
+              const reply = response.data;
               const { message, courseId, coursename } = reply;
               window.location.href = `/course/Addlesson/${coursename}/${courseId}`;
-          } else {
-              MySwal.fire({
-                  title: "Error!",
-                  text: "Some unexpected error occurred. Please try again later.",
-                  icon: "error",
-                  confirmButtonText: "OK",
-              });
           }
       } catch (error) {
-          MySwal.fire({
-              title: "Error!",
-              text: "Some unexpected error occurred. Please try again later.",
-              icon: "error",
-              confirmButtonText: "OK",
-          });
-      }
+        
+            if(error.response && error.response.status===401){
+                MySwal.fire({
+                    title: "Un Authorized!",
+                    text: "You are Un Authorided to create the course.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                }); 
+            }else{
+                MySwal.fire({
+                    title: "Error!",
+                    text: "Some unexpected error occurred. Please try again later.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+            }
+       
+        }
   };
 
-  // Calculate if the form can be submitted
   const canSubmit = () => {
       // Check if all form data fields are filled and there are no errors
       const hasNoErrors = Object.values(errors).every((error) => error === '');

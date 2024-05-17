@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import profile from "../images/profile.png"
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const AddStudent = () => {
     const token=sessionStorage.getItem("token")
@@ -129,19 +131,15 @@ const AddStudent = () => {
         formDataToSend.append("skills",formData.skills);
       
         try {
-          const response = await fetch("http://localhost:8080/admin/addStudent", {
-            method: "POST",
+          const response = await axios.post(`${baseUrl}/admin/addStudent`, formDataToSend,{
             headers: {
               Authorization: token,
-            },
-            body: formDataToSend,
+            }
           });
          
-          const data = await response.json();
+          const data =  response.data;
       
-          if (response.ok) {
-           
-            // Display success message and reset form fields
+          if (response.status===200) {
             MySwal.fire({
               title: "Added !",
               text: "New Student Added successfully!",
@@ -153,49 +151,41 @@ const AddStudent = () => {
                     window.location.href = "/view/Students";
                 }
               });
-          } else if (response.status === 400) {
-            if (data.message === "EMAIL ALREADY EXISTS") {
+          }   
+        }catch (error) {
+          const errorData = error.response; 
+          if (errorData) {
+            if (errorData.status === 400) {
               setErrors(prevErrors => ({
                 ...prevErrors,
                 email: "This email is already registered."
               }));
-              
+            } else if (errorData.status === 500) {
+              MySwal.fire({
+                title: "Server Error!",
+                text: "Unexpected Error Occured",
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            } else if (errorData.status === 401) {
+              MySwal.fire({
+                title: "Un Authorized!",
+                text: "you are unable to Add a student",
+                icon: "error",
+                confirmButtonText: "OK",
+              });
             } else {
-              
               MySwal.fire({
                 title: "Error!",
-                text: `${data.message}`,
+                text: errorData.data,
                 icon: "error",
                 confirmButtonText: "OK",
               });
             }
-          } else if (response.status === 401) {
-      
-            MySwal.fire({
-              title: "Un Authorized!",
-              text: "you are unable to Add a student",
-              icon: "error",
-              confirmButtonText: "OK",
-            });
-          } else if (response.status === 500) {
-            
-            MySwal.fire({
-              title: "Server Error!",
-              text: "Unexpected Error Occured",
-              icon: "error",
-              confirmButtonText: "OK",
-            });
           }
-          
-        } catch (error) {
-      
-          MySwal.fire({
-            title: "Error!",
-            text: "An error occurred while adding STUDENT. Please try again later.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
         }
+        
+        
     };
     
    

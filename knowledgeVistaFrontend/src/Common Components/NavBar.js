@@ -3,6 +3,8 @@ import undraw_profile from "../images/profile.png";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "../css/Component.css"
+import baseUrl from "../api/utils";
+import axios from "axios";
 
 const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) => {
   const [data,setdata]=useState({
@@ -13,25 +15,23 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
   useEffect(() => {
     const fetchItems = async () => {
         try {
-            const response = await fetch("http://localhost:8080/Edit/profiledetails", {
+            const response = await axios.get(`${baseUrl}/Edit/profiledetails`, {
                 headers: {
-                    "Authorization": token,
+                    Authorization : token,
                 },
             });
 
-            if (response.ok) {
-                const data = await response.json();
+            if (response.status===200) {
+                const data =  response.data;
                 setdata(data);
-            } else {
-                console.error("Server responded with status:", response.status);
-            }
+            } 
         } catch (error) {
             console.error("Error fetching data:", error);
         }
     };
 
     fetchItems();
-}, [token]);  // Ensure to include token in the dependencies array if it changes
+}, [token]);  
 
  
 
@@ -53,28 +53,20 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
         }
   
         try {
-          // Send logout request to the server
-          const response = await fetch("http://localhost:8080/logout", {
-            method: "POST",
+          const response = await axios.post(`${baseUrl}/logout`,{}, {
             headers: {
-              "Authorization": token, // Pass the token in the Authorization header
-              "Content-Type": "application/json", // Add any other necessary headers
-            },
-            // Add any necessary body data here
+              Authorization: token 
+            }
           });
   
-          if (response.ok) {
-            // Clear token from session storage after successful logout
+          if (response.status===200) {
             sessionStorage.removeItem("token");
             localStorage.clear();
-            // Redirect to login page
             window.location.href = "/login";
             return;
           }
          
         } catch (error) {
-          console.error("Logout failed:", error);
-          // Show error message
           MySwal.fire({
             title: "Error!",
             text: "An error occurred while logging out. Please try again later.",
@@ -90,7 +82,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
 
   return (
     <nav className="navbar navbar-expand  navcolor topbar static-top navgrid ">
-      {/* <!-- Sidebar Toggle (Topbar) --> */}
+      
     <div className="searchgrid">
       
     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
@@ -125,8 +117,8 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-          >
-            <h5 className="username">{data.name}</h5>
+          ><h5 className="username">{data.name.length > 20 ? data.name.substring(0, 20) : data.name}</h5>
+
             <img
               className="img-profile rounded-circle  borderimg "
               src={imageSource}

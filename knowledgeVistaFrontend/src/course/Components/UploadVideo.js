@@ -5,6 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../../api/utils';
+import axios from 'axios';
 const UploadVideo = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -122,16 +124,15 @@ const token=sessionStorage.getItem("token")
       console.log(`${key}: ${value}`);
   }
     try {
-      const response = await fetch(`http://localhost:8080/lessons/save/${courseId}`, {
-        method: "POST",
+      const response = await axios.post(`${baseUrl}/lessons/save/${courseId}`,formDataToSend, {
+     
         headers:{
           "Authorization":token,
-        },
-        body: formDataToSend,
+        }
       });
-      await response.json();
+      
       setIsSubmitting(false);
-      if (response.ok) {
+      if (response.status===200) {
        setvideodata({
         Lessontitle:"",
         LessonDescription:"",

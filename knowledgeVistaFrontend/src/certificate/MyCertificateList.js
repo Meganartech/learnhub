@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const MyCertificateList = () => {
     const [myCertificates, setMyCertificates] = useState([]);
@@ -7,15 +9,13 @@ const MyCertificateList = () => {
         const fetchCertificates = async () => {
             try {
                 const token = sessionStorage.getItem("token");
-                const certificateData = await fetch("http://localhost:8080/certificate/getAllCertificate", {
-                    method: "GET",
+                const certificateData = await axios.get(`${baseUrl}/certificate/getAllCertificate`, {
                     headers: {
                         Authorization: token
                     }
                 });
-                if (certificateData.ok) {
-                    const certificateJson = await certificateData.json();
-                    console.log(certificateJson)
+                if (certificateData.status===200) {
+                    const certificateJson =  certificateData.data;
                     setMyCertificates(certificateJson);
                 }
             } catch (error) {

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import arrowpic from "../../images/arrowpic.jpeg"
-import pencilpic from "../../images/pencilpic.jpeg"
+import arrowpic from "../images/arrowpic.jpeg"
+import pencilpic from "../images/pencilpic.jpeg"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useNavigate } from 'react-router-dom';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 const Dashboard = () => {
   
   const navigate = useNavigate();
@@ -19,118 +21,102 @@ const Dashboard = () => {
   const [isvalid, setIsvalid] = useState();
   const [isEmpty, setIsEmpty] = useState();
 
-  useEffect(() => {
-   
+ //need to change 
+ useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`);
 
-    fetch('http://localhost:8080/api/v2/GetAllUser')
-    .then(response => {
-      if (!response.ok) {
+      if (response.status !== 200) {
+        setIsEmpty(response.data.empty);
         throw new Error('Network response was not ok');
-      setIsEmpty(response.data.empty);
       }
-      return response.json();
-    })
-    .then(data => {
+
+      const data = response.data;
+      
       setIsEmpty(data.empty);
-      setIsvalid(data.valid)
-    })
-    .catch(error => {
+      setIsvalid(data.valid);
+    } catch (error) {
       console.error('Error fetching data:', error);
-    });
-  }, []);
-  useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/course/countcourse', {
-          method: 'GET',
-          headers: {
-            "Authorization": token
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setcountdetails(data);
-        } else if (response.status === 401) { 
-          window.location.href = '/unauthorized'; // Redirect to unauthorized page
-          return; // Stop further execution
-        } else {
-          await MySwal.fire({
-            icon: 'error',
-            title: 'Some Error Occurred',
-            text: 'Please Try Again Later',
-            confirmButtonText: "OK",
-          }).then( (result) => {
-            if (result.isConfirmed) {
-               navigate(-1); // Navigate back after user confirmation
-            }
-          });
-        
-        }
-        
-      } catch (error) {
-        MySwal.fire({
-          icon: 'error',
-          title: 'Some Error Occurred',
-          text: error.message
-        });
-      }
     }
-    const fetchpopularcourse=async ()=>{
-      try {
-        const response = await fetch('http://localhost:8080/courseControl/popularCourse', {
-          method: 'GET',
-          headers: {
-            "Authorization": token
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setCourses(data)
-        } else if (response.status === 401) { 
-          window.location.href = '/unauthorized'; // Redirect to unauthorized page
-          return; // Stop further execution
-        } else {
-          await MySwal.fire({
-            icon: 'error',
-            title: 'Some Error Occurred',
-            text: 'Please Try Again Later',
-            confirmButtonText: "OK",
-          }).then( (result) => {
-            if (result.isConfirmed) {
-               navigate(-1); // Navigate back after user confirmation
-            }
-          });
-        
+  };
+
+  fetchData();
+
+}, []); 
+
+
+  
+useEffect(() => {
+  const fetchCounts = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/course/countcourse`, {
+        headers: {
+          "Authorization": token
         }
-        
-      } catch (error) {
-        MySwal.fire({
-          icon: 'error',
-          title: 'Some Error Occurred',
-          text: error.message
-        });
+      }); 
+
+      if (response.status === 200) {
+        const data = response.data;
+        setcountdetails(data);
+      } 
+    } catch (error) {
+      if (error.response && error.response.status === 401) { // Check if the error has a response and status 401
+        window.location.href = '/unauthorized';
+        return;
       }
+      MySwal.fire({
+        icon: 'error',
+        title: 'Some Error Occurred',
+        text: error.message
+      });
     }
-    fetchCounts();
-    fetchpopularcourse();
-  }, []);
+  };
+  const fetchpopularcourse = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/courseControl/popularCourse`, {
+        headers: {
+          "Authorization": token
+        }
+      });
+  
+      if (response.status === 200) {
+        const data = response.data;
+        setCourses(data);
+      } 
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        window.location.href = '/unauthorized'; 
+          return;
+      }
+      MySwal.fire({
+        icon: 'error',
+        title: 'Some Error Occurred',
+        text: error.message
+      });
+    }
+  };
+  
+  fetchpopularcourse();
+  fetchCounts();
+
+}, []);
+
   
 
 
   
   return (
     <div className='contentbackground'>
+      {!isvalid && (
       <div className="marquee-container">
       <div className="marquee-content">
-        {/* Your scrolling content goes here */}
-        {!isvalid?<a
+        <a
          href="/about" style={{color:"darkred"}}>
           License has been expired Need to uploard new License or contact "111111111111"
-        </a>:<div></div>}
+        </a>
       </div>
-    </div>
+    </div>)}
         <div className='contentinner'>
           <div style={{display:"flex"}}>
             <div style={{flex:"3"}}>
@@ -158,10 +144,8 @@ const Dashboard = () => {
                         </div>
                   </div>
                   
-              
-                  <div className='counts '>
-                    
-                   
+                  <h5 className='font-weight-bold mt-5 ml-5'>Popular Courses</h5>
+                  <div className='counts ' style={{marginTop:"0px"}}>
                     {Courses.map((course, index) => (
                           <div key={index} className='countchild' style={{padding:"5px"}}>
                             <img

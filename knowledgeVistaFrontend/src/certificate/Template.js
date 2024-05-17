@@ -5,6 +5,8 @@ import { jsPDF } from 'jspdf';
 
 import "../css/certificate.css";
 import { useParams } from 'react-router-dom';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const Template = () => {
   const  {activityId}=useParams();
@@ -25,28 +27,29 @@ const[sign,setsign]=useState();
         const token = sessionStorage.getItem("token");
         const fetchCertificate = async () => {
             try {
-                const certificatedata = await fetch("http://localhost:8080/certificate/viewAll");
-                if (certificatedata.ok) {
-                    const certificateJson = await certificatedata.json();
+                const certificatedata = await axios.get(`${baseUrl}/certificate/viewAll`);
+                if (certificatedata.status===200) {
+                    const certificateJson = certificatedata.data;
                     setsign(`data:image/jpeg;base64,${certificateJson.authorizedSign}`);
                     setdefaultcerti(certificateJson);
                     setisnotFound(false); // Reset isNotFound to false
                 
-                const userdata = await fetch(`http://localhost:8080/certificate/getByActivityId/${activityId}`, {
-                    method: "GET",
+                const userdata = await axios.get(`${baseUrl}/certificate/getByActivityId/${activityId}`, {
                     headers: {
                         Authorization: token
                     }
                 });
-                if (userdata.ok) {
-                    const userjson = await userdata.json();
+                if (userdata.status===200) {
+                    const userjson =  userdata.data;
                     setuserdata(userjson);
                 }}
-                else{
-                    setisnotFound(true);
-                }
+                
             } catch (error) {
-                console.error("Error fetching certificate:", error);
+                if(error.response && error.response.status===404){
+                    setisnotFound(true);
+                }else if(error.response && error.response.status===401){
+                    window.location.href="/unauthorized"
+                }
             }
         };
         fetchCertificate();

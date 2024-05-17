@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import {  toast } from 'react-toastify';
+import baseUrl from '../api/utils';
+import axios from 'axios';
 //style.css
 const ViewStudentList = () => {
   const MySwal = withReactContent(Swal);
@@ -16,8 +17,8 @@ const ViewStudentList = () => {
         const fetchData = async () => {
           try {
             // Fetch data from server
-            const response = await fetch("http://localhost:8080/view/users");
-            const data = await response.json();
+            const response = await axios.get(`${baseUrl}/view/users`);
+            const data = response.data;
             setUsers(data);
           } catch (error) {
             console.error('Error fetching data:', error);
@@ -30,7 +31,7 @@ const ViewStudentList = () => {
     const formData = new FormData();
     formData.append('email', email);
     MySwal.fire({
-      title: "Delete Test?",
+      title: "Delete Student?",
       text: `Are you sure you want to delete Student ${username}`,
       icon: "warning",
       showCancelButton: true,
@@ -41,14 +42,14 @@ const ViewStudentList = () => {
       if (result.isConfirmed) {
         try {
           if (userId != null) {
-            const response = await fetch("http://localhost:8080/admin/delete/Student", {
-              method: "DELETE",
+            const response = await axios.delete(`${baseUrl}/admin/delete/Student`, {
+              data:formData,
               headers: {
                 'Authorization': token
-              },
-              body: formData
+              }
             });
-            if (response.ok) {
+            
+            if (response.status===200) {
               MySwal.fire({
                 title: "Deleted",
                 text: `Student ${username} deleted successfully`,
@@ -57,28 +58,26 @@ const ViewStudentList = () => {
             }).then(() => {
                 window.location.reload();
             });
-            } else if (response.status === 404) {
+            }
+          } 
+        } catch (error) {
+          if(error.response){
+            if(error.response.status===404){
               MySwal.fire({
                 icon: 'error',
                 title: '404',
                 text: 'Student not found'
             });
-            } else {
-              MySwal.fire({
-                icon: 'error',
-                title: 'ERROR',
-                text: 'Error deleting Student'
-            });
             }
-          } 
-        } catch (error) {
+          }else{
           MySwal.fire({
             icon: 'error',
             title: 'ERROR',
             text: 'Error deleting Student'
         });
         }
-      } 
+      }
+      }  
     });
   };
 

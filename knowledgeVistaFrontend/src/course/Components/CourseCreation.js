@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../../api/utils';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const CourseCreation = () => {
     const token = sessionStorage.getItem("token");
     const MySwal = withReactContent(Swal);
-    
+    const navigate =useNavigate();
     // Initial state for form errors
     const [errors, setErrors] = useState({
         courseName: "",
@@ -153,30 +156,37 @@ const CourseCreation = () => {
 
         // Send the form data
         try {
-            const response = await fetch("http://localhost:8080/course/add", {
-                method: "POST",
-                body: formDataToSend,
+            const response = await axios.post(`${baseUrl}/course/add`,formDataToSend,{
+            headers:{
+                Authorization:token
+            }
             });
 
-            if (response.ok) {
-                const reply = await response.json();
+            if (response.status===200) {
+                const reply = response.data;
                 const { message, courseId, coursename } = reply;
                 window.location.href = `/course/Addlesson/${coursename}/${courseId}`;
-            } else {
-                MySwal.fire({
-                    title: "Error!",
-                    text: "Some unexpected error occurred. Please try again later.",
-                    icon: "error",
-                    confirmButtonText: "OK",
-                });
-            }
+            } 
         } catch (error) {
+            if(error.response && error.response.status===401){
+                MySwal.fire({
+                    title: "Error",
+                    text: "you are unauthorized to access this page",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                }).then((result)=>{
+                    if(result.isConfirmed){
+                        navigate(-1)
+                    }
+                })
+            }else{
             MySwal.fire({
                 title: "Error!",
                 text: "Some unexpected error occurred. Please try again later.",
                 icon: "error",
                 confirmButtonText: "OK",
             });
+        }
         }
     };
 

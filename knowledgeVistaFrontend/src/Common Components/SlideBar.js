@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import "../css/Component.css"
+import baseUrl from '../api/utils';
+import axios from 'axios';
 
 const SlideBar = ({activeLink,setActiveLink}) => {
   const [isvalid, setIsvalid] = useState();
@@ -8,32 +10,28 @@ const SlideBar = ({activeLink,setActiveLink}) => {
   const userRole = sessionStorage.getItem("role");
   const navigate = useNavigate();
   useEffect(() => {
-   
-
-    fetch('http://localhost:8080/api/v2/GetAllUser')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-          .then(data => {
-            setIsEmpty(data.empty);
-            setIsvalid(data.valid);
-            const type = data.type;
-            // data.dataList.map((item, index) => {
-              // console.log("key 1"+data.dataList[0].key1);
-              // console.log("value 1"+data.dataList[0].key2);
-            // });
-
-
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`);
+        if (response.status !== 200) {
+          setIsEmpty(response.data.empty);
+          throw new Error('Network response was not ok');
+        }
+        const data = response.data;
+        setIsEmpty(data.empty);
+        setIsvalid(data.valid);
+        const type = data.type;
       sessionStorage.setItem('type',type);
-     
-    })
-    .catch(error => {
+    } catch (error) {
       console.error('Error fetching data:', error);
-    });
+    }
+  };
+  fetchData();
   }, []);
+
+  
+
+
   const handleSetActiveLink = (linkName) => {
     setActiveLink(linkName);
     localStorage.setItem("activeLink",linkName)
@@ -98,7 +96,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
        )} 
         {userRole === "ADMIN"  && (
        
-       <div className={`mt-2 ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "ActiveLink" : ""}`}>
+<div className={`mt-2 ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "ActiveLink" : ""}`}>
   <li className="nav-item">
     <a
       className={`nav-link ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "text-light" : "text-muted"}`}
@@ -117,36 +115,39 @@ const SlideBar = ({activeLink,setActiveLink}) => {
       <span>Courses</span>
     </a>
   </li>
-  <div  style={{width:"100%"}} id="collapseTwo" className={`collapse ml-3 newnav ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "show" : ""}`} aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+  <div  style={{width:"100%"}} id="collapseTwo" 
+   className={`collapse ml-3 newnav ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "show" : ""}`} 
+   aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+
     <div style={{width:"100%"}} className="text-light collapse-inner">
-      <a className={activeLink === "/course/admin/edit" ? "collapse-item text-light SubActiveLink nav-link mb-2" : "collapse-item text-light mb-2 nav-link "}
+      <a className={`nav-link mb-2 collapse-item text-light ${activeLink === "/course/admin/edit" ? " SubActiveLink " : ""}`}
         href="#"
 
         onClick={() => {
           handleClick("/course/admin/edit");
           setActiveLink("/course/admin/edit");
         }}>
-        <i className={activeLink === "/course/admin/edit" ? "p-1 fa-solid fa-edit text-light" : "p-1 fa-solid fa-edit text-light"}></i>
+        <i className= "p-1 fa-solid fa-edit text-light"></i>
         <span>Edit Courses</span>
       </a>
 
-      <a className={activeLink === "/course/addcourse" ? "collapse-item text-light mb-2 SubActiveLink nav-link" : "collapse-item mb-2 text-light nav-link "}
+      <a className={`collapse-item mb-2 text-light nav-link ${activeLink === "/course/addcourse" ? "SubActiveLink " : " "}`}
         href="#"
         onClick={() => {
           handleClick("/course/addcourse");
           setActiveLink("/course/addcourse");
         }} >
-        <i className={activeLink === "/course/addcourse" ? " p-1 fa-solid fa-plus text-light" : "pl-1 fa-solid fa-plus text-light"}></i>
+        <i className= "pl-1 fa-solid fa-plus text-light"></i>
         <span> Create course</span>
       </a>
 
-      <a className={activeLink === "/dashboard/course" ? "collapse-item text-light SubActiveLink nav-link" : "collapse-item text-light nav-link"}
+      <a className={`collapse-item text-light nav-link ${activeLink === "/dashboard/course" ? "SubActiveLink " : ""}`}
         href="#"
         onClick={() => {
           handleClick("/dashboard/course");
           setActiveLink("/dashboard/course");
         }}>
-        <i className={activeLink === "/dashboard/course" ? " pl-1 fa-solid fa-eye text-light" : " pl-1 fa-solid fa-eye text-light"}></i>
+        <i className=" pl-1 fa-solid fa-eye text-light"></i>
         <span> View Course</span>
       </a>
     </div>

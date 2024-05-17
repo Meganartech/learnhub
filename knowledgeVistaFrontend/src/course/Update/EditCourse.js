@@ -3,17 +3,16 @@ import styles from "../../css/CourseView.module.css";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import {  toast } from 'react-toastify';
+import baseUrl from "../../api/utils";
+import axios from "axios";
 const EditCourse = ({filteredCourses}) => {
   const MySwal = withReactContent(Swal);
  const role=sessionStorage.getItem("role");
  const createCourse = async () => {
   try {
- const response = await fetch('http://localhost:8080/api/v2/count', {
-      method: 'GET',
-    });
-    console.log(response)
-    if (response.ok) {
+ const response = await axios.get(`${baseUrl}/api/v2/count`);
+
+    if (response.status===200) {
       window.location.href = "/course/addcourse";
     }
     else{
@@ -43,15 +42,13 @@ const EditCourse = ({filteredCourses}) => {
   }).then((result) => {
     if (result.isConfirmed) {
       // If the user clicked "Delete"
-      fetch(`http://localhost:8080/course/${courseId}`, {
-        method: "DELETE",
+      axios.delete(`${baseUrl}/course/${courseId}`, {
         headers: {
           "Content-Type": "application/json",
-          // Add any additional headers if needed
         },
       })
         .then((response) => {
-          if (response.ok) {
+          if (response.status===200) {
           
             MySwal.fire({
               title: "Deleted!",
@@ -62,20 +59,18 @@ const EditCourse = ({filteredCourses}) => {
                 window.location.reload();
               }
             });
-          } else {
-            
-            response.text().then((errorMessage) => {
-              MySwal.fire({
-                title: "Error!",
-                text: errorMessage,
-                icon: "error",
-                confirmButtonText: "OK",
-              });
-            });
-           
-          }
+          } 
         })
         .catch((error) => {
+          if(error.response){
+            MySwal.fire({
+              title: "Error!",
+              text: error.response.data,
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+          }else{
+            
            MySwal.fire({
             title: "Error!",
             text:
@@ -83,6 +78,8 @@ const EditCourse = ({filteredCourses}) => {
             icon: "error",
             confirmButtonText: "OK",
           });
+          }
+          
         });
     } 
   });

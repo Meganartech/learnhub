@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import '../css/certificate.css';
 import { useNavigate } from 'react-router-dom';
 import baseUrl from '../api/utils';
+import axios from 'axios';
 const License = () => {
     //.....................................Admin Function............................................
  
@@ -82,13 +83,11 @@ const License = () => {
       }
   
      
-      const response = await baseUrl.post("/api/v2/uploadfile", formData);
+      const response = await axios.post(`${baseUrl}/api/v2/uploadfile`, formData);
       if (!response.ok) {
         throw new Error('Failed to upload audio file');
       }
-  
-      // Handle response if needed
-      const data = await response.json();
+      const data = response.data;
       console.log('Upload successful:', data);
     } catch (error) {
       console.error('Error uploading audio:', error);

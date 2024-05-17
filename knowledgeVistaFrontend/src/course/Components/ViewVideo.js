@@ -3,8 +3,11 @@ import ReactPlayer from 'react-player';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../../api/utils';
+import axios from 'axios';
 
 const ViewVideo = () => {
+  
   const playerRef = useRef(null);
   const lessonListRef = useRef(null);
   const MySwal = withReactContent(Swal);
@@ -22,33 +25,33 @@ const ViewVideo = () => {
   useEffect(() => {
     
     const fetchData = async () => {
+
       try {
-        const response = await fetch(`http://localhost:8080/course/getLessondetail/${courseId}`,{
+        const response = await axios.get(`${baseUrl}/course/getLessondetail/${courseId}`,{
           headers :{
            "Authorization":token
           }
         });
-       if(response.ok){
-        const lessonList = await response.json();
+       if(response.status==200){
+        const lessonList = response.data;
         setAllLessons(lessonList);
-       } else if (response.status === 401) { 
-        window.location.href = '/unauthorized'; // Redirect to unauthorized page
-        return; // Stop further execution
-      } else {
-        await MySwal.fire({
-          icon: 'error',
-          title: 'Some Error Occurred',
-          text: 'Please Try Again Later',
-          confirmButtonText: "OK",
-        }).then( (result) => {
-          if (result.isConfirmed) {
-             navigate(-1); // Navigate back after user confirmation
-          }
-        });
-      
       }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        if(error.response && error.response.status===401){
+          window.location.href = '/unauthorized'; 
+          return;
+        }else {
+          await MySwal.fire({
+            icon: 'error',
+            title: 'Some Error Occurred',
+            text: 'Please Try Again Later',
+            confirmButtonText: "OK",
+          }).then( (result) => {
+            if (result.isConfirmed) {
+               navigate(-1); 
+            }
+          });
+        }
       }
     };
 
@@ -152,7 +155,8 @@ const handleOnSeek = (progress) => {
           } else {
               // If URL is null or doesn't contain 'youtube.com' or 'youtu.be', consider it as a local video
               setVideoType('local');
-              setVideoSource(`http://localhost:8080/lessons/getvideoByid/${lessId}/${courseId}/${token}`);
+              setVideoSource(`${baseUrl}/lessons/getvideoByid/${lessId}/${courseId}/${token}`);
+            
              
           }
               }
@@ -208,8 +212,6 @@ const handleOnSeek = (progress) => {
 
         <ReactPlayer
           ref={playerRef}
-         
-        
           url={videoSource}
           width="90%"
           height="80%"
@@ -288,15 +290,25 @@ const handleOnSeek = (progress) => {
       </div>
     ) : (
       (role === "ADMIN" || role === "TRAINER") ? (
-        <div className='enroll'>
+        <div className='enroll' style={{marginLeft:"400px",marginTop:"150px"}}>
           <h3 className='mt-4'>No Lessons Found for {courseName}</h3>
           <Link to={`/course/Addlesson/${courseName}/${courseId}`} className='btn btn-primary'>Add Now</Link>
         </div>
       ) : (
-        <div className='enroll'>
+        <div>
+          <div style={{display:"grid",gridTemplateColumns:"9fr 1fr"}}>
+        <h1 style={{ textAlign: 'center' }}>{courseName}</h1>
+        <Link to={`/test/start/${courseName}/${courseId}`} className='btn btn-primary' style={{height:"40px"}}> 
+                Start Test</Link>
+        </div>
+        <div>
+
+        <div className='enroll' style={{marginLeft:"400px",marginTop:"150px"}}>
         <h3 className='mt-4'>No Lessons Found for {courseName}</h3>
         
       <Link to="/dashboard/course" className='btn btn-primary'>Go Back</Link>
+        </div>
+        </div>
         </div>
       )
     )}

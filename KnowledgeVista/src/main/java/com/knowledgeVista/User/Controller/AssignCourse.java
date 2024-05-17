@@ -37,8 +37,18 @@ public class AssignCourse {
 	
 //````````````````````````````Assign Course to Student Admin function ```````````````````````````````````	
 	@PostMapping("/{userId}/courses")
-	public ResponseEntity<String> assignCoursesToUser(@PathVariable Long userId, @RequestBody List<Long> courseIds) {
-	    try {
+	public ResponseEntity<String> assignCoursesToUser(@PathVariable Long userId, @RequestBody List<Long> courseIds, 
+			@RequestHeader("Authorization") String token) {
+		try {
+		if (!jwtUtil.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String role = jwtUtil.getRoleFromToken(token);
+        if("ADMIN".equals(role) ||"TRAINER".equals(role)) {
+        	
+        
+		
 	        Optional<Muser> optionalUser = muserRepository.findById(userId);
 
 	        if (optionalUser.isPresent()) {
@@ -85,6 +95,9 @@ public class AssignCourse {
 	            // If a user with the specified ID doesn't exist, return 404
 	        	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                     .body("{\"error\": \"User with ID " + userId + " not found.\"}");
+	               }}else {
+	                   return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	            	   
 	               }
 	    } catch (Exception e) {
 	        // If an error occurs, return 500
@@ -94,7 +107,14 @@ public class AssignCourse {
 	}
 	//`````````````````````````````````Assign Course To TRAINER``````````````````````````````````
 	@PostMapping("/trainer/{userId}/courses")
-	public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long userId, @RequestBody List<Long> courseIds) {
+	public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long userId, @RequestBody List<Long> courseIds,
+			 @RequestHeader("Authorization") String token) {
+		if (!jwtUtil.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String role = jwtUtil.getRoleFromToken(token);
+        if("ADMIN".equals(role)) {
 	    Optional<Muser> optionalUser = muserRepository.findById(userId);
 
 	    if (optionalUser.isPresent()) {
@@ -130,6 +150,9 @@ public class AssignCourse {
 	        }
 	    } else {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + userId + " not found");
+	    }}else {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    }
 	}
 

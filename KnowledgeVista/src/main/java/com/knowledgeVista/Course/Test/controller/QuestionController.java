@@ -176,6 +176,9 @@ public class QuestionController {
 
 		            // If question exists, delete it
 		            if (question != null) {
+		            	Long noofques=question.getTest().getNoOfQuestions()-1;
+		            	question.getTest().setNoOfQuestions(noofques);
+		            	questionRepository.save(question);
 		                questionRepository.delete(question);
 		                // Return a response indicating successful deletion
 		                return ResponseEntity.ok("Question with ID " + questionId + " deleted successfully");
@@ -268,6 +271,7 @@ public class QuestionController {
 		            if (test == null) {
 		                return ResponseEntity.notFound().build();
 		            }
+		            test.setNoOfQuestions(test.getNoOfQuestions() +1);
 		            Question ques=new Question();
 		            ques.setQuestionText(questionText);
 		            ques.setOption1(option1);

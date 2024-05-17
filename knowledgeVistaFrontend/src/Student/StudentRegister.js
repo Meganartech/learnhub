@@ -6,6 +6,7 @@ import "../css/certificate.css"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../api/utils";
+import axios from "axios";
 
 
 const StudentRegister = () => {
@@ -139,10 +140,8 @@ const StudentRegister = () => {
     formDataToSend.append("skills",formData.skills);
 
     try {
-      const response = await baseUrl.post("/student/register", formDataToSend);
-    const data = response.data;
-   
-
+      const response = await axios.post(`${baseUrl}/student/register`, formDataToSend);
+    
     if (response.status === 200) {
         // Display success message and redirect to login
         MySwal.fire({

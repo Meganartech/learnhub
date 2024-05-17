@@ -3,10 +3,10 @@ import "../../css/certificate.css"
 import "../../css/Course.css"
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
-import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from '../../api/utils';
+import axios from 'axios';
 
 const EditLesson = () => {
     const navigate = useNavigate();
@@ -41,14 +41,14 @@ const EditLesson = () => {
 useEffect(() => {
     const fetchVideoData = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/lessons/getLessonsByid/${lessonId}`, {
+            const response = await axios.get(`${baseUrl}/lessons/getLessonsByid/${lessonId}`, {
                 headers: {
                     "Authorization": token
                 }
             });
-            const data = await response.json();
-            console.log(data)
-            if (response.ok) {
+            const data = await response.data;
+           
+            if (response.status===200) {
                 setvideodata(data);
                 if(data.videofilename===null){
                     setUploadType('url')
@@ -63,7 +63,20 @@ useEffect(() => {
                     ...Prevfile,name:data.videofilename
                 }))
                 }
-            } else if (response.status === 404) {
+            }   
+        } catch (error) {
+          if(error.response){
+            if(error.response.status===401){
+              MySwal.fire({
+                title: "Un Authorized",
+                text: "you are UnAuthorized to access this Page Redirecting to  back",
+                icon: "error",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  navigate(-1);
+                   }
+              });
+            }else if(error.response.status===404){
               MySwal.fire({
                 title: "Not Found",
                 text: `No lessons found with lesson name ${Lessontitle}`,
@@ -73,23 +86,15 @@ useEffect(() => {
                   navigate(-1);
                    }
               });
-                
-            } else if (response.status === 401) {
-             
+            }
+          }else{
             MySwal.fire({
-              title: "Un Authorized",
-              text: "you are UnAuthorized to access this Page Redirecting to  back",
+              title: "Error!",
+              text: "An error occurred . Please try again later.",
               icon: "error",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                navigate(-1);
-                 }
+              confirmButtonText: "OK",
             });
-
-            } 
-        } catch (error) {
-            console.error('Error:', error);
-            toast.error('An error occurred. Please try again later.');
+          }
         }
     }
 
@@ -197,38 +202,28 @@ useEffect(() => {
     //     console.log(`${key}: ${value}`);
     // }
     try {
-        const response = await fetch(`http://localhost:8080/lessons/edit/${videodata.lessonId}`, {
-            method: "PATCH",
+        const response = await axios.patch(`${baseUrl}/lessons/edit/${videodata.lessonId}`, formDataToSend,{
             headers: {
                 "Authorization": token
-            },
-            body: formDataToSend
+            }
         });
-        const data =await response.json();
-        if (response.ok) {
+        if (response.status===200) {
             window.location.href = `/lessonList/${courseName}/${courseId}`;
             setIsSubmitting(false);
-        } else if (response.status === 401) {
-          setIsSubmitting(false);
-            window.location.href = "/unauthorized";
-        } else if (response.status === 404) {
-          setIsSubmitting(false);
+        } 
+    } catch (error) { 
+      if(error.response && error.response.status===401){
+        setIsSubmitting(false);
+        window.location.href = "/unauthorized";
+      }else if(error.response && error.response===404){
+        setIsSubmitting(false);
           MySwal.fire({
             title: "Not Found!",
             text: " The Lesson Not FOund",
             icon: "warning",
             confirmButtonText: "OK",
           });
-        } else{
-          setIsSubmitting(false);
-          MySwal.fire({
-            icon: "warning",
-            title: "error !",
-            text: data.message,
-            confirmButtonText: "OK",
-          });
-        }
-    } catch (error) { 
+      }else{
       setIsSubmitting(false);
        MySwal.fire({
       title: "error!",
@@ -236,6 +231,7 @@ useEffect(() => {
       icon: "error",
       confirmButtonText: "OK",
     });
+  }
     }
 };
 

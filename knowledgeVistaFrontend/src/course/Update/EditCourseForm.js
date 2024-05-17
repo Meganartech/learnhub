@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../../css/CreateApplication.css"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
-import { toast } from 'react-toastify';
+import baseUrl from "../../api/utils";
+import axios from "axios";
 const EditCourseForm = ({ id, toggleEditMode }) => {
   const MySwal = withReactContent(Swal);
   const  courseId=id
@@ -15,26 +15,22 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
   useEffect(() => {
     const fetchcourse = async () => {
       try {
-        console.log(courseId, "id");
-        const response = await fetch(
-          `http://localhost:8080/course/get/${id}`,
+        const response = await axios.get(
+          `${baseUrl}/course/get/${id}`,
           {
-            method: "GET",
             headers: {
               "Content-Type": "application/json", // Set appropriate headers if needed
             },
           }
         );
-        if (!response.ok) {
-          // If response is not successful (HTTP status code not in the range 200-299)
-      
+        if (!response.status===200) {
           MySwal.fire({
             icon: "error",
             title: "HTTP Error!",
             text: `HTTP error! Status: ${response.status}`,
           });
         }
-        const data = await response.json();
+        const data =  response.data;
         setimg(`data:image/jpeg;base64,${data.courseImage}`);
         setCourseEdit(data);
       } catch (error) {
@@ -108,17 +104,14 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
 
     e.preventDefault();
     try {
-      const response = await fetch(
-        `http://localhost:8080/course/edit/${courseId}`,
-        {
-          method: "PATCH",
-          body: formData,
-        }
+      const response = await axios.patch(
+        `${baseUrl}/course/edit/${courseId}`,formData
+       
       );
 
-      await response.json();
+    
 
-      if (response.ok) {
+      if (response.status===200) {
         MySwal.fire({
           title: "Course Updated",
           text: " course have Updated successfully you can check by refreshing !",
@@ -126,7 +119,6 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            // Redirect to /course/admin/edit
             window.location.href = "/dashboard/course";
           }   });
       

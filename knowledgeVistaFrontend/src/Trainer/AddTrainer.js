@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 import profile from "../images/profile.png";
-
-import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import baseUrl from "../api/utils";
+import axios from "axios";
 
 const AddTrainer = () => {
     const token=sessionStorage.getItem("token")
@@ -130,20 +130,13 @@ const AddTrainer = () => {
         formDataToSend.append("isActive", formData.isActive);
         formDataToSend.append("profile", formData.profile);
         formDataToSend.append("skills",formData.skills);
-      
         try {
-          const response = await fetch("http://localhost:8080/admin/addTrainer", {
-            method: "POST",
+          const response = await axios.post(`${baseUrl}/admin/addTrainer`, formDataToSend,{
             headers: {
-              Authorization: token,
-            },
-            body: formDataToSend,
-          });
-         
-          const data = await response.json();
-      
-          if (response.ok) {
-         
+              Authorization: token
+            }  });
+          const data =  response.data;
+          if (response.status===200) {
             MySwal.fire({
               title: "Added !",
               text: "New Trainer Added successfully!",
@@ -155,42 +148,31 @@ const AddTrainer = () => {
                   window.location.href = "/view/Trainer";
               }
             });
-          } else if (response.status === 400) {
-            if (data.message === "EMAIL ALREADY EXISTS") {
-              setErrors(prevErrors => ({
-                ...prevErrors,
-                email: "This email is already registered."
-              }));
-            } else {
-              MySwal.fire({
-                title: "Error!",
-                text: `${data.message}`,
-                icon: "error",
-                confirmButtonText: "OK",
-              });
-            }
-          }else if (response.status === 401) {
-            
-            MySwal.fire({
-              title: "Un Authorized!",
-              text: "you are unable to add the trainer",
-              icon: "error",
-              confirmButtonText: "OK",
-            });
-          }else if (response.status === 500) {
-            
-            MySwal.fire({
-              title: "Server Error!",
-              text: "Unexpected Error Occured",
-              icon: "error",
-              confirmButtonText: "OK",
-            });
           }
-          
         } catch (error) {
-          toast.error(`An error occurred while Adding a Student. Please try again later.`);
-      
-          // Display error message
+      if(error.response){
+        if(error.response.status===400){
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            email: "This email is already registered."
+          }));
+        }else if(error.response.status===401){
+          MySwal.fire({
+            title: "Un Authorized!",
+            text: "you are unable to add the trainer",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        }else if(error.response.status===500){
+          MySwal.fire({
+            title: "Server Error!",
+            text: "Unexpected Error Occured",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        }
+      }else{
+
           MySwal.fire({
             title: "Error!",
             text: "An error occurred while Adding TRAINER. Please try again later.",
@@ -198,6 +180,7 @@ const AddTrainer = () => {
             confirmButtonText: "OK",
           });
         }
+      }
       };
       
   
