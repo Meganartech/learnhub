@@ -394,19 +394,33 @@ public class FrontController {
            	}
            	
 
-      	  @DeleteMapping("/admin/delete/trainer")
-      	  public ResponseEntity<?> deleteTrainer(
+      	  @DeleteMapping("/admin/deactivate/trainer")
+      	  public ResponseEntity<?> DeactivateTrainer(
       	          @RequestParam("email") String email,
       	          @RequestHeader("Authorization") String token) {
-      		  return adduser.deleteTrainer(email, token);
+      		  return adduser.DeactivateTrainer(email, token);
+      	  }
+      	  
+      	  @DeleteMapping("/admin/Activate/trainer")
+      	  public ResponseEntity<?> activateTrainer(
+      	          @RequestParam("email") String email,
+      	          @RequestHeader("Authorization") String token) {
+      		  return adduser.activateTrainer(email, token);
       	  }
       	  
 
-    	  @DeleteMapping("/delete/Student")	  
-    	  public ResponseEntity<?> deleteStudent(
+    	  @DeleteMapping("/admin/deactivate/Student")	  
+    	  public ResponseEntity<?> DeactivateStudent(
     	          @RequestParam("email") String email,
     	          @RequestHeader("Authorization") String token) {
-    		  return adduser.deleteStudent(email, token);
+    		  return adduser.DeactivateStudent(email, token);
+    	  }
+    	  
+    	  @DeleteMapping("/admin/Activate/Student")	  
+    	  public ResponseEntity<?> activateStudent(
+    	          @RequestParam("email") String email,
+    	          @RequestHeader("Authorization") String token) {
+    		  return adduser.activateStudent(email, token);
     	  }
     	  
  //----------------------Assign course---------------------

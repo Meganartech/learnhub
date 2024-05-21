@@ -146,7 +146,7 @@ public class AddUsers {
 	  }
 
 	  
-	  public ResponseEntity<?> deleteTrainer( String email,String token) {
+	  public ResponseEntity<?> DeactivateTrainer( String email,String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -162,11 +162,45 @@ public class AddUsers {
 	              if (existingUser.isPresent()) {
 	                  Muser user = existingUser.get();
 	                  if ("TRAINER".equals(user.getRole().getRoleName())) {
-	                      // Clear user's courses and delete the user
-	                	  user.getAllotedCourses().clear();
-	                      user.getCourses().clear();
-	                      muserrepositories.delete(user);
-	                      return ResponseEntity.ok().body("{\"message\": \"Deleted Successfully\"}");
+	                     user.setIsActive(false);
+	                     muserrepositories.save(user);
+	                      return ResponseEntity.ok().body("{\"message\": \"DeActivated Successfully\"}");
+	                  } 
+	                  return ResponseEntity.notFound().build();
+	              } else {
+	                  // Return not found if the user with the given email does not exist
+	                  return ResponseEntity.notFound().build();
+	              }
+	          } else {
+	              // Return unauthorized status if the role is neither ADMIN nor TRAINER
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+	      } catch (Exception e) {
+	          // Log any other exceptions for debugging purposes
+	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          // Return an internal server error response
+	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	      }
+	  }
+	  public ResponseEntity<?> activateTrainer( String email,String token) {
+	      try {
+	          // Validate the token
+	          if (!jwtUtil.validateToken(token)) {
+	              // If the token is not valid, return unauthorized status
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+
+	          String role = jwtUtil.getRoleFromToken(token);
+
+	          // Perform authentication based on role
+	          if ("ADMIN".equals(role)) {
+	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
+	              if (existingUser.isPresent()) {
+	                  Muser user = existingUser.get();
+	                  if ("TRAINER".equals(user.getRole().getRoleName())) {
+	                     user.setIsActive(true);
+	                     muserrepositories.save(user);
+	                      return ResponseEntity.ok().body("{\"message\": \"DeActivated Successfully\"}");
 	                  } 
 	                  return ResponseEntity.notFound().build();
 	              } else {
@@ -186,7 +220,7 @@ public class AddUsers {
 	  }
 	  
 	   
-	  public ResponseEntity<?> deleteStudent(String email, String token) {
+	  public ResponseEntity<?> DeactivateStudent(String email, String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -202,11 +236,9 @@ public class AddUsers {
 	              if (existingUser.isPresent()) {
 	                  Muser user = existingUser.get();
 	                  if ("USER".equals(user.getRole().getRoleName())) {
-	                      // Clear user's courses and delete the user
-	                      user.getCourses().clear();
-	                      activityrepo.deleteByUser(user);
-	                      muserrepositories.delete(user);
-	                      return ResponseEntity.ok().body("{\"message\": \"Deleted Successfully\"}");
+	                     user.setIsActive(false);
+	                     muserrepositories.save(user);
+	                      return ResponseEntity.ok().body("{\"message\": \"Deactivated Successfully\"}");
 	                  } 
 
 		                  // Return not found if the user with the given email does not exist
@@ -229,6 +261,45 @@ public class AddUsers {
 	  }
 
 
+	  public ResponseEntity<?> activateStudent(String email, String token) {
+	      try {
+	          // Validate the token
+	          if (!jwtUtil.validateToken(token)) {
+	              // If the token is not valid, return unauthorized status
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+
+	          String role = jwtUtil.getRoleFromToken(token);
+
+	          // Perform authentication based on role
+	          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
+	              if (existingUser.isPresent()) {
+	                  Muser user = existingUser.get();
+	                  if ("USER".equals(user.getRole().getRoleName())) {
+	                     user.setIsActive(true);
+	                     muserrepositories.save(user);
+	                      return ResponseEntity.ok().body("{\"message\": \"Deactivated Successfully\"}");
+	                  } 
+
+		                  // Return not found if the user with the given email does not exist
+		                  return ResponseEntity.notFound().build();
+	                  
+	              } else {
+	                  // Return not found if the user with the given email does not exist
+	                  return ResponseEntity.notFound().build();
+	              }
+	          } else {
+	              // Return unauthorized status if the role is neither ADMIN nor TRAINER
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+	      } catch (Exception e) {
+	          // Log any other exceptions for debugging purposes
+	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          // Return an internal server error response
+	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	      }
+	  }
 
 
 }

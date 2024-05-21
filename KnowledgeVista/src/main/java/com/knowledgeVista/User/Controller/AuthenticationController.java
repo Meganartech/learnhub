@@ -56,10 +56,12 @@ public class AuthenticationController {
 	        String password = loginRequest.get("password");
 
 	        Optional<Muser> userOptional = muserRepositories.findByEmail(username);
-
+       
 	        if (userOptional.isPresent()) {
 	            Muser user = userOptional.get();
+	            
 	            if (user.getPsw().equals(password)) {
+	            	if(user.getIsActive().equals(true)) {
 	                // Correct username and password
 	                // Generate JWT token
 	            	String Role=user.getRole().getRoleName();
@@ -75,6 +77,10 @@ public class AuthenticationController {
 
 	                // Return response with JSON body
 	                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseBody);
+	            	}else {
+
+		                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"InActive user\"}");
+	            	}
 	            } else {
 	                // Incorrect password
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Incorrect password\"}");

@@ -324,3 +324,25 @@
   background-color: #D9D9D9;
 }
 
+.Activeuser{
+  background-color: #ECFDF3;
+  color: #037847;
+  font-size: small;
+  width: fit-content;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+}
+.InActiveuser{
+  background-color: #EDEFF1;
+  color: #6C778B;
+  font-size: small;
+  width: fit-content;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+}

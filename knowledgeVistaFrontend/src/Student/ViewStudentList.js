@@ -23,6 +23,7 @@ const ViewStudentList = () => {
               }
             });
             const data = response.data;
+          
             setUsers(data);
           } catch (error) {
             if(error.response && error.response.status===401){
@@ -34,22 +35,22 @@ const ViewStudentList = () => {
     
         fetchData();
       }, []);
-  const handledelete =async (userId,username,email)=>{
+  const handleDeactivate =async (userId,username,email)=>{
     const formData = new FormData();
     formData.append('email', email);
     MySwal.fire({
-      title: "Delete Student?",
-      text: `Are you sure you want to delete Student ${username}`,
+      title: "De Activate Student?",
+      text: `Are you sure you want to deActivate Student ${username}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      confirmButtonText: "Delete",
+      confirmButtonText: "DeActivate",
       cancelButtonText: "Cancel",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           if (userId != null) {
-            const response = await axios.delete(`${baseUrl}/admin/delete/Student`, {
+            const response = await axios.delete(`${baseUrl}/admin/deactivate/Student`, {
               data:formData,
               headers: {
                 'Authorization': token
@@ -58,8 +59,8 @@ const ViewStudentList = () => {
             
             if (response.status===200) {
               MySwal.fire({
-                title: "Deleted",
-                text: `Student ${username} deleted successfully`,
+                title: "DeActivated",
+                text: `Student ${username} deActivated successfully`,
                 icon: "success",
                 confirmButtonText: "OK",
             }).then(() => {
@@ -80,7 +81,60 @@ const ViewStudentList = () => {
           MySwal.fire({
             icon: 'error',
             title: 'ERROR',
-            text: 'Error deleting Student'
+            text: 'Error DeActivating Student'
+        });
+        }
+      }
+      }  
+    });
+  };
+  const handleActivate =async (userId,username,email)=>{
+    const formData = new FormData();
+    formData.append('email', email);
+    MySwal.fire({
+      title: "Activate Student?",
+      text: `Are you sure you want to Activate Student ${username}`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Activate",
+      cancelButtonText: "Cancel",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          if (userId != null) {
+            const response = await axios.delete(`${baseUrl}/admin/Activate/Student`, {
+              data:formData,
+              headers: {
+                'Authorization': token
+              }
+            });
+            
+            if (response.status===200) {
+              MySwal.fire({
+                title: "Activated",
+                text: `Student ${username} Activated successfully`,
+                icon: "success",
+                confirmButtonText: "OK",
+            }).then(() => {
+                window.location.reload();
+            });
+            }
+          } 
+        } catch (error) {
+          if(error.response){
+            if(error.response.status===404){
+              MySwal.fire({
+                icon: 'error',
+                title: '404',
+                text: 'Student not found'
+            });
+            }
+          }else{
+          MySwal.fire({
+            icon: 'error',
+            title: 'ERROR',
+            text: 'Error Activating Student'
         });
         }
       }
@@ -105,7 +159,7 @@ const ViewStudentList = () => {
               <th scope="col">Date of Birth</th>
               <th scope="col">Phone</th>
               <th scope="col"> Skills</th>
-              <th scope="col">Role</th>
+              <th scope="col">Status</th>
               <th colSpan="3" scope="col">Action</th>
             </tr>
           </thead>
@@ -118,7 +172,7 @@ const ViewStudentList = () => {
                 <td className='py-2'>{user.dob}</td>
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.skills}</td>
-                <td className='py-2'>{user.role.roleName}</td>
+                <td className='py-2' >{user.isActive===true? <div className='Activeuser'><i className="fa-solid fa-circle pr-3"></i>Active</div>:<div className='InActiveuser' ><i className="fa-solid fa-circle pr-3"></i>In Active</div>}</td>
                 <td className='text-center'>
                 <Link to={`/student/edit/${user.email}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>
@@ -131,9 +185,13 @@ const ViewStudentList = () => {
                     </Link>
                 </td>
                 <td className='text-center '>
-                  <button className='hidebtn ' onClick={()=>handledelete(user.userId,user.username,user.email)}>
-                    <i className="fas fa-trash text-danger"></i>
-                  </button>
+                {user.isActive===true?
+                  <button className='hidebtn ' onClick={()=>handleDeactivate(user.userId,user.username,user.email)}>
+                  <i className="fa-solid fa-lock"></i>
+                  </button>:
+                  <button  className='hidebtn ' onClick={()=>handleActivate(user.userId,user.username,user.email)}>
+                  <i class="fa-solid fa-lock-open"></i>
+                  </button>}
                 </td>
               </tr>
             ))}

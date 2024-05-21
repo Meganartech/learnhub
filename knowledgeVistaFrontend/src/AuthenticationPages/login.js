@@ -76,10 +76,20 @@ const Login = () => {
           username: "User not found"
         }));
       } else if (error.response && error.response.status === 401){
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          password: "Incorrect password"
-        }));
+        const { message } = error.response.data;
+        console.log(message)
+        if (message === 'Incorrect password') {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            password: 'Incorrect password',
+          }));
+        } else if (message === 'InActive user') {
+          MySwal.fire({
+            title: 'In Active User!',
+            text: 'Your account was Deactivated contact your Admin or Trainer.',
+            icon: 'error',
+          });
+        }
       } else {
         MySwal.fire({
           title: "Error Occured!",
