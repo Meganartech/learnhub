@@ -18,7 +18,7 @@ const[initialsave,setinitialsave]=useState(false);
     razorpay_secret_key:""
   })
   useEffect(() => {
-    data === "false" ? setValid(true) : setValid(false);
+    // data === "false" ? setValid(true) : setValid(false);
   
     const fetchpaymentsettings = async () => {
       try {

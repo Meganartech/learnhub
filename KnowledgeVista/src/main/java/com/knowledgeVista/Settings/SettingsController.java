@@ -22,9 +22,7 @@ import com.knowledgeVista.Course.certificate.certificate;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
-@CrossOrigin
 @RestController
-@RequestMapping("/api")
 public class SettingsController {
 	
 	 @Autowired
@@ -35,9 +33,7 @@ public class SettingsController {
 	@Autowired
 	private FeedbackRepository feedback;
 	
-	@PostMapping("/Paymentsettings")
-	public ResponseEntity<?> SavePaymentDetails(@RequestBody Paymentsettings data,
-	          @RequestHeader("Authorization") String token) {
+	public ResponseEntity<?> SavePaymentDetails( Paymentsettings data, String token) {
 		if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }  String role = jwtUtil.getRoleFromToken(token);
@@ -54,9 +50,8 @@ public class SettingsController {
         }
 	}
 	
-	@GetMapping("/getPaymentDetails")
-	public ResponseEntity<?> GetPaymentDetails (
-	          @RequestHeader("Authorization") String token){
+
+	public ResponseEntity<?> GetPaymentDetails ( String token){
 		try {
 			 if (!jwtUtil.validateToken(token)) {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -91,14 +86,9 @@ public class SettingsController {
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		            .body("An error occurred while retrieving payment data");
 		    }
-		
-		
 	}
-	 @PatchMapping("/update/{payid}")
-	public ResponseEntity<?> editpayment(@PathVariable Long payid,
-            @RequestParam(value="razorpay_key", required=false) String razorpay_key,
-            @RequestParam(value="razorpay_secret_key", required=false) String razorpay_secret_key,
-	          @RequestHeader("Authorization") String token){
+	
+	public ResponseEntity<?> editpayment( Long payid, String razorpay_key, String razorpay_secret_key, String token){
 		 
 	 
 		 if (!jwtUtil.validateToken(token)) {
@@ -132,8 +122,8 @@ public class SettingsController {
 
 	
 	
-	@PostMapping("/feedback")
-	public Feedback feedback(@RequestBody Feedback data) {
+	
+	public Feedback feedback( Feedback data) {
 		System.out.println(data);
 		return feedback.save(data);
 	}

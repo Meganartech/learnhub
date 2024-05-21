@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/test")
-@CrossOrigin
 public class QuestionController {
 	 @Autowired
 	 private JwtUtil jwtUtil;
@@ -48,10 +46,7 @@ public class QuestionController {
 		@Autowired
 		private MusertestactivityRepo muserActivityRepo;
 
-		@PostMapping("/calculateMarks/{courseId}")
-		public ResponseEntity<?> calculateMarks(@RequestBody List<Map<String, Object>> answers,
-		                                        @PathVariable Long courseId,
-		                                        @RequestHeader("Authorization") String token) {
+		public ResponseEntity<?> calculateMarks( List<Map<String, Object>> answers, Long courseId, String token) {
 		    Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
 		    String username = jwtUtil.getUsernameFromToken(token);
 
@@ -122,9 +117,7 @@ public class QuestionController {
 		    }
 		}
 
-	    @GetMapping("/getQuestion/{questionId}")
-		public ResponseEntity<?> getQuestion(@PathVariable Long questionId,
-                @RequestHeader("Authorization") String token) {
+		public ResponseEntity<?> getQuestion( Long questionId, String token) {
 	    	  try {
 			        // Validate JWT token
 			        if (!jwtUtil.validateToken(token)) {
@@ -157,9 +150,7 @@ public class QuestionController {
 	    }
 	 
 	 
-		@DeleteMapping("/questions/{questionId}")
-		public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId,
-		                                        @RequestHeader("Authorization") String token) {
+		public ResponseEntity<?> deleteQuestion( Long questionId, String token) {
 		    try {
 		        // Validate JWT token
 		        if (!jwtUtil.validateToken(token)) {
@@ -197,17 +188,11 @@ public class QuestionController {
 		    }
 		}
 
-	    //--------------------WORKING--------
-		@PatchMapping("/edit/{questionId}")
-		public ResponseEntity<?> updateQuestion(
-		        @PathVariable Long questionId,
-		        @RequestParam String questionText,
-		        @RequestParam String option1,
-		        @RequestParam String option2,
-		        @RequestParam String option3,
-		        @RequestParam String option4,
-		        @RequestParam String answer,
-		        @RequestHeader("Authorization") String token) {
+	    //--------------------WORKING------
+		public ResponseEntity<?> updateQuestion( Long questionId,String questionText,
+							String option1, String option2,
+							String option3, String option4,
+							String answer, String token) {
 		    try {
 		        // Validate JWT token
 		        if (!jwtUtil.validateToken(token)) {
@@ -245,16 +230,9 @@ public class QuestionController {
 		}
 		
 		
-		@PostMapping("/add/{testId}")
-		public ResponseEntity<?> Addmore(
-		        @PathVariable Long testId,
-		        @RequestParam String questionText,
-		        @RequestParam String option1,
-		        @RequestParam String option2,
-		        @RequestParam String option3,
-		        @RequestParam String option4,
-		        @RequestParam String answer,
-		        @RequestHeader("Authorization") String token) {
+		public ResponseEntity<?> Addmore( Long testId, String questionText, String option1,
+		        String option2,String option3, String option4,
+		        String answer,String token) {
 		    try {
 		        // Validate JWT token
 		        if (!jwtUtil.validateToken(token)) {

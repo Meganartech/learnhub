@@ -38,8 +38,6 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 
 @RestController
-@RequestMapping("/test")
-@CrossOrigin
 public class Testcontroller {
 	   @Autowired
 	    private CourseDetailRepository courseDetailRepo;
@@ -57,8 +55,8 @@ public class Testcontroller {
 		 @Autowired
 		 private JwtUtil jwtUtil;
 //-----------------------------WORKING for ADMIN View-------------------------
-	    @PostMapping("/create/{courseId}")
-	    public ResponseEntity<String> createTest(@PathVariable Long courseId, @RequestBody CourseTest test) {
+
+	    public ResponseEntity<String> createTest( Long courseId, CourseTest test) {
 	        try {
 	            // Find the course by its ID
 	            CourseDetail courseDetail = courseDetailRepo.findById(courseId)
@@ -90,8 +88,8 @@ public class Testcontroller {
 	        }
 	    }
 	  //-----------------------------WORKING for ADMIN View-------------------------	    
-	    @GetMapping("/getall/{courseId}")
-	    public ResponseEntity<?> getTestsByCourseId(@PathVariable Long courseId) {
+
+	    public ResponseEntity<?> getTestsByCourseIdonly( Long courseId) {
 	        try {
 	            // Find the course by its ID
 	            CourseDetail courseDetail = courseDetailRepo.findById(courseId)
@@ -143,10 +141,7 @@ public class Testcontroller {
 	  //-----------------------------WORKING FOR USER LOGIN -------------------------
 
 	  
-
-	        @GetMapping("/getTestByCourseId/{courseId}")
-	        public ResponseEntity<?> getTestByCourseId(@PathVariable Long courseId,
-	                                                   @RequestHeader("Authorization") String token) {
+	        public ResponseEntity<?> getTestByCourseId( Long courseId, String token) {
 	            // Validate the JWT token
 	            if (!jwtUtil.validateToken(token)) {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -242,8 +237,8 @@ public class Testcontroller {
 	    
 	    
 //-----------------------------WORKING--------------------------------------------------	    
-	    @DeleteMapping("/{testId}")
-	    public String deleteCourseTest(@PathVariable Long testId) {
+
+	    public String deleteCourseTest( Long testId) {
 	        // Find the CourseTest by its ID
 	        CourseTest courseTest = testRepository.findById(testId).orElse(null);
 	        
@@ -260,12 +255,7 @@ public class Testcontroller {
 	    
 //``````````````````````Edit Test Details````````````````````````````````````
 
-@PatchMapping("/update/{testId}")
-public ResponseEntity<?> editTest(@PathVariable Long testId,
-        @RequestParam(value="testName", required=false) String testName,
-        @RequestParam(value="noofattempt", required=false) Long noOfAttempt,
-        @RequestParam(value="passPercentage", required=false) Double passPercentage,
-        @RequestHeader("Authorization") String token) {
+public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttempt, Double passPercentage, String token) {
     try {
     	System.out.println(passPercentage);
     	 if (!jwtUtil.validateToken(token)) {

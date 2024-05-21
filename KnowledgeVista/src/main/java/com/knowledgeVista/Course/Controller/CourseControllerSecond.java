@@ -20,21 +20,15 @@ import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
-@RequestMapping("/courseControl")
-@CrossOrigin
 public class CourseControllerSecond {
 	@Autowired
 	private CourseDetailRepository coursedetailrepository;
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	 
-		@GetMapping("/hello")
-		public String hello() {
-			return "hello";
-		}
+	
 	 
-	 @GetMapping("/popularCourse")
-	 public ResponseEntity<List<CourseDetail>> popular(@RequestHeader("Authorization") String token) {
+	 public ResponseEntity<List<CourseDetail>> popular( String token) {
 	     try {
 	         if (!jwtUtil.validateToken(token)) {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

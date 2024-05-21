@@ -66,8 +66,7 @@ public class PaymentIntegration {
 		        return null; // or throw an exception
 		    }
 		}
- @PostMapping("/create")
- public ResponseEntity<?> createOrder(@RequestBody Map<String, Long> requestData) {
+ public ResponseEntity<?> createOrder( Map<String, Long> requestData) {
      try {
          Long courseId = requestData.get("courseId");
          Long userId = requestData.get("userId");
@@ -124,8 +123,7 @@ public class PaymentIntegration {
  }
 
 
-@PostMapping("/payment")
-public ResponseEntity<String> updatePaymentId(@RequestBody Map<String, String> requestData) {
+public ResponseEntity<String> updatePaymentId( Map<String, String> requestData) {
     try {
         String orderId = requestData.get("orderId");
         String paymentId = requestData.get("paymentId");

@@ -36,8 +36,6 @@ import io.jsonwebtoken.io.DecodingException;
 import jakarta.transaction.Transactional;
 
 @RestController
-@RequestMapping("/course")
-@CrossOrigin
 public class CourseController {
 
 	
@@ -51,8 +49,7 @@ public class CourseController {
 	
 //`````````````````````````WORKING``````````````````````````````````
 
-	 @GetMapping("/countcourse")
-	 public ResponseEntity<?> countCourse(@RequestHeader("Authorization") String token) {
+	 public ResponseEntity<?> countCourse(String token) {
 	     try {
 	         if (!jwtUtil.validateToken(token)) {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -89,15 +86,8 @@ public class CourseController {
 
 	 //--------------------------working------------------------------------
 	
-	 @PostMapping("/add")
-	    public ResponseEntity<?> addCourse(@RequestParam("courseImage") MultipartFile file, 
-	    		@RequestParam("courseName") String courseName,
-	    		@RequestParam("courseDescription") String description,
-	    		@RequestParam("courseCategory") String category,
-	    		@RequestParam("Duration") Long Duration,
-	    		@RequestParam("Noofseats") Long Noofseats,
-	    		@RequestParam("courseAmount") Long amount,
-	    		@RequestHeader("Authorization") String token) {
+
+	    public ResponseEntity<?> addCourse( MultipartFile file,  String courseName,String description,String category,Long Duration,Long Noofseats,Long amount, String token) {
 		     try {
 		         if (!jwtUtil.validateToken(token)) {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -147,15 +137,11 @@ public class CourseController {
 		     }
 	
 //``````````````````````````````````````````FOR TRAINER COURSE CREATION````````````````````````````````````````
-	 @PostMapping("/create/trainer")
-	    public ResponseEntity<?> addCourseByTrainer(@RequestParam("courseImage") MultipartFile file, 
-	    		@RequestParam("courseName") String courseName,
-	    		@RequestParam("courseDescription") String description,
-	    		@RequestParam("courseCategory") String category,
-	    		@RequestParam("Duration") Long Duration,
-	    		@RequestParam("Noofseats") Long Noofseats,
-	    		@RequestParam("courseAmount") Long amount,
-                @RequestHeader("Authorization") String token) {
+
+	    public ResponseEntity<?> addCourseByTrainer( MultipartFile file,  String courseName, 
+	    		String description, String category,
+	    		Long Duration, Long Noofseats, Long amount, String token) 
+	    {
 		 if (!jwtUtil.validateToken(token)) {
 	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	     }
@@ -211,63 +197,66 @@ public class CourseController {
 
 	 
 	//--------------------------working------------------------------------
-	 @Transactional
-	 @PatchMapping("/edit/{courseId}")
-	 public ResponseEntity<?> updateCourse(
-	     @PathVariable Long courseId,
-	     @RequestParam(value = "courseImage", required = false) MultipartFile file,
-	     @RequestParam(value = "courseName", required = false) String courseName,
-	     @RequestParam(value = "courseDescription", required = false) String description,
-	     @RequestParam(value = "courseCategory", required = false) String category,
-	     @RequestParam(value ="Noofseats",required = false) Long Noofseats,
- 		@RequestParam(value ="Duration",required = false)Long Duration,
-	      @RequestParam(value="courseAmount",required=false) Long amount){
-
-	     Optional<CourseDetail> courseDetailOptional = coursedetailrepository.findById(courseId);
-	     if (courseDetailOptional.isPresent()) {
-	         CourseDetail existingCourseDetail = courseDetailOptional.get();
-	         if(courseName!="") {
-	             existingCourseDetail.setCourseName(courseName);
-	             String courseUrl="/courses/"+existingCourseDetail.getCourseName()+"/"+existingCourseDetail.getCourseId();
-	         
-	             existingCourseDetail.setCourseUrl(courseUrl);
-	         }
-	         if(description!="") {
-	             existingCourseDetail.setCourseDescription(description);
-	         }
-	         if(category !="") {
-	             existingCourseDetail.setCourseCategory(category);
-	         }
-	         if(Duration !=null) {
-	        	 existingCourseDetail.setDuration(Duration);
-	         }
-	         if(Noofseats !=null) {
-	        	 existingCourseDetail.setNoofseats(Noofseats);
-	         }
-	         if(amount !=null) {
-	             existingCourseDetail.setAmount(amount);
-	         }
-	             existingCourseDetail.setUsers(null);
-	             existingCourseDetail.setVideoLessons(null);
-	             if (file != null) {
-	            	    try {
-	            	        existingCourseDetail.setCourseImage(ImageUtils.compressImage(file.getBytes()));
-	            	    } catch (IOException e) {
-	            	        e.printStackTrace(); // Handle the exception properly in your application
-	            	    }
-	            	}
-
-	         CourseDetail updatedCourse = coursedetailrepository.saveAndFlush(existingCourseDetail);
-	         return ResponseEntity.ok("{\"message\": \"Saved successfully\"}");
-	     } else {
-	         return ResponseEntity.notFound().build();
-	     }
-	     }
 	
-	 
+	    public ResponseEntity<?> updateCourse( String token ,Long courseId, MultipartFile file, String courseName, String description, String category, Long Noofseats, Long Duration, Long amount) {
+	        try {
+	       	 if (!jwtUtil.validateToken(token)) {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	         }
+
+	         String role = jwtUtil.getRoleFromToken(token);
+	         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+	       	 
+	            Optional<CourseDetail> courseDetailOptional = coursedetailrepository.findById(courseId);
+	            if (courseDetailOptional.isPresent()) {
+	                CourseDetail existingCourseDetail = courseDetailOptional.get();
+	                if (!courseName.isEmpty()) {
+	                    existingCourseDetail.setCourseName(courseName);
+	                    String courseUrl = "/courses/" + existingCourseDetail.getCourseName() + "/" + existingCourseDetail.getCourseId();
+	                    existingCourseDetail.setCourseUrl(courseUrl);
+	                }
+	                if (!description.isEmpty()) {
+	                    existingCourseDetail.setCourseDescription(description);
+	                }
+	                if (!category.isEmpty()) {
+	                    existingCourseDetail.setCourseCategory(category);
+	                }
+	                if (Duration != null) {
+	                    existingCourseDetail.setDuration(Duration);
+	                }
+	                if (Noofseats != null) {
+	                    existingCourseDetail.setNoofseats(Noofseats);
+	                }
+	                if (amount != null) {
+	                    existingCourseDetail.setAmount(amount);
+	                }
+	                existingCourseDetail.setUsers(null);
+	                existingCourseDetail.setVideoLessons(null);
+	                if (file != null) {
+	                    existingCourseDetail.setCourseImage(ImageUtils.compressImage(file.getBytes()));
+	                }
+
+	                CourseDetail updatedCourse = coursedetailrepository.saveAndFlush(existingCourseDetail);
+	                return ResponseEntity.ok("{\"message\": \"Saved successfully\"}");
+	            } else {
+	                return ResponseEntity.notFound().build();
+	            }}else {
+
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	            }
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            return ResponseEntity.badRequest().body("{\"message\": \"Error occurred while processing the image\"}");
+	        }
+	    }
 	//--------------------------working-----------------------------------
-	 @GetMapping("/get/{courseId}")
-	 public ResponseEntity<CourseDetail> getCourse(@PathVariable Long courseId) {
+
+	 public ResponseEntity<CourseDetail> getCourse( Long courseId ,String token) {
+		 if (!jwtUtil.validateToken(token)) {
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+         }
+         String role = jwtUtil.getRoleFromToken(token);
+         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 		    Optional<CourseDetail> courseOptional = coursedetailrepository.findById(courseId);
 		    if (courseOptional.isPresent()) {
 		        CourseDetail course = courseOptional.get();
@@ -280,11 +269,14 @@ public class CourseController {
 		    } else {
 		        // Handle the case when the course with the given ID does not exist
 		        return ResponseEntity.notFound().build();
+		    }}else {
+
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		    }
 		}
 
 	//--------------------------working------------------------------------
-	   @GetMapping("/viewAll")
+
 	    public ResponseEntity<List<CourseDetail>> viewCourse() {
 	        List<CourseDetail> courses = coursedetailrepository.findAll();
 	        // Decompress image data for each course
@@ -304,10 +296,7 @@ public class CourseController {
 
 	 //-------------------------Under check------------------------------------
 
-	   @GetMapping("/assignList")
-	   public ResponseEntity<?> getAllCourseInfo(
-		          @RequestHeader("Authorization") String token,
-		          @RequestParam("email") String email) {
+	   public ResponseEntity<?> getAllCourseInfo(  String token, String email) {
 		   
 	          if (!jwtUtil.validateToken(token)) {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -346,13 +335,8 @@ public class CourseController {
 	    	   
 	       }
 	   }
-	   
-	   
-	   
-	   @GetMapping("/allotList")
-	   public ResponseEntity<?> getAllAllotelistInfo(
-		          @RequestHeader("Authorization") String token,
-		          @RequestParam("email") String email) {
+
+	   public ResponseEntity<?> getAllAllotelistInfo( String token,String email) {
 		   
 	          if (!jwtUtil.validateToken(token)) {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -397,8 +381,8 @@ public class CourseController {
 
 
 	   //---------------------WORKING--------------
-	   @DeleteMapping("/{courseId}")
-	   public ResponseEntity<String> deleteCourse(@PathVariable Long courseId) {
+	 
+	   public ResponseEntity<String> deleteCourse( Long courseId) {
 	       try {
 	           // Find the course by ID
 	           Optional<CourseDetail> optionalCourse = coursedetailrepository.findById(courseId);
@@ -438,11 +422,8 @@ public class CourseController {
 	       }
 	   }
 
-		 //---------------------WORKING--------------
-
-	   @GetMapping("/getLessondetail/{courseId}")
-	   public ResponseEntity<?> getLessons(@PathVariable Long courseId,
-	                                        @RequestHeader("Authorization") String token) {
+		 //---------------------WORKING--------------)
+	   public ResponseEntity<?> getLessons(Long courseId, String token) {
 	       try {
 	           if (!jwtUtil.validateToken(token)) {
 	               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -493,9 +474,7 @@ public class CourseController {
 	       return ResponseEntity.notFound().build();
 	   }
 
-
-		 @GetMapping("/getLessonlist/{courseId}")
-		 public ResponseEntity<?> getLessonList(@PathVariable Long courseId) {
+		 public ResponseEntity<?> getLessonList( Long courseId) {
 			    Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
 			    if (opcourse.isPresent()) {
 			        List<videoLessons> videolessonlist = opcourse.get().getVideoLessons();

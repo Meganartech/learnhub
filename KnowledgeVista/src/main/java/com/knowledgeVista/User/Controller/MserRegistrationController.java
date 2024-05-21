@@ -27,8 +27,6 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 import io.jsonwebtoken.io.DecodingException;
 import jakarta.transaction.Transactional;
 @RestController
-@RequestMapping("/student")
-@CrossOrigin
 public class MserRegistrationController {
 	@Autowired
 	private MuserRepositories muserrepositories;
@@ -38,15 +36,8 @@ public class MserRegistrationController {
 	private MuserRoleRepository muserrolerepository;
 	
 
-	@PostMapping("/register")
-	public ResponseEntity<?> registerStudent(@RequestParam("username") String username,
-	                                          @RequestParam("psw") String psw,
-	                                          @RequestParam("email") String email,
-	                                          @RequestParam("dob") LocalDate dob,
-	                                          @RequestParam("phone") String phone,
-	                                          @RequestParam("skills") String skills,
-	                                          @RequestParam("profile") MultipartFile profile,
-	                                          @RequestParam("isActive") Boolean isActive) {
+	public ResponseEntity<?> registerStudent( String username, String psw, String email, LocalDate dob,
+	                                         String phone, String skills, MultipartFile profile, Boolean isActive) {
 	    try {
 	        long userCount = muserrepositories.count();
 	        Optional<Muser> existingUser = muserrepositories.findByEmail(email);
@@ -116,8 +107,7 @@ public class MserRegistrationController {
 
 	
 
-	@GetMapping("/users/{email}")
-	public ResponseEntity<Muser> getUserByEmail(@PathVariable String email) {
+	public ResponseEntity<Muser> getUserByEmail( String email) {
 	    try {
 	        // Attempt to find a user by email
 	        Optional<Muser> userOptional = muserrepositories.findByEmail(email);
@@ -152,11 +142,7 @@ public class MserRegistrationController {
 	    }
 	}
 
-       
-
-	    @GetMapping("/admin/getTrainer/{email}")
-	    public ResponseEntity<?> getTrainerDetailsByEmail(@PathVariable String email,
-	                                                          @RequestHeader("Authorization") String token) {
+	    public ResponseEntity<?> getTrainerDetailsByEmail( String email, String token) {
 
 	        try {
 	            // Validate the token
@@ -200,9 +186,7 @@ public class MserRegistrationController {
 	    }
 	    
 	    
-	    @GetMapping("/admin/getstudent/{email}")
-	    public ResponseEntity<?> getStudentDetailsByEmail(@PathVariable String email,
-	                                                          @RequestHeader("Authorization") String token) {
+	    public ResponseEntity<?> getStudentDetailsByEmail( String email, String token) {
 
 	        try {
 	            // Validate the token
@@ -248,8 +232,6 @@ public class MserRegistrationController {
 
 
     
-  @Transactional
-	  @GetMapping("/viewall")
 	  public  ResponseEntity<List<Muser>> viewUsers() {
 	        List<Muser> users = muserrepositories.findAll();
 	        // Decompress image data for each course
@@ -265,9 +247,8 @@ public class MserRegistrationController {
           .body(users);
 	    }
 	  
- 
-	  @GetMapping("/usersbyid/{id}")
-	  public ResponseEntity<Muser> getUserByid(@PathVariable Long id) {
+
+	  public ResponseEntity<Muser> getUserByid( Long id) {
 	      Optional<Muser> userOptional = muserrepositories.findById(id);
 	      if(userOptional.isPresent()) {
 	          Muser user = userOptional.get();

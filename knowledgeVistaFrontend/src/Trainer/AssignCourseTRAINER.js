@@ -17,7 +17,11 @@ const AssignCourseTRAINER = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const response = await axios.get(`${baseUrl}/view/users/${userId}`);
+            const response = await axios.get(`${baseUrl}/view/users/${userId}`,{
+              headers:{
+                Authorization:token
+              }
+            });
             const userData = response.data;
             if (!response.status===200) {
                 throw new Error('Failed to fetch user data');
@@ -26,12 +30,15 @@ const AssignCourseTRAINER = () => {
             setUserData(userData);
             const response1 = await axios.get(`${baseUrl}/course/allotList?email=${userData.email}`, {
                 headers: {
-                    'Authorization': token
+                    Authorization: token
                 }
             });
             const data =  response1.data;
             setCourses(data);
         } catch (error) {
+          if(error.response && error.response.status===401){
+            window.location.href="/unauthorized"
+          }
             console.error('Error fetching user data:', error);
         }
     };

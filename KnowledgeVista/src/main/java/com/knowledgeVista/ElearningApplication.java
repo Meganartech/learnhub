@@ -9,15 +9,15 @@ import org.springframework.context.annotation.ComponentScan;
 
 
 @SpringBootApplication
-public class DemoApplication extends SpringBootServletInitializer{
+public class ElearningApplication extends SpringBootServletInitializer{
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(ElearningApplication.class, args);
 		
 	}
 	  @Override
 	    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-	        return application.sources(DemoApplication.class);
+	        return application.sources(ElearningApplication.class);
 	    }
 
 }

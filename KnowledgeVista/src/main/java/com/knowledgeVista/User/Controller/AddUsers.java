@@ -27,8 +27,6 @@ import io.jsonwebtoken.io.DecodingException;
 
 
 @RestController
-@RequestMapping("/admin")
-@CrossOrigin
 public class AddUsers {
 	@Autowired
 	private MuserRepositories muserrepositories;
@@ -39,17 +37,9 @@ public class AddUsers {
 	@Autowired
 	private MuserRoleRepository muserrolerepository;
 //===========================================ADMIN ADDING TRAINER==========================================	
-	  @PostMapping("/addTrainer") 
-	  public ResponseEntity<?> addTrainer(
-	          @RequestParam("username") String username,
-	          @RequestParam("psw") String psw,
-	          @RequestParam("email") String email,
-	          @RequestParam("dob") LocalDate dob,
-	          @RequestParam("phone") String phone,
-	          @RequestParam("skills") String skills,
-	          @RequestParam("profile") MultipartFile profile,
-	          @RequestParam("isActive") Boolean isActive,
-	          @RequestHeader("Authorization") String token) {
+	
+	  public ResponseEntity<?> addTrainer( String username, String psw,String email,
+	          LocalDate dob, String phone, String skills, MultipartFile profile, Boolean isActive, String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -101,17 +91,10 @@ public class AddUsers {
 	  }
 	  
 //===========================================ADMIN OR TRAINER -ADDING STUDENT======================================================	  
-	  @PostMapping("/addStudent") 
-	  public ResponseEntity<?> addStudent(
-	          @RequestParam("username") String username,
-	          @RequestParam("psw") String psw,
-	          @RequestParam("email") String email,
-	          @RequestParam("dob") LocalDate dob,
-	          @RequestParam("phone") String phone,
-	          @RequestParam("skills") String skills,
-	          @RequestParam("profile") MultipartFile profile,
-	          @RequestParam("isActive") Boolean isActive,
-	          @RequestHeader("Authorization") String token) {
+	
+	  public ResponseEntity<?> addStudent(String username, String psw, String email,
+	          LocalDate dob,String phone, String skills,
+	           MultipartFile profile, Boolean isActive, String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -163,10 +146,7 @@ public class AddUsers {
 	  }
 
 	  
-	  @DeleteMapping("/delete/trainer")
-	  private ResponseEntity<?> deleteTrainer(
-	          @RequestParam("email") String email,
-	          @RequestHeader("Authorization") String token) {
+	  public ResponseEntity<?> deleteTrainer( String email,String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -205,11 +185,8 @@ public class AddUsers {
 	      }
 	  }
 	  
-	  @DeleteMapping("/delete/Student")
-	  
-	  private ResponseEntity<?> deleteStudent(
-	          @RequestParam("email") String email,
-	          @RequestHeader("Authorization") String token) {
+	   
+	  public ResponseEntity<?> deleteStudent(String email, String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {

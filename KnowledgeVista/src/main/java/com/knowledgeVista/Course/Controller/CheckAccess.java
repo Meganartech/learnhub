@@ -1,4 +1,4 @@
-package com.knowledgeVista.Course;
+package com.knowledgeVista.Course.Controller;
 
 import java.util.Map;
 import java.util.Optional;
@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
-@RequestMapping("/CheckAccess")
 @CrossOrigin
 public class CheckAccess {
 	@Autowired
@@ -29,8 +29,7 @@ public class CheckAccess {
 	 @Autowired
 	 private JwtUtil jwtUtil;
 
-	 @PostMapping("/match")
-	 public ResponseEntity<?> checkAccess(@RequestBody Map<String, Long> requestData, @RequestHeader("Authorization") String token) {
+	 public ResponseEntity<?> checkAccess( Map<String, Long> requestData,  String token) {
 	     try {
 	         if (!jwtUtil.validateToken(token)) {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

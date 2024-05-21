@@ -25,8 +25,6 @@ import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
-@RequestMapping("/AssignCourse")
-@CrossOrigin
 public class AssignCourse {
 	@Autowired
 	private MuserRepositories muserRepository;
@@ -36,9 +34,8 @@ public class AssignCourse {
 	 private JwtUtil jwtUtil;
 	
 //````````````````````````````Assign Course to Student Admin function ```````````````````````````````````	
-	@PostMapping("/{userId}/courses")
-	public ResponseEntity<String> assignCoursesToUser(@PathVariable Long userId, @RequestBody List<Long> courseIds, 
-			@RequestHeader("Authorization") String token) {
+	
+	public ResponseEntity<String> assignCoursesToUser( Long userId,  List<Long> courseIds, String token) {
 		try {
 		if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -106,9 +103,8 @@ public class AssignCourse {
 	    	     }
 	}
 	//`````````````````````````````````Assign Course To TRAINER``````````````````````````````````
-	@PostMapping("/trainer/{userId}/courses")
-	public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long userId, @RequestBody List<Long> courseIds,
-			 @RequestHeader("Authorization") String token) {
+	
+	public ResponseEntity<String> assignCoursesToTrainer( Long userId,  List<Long> courseIds, String token) {
 		if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -159,9 +155,8 @@ public class AssignCourse {
 	
 	//----------------------------------MyCourses--------------------------------
 
-	@GetMapping("/student/courselist")
-	public ResponseEntity<List<CourseDetail>> getCoursesForUser(
-	          @RequestHeader("Authorization") String token) {
+	public ResponseEntity<List<CourseDetail>> getCoursesForUser( String token) {
+		
 		if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -196,9 +191,7 @@ public class AssignCourse {
 	    }
 	}
 	
-	@GetMapping("/Trainer/courselist")
-	public ResponseEntity<List<CourseDetail>> getCoursesForTrainer(
-	          @RequestHeader("Authorization") String token) {
+	public ResponseEntity<List<CourseDetail>> getCoursesForTrainer(String token) {
 		if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

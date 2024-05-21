@@ -18,20 +18,26 @@ import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
+import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
-@RequestMapping("/view")
-@CrossOrigin
 public class Listview {
 	@Autowired
 	private MuserRepositories muserrepositories;
+	 @Autowired
+	 private JwtUtil jwtUtil;
 	
 	
 //```````````````WORKING````````````````````````````````````
 
-    @GetMapping("/users")
-    public ResponseEntity<List<Muser>> getUsersByRoleName() {
+    public ResponseEntity<List<Muser>> getUsersByRoleName(String token) {
         try {
+        	if (!jwtUtil.validateToken(token)) {
+   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+   	     }
+
+   	     String role = jwtUtil.getRoleFromToken(token);
+   	     if("ADMIN".equals(role)||"TRAINER".equals(role)){
             List<Muser> users = muserrepositories.findByRoleName("USER");
            
             users.forEach(user -> {
@@ -40,14 +46,24 @@ public class Listview {
                 user.setCourses(null);
             });
             return ResponseEntity.ok(users);
+   	     }else {
+
+   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+   	     }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 //```````````````WORKING````````````````````````````````````
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<Muser> getUserById(@PathVariable Long userId) {
+    
+    public ResponseEntity<Muser> getUserById( Long userId,String token) {
         try {
+        	if (!jwtUtil.validateToken(token)) {
+      	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+      	     }
+
+      	     String role = jwtUtil.getRoleFromToken(token);
+      	     if("ADMIN".equals(role)||"TRAINER".equals(role)){
             Muser user = muserrepositories.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
       
@@ -57,16 +73,26 @@ public class Listview {
 
         	user.setAllotedCourses(null);
             return ResponseEntity.ok(user);
+      	   }else {
+
+     	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+     	     }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
 //```````````````WORKING````````````````````````````````````
-@GetMapping("/Trainer")
-public ResponseEntity<List<Muser>> getTrainerByRoleName() {
+public ResponseEntity<List<Muser>> getTrainerByRoleName( String token) {
+	
     try {
-        List<Muser> users = muserrepositories.findByRoleName("TRAINER");
+    	if (!jwtUtil.validateToken(token)) {
+	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	     }
+
+	     String role = jwtUtil.getRoleFromToken(token);
+	     if("ADMIN".equals(role)){
+	    		 List<Muser> users = muserrepositories.findByRoleName("TRAINER");
        
         users.forEach(user -> {
         	user.setAllotedCourses(null);
@@ -75,6 +101,10 @@ public ResponseEntity<List<Muser>> getTrainerByRoleName() {
             user.setCourses(null);
         });
         return ResponseEntity.ok(users);
+        
+	     }else {
+	    	  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	     }
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }

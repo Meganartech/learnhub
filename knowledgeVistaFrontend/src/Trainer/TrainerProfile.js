@@ -1,5 +1,4 @@
 
-import { error } from 'jquery';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';

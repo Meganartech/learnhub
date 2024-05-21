@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import "../css/Component.css"
+import logo from "../images/logo.png"
 import baseUrl from '../api/utils';
 import axios from 'axios';
 
@@ -72,10 +73,10 @@ const SlideBar = ({activeLink,setActiveLink}) => {
     >
       <a href="#" className="sidebar-brand d-flex align-items-center justify-content-center">
         <div className="sidebar-brand-icon rotate-n-15">
-          
-          <i className="fa-solid fa-book-open-reader text-dark"></i>
+          {/* <img src={logo} alt='logo'/> */}
+          {/* <i className="fa-solid fa-book-open-reader text-dark"></i> */}
         </div>
-        <div className="sidebar-brand-text mx-3 text-dark ">Learn HUB</div>
+        {/* <div className="sidebar-brand-text mx-3 text-dark ">Learn HUB</div> */}
       </a>
 
       <hr className="sidebar-divider mb-4" />

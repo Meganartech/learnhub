@@ -43,11 +43,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 
-
-
-@CrossOrigin
 @RestController
-@RequestMapping("/api/v2/")
 public class LicenseController {
 	
 	
@@ -75,7 +71,7 @@ public class LicenseController {
 	 
 	 private  Logger logger = LoggerFactory.getLogger(LicenseController.class);
 
-		@GetMapping("/GetAllUser")
+
 		public ResponseEntity<UserListWithStatus> getAllUser() {
 //		    List<AddUser> getUser = adduserrepository.findAll();
 		    Iterable<License> licenseIterable = licenseRepository.findAll();
@@ -170,7 +166,6 @@ public class LicenseController {
 		
 	
 		
-		@GetMapping("/count")
 		public ResponseEntity<Integer> count() {
 			
 			Iterable<License> licenseIterable = licenseRepository.findAll();
@@ -364,8 +359,8 @@ public class LicenseController {
 //		    }
 //		 
 //			-------------------------------------------licensefile--------------------------------------------
-			@PostMapping("/uploadfile")
-		    public ResponseEntity<License> upload(@RequestParam("audioFile") MultipartFile File)
+		
+		    public ResponseEntity<License> upload( MultipartFile File)
 		      {
 		        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				

@@ -34,17 +34,8 @@ public class Edituser {
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	
-	 @PatchMapping("/Student/{email}")
-	 public ResponseEntity<?> updateStudent(
-	     @PathVariable("email") String originalEmail,
-	     @RequestParam("username") String username,
-	     @RequestParam("email") String newEmail,
-	     @RequestParam("dob") LocalDate dob,
-	     @RequestParam("phone") String phone,
-	     @RequestParam("skills") String skills,
-	     @RequestParam(value="profile", required=false) MultipartFile profile,
-	     @RequestParam("isActive") Boolean isActive,
-	     @RequestHeader("Authorization") String token
+	 public ResponseEntity<?> updateStudent( String originalEmail, String username, String newEmail, LocalDate dob,
+	     String phone, String skills,MultipartFile profile, Boolean isActive, String token
 	 ) {
 	     try {
 	         // Validate the token
@@ -117,17 +108,9 @@ public class Edituser {
 	 
 	 
 	 
-	 @PatchMapping("/Trainer/{email}")
-	 public ResponseEntity<?> updateTrainer(
-	     @PathVariable("email") String originalEmail,
-	     @RequestParam("username") String username,
-	     @RequestParam("email") String newEmail,
-	     @RequestParam("dob") LocalDate dob,
-	     @RequestParam("phone") String phone,
-	     @RequestParam("skills") String skills,
-	     @RequestParam(value="profile", required=false) MultipartFile profile,
-	     @RequestParam("isActive") Boolean isActive,
-	     @RequestHeader("Authorization") String token
+	 public ResponseEntity<?> updateTrainer( String originalEmail, String username,
+			 String newEmail, LocalDate dob,String phone,String skills,
+	      MultipartFile profile, Boolean isActive, String token
 	 ) {
 	     try {
 	         // Validate the token
@@ -200,16 +183,8 @@ public class Edituser {
 
 	 
 	 
-	 @PatchMapping("/self")
-	 public ResponseEntity<?> EditProfile(
-	     @RequestParam("username") String username,
-	     @RequestParam("email") String newEmail,
-	     @RequestParam("dob") LocalDate dob,
-	     @RequestParam("phone") String phone,
-	     @RequestParam("skills") String skills,
-	     @RequestParam(value="profile", required=false) MultipartFile profile,
-	     @RequestParam("isActive") Boolean isActive,
-	     @RequestHeader("Authorization") String token
+	 public ResponseEntity<?> EditProfile( String username, String newEmail, LocalDate dob, String phone,
+	     String skills, MultipartFile profile, Boolean isActive, String token
 	 ) {
 	     try {
 	         // Validate the token
@@ -267,9 +242,7 @@ public class Edituser {
 	 }
 
 	 
-	 @GetMapping("/profiledetails")
-	 private ResponseEntity<?> NameandProfile(
-	     @RequestHeader("Authorization") String token) {
+	 public ResponseEntity<?> NameandProfile( String token) {
 		 
 		 String email= jwtUtil.getUsernameFromToken(token);
 		 

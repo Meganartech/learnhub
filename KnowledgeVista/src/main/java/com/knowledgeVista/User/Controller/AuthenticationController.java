@@ -33,7 +33,6 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 import com.knowledgeVista.User.SecurityConfiguration.TokenBlacklist;
 
 @RestController
-@CrossOrigin
 public class AuthenticationController {
 	 @Autowired
 	    private MuserRepositories muserRepositories;
@@ -43,8 +42,7 @@ public class AuthenticationController {
 	 @Autowired
 	    private TokenBlacklist tokenBlacklist;
 
-	    @PostMapping("/logout")
-	    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+	    public ResponseEntity<String> logout(String token) {
 	        // Extract the token from the Authorization header
 	        // Check if the token is valid (e.g., not expired)
 	        // Blacklist the token to invalidate it
@@ -53,9 +51,7 @@ public class AuthenticationController {
 	        // Respond with a success message
 	        return ResponseEntity.ok().body("Logged out successfully");
 	    }
-	    @Transactional
-	    @PostMapping("/login")
-	    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+	    public ResponseEntity<?> login( Map<String, String> loginRequest) {
 	        String username = loginRequest.get("username");
 	        String password = loginRequest.get("password");
 
@@ -104,33 +100,7 @@ public class AuthenticationController {
 //	 }
 
 	 
-	    //````````````````````````````````````````````````for view`````````````````````````````````````````````
-	    @GetMapping("/getuser")
-	 
-	    	  public String getuser() {
-	    	        StringBuilder result = new StringBuilder();
-	    	        
-	    	        // Retrieve all users from the database
-	    	        Iterable<Muser> users = muserRepositories.findAll();
-	    	        
-	    	        // Iterate through each user
-	    	        for (Muser user : users) {
-	    	            // Append user details to the result string
-	    	            result.append("User ID: ").append(user.getUserId()).append("\n");
-	    	            result.append("Username: ").append(user.getUsername()).append("\n");
-	    	            result.append("Password: ").append(user.getPsw()).append("\n");
-	    	            result.append("Email: ").append(user.getEmail()).append("\n");
-	    	            result.append("Date of Birth: ").append(user.getDob()).append("\n");
-	    	            result.append("Role: ").append(user.getRole().getRoleName()).append("\n");
-	    	            result.append("Active: ").append(user.getIsActive()).append("\n");
-	    	            // Add other fields similarly
-	    	            
-	    	            // Add a separator between users
-	    	            result.append("--------------------\n");
-	    	        }
-	    	        
-	    	        return result.toString();
-	    	    }
+	   
 	  
 
 	    
@@ -138,9 +108,8 @@ public class AuthenticationController {
 
 	    
 	    //````````````````````````````````````````````````for view`````````````````````````````````````````````
-	    @Transactional
-	    @PostMapping("/forgetpassword")
-	    public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) {
+
+	    public ResponseEntity<?> forgetPassword( String email) {
 	        // Finding the user by email
 	        Optional<Muser> userOptional = muserRepositories.findByEmail(email);
 
@@ -153,9 +122,7 @@ public class AuthenticationController {
 	        }
 	    }
 
-	    @Transactional
-	    @PostMapping("/resetpassword")
-	    public ResponseEntity<?> resetPassword(@RequestParam("email") String email, @RequestParam("password") String newPassword) {
+	    public ResponseEntity<?> resetPassword( String email,  String newPassword) {
 	        // Finding the user by email
 	        Optional<Muser> userOptional = muserRepositories.findByEmail(email);
 

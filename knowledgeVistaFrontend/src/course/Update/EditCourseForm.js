@@ -7,7 +7,7 @@ import axios from "axios";
 const EditCourseForm = ({ id, toggleEditMode }) => {
   const MySwal = withReactContent(Swal);
   const  courseId=id
- 
+  const token =sessionStorage.getItem("token")
   const [courseEdit, setCourseEdit] = useState([
    
   ]);
@@ -19,8 +19,8 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
           `${baseUrl}/course/get/${id}`,
           {
             headers: {
-              "Content-Type": "application/json", // Set appropriate headers if needed
-            },
+              Authorization: token
+          },
           }
         );
         if (!response.status===200) {
@@ -105,11 +105,14 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
     e.preventDefault();
     try {
       const response = await axios.patch(
-        `${baseUrl}/course/edit/${courseId}`,formData
-       
-      );
-
-    
+        `${baseUrl}/course/edit/${courseId}`,
+        formData,
+        {
+            headers: {
+                Authorization: token
+            },
+        }
+    );
 
       if (response.status===200) {
         MySwal.fire({

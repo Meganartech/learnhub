@@ -17,10 +17,17 @@ const ViewStudentList = () => {
         const fetchData = async () => {
           try {
             // Fetch data from server
-            const response = await axios.get(`${baseUrl}/view/users`);
+            const response = await axios.get(`${baseUrl}/view/users`,{
+              headers:{
+                Authorization:token
+              }
+            });
             const data = response.data;
             setUsers(data);
           } catch (error) {
+            if(error.response && error.response.status===401){
+              window.location.href="/unauthorized"
+            }
             console.error('Error fetching data:', error);
           }
         };

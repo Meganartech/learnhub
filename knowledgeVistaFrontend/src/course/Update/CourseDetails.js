@@ -17,17 +17,16 @@ const CourseDetails = () => {
   const toggleEditMode = () => {
     setEditMode(!editMode);
   };
-
+  const token =sessionStorage.getItem("token")
 
   useEffect(() => {
     const fetchcourse = async () => {
       try {
-        console.log(courseId);
         const response = await axios.get(
           `${baseUrl}/course/get/${courseId}`,
           {
-            
             headers: {
+              "Authorization":token,
               "Content-Type": "application/json", // Set appropriate headers if needed
             },
           }

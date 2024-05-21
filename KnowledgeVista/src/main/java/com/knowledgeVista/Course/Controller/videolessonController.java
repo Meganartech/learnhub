@@ -59,19 +59,14 @@ public class videolessonController {
 //
 //		 @Value("${upload.video.directory}")
 //		 private  String videoStorageDirectory;
+		 
 		private final String videoStorageDirectory = "video/";
 		
 		
 		
-		 @PostMapping("/save/{courseId}")
-		  private ResponseEntity<String> savenote(
-				  									@RequestParam("thumbnail") MultipartFile file,
-				  								  @RequestParam("Lessontitle") String Lessontitle,
-		                                          @RequestParam("LessonDescription") String LessonDescription,
-		                                          @RequestParam(value = "videoFile", required = false) MultipartFile videoFile,
-		                                          @RequestParam(value = "fileUrl", required = false) String fileUrl,
-		                                          @PathVariable Long courseId,
-		                                          @RequestHeader("Authorization") String token
+		  public ResponseEntity<String> savenote( MultipartFile file, String Lessontitle, String LessonDescription,
+		                                     MultipartFile videoFile,String fileUrl, Long courseId,
+		                                     String token
 		                                          ) {
 		      try {
 		    	  if (!jwtUtil.validateToken(token)) {
@@ -116,14 +111,9 @@ public class videolessonController {
 			 
 		 
 		 
-		 @PatchMapping("/edit/{lessonId}")
-		 public ResponseEntity<?> EditLessons(@PathVariable Long lessonId,
-		     @RequestParam(value="thumbnail" , required = false) MultipartFile file,
-		     @RequestParam(value="Lessontitle" , required = false) String Lessontitle,
-		     @RequestParam(value="LessonDescription" , required = false) String LessonDescription,
-		     @RequestParam(value = "videoFile", required = false) MultipartFile videoFile,
-		     @RequestParam(value = "fileUrl", required = false) String fileUrl,
-		     @RequestHeader("Authorization") String token) {
+	
+		 public ResponseEntity<?> EditLessons( Long lessonId, MultipartFile file, String Lessontitle, String LessonDescription,
+				     MultipartFile videoFile,String fileUrl, String token) {
 		     
 		     if (!jwtUtil.validateToken(token)) {
 		         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -180,10 +170,9 @@ public class videolessonController {
  
 		 
 		 
-		 @GetMapping("/getvideoByid/{lessId}/{courseId}/{token}")
-		    public ResponseEntity<?> getVideoFile(@PathVariable Long lessId,
-		                                          @PathVariable Long courseId,
-		                                          @PathVariable String token,
+		    public ResponseEntity<?> getVideoFile( Long lessId,
+		                                           Long courseId,
+		                                          String token,
 		                                          HttpServletRequest request) {
 		        try {
 		            if (!jwtUtil.validateToken(token)) {
@@ -396,9 +385,8 @@ public class videolessonController {
 		    
 		    
 		 //```````````````````````TO get Specific Lesson`````````````````````````````````````
-		 @GetMapping("/getLessonsByid/{lessonId}")
-		 private ResponseEntity<?>getlessonfromId(@PathVariable("lessonId")Long lessonId,
-				@RequestHeader("Authorization") String token){
+	
+		 public ResponseEntity<?>getlessonfromId(Long lessonId, String token){
 			 try {
 				 if (!jwtUtil.validateToken(token)) {
 		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -434,10 +422,7 @@ public class videolessonController {
 		 
 		 
 		 
-		@DeleteMapping("/delete")
-		private ResponseEntity<?> deleteLessonsByLessonId(@RequestParam("lessonId")Long lessonId,
-				   @RequestParam("Lessontitle") String Lessontitle,
-		          @RequestHeader("Authorization") String token){
+		public ResponseEntity<?> deleteLessonsByLessonId(Long lessonId, String Lessontitle, String token){
 			 try {
 		          // Validate the token
 		          if (!jwtUtil.validateToken(token)) {
