@@ -32,10 +32,7 @@ import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-
 @RestController
-@RequestMapping("/certificate")
-@CrossOrigin
 public class certificateController {
 	@Autowired
 	private certificateRepo certificaterepo;
@@ -47,14 +44,9 @@ public class certificateController {
 		@Autowired
 		private MusertestactivityRepo activityrepo;
 	
-	@PostMapping("/add")
-	private ResponseEntity<?> addcertificate( @RequestParam("institutionName") String institutionName,
-	        @RequestParam("ownerName") String ownerName,
-	        @RequestParam("qualification") String qualification,
-	        @RequestParam("address") String address,
-	        @RequestParam("authorizedSign") MultipartFile authorizedSign,
-	        @RequestHeader("Authorization") String token
-	       ) {
+	
+	public ResponseEntity<?> addcertificate(  String institutionName, String ownerName, String qualification, String address,
+	         MultipartFile authorizedSign, String token) {
 		// @RequestParam("certificateTemplate") MultipartFile certificateTemplate
 	    try {
 	    	
@@ -98,15 +90,9 @@ public class certificateController {
 	}
 	
 //================================Edit Mapping=================================
-	@PatchMapping("/Edit")
-	public ResponseEntity<String> editcertificate(
-	    @RequestParam("institutionName") String institutionName,
-	    @RequestParam("ownerName") String ownerName,
-	    @RequestParam("qualification") String qualification,
-	    @RequestParam("address") String address,
-	    @RequestParam(value="authorizedSign", required=false) MultipartFile authorizedSign,
-	    @RequestParam("certificateId") Long certificateId,
-	    @RequestHeader("Authorization") String token
+
+	public ResponseEntity<String> editcertificate( String institutionName, String ownerName, String qualification, String address,
+			MultipartFile authorizedSign,Long certificateId, String token
 	) {
 	    try {
 	        // Validate the token
@@ -162,10 +148,8 @@ public class certificateController {
 	
 	
 	
-//````````````````````````````WORING````````````````````````````````````````````````````````
-
-	@GetMapping("/viewAll")
-	public ResponseEntity<?> viewCourse() {
+//````````````````````````````WORING````````````````````````````````````````````````````````)
+	public ResponseEntity<?> viewCoursecertificate() {
 	    List<certificate> certificates = certificaterepo.findAll();
 	    
 	    if (certificates.isEmpty()) {
@@ -200,8 +184,8 @@ public class certificateController {
 	
 	
 //-------------------Table view of certificates in user---------------------------------
-@GetMapping("/getAllCertificate")
-	private ResponseEntity<?> sendAllCertificate(@RequestHeader("Authorization") String token) {
+
+	public ResponseEntity<?> sendAllCertificate( String token) {
 	    String username = jwtUtil.getUsernameFromToken(token);
 	    Optional<Muser> opuser = muserRepository.findByEmail(username);
 	    if (opuser.isPresent()) {
@@ -235,9 +219,7 @@ public class certificateController {
 	    return ResponseEntity.ok().body("something fuzzy happen");
 	}
 
-@GetMapping("/getByActivityId/{activityId}")
-public ResponseEntity<?> getByActivityId(@PathVariable Long activityId,
-                                         @RequestHeader("Authorization") String token) {
+public ResponseEntity<?> getByActivityId( Long activityId, String token) {
 	
     if (jwtUtil.validateToken(token)) {
         Optional<MuserTestActivity> opActivity = activityrepo.findById(activityId);

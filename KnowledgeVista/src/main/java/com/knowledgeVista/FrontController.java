@@ -26,6 +26,7 @@ import com.knowledgeVista.Course.Controller.videolessonController;
 import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.controller.QuestionController;
 import com.knowledgeVista.Course.Test.controller.Testcontroller;
+import com.knowledgeVista.Course.certificate.certificateController;
 import com.knowledgeVista.Enroll.PaymentIntegration;
 import com.knowledgeVista.License.License;
 import com.knowledgeVista.License.LicenseController;
@@ -92,6 +93,9 @@ public class FrontController {
 	
 	@Autowired
 	private MserRegistrationController muserreg;
+	
+	@Autowired
+	private certificateController  certi;
 
 //----------------------------COURSECONTROLLER----------------------------
     
@@ -581,5 +585,46 @@ public class FrontController {
     			  public ResponseEntity<Muser> getUserByid(@PathVariable Long id) {
     				  return muserreg.getUserByid(id);
     			  }
+    			  
+ //--------------------------certificate Contoller----------------------
+    			  
+    			  @PostMapping("/certificate/add")
+    				public ResponseEntity<?> addcertificate( @RequestParam("institutionName") String institutionName,
+    				        @RequestParam("ownerName") String ownerName,
+    				        @RequestParam("qualification") String qualification,
+    				        @RequestParam("address") String address,
+    				        @RequestParam("authorizedSign") MultipartFile authorizedSign,
+    				        @RequestHeader("Authorization") String token
+    				       ) {
+    				  return certi.addcertificate(institutionName, ownerName, qualification, address, authorizedSign, token);
+    			  }
+    			  @PatchMapping("/certificate/Edit")
+    				public ResponseEntity<String> editcertificate(
+    				    @RequestParam("institutionName") String institutionName,
+    				    @RequestParam("ownerName") String ownerName,
+    				    @RequestParam("qualification") String qualification,
+    				    @RequestParam("address") String address,
+    				    @RequestParam(value="authorizedSign", required=false) MultipartFile authorizedSign,
+    				    @RequestParam("certificateId") Long certificateId,
+    				    @RequestHeader("Authorization") String token
+    				) {
+    				  return certi.editcertificate(institutionName, ownerName, qualification, address, authorizedSign, certificateId, token);
+    			  }
+    			  
+    				@GetMapping("/certificate/viewAll")
+    				public ResponseEntity<?> viewCoursecertificate() {
+    					return certi.viewCoursecertificate();
+    				}
+    				@GetMapping("/certificate/getAllCertificate")
+    				public ResponseEntity<?> sendAllCertificate(@RequestHeader("Authorization") String token) {
+    					return certi.sendAllCertificate(token);
+    				}	
+    					
+
+               @GetMapping("/certificate/getByActivityId/{activityId}")
+              public ResponseEntity<?> getByActivityId(@PathVariable Long activityId,
+                                         @RequestHeader("Authorization") String token) {
+            	   return certi.getByActivityId(activityId, token);
+    				}
 }
 
