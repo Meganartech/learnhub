@@ -178,8 +178,8 @@ public class FrontController {
 
 
 	   @DeleteMapping("/course/{courseId}")
-	   public ResponseEntity<String> deleteCourse(@PathVariable Long courseId) {
-		   return courseController.deleteCourse(courseId);
+	   public ResponseEntity<String> deleteCourse(@PathVariable Long courseId,@RequestHeader("Authorization") String token) {
+		   return courseController.deleteCourse(courseId,token);
 	   }
 	   
 	   @GetMapping("/course/getLessondetail/{courseId}")
@@ -189,8 +189,8 @@ public class FrontController {
 	   }
 
 		 @GetMapping("/course/getLessonlist/{courseId}")
-		 public ResponseEntity<?> getLessonList(@PathVariable Long courseId) {
-			 return courseController.getLessonList(courseId);
+		 public ResponseEntity<?> getLessonList(@PathVariable Long courseId,@RequestHeader("Authorization") String token) {
+			 return courseController.getLessonList(courseId,token);
 		 }
 //----------------------------COURSE CONTROLLER SECOND-----------------------------------
 
@@ -292,13 +292,15 @@ public class FrontController {
 				
 //--------------------------------Test Controller-------------------------
 				@PostMapping("/test/create/{courseId}")
-			    public ResponseEntity<String> createTest(@PathVariable Long courseId, @RequestBody CourseTest test) {
-					return testcontroller.createTest(courseId, test);
+			    public ResponseEntity<String> createTest(@PathVariable Long courseId, @RequestBody CourseTest test,
+			    		@RequestHeader("Authorization") String token) {
+					return testcontroller.createTest(courseId, test ,token);
 				}
 				
 				@GetMapping("/test/getall/{courseId}")
-			    public ResponseEntity<?> getTestsByCourseIdonly(@PathVariable Long courseId) {
-					return testcontroller.getTestsByCourseIdonly(courseId);
+			    public ResponseEntity<?> getTestsByCourseIdonly(@PathVariable Long courseId,
+			    		@RequestHeader("Authorization") String token) {
+					return testcontroller.getTestsByCourseIdonly(courseId,token);
 				}
 		        @GetMapping("/test/getTestByCourseId/{courseId}")
 		        public ResponseEntity<?> getTestByCourseId(@PathVariable Long courseId,
@@ -307,8 +309,9 @@ public class FrontController {
 		        }
 		        
 		        @DeleteMapping("/test/{testId}")
-			    public String deleteCourseTest(@PathVariable Long testId) {
-		        	return testcontroller.deleteCourseTest(testId);
+			    public ResponseEntity<?> deleteCourseTest(@PathVariable Long testId,
+			    		@RequestHeader("Authorization") String token) {
+		        	return testcontroller.deleteCourseTest(testId,token);
 		        }
 		        
 		        @PatchMapping("/test/update/{testId}")
@@ -558,14 +561,15 @@ public class FrontController {
     			}
 
     			@GetMapping("/student/users/{email}")
-    			public ResponseEntity<Muser> getUserByEmail(@PathVariable String email) {
-    				return muserreg.getUserByEmail(email);
+    			public ResponseEntity<Muser> getUserByEmail(@PathVariable String email,
+    					@RequestHeader("Authorization") String token) {
+    				return muserreg.getUserByEmail(email,token);
     			}
     			
 
     		    @GetMapping("/student/admin/getTrainer/{email}")
     		    public ResponseEntity<?> getTrainerDetailsByEmail(@PathVariable String email,
-    		                                                          @RequestHeader("Authorization") String token) {
+    		                            @RequestHeader("Authorization") String token) {
     		    	return muserreg.getTrainerDetailsByEmail(email, token);
     		    }
     		    
@@ -575,16 +579,9 @@ public class FrontController {
     		    		@RequestHeader("Authorization") String token) {
     		    	return muserreg.getStudentDetailsByEmail(email, token);
     		    }
-    		    @Transactional
-    			  @GetMapping("/student/viewall")
-    			  public  ResponseEntity<List<Muser>> viewUsers() {
-    		    	return muserreg.viewUsers();
-    		    }
+    		   
     		    
-    			  @GetMapping("/student/usersbyid/{id}")
-    			  public ResponseEntity<Muser> getUserByid(@PathVariable Long id) {
-    				  return muserreg.getUserByid(id);
-    			  }
+    			
     			  
  //--------------------------certificate Contoller----------------------
     			  

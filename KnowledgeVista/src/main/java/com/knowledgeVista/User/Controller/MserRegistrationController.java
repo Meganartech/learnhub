@@ -107,8 +107,12 @@ public class MserRegistrationController {
 
 	
 
-	public ResponseEntity<Muser> getUserByEmail( String email) {
+	public ResponseEntity<Muser> getUserByEmail( String email, String token) {
 	    try {
+	    	if (!jwtUtil.validateToken(token)) {
+	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	   	     }
+
 	        // Attempt to find a user by email
 	        Optional<Muser> userOptional = muserrepositories.findByEmail(email);
 	        
@@ -232,36 +236,9 @@ public class MserRegistrationController {
 
 
     
-	  public  ResponseEntity<List<Muser>> viewUsers() {
-	        List<Muser> users = muserrepositories.findAll();
-	        // Decompress image data for each course
-	        
-	        for (Muser user : users) {
-	        	
-	        	 byte[] images =ImageUtils.decompressImage(user.getProfile());
-	            user.setProfile(images);
-	         
-	        }
-	        return ResponseEntity.ok()
-          .contentType(MediaType.APPLICATION_JSON)
-          .body(users);
-	    }
+	 
 	  
 
-	  public ResponseEntity<Muser> getUserByid( Long id) {
-	      Optional<Muser> userOptional = muserrepositories.findById(id);
-	      if(userOptional.isPresent()) {
-	          Muser user = userOptional.get();
-	          byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
-	          user.setProfile(profileImage);
-	          return ResponseEntity.ok()
-	                  .contentType(MediaType.APPLICATION_JSON)
-	                  .body(user);
-	      } else {
-	          // User not found, return an appropriate response
-	          return ResponseEntity.notFound().build();
-	      }
-	  }
 	  
 }
 	

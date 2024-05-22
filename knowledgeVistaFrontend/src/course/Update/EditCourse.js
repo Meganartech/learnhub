@@ -8,6 +8,7 @@ import axios from "axios";
 const EditCourse = ({filteredCourses}) => {
   const MySwal = withReactContent(Swal);
  const role=sessionStorage.getItem("role");
+ const token=sessionStorage.getItem("token");
  const createCourse = async () => {
   try {
  const response = await axios.get(`${baseUrl}/api/v2/count`);
@@ -33,7 +34,7 @@ const EditCourse = ({filteredCourses}) => {
   e.preventDefault();
   MySwal.fire({
     title: "Delete Course?",
-    text: "Are you sure you want to delete this course?",
+    text: "Are you sure you want to delete this course ?",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#d33",
@@ -42,9 +43,9 @@ const EditCourse = ({filteredCourses}) => {
   }).then((result) => {
     if (result.isConfirmed) {
       // If the user clicked "Delete"
-      axios.delete(`${baseUrl}/course/${courseId}`, {
+      axios.delete(`${baseUrl}/course/${courseId}`,{
         headers: {
-          "Content-Type": "application/json",
+          Authorization: token,
         },
       })
         .then((response) => {
@@ -62,23 +63,17 @@ const EditCourse = ({filteredCourses}) => {
           } 
         })
         .catch((error) => {
-          if(error.response){
-            MySwal.fire({
-              title: "Error!",
-              text: error.response.data,
-              icon: "error",
-              confirmButtonText: "OK",
-            });
-          }else{
-            
-           MySwal.fire({
-            title: "Error!",
-            text:
-              "An error occurred while Deleting courses. Please try again later.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-          }
+          if(error.response && error.response.status===401)
+            {
+              window.location.href="/unauthorized";
+            }else{
+              MySwal.fire({
+                title: "Error!",
+                text: error.response.data,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            }
           
         });
     } 

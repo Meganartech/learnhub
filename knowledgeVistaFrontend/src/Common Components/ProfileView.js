@@ -39,12 +39,26 @@ const ProfileView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/student/users/${email}`);
+        const response = await axios.get(`${baseUrl}/student/users/${email}`, {
+          headers: {
+            Authorization: token,
+          },
+        });
         const userData = response.data;
         setImg(`data:image/jpeg;base64,${userData.profile}`);
         setUserData(userData);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        if(error.response && error.response.status===401)
+        {
+          window.location.href="/unauthorized";
+        }else{
+          MySwal.fire({
+            title: "Error!",
+            text: `${error.response.data}`,
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        }
       }
     };
 

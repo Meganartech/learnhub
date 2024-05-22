@@ -24,14 +24,21 @@ const TestList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/test/getall/${courseId}`);
+        const response = await axios.get(`${baseUrl}/test/getall/${courseId}`, {
+          headers: {
+            Authorization: token,
+          }
+        });
           if (response.status===200) {
           const data =  response.data;
           setTest(data);
           setEditedTest(data)
         }
       } catch (error) {
-        if(error.response && error.response.status===404){
+        if(error.response && error.response.status===401)
+          {
+            window.location.href="/unauthorized";
+          }else if(error.response && error.response.status===404){
           setNotFound(true);
         }else{
         MySwal.fire({
@@ -89,13 +96,27 @@ const TestList = () => {
       if (result.isConfirmed) {
         try {
           if (testId != null) {
-            const response = await axios.delete(`${baseUrl}/test/${testId}`);
+            const response = await axios.delete(`${baseUrl}/test/${testId}`, {
+              headers: {
+                Authorization: token,
+               }
+            });
             if (response.status===200) {
               window.location.reload();
             }
           }
         } catch (error) {
-          console.error('Error deleting test:', error);
+          if(error.response && error.response.status===401)
+          {
+            window.location.href="/unauthorized";
+          }else{
+            MySwal.fire({
+              title: "Error!",
+              text: error.response.data,
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+          }
         }
       } 
     });

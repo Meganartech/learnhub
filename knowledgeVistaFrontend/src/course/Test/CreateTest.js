@@ -18,7 +18,7 @@ const CreateTest = () => {
   const [noofattempt, setNoOfAttempt] = useState(1);
   const [passPercentage, setPassPercentage] = useState(0);
   const [showCriteria, setShowCriteria] = useState(false);
-
+  const token=sessionStorage.getItem("token")
   const [errors, setErrors] = useState({
     noofattempt: "",
     passPercentage: "",
@@ -126,8 +126,7 @@ const CreateTest = () => {
       setSavedQuestions(updatedQuestions)
       
     setSelectedQuestionIndex(prevIndex => prevIndex + 1);
-    console.log("index",selectedQuestionIndex)
-    console.log(savedQuestions)
+    
     }
 
     // Clear input fields after adding or updating a question
@@ -152,7 +151,8 @@ const CreateTest = () => {
   const res=JSON.stringify(requestBody)
       const response = await axios.post(`${baseUrl}/test/create/${courseId}`,res, {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: token,
         }
       });
 
@@ -176,13 +176,17 @@ const CreateTest = () => {
       });
 
     } catch (error) {
-      // Handle error
-      Swal.fire({
-        title: "Error",
-        text: error,
-        icon: "error",
-        confirmButtonText: "OK"
-      });
+       if(error.response && error.response.status===401)
+          {
+            window.location.href="/unauthorized";
+          }else{
+            MySwal.fire({
+              title: "Error!",
+              text: `${error.response.data}`,
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+          }
     }
   };
   

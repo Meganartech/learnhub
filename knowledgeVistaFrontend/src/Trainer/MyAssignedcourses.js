@@ -49,11 +49,11 @@ const MyAssignedcourses = () => {
      }).then((result) => {
        if (result.isConfirmed) {
          // If the user clicked "Delete"
-         axios.delete(`${baseUrl}/course/${courseId}`, {
-           headers: {
-             "Content-Type": "application/json",
-           },
-         })
+         axios.delete(`${baseUrl}/course/${courseId}`,{
+          headers: {
+            Authorization: token,
+          },
+        })
            .then((response) => {
              if (response.status===200) {
                // Handle successful deletion
@@ -69,13 +69,18 @@ const MyAssignedcourses = () => {
              }
            })
            .catch((error) => {
-             MySwal.fire({
-               title: "Error!",
-               text:
-                 "An error occurred while Deleting courses. Please try again later.",
-               icon: "error",
-               confirmButtonText: "OK",
-             });
+            if(error.response && error.response.status===401)
+            {
+              window.location.href="/unauthorized";
+            }else{
+              MySwal.fire({
+                title: "Error!",
+                text: error.response.data,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            }
+          
            });
        } else {
          // If the user clicked "Cancel" or closed the dialog
@@ -100,7 +105,7 @@ const MyAssignedcourses = () => {
 <ul className={styles.maincontainer}>
     {courses.length === 0 ? (
         <li>
-             <div className='enroll pb-5'>
+             <div className='enroll pb-5 pt-4' style={{marginLeft:"400px",marginTop:"150px"}}>
             <h3 className='mt-5'>No courses Found </h3>
            </div>
             </li>

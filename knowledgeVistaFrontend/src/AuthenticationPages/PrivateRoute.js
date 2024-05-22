@@ -46,4 +46,3 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
 }
 
 export default PrivateRoute
-

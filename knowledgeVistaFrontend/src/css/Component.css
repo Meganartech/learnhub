@@ -9,6 +9,14 @@
     border-bottom-right-radius: 10px;
     
 }
+.logoicon{
+  color: black;
+}
+.logoicon img{
+  margin-top: 10px;
+  width: 75px;
+  height: 80px;
+}
 .Activeicon{
     color:#f8f9fc;
 }

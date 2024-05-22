@@ -42,7 +42,11 @@ const EditTrainer = () => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get(`${baseUrl}/student/users/${email}`);
+          const response = await axios.get(`${baseUrl}/student/users/${email}`, {
+            headers: {
+              Authorization: token,
+            },
+          });
           const userData = response.data;
         if(response.status===200){
           setFormData(userData);
@@ -54,6 +58,16 @@ const EditTrainer = () => {
         } catch (error) {
           if(error.response && error.response.status===404){
             setNotFound(true)
+          }else if(error.response && error.response.status===401)
+          {
+            window.location.href="/unauthorized";
+          }else{
+            MySwal.fire({
+              title: "Error!",
+              text: `${error.response.data}`,
+              icon: "error",
+              confirmButtonText: "OK",
+            });
           }
            }
       };

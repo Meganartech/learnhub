@@ -15,15 +15,28 @@ const LessonList = () => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.get(`${baseUrl}/course/getLessonlist/${courseId}`);
+            const response = await axios.get(`${baseUrl}/course/getLessonlist/${courseId}`, {
+              headers: {
+                Authorization: token,
+               }
+            });
             if (!response.status===200) {
               throw new Error('Failed to fetch data');
             }
             const lessonList = response.data;
            setlessons(lessonList);
           } catch (error) {
-            console.error('Error fetching data:', error);
-          }
+            if(error.response && error.response.status===401)
+            {
+              window.location.href="/unauthorized";
+            }else{
+              MySwal.fire({
+                title: "Error!",
+                text: error.response.data,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            }          }
         };
     
         fetchData();

@@ -56,12 +56,31 @@ public class Testcontroller {
 		 private JwtUtil jwtUtil;
 //-----------------------------WORKING for ADMIN View-------------------------
 
-	    public ResponseEntity<String> createTest( Long courseId, CourseTest test) {
+	    public ResponseEntity<String> createTest( Long courseId, CourseTest test,String token) {
 	        try {
+		          if (!jwtUtil.validateToken(token)) {
+		              System.out.println("Invalid Token");
+		              // If the token is not valid, return unauthorized status
+		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		          }
+
+		          String role = jwtUtil.getRoleFromToken(token);
+		          String email=jwtUtil.getUsernameFromToken(token);
+		          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+		        	 
 	            // Find the course by its ID
 	            CourseDetail courseDetail = courseDetailRepo.findById(courseId)
 	                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
-	            
+	            if("TRAINER".equals(role)) {
+	        		Optional< Muser> trainerop= muserRepo.findByEmail(email);
+	        		  if(trainerop.isPresent()) {
+	        			  Muser trainer =trainerop.get();
+	        			  if( !trainer.getAllotedCourses().contains(courseDetail)) {
+
+	    		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        			  }
+	        		  }
+	        	  }
 	            Optional <CourseTest> opcoursetest= testRepository.findByCourseDetail(courseDetail);
 	            if(opcoursetest.isPresent()) {
 	            	return ResponseEntity.badRequest().build();
@@ -81,6 +100,10 @@ public class Testcontroller {
 	            }
 
 	            return ResponseEntity.ok("Test created successfully");
+		          }else {
+
+		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		          }
 	        } catch (Exception e) {
 	            e.printStackTrace(); // Print the stack trace for debugging
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -89,12 +112,31 @@ public class Testcontroller {
 	    }
 	  //-----------------------------WORKING for ADMIN View-------------------------	    
 
-	    public ResponseEntity<?> getTestsByCourseIdonly( Long courseId) {
+	    public ResponseEntity<?> getTestsByCourseIdonly( Long courseId ,String token) {
 	        try {
+	        	if (!jwtUtil.validateToken(token)) {
+		              System.out.println("Invalid Token");
+		              // If the token is not valid, return unauthorized status
+		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		          }
+
+		          String role = jwtUtil.getRoleFromToken(token);
+		          String email=jwtUtil.getUsernameFromToken(token);
+		          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+			        	 
 	            // Find the course by its ID
 	            CourseDetail courseDetail = courseDetailRepo.findById(courseId)
 	                    .orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found with the specified ID: " + courseId));
+	            if("TRAINER".equals(role)) {
+	        		Optional< Muser> trainerop= muserRepo.findByEmail(email);
+	        		  if(trainerop.isPresent()) {
+	        			  Muser trainer =trainerop.get();
+	        			  if( !trainer.getAllotedCourses().contains(courseDetail)) {
 
+	    		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        			  }
+	        		  }
+	        	  }
 
 	            Optional<CourseTest> opcoursetest = testRepository.findByCourseDetail(courseDetail);
 	            if (opcoursetest.isPresent()) {
@@ -126,9 +168,14 @@ public class Testcontroller {
 	                }
 	                
 	                return ResponseEntity.ok(testMap);
+	            }else {
+	            	   return ResponseEntity.notFound().build();
 	            }
-	            // Return a response for the case where opcoursetest.isPresent() is false
-	            return ResponseEntity.notFound().build();
+	            }else {
+
+		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		          }
+	         
 	        } catch (Exception e) {
 	            e.printStackTrace(); // Print the stack trace for debugging
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -166,7 +213,6 @@ public class Testcontroller {
 	                        CourseDetail course = opCourse.get();
 	                        if(!user.getCourses().contains(course)) {
 
-	        	            	System.out.println("unauthorized");
 	           	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	           	             
 	                        }
@@ -188,20 +234,17 @@ public class Testcontroller {
 	                            return ResponseEntity.ok(test);
 	                        } else {
 
-	        	            	System.out.println("notfound");
 	                            return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                                    .body("{\"error\": \"Test not found for course\"}");
 	                        }
 	                    } else {
 
-	    	            	System.out.println("notfound");
 	                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                                .body("{\"error\": \"Course not found with ID: " + courseId + "\"}");
 	                    }
 
 	                } else {
 
-		            	System.out.println("notfound");
 	                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                            .body("{\"error\": \"User not found\"}");
 	                }
@@ -238,21 +281,55 @@ public class Testcontroller {
 	    
 //-----------------------------WORKING--------------------------------------------------	    
 
-	    public String deleteCourseTest( Long testId) {
-	        // Find the CourseTest by its ID
-	        CourseTest courseTest = testRepository.findById(testId).orElse(null);
-	        
-	        // If CourseTest exists, delete it along with its associated questions
-	        if (courseTest != null) {
-	            // Delete associated questions first
-	            questionRepository.deleteByTest(courseTest);
-	            testRepository.delete(courseTest);
-	            return "CourseTest with ID " + testId + " and its associated questions deleted successfully";
-	        } else {
-	            return "CourseTest with ID " + testId + " not found";
+	    @DeleteMapping("/deleteCourseTest")
+	    public ResponseEntity<?> deleteCourseTest(@RequestParam("testId") Long testId, @RequestParam("token") String token) {
+	        try {
+	            if (!jwtUtil.validateToken(token)) {
+	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                        .body("{\"error\": \"Invalid Token\"}");
+	            }
+
+	            // Retrieve role and email from token
+	            String role = jwtUtil.getRoleFromToken(token);
+	            String email = jwtUtil.getUsernameFromToken(token);
+
+	            if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+
+	                // Find the CourseTest by its ID
+	                Optional<CourseTest> courseTestOptional = testRepository.findById(testId);
+	                if (!courseTestOptional.isPresent()) {
+	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CourseTest with ID " + testId + " not found");
+	                }
+	                
+	                CourseTest courseTest = courseTestOptional.get();
+	                CourseDetail courseDetail = courseTest.getCourseDetail();
+
+	                if ("TRAINER".equals(role)) {
+	                    Optional<Muser> trainerOptional = muserRepo.findByEmail(email);
+	                    if (!trainerOptional.isPresent()) {
+	                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Trainer with email " + email + " not found");
+	                    }
+	                    
+	                    Muser trainer = trainerOptional.get();
+	                    if (!trainer.getAllotedCourses().contains(courseDetail)) {
+	                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	                    }
+	                }
+
+	                // If CourseTest exists, delete it along with its associated questions
+	                questionRepository.deleteByTest(courseTest);
+	                testRepository.delete(courseTest);
+	                return ResponseEntity.ok().body("CourseTest with ID " + testId + " and its associated questions deleted successfully");
+	            } else {
+	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	            }
+	        } catch (Exception e) {
+	            // Log the exception (you can replace this with a logging framework like Log4j)
+	            e.printStackTrace();
+	            // Return an internal server error response
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"An unexpected error occurred\"}");
 	        }
-	    }
-	    
+	    }	    
 //``````````````````````Edit Test Details````````````````````````````````````
 
 public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttempt, Double passPercentage, String token) {

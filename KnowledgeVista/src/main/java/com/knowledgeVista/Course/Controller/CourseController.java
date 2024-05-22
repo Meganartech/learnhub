@@ -382,13 +382,30 @@ public class CourseController {
 
 	   //---------------------WORKING--------------
 	 
-	   public ResponseEntity<String> deleteCourse( Long courseId) {
+	   public ResponseEntity<String> deleteCourse( Long courseId ,String token) {
 	       try {
 	           // Find the course by ID
+	    	   if (!jwtUtil.validateToken(token)) {
+	               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	           }
+
+	           String role = jwtUtil.getRoleFromToken(token);
+		          String email=jwtUtil.getUsernameFromToken(token);
+		          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 	           Optional<CourseDetail> optionalCourse = coursedetailrepository.findById(courseId);
 	           
 	           if (optionalCourse.isPresent()) {
 	               CourseDetail course = optionalCourse.get();
+	               if("TRAINER".equals(role)) {
+		        		Optional< Muser> trainerop= muserRepository.findByEmail(email);
+		        		  if(trainerop.isPresent()) {
+		        			  Muser trainer =trainerop.get();
+		        			  if( !trainer.getAllotedCourses().contains(course)) {
+
+		    		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        			  }
+		        		  }
+		        	  }
 	               
 	               // Clear the lists of trainers and users associated with the course
 	               course.getTrainer().clear();
@@ -414,7 +431,11 @@ public class CourseController {
 	               // If the course with the specified ID does not exist
 	               return ResponseEntity.notFound().build();
 	           }
-	       } catch (DataIntegrityViolationException e) {
+	       }else {
+
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+	       }catch (DataIntegrityViolationException e) {
 	           // If a foreign key constraint violation occurs
 	           // Return a custom error response with an appropriate status code and message
 	           return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -474,9 +495,29 @@ public class CourseController {
 	       return ResponseEntity.notFound().build();
 	   }
 
-		 public ResponseEntity<?> getLessonList( Long courseId) {
+		 public ResponseEntity<?> getLessonList( Long courseId , String token) {
+			 try {
+				 if (!jwtUtil.validateToken(token)) {
+		               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		           }
+
+		           String role = jwtUtil.getRoleFromToken(token);
+			          String email=jwtUtil.getUsernameFromToken(token);
+			          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+			
 			    Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
 			    if (opcourse.isPresent()) {
+			    	
+			    	 if("TRAINER".equals(role)) {
+			        		Optional< Muser> trainerop= muserRepository.findByEmail(email);
+			        		  if(trainerop.isPresent()) {
+			        			  Muser trainer =trainerop.get();
+			        			  if( !trainer.getAllotedCourses().contains(opcourse.get())) {
+
+			    		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			        			  }
+			        		  }
+			        	  }
 			        List<videoLessons> videolessonlist = opcourse.get().getVideoLessons();
 			        List<Map<String, Object>> lessonResponseList = new ArrayList<>();
 
@@ -491,6 +532,15 @@ public class CourseController {
 			    }
 
 			    return ResponseEntity.notFound().build();
-			}
+			}else {
+
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	          }
+       } catch (Exception e) {
+           e.printStackTrace(); // Print the stack trace for debugging
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("Error creating test: " + e.getMessage());
+       }
+		 }
 		 
 }

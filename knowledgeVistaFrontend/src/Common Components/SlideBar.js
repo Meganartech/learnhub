@@ -21,6 +21,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
         const data = response.data;
         setIsEmpty(data.empty);
         setIsvalid(data.valid);
+       
         const type = data.type;
       sessionStorage.setItem('type',type);
     } catch (error) {
@@ -71,18 +72,19 @@ const SlideBar = ({activeLink,setActiveLink}) => {
           
       id="accordionSidebar"
     >
-      <a href="#" className="sidebar-brand d-flex align-items-center justify-content-center">
-        <div className="sidebar-brand-icon rotate-n-15">
-          {/* <img src={logo} alt='logo'/> */}
+      <a href="#" className="sidebar-brand d-flex align-items-center justify-content-center mt-4">
+        <div className='logoicon'>
+          <img src={logo} alt='logo'/> 
+        <div className="sidebar-brand-text  ">Learn HUB</div>
           {/* <i className="fa-solid fa-book-open-reader text-dark"></i> */}
         </div>
         {/* <div className="sidebar-brand-text mx-3 text-dark ">Learn HUB</div> */}
       </a>
 
-      <hr className="sidebar-divider mb-4" />
+      <hr className="sidebar-divider " />
      
       {userRole === "ADMIN"  && (
-         <li className="nav-item mt-2">
+         <li className="nav-item mt-1">
          <a
            className={activeLink === "/admin/dashboard" ? "ActiveLink nav-link" : "nav-link text-muted"}
            href="#"

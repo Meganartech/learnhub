@@ -16,24 +16,24 @@ public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    // Define a pointcut for all methods in the RestController
-    @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
-    public void controllerMethods() {}
+    @Pointcut("within(com.knowledgeVista.FrontController)")
+    public void frontControllerMethods() {}
+
 
     // Log the request before the method execution
-    @Before("controllerMethods()")
+    @Before("frontControllerMethods()")
     public void logBefore(JoinPoint joinPoint) {
         logger.info("Entering method: {} with arguments: {}", joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
     // Log the response after the method execution
-    @AfterReturning(pointcut = "controllerMethods()", returning = "result")
+    @AfterReturning(pointcut = "frontControllerMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         logger.info("Exiting method: {} with result: {}", joinPoint.getSignature().getName(), result);
     }
 
     // Log exceptions thrown by the method
-    @AfterThrowing(pointcut = "controllerMethods()", throwing = "exception")
+    @AfterThrowing(pointcut = "frontControllerMethods()", throwing = "exception")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
         logger.error("Exception in method: {} with message: {}", joinPoint.getSignature().getName(), exception.getMessage(), exception);
     }

@@ -99,7 +99,7 @@ function App() {
                   searchQuery={searchQuery}
                   handleSearchChange={handleSearchChange}
                   setSearchQuery={setSearchQuery}/>}>
-                    <Route path="/admin/dashboard" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Dashboard/></PrivateRoute>}/>
+                    <Route path="/admin/dashboard" element={<PrivateRoute  onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Dashboard/></PrivateRoute>}/>
                       <Route path="/lessonList/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><LessonList/></PrivateRoute>}/> 
                       <Route path="/edit/:courseName/:courseId/:Lessontitle/:lessonId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditLesson/></PrivateRoute>}/>
                       <Route path="/courses/:courseName/:courseId/" element={<PrivateRoute authenticationRequired={true} ><ViewVideo/></PrivateRoute>}/>                     
