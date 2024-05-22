@@ -45,7 +45,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+ 
     if (Object.values(errors).some(error => error) || !formData.username || !formData.password) {
       return;
     }
@@ -56,7 +56,7 @@ const Login = () => {
           "Content-Type": "application/json",
         }
       });
-  
+      
       if (response.status === 200) {
         const data = response.data; 
         const jwtToken = data.token;

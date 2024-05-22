@@ -12,6 +12,21 @@ const ViewStudentList = () => {
   const token=sessionStorage.getItem("token");
   const userRole = sessionStorage.getItem('role');
     const [users, setUsers] = useState([]);
+    
+  const [filterOption, setFilterOption] = useState("All");
+  const [searchQuery, setSearchQuery] = useState('');
+   
+  const filterData = () => {
+    if (filterOption === "All") {
+      return users;
+    } else if (filterOption === "Active") {
+      return users.filter(user => user.isActive === true);
+    } else if (filterOption === "Inactive") {
+      return users.filter(user => user.isActive === false);
+    }else if(filterOption==="search"){
+      return users.filter(user => user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+  };
     useEffect(() => {
         // Simulating fetching data from the server
         const fetchData = async () => {
@@ -145,8 +160,29 @@ const ViewStudentList = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
-      <div style={{ display: 'grid', gridTemplateColumns: '40fr 5fr' }} className='mb-4'>
+      <div style={{ display: 'grid', gridTemplateColumns: '25fr 10fr 6fr 6fr' }} className='mb-4'>
         <h1>Students Details</h1>
+        <input
+        className="form-control"
+        style={{ marginTop: "10px" }}
+        type="search"
+        placeholder="Search by Email"
+        aria-label="Search"
+        value={searchQuery}
+        onChange={(e) => {
+          setSearchQuery(e.target.value);
+          setFilterOption("search");
+        }}/>
+                   <select
+                    className="form-select btn btn-success mr-5 ml-5 text-left p-2 "
+                   
+                    value={filterOption}
+                    onChange={(e) => setFilterOption(e.target.value)}
+                  >
+                    <option  className='bg-light text-dark ' value="All">All</option>
+                    <option className='bg-light text-dark' value="Active">Active</option>
+                    <option className='bg-light text-dark' value="Inactive">Inactive</option>
+                  </select>
         <a href="/addStudent" className='btn btn-primary'><i className="fa-solid fa-plus"></i> Add Student</a>
       </div>
       <div className="table-container">
@@ -164,7 +200,7 @@ const ViewStudentList = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+          {filterData().map((user, index) => (
               <tr key={user.userId}>
                 <th scope="row">{index + 1}</th>
                 <td className='py-2'> <Link to={`/view/Student/profile/${user.email}`}>{user.username}</Link></td>
