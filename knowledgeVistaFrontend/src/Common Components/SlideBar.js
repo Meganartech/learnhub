@@ -22,6 +22,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
         setIsEmpty(data.empty);
         setIsvalid(data.valid);
        
+       
         const type = data.type;
       sessionStorage.setItem('type',type);
     } catch (error) {

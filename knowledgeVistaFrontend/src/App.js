@@ -119,15 +119,14 @@ function App() {
                       <Route path="/course/edit/:courseId" element={<PrivateRoute authenticationRequired={true}><CourseDetails/></PrivateRoute>}/>
                       <Route path="/course/testlist/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TestList /></PrivateRoute>} />
                       <Route path="/course/dashboard/profile" element={<PrivateRoute authenticationRequired={true}><ProfileView/></PrivateRoute>}/>
-                      <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute>}/>
                       <Route path="/MyCertificateList" element={<PrivateRoute authenticationRequired={true}><MyCertificateList /></PrivateRoute>}/>
                       <Route path="/template/:activityId" element={<PrivateRoute authenticationRequired={true}><Template/></PrivateRoute>}/>
-                      <Route path="/settings/payment" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Razorpay_Settings/></PrivateRoute>}/>
                       <Route path="/assignCourse/Student/:userId" element={<PrivateRoute  authenticationRequired={true} authorizationRequired={true}><AssignCourse /></PrivateRoute>} />
                       <Route path="/assignCourse/Trainer/:userId" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><AssignCourseTRAINER /></PrivateRoute>} />
                       <Route path="/view/Students" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><ViewStudentList/></PrivateRoute>}/>
                       <Route path="/view/Trainer" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><ViewTrainerList/></PrivateRoute>}/>
-                      <Route path="/certificate" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute> }/>
+                      <Route path="/settings/payment" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Razorpay_Settings/></PrivateRoute>}/>
+                      <Route path="/certificate" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><CertificateInputs/></PrivateRoute> }/>
                       <Route path="/view/Trainer/profile/:traineremail" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TrainerProfile/></PrivateRoute>}/>
                       <Route path="/view/Student/profile/:studentemail" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><StudentProfile/></PrivateRoute>}/>
                       <Route path="/student/edit/:email" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditStudent/></PrivateRoute>}/>

@@ -281,8 +281,7 @@ public class Testcontroller {
 	    
 //-----------------------------WORKING--------------------------------------------------	    
 
-	    @DeleteMapping("/deleteCourseTest")
-	    public ResponseEntity<?> deleteCourseTest(@RequestParam("testId") Long testId, @RequestParam("token") String token) {
+	    public ResponseEntity<?> deleteCourseTest( Long testId,  String token) {
 	        try {
 	            if (!jwtUtil.validateToken(token)) {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

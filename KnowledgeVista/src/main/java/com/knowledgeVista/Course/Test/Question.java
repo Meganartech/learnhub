@@ -23,7 +23,7 @@ public class Question {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private long questionId;
 	    
-	    @Column(length = 100)
+	    @Column(length = 1000)
 	    private String questionText;
 	    
 	    private String option1;

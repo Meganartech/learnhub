@@ -1,10 +1,10 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom';
 const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,onlyuser, onlytrainer,children }) => {
-  
-    const isAuthenticated = sessionStorage.getItem('token') !== null;
-    const userRole = sessionStorage.getItem('role'); // Assuming role is stored in sessionStorage
-
+    
+     const isAuthenticated = sessionStorage.getItem('token') !== null;
+     const userRole = sessionStorage.getItem('role'); // Assuming role is stored in sessionStorage
+    
     // Check if authentication is required and user is authenticated
     if (authenticationRequired && !isAuthenticated) {
         return <Navigate to="/login" />;
@@ -14,31 +14,27 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
     if (authorizationRequired && userRole === "USER") {
         return <Navigate to="/unauthorized" />;
     }
-    if(onlyadmin){
-        if(userRole ==="ADMIN"){
-            return <>{children}</>;
+    
+     if(onlyadmin && (userRole ==="TRAINER" || userRole==="USER")){
+       
+            
+    return <Navigate to="/unauthorized" />;
     }   
+    
+
+    if(onlytrainer && (userRole ==="ADMIN" || userRole==="USER") ){
+         
     return <Navigate to="/unauthorized" />;
     }
 
-    if(onlytrainer){
-        if(userRole ==="TRAINER"){
-            return <>{children}</>;
-    }   
-    return <Navigate to="/unauthorized" />;
-    }
 
 
-
-    if(onlyuser){
-        if(userRole === "USER"){
-            return<>{children}</>
-        }
+    if(onlyuser&& (userRole ==="ADMIN" || userRole==="TRAINER")){
+        
         return <Navigate to="/unauthorized" />;
 
     } 
-
-
+   
     // If authentication and authorization checks pass, render the children
     return <>{children}</>;
  

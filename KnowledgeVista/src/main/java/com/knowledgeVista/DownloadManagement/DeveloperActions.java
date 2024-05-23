@@ -94,8 +94,69 @@ public class DeveloperActions {
 	  }
 
    
-	 @PostMapping("/CustomerEntry")
-	    public ResponseEntity<?> saveCustomerEntry(@RequestBody CustomerLeads customerLeads) {
+	 @PostMapping("/CustomerDownloads")
+	    public ResponseEntity<?> saveCustomerDownloads(@RequestBody Customer_downloads customerdownloads) {
+	        try {
+	            
+
+	            Customer_downloads custDown = new Customer_downloads();
+	            custDown.setName(customerdownloads.getName());
+	            custDown.setEmail(customerdownloads.getEmail());
+	            custDown.setCountryCode(customerdownloads.getCountryCode());
+	            custDown.setPhone(customerdownloads.getPhone());
+	            custDown.setDescription(customerdownloads.getDescription());
+	            custDown.setVersion(customerdownloads.getVersion());
+	            custDown.setCourseCount(customerdownloads.getCourseCount());
+	            custDown.setTrainerCount(customerdownloads.getTrainerCount());
+	            custDown.setStudentCount(customerdownloads.getStudentCount());
+
+	            customerdownloadRepo.save(custDown);
+
+	            return ResponseEntity.ok().body("Saved Successfully");
+
+	        } catch (Exception e) {
+	            // Log any other exceptions for debugging purposes
+	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            // Return an internal server error response
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        }
+	    }
+
+	 @GetMapping("/getCustomerDownloads")
+	    public ResponseEntity<List< Customer_downloads>> getCustomerdownloads() {
+	        try {
+	            List< Customer_downloads> customerdownloads = customerdownloadRepo.findAll();
+	            return ResponseEntity.ok(customerdownloads);
+	        } catch (Exception e) {
+	            // Log any other exceptions for debugging purposes
+	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            // Return an internal server error response
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        }
+	    }
+	 
+	
+	 @DeleteMapping("/Customerdownload")
+	    public ResponseEntity<?> deleteCustomerdownload(@RequestParam("id") Long id) {
+	        try {
+	            if (customerdownloadRepo.existsById(id)) {
+	            	customerdownloadRepo.deleteById(id);
+	                return ResponseEntity.ok().body("Deleted Successfully");
+	            } else {
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found");
+	            }
+	        } catch (Exception e) {
+	            // Log any other exceptions for debugging purposes
+	            e.printStackTrace(); // You can replace this with a logging framework like Log4j
+	            // Return an internal server error response
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        }
+	    }
+	 
+	 //------------------CustomerLeads---------------------
+
+	 @PostMapping("/CustomerLeads")
+	    public ResponseEntity<?> saveCustomerleads(@RequestBody CustomerLeads customerLeads) {
 	        try {
 	            CustomerLeads custLead = new CustomerLeads();
 	            custLead.setName(customerLeads.getName());
@@ -111,19 +172,7 @@ public class DeveloperActions {
 	            custLead.setLicenseValidity(customerLeads.getLicenseValidity());
 	            custLead.setIsLicenseExpired(customerLeads.getIsLicenseExpired());
 
-	            Customer_downloads custDown = new Customer_downloads();
-	            custDown.setName(customerLeads.getName());
-	            custDown.setEmail(customerLeads.getEmail());
-	            custDown.setCountryCode(customerLeads.getCountryCode());
-	            custDown.setPhone(customerLeads.getPhone());
-	            custDown.setDescription(customerLeads.getDescription());
-	            custDown.setVersion(customerLeads.getVersion());
-	            custDown.setCourseCount(customerLeads.getCourseCount());
-	            custDown.setTrainerCount(customerLeads.getTrainerCount());
-	            custDown.setStudentCount(customerLeads.getStudentCount());
-
 	            customerleadRepo.save(custLead);
-	            customerdownloadRepo.save(custDown);
 
 	            return ResponseEntity.ok().body("Saved Successfully");
 
@@ -134,8 +183,9 @@ public class DeveloperActions {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
-	 @GetMapping("/CustomerEntries")
-	    public ResponseEntity<List<CustomerLeads>> getCustomerEntries() {
+	 
+	 @GetMapping("/CustomerLeads")
+	    public ResponseEntity<List<CustomerLeads>> getCustomerleads() {
 	        try {
 	            List<CustomerLeads> customerLeads = customerleadRepo.findAll();
 	            return ResponseEntity.ok(customerLeads);
@@ -147,8 +197,8 @@ public class DeveloperActions {
 	        }
 	    }
 	 
-	 @DeleteMapping("/CustomerEntry")
-	    public ResponseEntity<?> deleteCustomerEntry(@RequestParam("id") Long id) {
+	 @DeleteMapping("/Customerlead")
+	    public ResponseEntity<?> deleteCustomerlead(@RequestParam("id") Long id) {
 	        try {
 	            if (customerleadRepo.existsById(id)) {
 	                customerleadRepo.deleteById(id);
@@ -163,7 +213,5 @@ public class DeveloperActions {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
-
-
 }
 
