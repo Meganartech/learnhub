@@ -21,11 +21,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 @RestController
 @RequestMapping("/Developer")
 public class DeveloperActions {
-	 @Autowired
-		private MuserRepositories muserrepositories;
-		
-	    @Autowired
-	    private MusertestactivityRepo activityrepo;
+	
 	    
 	    @Autowired
 	    private CustomerdownloadRepo customerdownloadRepo;
@@ -33,67 +29,7 @@ public class DeveloperActions {
 	    @Autowired
 	    private CustomerLeadsRepo customerleadRepo;
 	    
-	 @GetMapping("/Delete/Trainer/{email}")
-	 public ResponseEntity<?> deleteTrainer(@PathVariable String email) {
-	      try {
-	          // Validate the token
-	         
-	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
-	              if (existingUser.isPresent()) {
-	                  Muser user = existingUser.get();
-	                  if ("TRAINER".equals(user.getRole().getRoleName())) {
-	                      // Clear user's courses and delete the user
-	                	  user.getAllotedCourses().clear();
-	                      user.getCourses().clear();
-	                      muserrepositories.delete(user);
-	                      return ResponseEntity.ok().body("{\"message\": \"Deleted Successfully\"}");
-	                  } 
-	                  return ResponseEntity.notFound().build();
-	              } else {
-	                  // Return not found if the user with the given email does not exist
-	                  return ResponseEntity.notFound().build();
-	              }
-	          
-	      } catch (Exception e) {
-	          // Log any other exceptions for debugging purposes
-	          e.printStackTrace(); // You can replace this with logging framework like Log4j
-	          // Return an internal server error response
-	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	      }
-	  }
-	  
-
-	 @GetMapping("/Delete/User/{email}") 
-	  public ResponseEntity<?> deleteStudent(@PathVariable String email) {
-	      try {
-	         	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
-	              if (existingUser.isPresent()) {
-	                  Muser user = existingUser.get();
-	                  if ("USER".equals(user.getRole().getRoleName())) {
-	                      // Clear user's courses and delete the user
-	                      user.getCourses().clear();
-	                      activityrepo.deleteByUser(user);
-	                      muserrepositories.delete(user);
-	                      return ResponseEntity.ok().body("{\"message\": \"Deleted Successfully\"}");
-	                  } 
-
-		                  // Return not found if the user with the given email does not exist
-		                  return ResponseEntity.notFound().build();
-	                  
-	              } else {
-	                  // Return not found if the user with the given email does not exist
-	                  return ResponseEntity.notFound().build();
-	              }
-	          
-	      } catch (Exception e) {
-	          // Log any other exceptions for debugging purposes
-	          e.printStackTrace(); // You can replace this with logging framework like Log4j
-	          // Return an internal server error response
-	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	      }
-	  }
-
-   
+	   
 	 @PostMapping("/CustomerDownloads")
 	    public ResponseEntity<?> saveCustomerDownloads(@RequestBody Customer_downloads customerdownloads) {
 	        try {
