@@ -344,8 +344,8 @@ public class FrontController {
            	}
            		
            		@PostMapping("/api/v2/uploadfile")
-    		    public ResponseEntity<License> upload(@RequestParam("audioFile") MultipartFile File){
-           			return licence.upload(File);
+    		    public ResponseEntity<License> upload(@RequestParam("audioFile") MultipartFile File,@RequestParam("lastModifiedDate") String lastModifiedDate){
+           			return licence.upload(File,lastModifiedDate);
            		}
            	
  //------------------------SettingsController------------------------

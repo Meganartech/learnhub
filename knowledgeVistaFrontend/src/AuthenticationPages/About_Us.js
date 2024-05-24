@@ -6,6 +6,8 @@ const About_Us = () => {
   const [audioFile, setAudioFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [isDataList, setIsDataList] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [lastModifiedDate, setLastModifiedDate] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +29,12 @@ const About_Us = () => {
   
   }, []); 
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    setLastModifiedDate(file ? new Date(file.lastModified).toLocaleString() : null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -34,6 +42,7 @@ const About_Us = () => {
       const formData = new FormData();
       const audioData = {
         audioFile: audioFile,
+        lastModifiedDate: lastModifiedDate,
       };
       for (const key in audioData) {
         formData.append(key, audioData[key]);
@@ -167,7 +176,11 @@ const About_Us = () => {
                           className=''
                           placeholder='Choose  File'
                           name='audioFile'
-                          onChange={(e) => setAudioFile(e.target.files[0])}
+                          onChange=
+                          {(e) => {
+                            setAudioFile(e.target.files[0]);
+                            handleFileChange(e);
+                          }}
                           style={{ padding: "0px", width: "20rem" }}
                         />
                       </div>
