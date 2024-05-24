@@ -456,7 +456,11 @@ public class FrontController {
     		}
            		
  //--------------------------Authentication Controller------------------
-
+           
+    		@PostMapping("/refreshtoken")
+    		public ResponseEntity<?> Refresh(@RequestHeader("Authorization")String token){
+    			return authcontrol.refreshtoken(token);
+    		}
     	    @PostMapping("/logout")
     	    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
     	    	return authcontrol.logout(token);

@@ -5,12 +5,10 @@
 // });
 // export default baseUrl;
 
-// const baseUrl = 'http://localhost:8080/eLearning';
+// const baseUrl = 'http://localhost:8080/eLearning/Elearn';
 // export default baseUrl;
 
-const baseUrl = 'http://localhost:8080';
+const baseUrl = 'http://localhost:8080/Elearn';
 export default baseUrl;
 
 
-// const baseUrl = 'http://localhost:8080/custom';
-// export default baseUrl;

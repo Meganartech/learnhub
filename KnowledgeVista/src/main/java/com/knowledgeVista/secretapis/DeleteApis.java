@@ -1,4 +1,4 @@
-package com.knowledgeVista.Course.Controller;
+package com.knowledgeVista.secretapis;
 
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 
 @RestController
-@RequestMapping("/Delete")
+@RequestMapping("/secret")
 public class DeleteApis {
 	 @Autowired
 		private MuserRepositories muserrepositories;

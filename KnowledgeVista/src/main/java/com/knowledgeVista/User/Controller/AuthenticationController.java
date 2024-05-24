@@ -51,6 +51,16 @@ public class AuthenticationController {
 	        // Respond with a success message
 	        return ResponseEntity.ok().body("Logged out successfully");
 	    }
+	    public ResponseEntity<?>refreshtoken(String token){
+	    	try {
+	    	String newtoken=jwtUtil.refreshToken(token);
+	    	return ResponseEntity.ok().body(newtoken);
+	    	
+	    	}catch(Exception e) {
+		         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	}
+	    }
+	    
 	    public ResponseEntity<?> login( Map<String, String> loginRequest) {
 	        String username = loginRequest.get("username");
 	        String password = loginRequest.get("password");

@@ -108,7 +108,7 @@
 	</dependencies>
 
 <build>
-    <finalName>eLearning</finalName>
+	  <finalName>eLearning</finalName>
     <plugins>
         <plugin>
             <groupId>org.springframework.boot</groupId>

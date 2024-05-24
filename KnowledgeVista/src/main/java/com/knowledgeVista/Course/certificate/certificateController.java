@@ -51,8 +51,7 @@ public class certificateController {
 	    try {
 	    	
 	    	 if (!jwtUtil.validateToken(token)) {
-		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-		                    .body("{\"message\": \"Invalid token\"}");
+	    		 return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).build();
 	            
 	         }
 

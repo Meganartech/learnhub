@@ -48,6 +48,7 @@ import Dashboard from "./AuthenticationPages/Dashboard.js";
 import About_Us from "./AuthenticationPages/About_Us";
 import baseUrl from "./api/utils.js";
 import axios from "axios";
+import RefreshToken from "./AuthenticationPages/RefreshToken.js";
 
 
 function App() {
@@ -137,6 +138,7 @@ function App() {
 
            <Route path="/License" element={<License/>}/>
           <Route path="/" element={<StudentRegister/>}/>
+          <Route path="/refresh" element={<PrivateRoute authenticationRequired={true}><RefreshToken/></PrivateRoute>}/>
           <Route path="/unauthorized" element={<Unauthorized/>}/>
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/login" element={<Login />} />
