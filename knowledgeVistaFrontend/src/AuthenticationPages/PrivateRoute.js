@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,onlyuser, onlytrainer,children }) => {
     
      const isAuthenticated = sessionStorage.getItem('token') !== null;
-     const userRole = sessionStorage.getItem('role'); // Assuming role is stored in sessionStorage
+     const userRole = sessionStorage.getItem('role'); 
     
     // Check if authentication is required and user is authenticated
     if (authenticationRequired && !isAuthenticated) {
@@ -29,7 +29,7 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
 
 
 
-    if(onlyuser&& (userRole ==="ADMIN" || userRole==="TRAINER")){
+    if(onlyuser && (userRole ==="ADMIN" || userRole==="TRAINER")){
         
         return <Navigate to="/unauthorized" />;
 

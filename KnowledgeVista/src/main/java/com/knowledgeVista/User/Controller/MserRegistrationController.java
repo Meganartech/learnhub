@@ -1,4 +1,5 @@
 package com.knowledgeVista.User.Controller;
+import com.knowledgeVista.DownloadManagement.Customer_downloads;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserRoles;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -89,7 +91,20 @@ public class MserRegistrationController {
 	            user.setPhone(phone);
 	            user.setDob(dob);
 	            user.setSkills(skills);
-	            user.setRole(savedroleadmin);
+	            user.setRole(savedroleadmin);            
+  
+//	            RestTemplate restTemplate = new RestTemplate();
+//
+//	            String apiUrl = "http://localhost:8080/Developer/CustomerDownloads";
+//
+//	            Customer_downloads custDown = new Customer_downloads();
+//	            custDown.setName(user.getUsername());
+//	            custDown.setEmail(user.getEmail());
+//	            custDown.setCountryCode("91");
+//	            custDown.setPhone(user.getPhone());
+//	            
+//	            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, custDown, String.class);
+                
 	            try {
 	                user.setProfile(ImageUtils.compressImage(profile.getBytes()));
 	            } catch (IOException e) {
