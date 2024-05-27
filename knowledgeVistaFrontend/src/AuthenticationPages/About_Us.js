@@ -48,7 +48,13 @@ const About_Us = () => {
         formData.append(key, audioData[key]);
       }
   
-      const response = await axios.post(`${baseUrl}/api/v2/uploadfile`, formData);
+        const token=sessionStorage.getItem("token");
+    
+      const response=await axios.post(`${baseUrl}/api/v2/uploadfile`,formData, {
+       headers: {
+           Authorization: token,
+       }
+   });
   
       if (!response.status === 200) {
         throw new Error('Failed to upload audio file');

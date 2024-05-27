@@ -1,22 +1,21 @@
 package com.knowledgeVista.DownloadManagement;
 
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
-import com.knowledgeVista.User.Muser;
-import com.knowledgeVista.User.Repository.MuserRepositories;
 import java.util.List;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/Developer")
@@ -57,6 +56,7 @@ public class DeveloperActions {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
+	    
 
 	 @GetMapping("/getCustomerDownloads")
 	    public ResponseEntity<List< Customer_downloads>> getCustomerdownloads() {
@@ -107,6 +107,7 @@ public class DeveloperActions {
 	            custLead.setLicenseType(customerLeads.getLicenseType());
 	            custLead.setLicenseValidity(customerLeads.getLicenseValidity());
 	            custLead.setIsLicenseExpired(customerLeads.getIsLicenseExpired());
+                   custLead.setLicenseKey(customerLeads.getLicenseKey());
 
 	            customerleadRepo.save(custLead);
 
@@ -119,6 +120,47 @@ public class DeveloperActions {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
+	 
+	 @PutMapping("/CustomerLeads/{email}")
+	 public ResponseEntity<?> updateCustomerLeadFully(@PathVariable String email, @RequestBody CustomerLeads customerLeads) {
+	      try {
+	         // Check if customer lead exists
+	        Optional< CustomerLeads>opexistingLead = customerleadRepo.findByEmail(email);
+	        System.out.println(opexistingLead.get());
+	        if(opexistingLead.isPresent()) {
+	        	CustomerLeads existingLead=opexistingLead.get();
+	        	 // Update only the fields with values provided in the request body
+	            if (customerLeads.getName() != null) existingLead.setName(customerLeads.getName());
+	            if (customerLeads.getEmail() != null) existingLead.setEmail(customerLeads.getEmail());
+	            if (customerLeads.getCountryCode() != null) existingLead.setCountryCode(customerLeads.getCountryCode());
+	            if (customerLeads.getPhone() != null) existingLead.setPhone(customerLeads.getPhone());
+	            if (customerLeads.getDescription() != null) existingLead.setDescription(customerLeads.getDescription());
+	            if (customerLeads.getVersion() != null) existingLead.setVersion(customerLeads.getVersion());
+	            if (customerLeads.getCourseCount() != null) existingLead.setCourseCount(customerLeads.getCourseCount());
+	            if (customerLeads.getTrainerCount() != null) existingLead.setTrainerCount(customerLeads.getTrainerCount());
+	            if (customerLeads.getStudentCount() != null) existingLead.setStudentCount(customerLeads.getStudentCount());
+	            if (customerLeads.getLicenseType() != null) existingLead.setLicenseType(customerLeads.getLicenseType());
+	            if (customerLeads.getLicenseValidity() != null) existingLead.setLicenseValidity(customerLeads.getLicenseValidity());
+	            if (customerLeads.getIsLicenseExpired() != null) existingLead.setIsLicenseExpired(customerLeads.getIsLicenseExpired());
+	            if (customerLeads.getLicenseKey() != null) existingLead.setLicenseKey(customerLeads.getLicenseKey());
+
+
+	         customerleadRepo.save(existingLead);
+	         System.out.println(existingLead);
+	        }else{
+	        	System.out.println("not a valid user");
+	        }
+
+	         return ResponseEntity.ok().body("Partially Updated");
+
+	     } catch (Exception e) {
+	         // Log any other exceptions for debugging purposes
+	         e.printStackTrace();
+	         // Return an internal server error response
+	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	     }
+	 }	 
+	
 	 
 	 @GetMapping("/CustomerLeads")
 	    public ResponseEntity<List<CustomerLeads>> getCustomerleads() {

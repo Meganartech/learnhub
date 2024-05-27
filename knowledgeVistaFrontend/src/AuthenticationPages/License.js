@@ -82,9 +82,10 @@ const License = () => {
         formData.append(key, audioData[key]);
       }
   
-     
-      const response = await axios.post(`${baseUrl}/api/v2/uploadfile`, formData);
-      if (!response.ok) {
+    
+     const response=await axios.post(`${baseUrl}/api/v2/uploadfile`,formData);
+      
+      if (!response.status===200) {
         throw new Error('Failed to upload audio file');
       }
       const data = response.data;

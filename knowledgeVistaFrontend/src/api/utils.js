@@ -8,7 +8,7 @@
 // const baseUrl = 'http://localhost:8080/eLearning/Elearn';
 // export default baseUrl;
 
-const baseUrl = 'http://localhost:8080/Elearn';
+const baseUrl = 'http://localhost:8080';
 export default baseUrl;
 
 

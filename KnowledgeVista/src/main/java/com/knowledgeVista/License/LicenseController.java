@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -40,7 +41,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.DownloadManagement.CustomerLeads;
 import com.knowledgeVista.FileService.LicenceService;
+import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -48,7 +51,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @RestController
 public class LicenseController {
-	
+	 @Autowired
+	 private JwtUtil jwtUtil;
 	
 	 @Autowired
 	    private licenseRepository licenseRepository;
@@ -363,9 +367,14 @@ public class LicenseController {
 //		 
 //			-------------------------------------------licensefile--------------------------------------------
 		
-		    public ResponseEntity<License> upload( MultipartFile File,String lastModifiedDate)
+		    public ResponseEntity<License> upload( MultipartFile File,String lastModifiedDate,String token)
 		      {
-DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		    	if (!jwtUtil.validateToken(token)) {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		         }
+
+
+	                      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		        
 		        try {
 		            // Save audio with file using the service 
@@ -422,6 +431,21 @@ DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		                
 		                
 		                this.licensedetails(productName, companyName, key, validity,course,type,file);
+		                
+		                RestTemplate restTemplate = new RestTemplate();
+		                String email = jwtUtil.getUsernameFromToken(token);
+		                String apiurl3 = "http://localhost:8080/Developer/CustomerLeads/" + email;
+
+
+		                // Create a new CustomerLeads object with updated values
+		                CustomerLeads updateData = new CustomerLeads();
+		                updateData.setLicenseKey(key);
+		                updateData.setLicenseType(type);
+		                // Set other fields with updated values
+
+		                // Perform the PUT request
+		                 restTemplate.put(apiurl3, updateData, String.class);
+
 		                System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		                System.out.println("product_name: " + productName + " company_name: " + companyName + " version: " + version + " key: " + key + " type: " + type + " validity: " + validity + " Video: " + course + " lastModifiedDate: " + lastModifiedDate);
 		                System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");

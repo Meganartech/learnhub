@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Customer_Leads")
+@Table
 @Getter
 @Setter
 @NoArgsConstructor
@@ -47,5 +47,15 @@ public class CustomerLeads {
     private Boolean isFirst;
     private Integer licenseValidity;
     private Boolean isLicenseExpired;
+    @Column(length=200)
+    private String LicenseKey;
+	@Override
+	public String toString() {
+		return "CustomerLeads [id=" + id + ", name=" + name + ", email=" + email + ", countryCode=" + countryCode
+				+ ", phone=" + phone + ", description=" + description + ", version=" + version + ", courseCount="
+				+ courseCount + ", trainerCount=" + trainerCount + ", studentCount=" + studentCount + ", licenseType="
+				+ licenseType + ", isFirst=" + isFirst + ", licenseValidity=" + licenseValidity + ", isLicenseExpired="
+				+ isLicenseExpired + ", LicenseKey=" + LicenseKey + "]";
+	}
 }
 
