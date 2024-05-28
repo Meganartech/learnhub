@@ -134,7 +134,7 @@ public class LicenseController {
 		            	  EndDate="";
 		              }
 		              
-		              data1.put("Contact",Contact);
+		                data1.put("Contact",Contact);
 	    		        data1.put("Email", Email);
 	    		        data1.put("ProductName",ProductName);
 	    		        data1.put("CompanyName", CompanyName);

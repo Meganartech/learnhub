@@ -22,6 +22,21 @@ const StudentRegister = () => {
     countryCode:"+91",
     isActive: true,
   });
+  const countrycodelist = [
+    '+1', '+7', '+20', '+27', '+30', '+31', '+32', '+33', '+34', '+36', '+39',
+    '+40', '+41', '+43', '+44', '+45', '+46', '+47', '+48', '+49', '+51', '+52',
+    '+53', '+54', '+55', '+56', '+57', '+60', '+61', '+62', '+63', '+64', '+65',
+    '+66', '+67', '+68', '+69', '+71', '+81', '+82', '+84', '+86', '+90', '+91',
+    '+92', '+93', '+94', '+95', '+96', '+98', '+850', '+852', '+853', '+855',
+    '+856', '+880', '+886', '+960', '+961', '+962', '+963', '+964', '+965', '+966',
+    '+967', '+968', '+970', '+971', '+972', '+973', '+974', '+975', '+976', '+977',
+    '+992', '+993', '+994', '+995', '+996', '+998'
+  ];
+
+
+
+
+
 
   const [errors, setErrors] = useState({
     username: '',
@@ -84,10 +99,10 @@ const StudentRegister = () => {
        /^\d+$/.test(value) ? '' : 'Please enter a valid phone number (digits only)';
 
         break;
-      case 'countryCode':
-        error=value.startsWith('+') ?
-        (value.length > 5 ? 'Enter a valid country code (max 5 digits)' : '') :
-        'Country code must start with +';
+      // case 'countryCode':
+      //   error=value.startsWith('+') ?
+      //   (value.length > 5 ? 'Enter a valid country code (max 5 digits)' : '') :
+      //   'Country code must start with +';
       default:
         break;
     }
@@ -231,8 +246,12 @@ const StudentRegister = () => {
                 />
     
           </div>
-
+             
+   
+   
+ 
           <div className='formgroup'>
+          
             <div className='inputgrp'>
               <label htmlFor='Name'> Name <span className="text-danger">*</span></label>
               <span>:</span>
@@ -352,20 +371,22 @@ const StudentRegister = () => {
               <label htmlFor='CountryCode'> Country Code<span className="text-danger">*</span></label>
               <span>:</span>
             <div>
+            <select
+        id="countryCode"
+        className={`form-control form-control-lg ${errors.countryCode && 'is-invalid'}`}
+        placeholder="countryCode"
+        name="countryCode"
+        value={formData.countryCode} // Set the initial value from formData
+        onChange={handleChange}
+        required
+      >
+        {countrycodelist.map((code) => (
+          <option key={code} value={code}>
+            {code}
+          </option>
+        ))}
+      </select> 
                 
-                <input
-                 type="text"
-                  id='countryCode'
-                  value={formData.countryCode}
-                  className={`form-control form-control-lg ${errors.countryCode && 'is-invalid'}`}
-                  onChange={handleChange}
-                  name="countryCode"
-                  placeholder="countryCode"
-                  required
-                />
-                <div className="invalid-feedback">
-                  {errors.countryCode}
-                </div>
                 </div>
                 </div>
             <div className='inputgrp mb-4'>
@@ -392,8 +413,10 @@ const StudentRegister = () => {
               </div>
             </div>
            </div>
-          </div>
+       
         </div>
+      </div>
+      
         <div className='btngrp'>
         <button className={`btn btn-primary `} onClick={handleSubmit}>Register</button>
 
@@ -403,9 +426,10 @@ const StudentRegister = () => {
             Already have an account? Login!
           </a>
         </div>
+        </div>
       </div>
       </div>
-    </div>
+   
   );
 };
 
