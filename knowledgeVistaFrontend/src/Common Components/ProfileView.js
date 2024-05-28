@@ -17,6 +17,8 @@ const ProfileView = () => {
     phone: "",
     skills: "",
     dob: "",
+    
+    countryCode:"",
     base64Image:null,
   });
   const [isEditing, setIsEditing] = useState(false); 
@@ -91,13 +93,18 @@ const ProfileView = () => {
         error = dobDate <= maxDate && dobDate >= minDate ? '' : 'Please enter a valid date of birth';
         break;
      
-      case 'phone':
-        error = /^\d{10}$/.test(value) ? '' : 'Please enter a valid phone number';
-        break;
-        
-
-      default:
-        break;
+        case 'phone':
+          error = value.length < 10 ? 'Phone number must be at least 10 digits' :
+         value.length > 15 ? 'Phone number cannot be longer than 15 digits' :
+         /^\d+$/.test(value) ? '' : 'Please enter a valid phone number (digits only)';
+  
+          break;
+        case 'countryCode':
+          error=value.startsWith('+') ?
+          (value.length > 5 ? 'Enter a valid country code (max 5 digits)' : '') :
+          'Country code must start with +';
+        default:
+          break;
     }
 
     setErrors(prevErrors => ({
@@ -151,6 +158,8 @@ const ProfileView = () => {
       formDataToSend.append("phone", userData.phone);
       formDataToSend.append("profile", userData.profile);
       formDataToSend.append("skills",userData.skills);
+      
+    formDataToSend.append("countryCode",userData.countryCode);
       formDataToSend.append("isActive", userData.isActive);
     
       try {
@@ -244,6 +253,14 @@ const ProfileView = () => {
               className='disabledbox'
               readOnly
               value={userData.skills}/>
+          </div>
+          <div className='inputgrp'>
+            <label>country code</label>
+            <span>:</span>
+            <input
+              className='disabledbox'
+              readOnly
+              value={userData.countryCode}/>
           </div>
           <div className='inputgrp'>
             <label>Phone</label>
@@ -369,6 +386,26 @@ const ProfileView = () => {
               {errors.skills}
             </div></div> 
           </div>
+          <div className='inputgrp '>
+              <label htmlFor='CountryCode'> Country Code<span className="text-danger">*</span></label>
+              <span>:</span>
+            <div>
+                
+                <input
+                 type="text"
+                  id='countryCode'
+                  value={userData.countryCode}
+                  className={`form-control form-control-lg ${errors.countryCode && 'is-invalid'}`}
+                  onChange={handleChange}
+                  name="countryCode"
+                  placeholder="countryCode"
+                  required
+                />
+                <div className="invalid-feedback">
+                  {errors.countryCode}
+                </div>
+                </div>
+                </div>
           <div className='inputgrp'>
             <label htmlFor='Phone'>Phone</label>
             <span>:</span>

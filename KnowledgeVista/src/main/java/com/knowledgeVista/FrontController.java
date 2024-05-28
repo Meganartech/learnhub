@@ -382,8 +382,9 @@ public class FrontController {
        	          @RequestParam("skills") String skills,
        	          @RequestParam("profile") MultipartFile profile,
        	          @RequestParam("isActive") Boolean isActive,
+                  @RequestParam("countryCode")String countryCode,
        	          @RequestHeader("Authorization") String token) {
-           		 return adduser.addTrainer(username, psw, email, dob, phone, skills, profile, isActive, token);
+           		 return adduser.addTrainer(username, psw, email, dob, phone, skills, profile, isActive,countryCode, token);
            	 }
            	 
            	@PostMapping("/admin/addStudent") 
@@ -396,8 +397,9 @@ public class FrontController {
       	          @RequestParam("skills") String skills,
       	          @RequestParam("profile") MultipartFile profile,
       	          @RequestParam("isActive") Boolean isActive,
+                  @RequestParam("countryCode")String countryCode,
       	          @RequestHeader("Authorization") String token) {
-           		return adduser.addStudent(username, psw, email, dob, phone, skills, profile, isActive, token);
+           		return adduser.addStudent(username, psw, email, dob, phone, skills, profile, isActive,countryCode ,token);
            	}
            	
 
@@ -496,9 +498,10 @@ public class FrontController {
     		     @RequestParam("skills") String skills,
     		     @RequestParam(value="profile", required=false) MultipartFile profile,
     		     @RequestParam("isActive") Boolean isActive,
+                 @RequestParam("countryCode")String countryCode,
     		     @RequestHeader("Authorization") String token
     		 ) {
-    	    	return edit.updateStudent(originalEmail, username, newEmail, dob, phone, skills, profile, isActive, token);
+    	    	return edit.updateStudent(originalEmail, username, newEmail, dob, phone, skills, profile, isActive ,countryCode,token);
     	    }
     	    
     	    
@@ -512,9 +515,10 @@ public class FrontController {
     		     @RequestParam("skills") String skills,
     		     @RequestParam(value="profile", required=false) MultipartFile profile,
     		     @RequestParam("isActive") Boolean isActive,
+                 @RequestParam("countryCode")String countryCode,
     		     @RequestHeader("Authorization") String token
     		 ) {
-    			 return edit.updateTrainer(originalEmail, username, newEmail, dob, phone, skills, profile, isActive, token);
+    			 return edit.updateTrainer(originalEmail, username, newEmail, dob, phone, skills, profile, isActive,countryCode, token);
     		 }
     		 
     		 @PatchMapping("/Edit/self")
@@ -526,9 +530,10 @@ public class FrontController {
     		     @RequestParam("skills") String skills,
     		     @RequestParam(value="profile", required=false) MultipartFile profile,
     		     @RequestParam("isActive") Boolean isActive,
-    		     @RequestHeader("Authorization") String token
+    		     @RequestHeader("Authorization") String token,
+                 @RequestParam("countryCode")String countryCode
     		 ) {
-    			 return edit.EditProfile(username, newEmail, dob, phone, skills, profile, isActive, token);
+    			 return edit.EditProfile(username, newEmail, dob, phone, skills, profile, isActive,countryCode, token);
     		 }
     		 @GetMapping("/Edit/profiledetails")
     		 public ResponseEntity<?> NameandProfile(
@@ -560,8 +565,9 @@ public class FrontController {
     			                                          @RequestParam("phone") String phone,
     			                                          @RequestParam("skills") String skills,
     			                                          @RequestParam("profile") MultipartFile profile,
-    			                                          @RequestParam("isActive") Boolean isActive) {
-    				return muserreg.registerStudent(username, psw, email, dob, phone, skills, profile, isActive);
+    			                                          @RequestParam("isActive") Boolean isActive,
+    			                                          @RequestParam("countryCode")String countryCode) {
+    				return muserreg.registerStudent(username, psw, email, dob, phone, skills, profile, isActive,countryCode);
     			}
 
     			@GetMapping("/student/users/{email}")

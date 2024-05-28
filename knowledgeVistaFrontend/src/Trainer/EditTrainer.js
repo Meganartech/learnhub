@@ -20,6 +20,7 @@ const EditTrainer = () => {
       skills:"",
       phone:"",
       profile: null,
+      countryCode:"+91",
       isActive: true,
     });
     const [errors, setErrors] = useState({
@@ -98,14 +99,18 @@ const EditTrainer = () => {
           error = dobDate <= maxDate && dobDate >= minDate ? '' : 'Please enter a valid date of birth';
           break;
        
-        case 'phone':
-          // This is a basic phone number validation, you can add more advanced validation if needed
-          error = /^\d{10}$/.test(value) ? '' : 'Please enter a valid phone number';
-          break;
-          
-  
-        default:
-          break;
+          case 'phone':
+        error = value.length < 10 ? 'Phone number must be at least 10 digits' :
+       value.length > 15 ? 'Phone number cannot be longer than 15 digits' :
+       /^\d+$/.test(value) ? '' : 'Please enter a valid phone number (digits only)';
+
+        break;
+          case 'countryCode':
+            error=value.startsWith('+') ?
+            (value.length > 5 ? 'Enter a valid country code (max 5 digits)' : '') :
+            'Country code must start with +';
+          default:
+            break;
       }
   
       setErrors(prevErrors => ({
@@ -158,6 +163,7 @@ const EditTrainer = () => {
         formDataToSend.append("isActive", formData.isActive);
         formDataToSend.append("profile", formData.profile);
         formDataToSend.append("skills",formData.skills);
+        formDataToSend.append("countryCode",formData.countryCode);
       
         try {
           const response = await axios.patch(`${baseUrl}/Edit/Trainer/${email}`,formDataToSend, {
@@ -333,7 +339,27 @@ const EditTrainer = () => {
             </div></div>
           </div>
 
-       
+          <div className='inputgrp '>
+              <label htmlFor='CountryCode'> Country Code<span className="text-danger">*</span></label>
+              <span>:</span>
+            <div>
+                
+                <input
+                 type="text"
+                  id='countryCode'
+                  value={formData.countryCode}
+                  className={`form-control form-control-lg ${errors.countryCode && 'is-invalid'}`}
+                  onChange={handleChange}
+                  name="countryCode"
+                  placeholder="countryCode"
+                  required
+                />
+                <div className="invalid-feedback">
+                  {errors.countryCode}
+                </div>
+                </div>
+                </div>
+                
           <div className='inputgrp '>
             <label htmlFor='Phone'> Phone<span className="text-danger">*</span></label>
             <span>:</span>

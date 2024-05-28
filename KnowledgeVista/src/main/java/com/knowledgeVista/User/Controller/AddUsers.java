@@ -39,11 +39,12 @@ public class AddUsers {
 //===========================================ADMIN ADDING TRAINER==========================================	
 	
 	  public ResponseEntity<?> addTrainer( String username, String psw,String email,
-	          LocalDate dob, String phone, String skills, MultipartFile profile, Boolean isActive, String token) {
+	          LocalDate dob, String phone, String skills, MultipartFile profile, Boolean isActive, String countryCode,String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
 	              System.out.println("Invalid Token");
+	             
 	              // If the token is not valid, return unauthorized status
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	          }
@@ -66,6 +67,7 @@ public class AddUsers {
 	                  trainer.setDob(dob);
 	                  trainer.setSkills(skills);
 	                  trainer.setRole(roletrainer);
+	                  trainer.setCountryCode(countryCode);
 	                  try {
 	                      trainer.setProfile(ImageUtils.compressImage(profile.getBytes()));
 	                  } catch (IOException e) {
@@ -94,7 +96,7 @@ public class AddUsers {
 	
 	  public ResponseEntity<?> addStudent(String username, String psw, String email,
 	          LocalDate dob,String phone, String skills,
-	           MultipartFile profile, Boolean isActive, String token) {
+	           MultipartFile profile, Boolean isActive,String countryCode, String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -120,7 +122,8 @@ public class AddUsers {
 	                  user.setPhone(phone);
 	                  user.setDob(dob);
 	                  user.setRole(roletrainer);
-	                  user.setSkills(skills);	                  
+	                  user.setSkills(skills);	
+	                  user.setCountryCode(countryCode);
 	                  try {
 	                     user.setProfile(ImageUtils.compressImage(profile.getBytes()));
 	                  } catch (IOException e) {

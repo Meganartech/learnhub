@@ -35,7 +35,8 @@ public class Muser {
 	    @ManyToOne
 	    @JoinColumn(name = "roleId")
 	    private MuserRoles role;
-	    
+	    @Column( columnDefinition = "varchar(10)")
+	    private String countryCode;
 	    @ManyToMany
 	    @JoinTable(
 	        name = "user_allotedCourse",

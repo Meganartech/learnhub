@@ -16,7 +16,8 @@ const StudentProfile = () => {
        phone:"",
        skills:"",
        dob:"",
-       role:{
+       countryCode:"",
+             role:{
         roleName:"",
         roleId:""
        }
@@ -96,6 +97,11 @@ const StudentProfile = () => {
           <label htmlFor='Phone'> Phone</label>
           <span>:</span>
           <label>{userData.phone}</label>
+        </div>
+        <div className='inputgrp'>
+          <label htmlFor='countrycode'> country code</label>
+          <span>:</span>
+          <label>{userData.countryCode}</label>
         </div>
         <div className='inputgrp'>
           <label htmlFor='role'>RoleName</label>

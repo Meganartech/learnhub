@@ -431,20 +431,19 @@ public class LicenseController {
 		                
 		                
 		                this.licensedetails(productName, companyName, key, validity,course,type,file);
+//---------------------------------------CustomerLeads call-----------------------
 		                
 		                RestTemplate restTemplate = new RestTemplate();
 		                String email = jwtUtil.getUsernameFromToken(token);
 		                String apiurl3 = "http://localhost:8080/Developer/CustomerLeads/" + email;
-
-
-		                // Create a new CustomerLeads object with updated values
 		                CustomerLeads updateData = new CustomerLeads();
 		                updateData.setLicenseKey(key);
 		                updateData.setLicenseType(type);
-		                // Set other fields with updated values
-
-		                // Perform the PUT request
-		                 restTemplate.put(apiurl3, updateData, String.class);
+		                updateData.setVersion(version);
+		                
+		                restTemplate.put(apiurl3, updateData, String.class);
+//----------------------------------------CustomerLeads---------------------------
+		                
 
 		                System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		                System.out.println("product_name: " + productName + " company_name: " + companyName + " version: " + version + " key: " + key + " type: " + type + " validity: " + validity + " Video: " + course + " lastModifiedDate: " + lastModifiedDate);

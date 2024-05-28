@@ -31,8 +31,9 @@ public class MserRegistrationController {
 	
 
 	public ResponseEntity<?> registerStudent( String username, String psw, String email, LocalDate dob,
-	                                         String phone, String skills, MultipartFile profile, Boolean isActive) {
+	                                         String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode) {
 	    try {
+	    	 countryCode = countryCode != null ? countryCode : "+91";
 	        long userCount = muserrepositories.count();
 	        Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	        if (userCount > 0) {
@@ -49,6 +50,7 @@ public class MserRegistrationController {
 	                user.setDob(dob);
 	                user.setSkills(skills);
 	                user.setRole(roleUser);
+	                user.setCountryCode(countryCode);
 	                try {
 	                    user.setProfile(ImageUtils.compressImage(profile.getBytes()));
 	                } catch (IOException e) {
@@ -83,8 +85,17 @@ public class MserRegistrationController {
 	            user.setPhone(phone);
 	            user.setDob(dob);
 	            user.setSkills(skills);
+	            user.setCountryCode(countryCode);	   
 	            user.setRole(savedroleadmin);     
 	            
+	                            
+	            try {
+	                user.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
+	            }
+	            muserrepositories.save(user);
 	            RestTemplate restTemplate = new RestTemplate();
 
 	            String apiUrl = "http://localhost:8080/Developer/CustomerDownloads";
@@ -93,26 +104,19 @@ public class MserRegistrationController {
 	            Customer_downloads custDown = new Customer_downloads();
 	            custDown.setName(user.getUsername());
 	            custDown.setEmail(user.getEmail());
-	            custDown.setCountryCode("+91");
+	            custDown.setCountryCode(user.getCountryCode());
 	            custDown.setPhone(user.getPhone());
 	            
 	            CustomerLeads custlead=new CustomerLeads();
 	            custlead.setName(user.getUsername());
 	            custlead.setEmail(user.getEmail());
-	            custlead.setCountryCode("+91");
+	            custlead.setCountryCode(user.getCountryCode());
 	            custlead.setPhone(user.getPhone());
 	            
 	            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, custDown, String.class);
 
 	            ResponseEntity<String> response2 = restTemplate.postForEntity(apiurl2, custlead, String.class);
-                
-	            try {
-	                user.setProfile(ImageUtils.compressImage(profile.getBytes()));
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
-	            }
-	            muserrepositories.save(user);
+
 	        }
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	    } catch (Exception e) {

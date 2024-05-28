@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const About_Us = () => {
+  
+  const MySwal = withReactContent(Swal);
   const [audioFile, setAudioFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [isDataList, setIsDataList] = useState(null);
@@ -56,20 +60,30 @@ const About_Us = () => {
        }
    });
   
-      if (!response.status === 200) {
-        throw new Error('Failed to upload audio file');
+      if (response.status === 200) {
+        MySwal.fire({
+          title: "Licence Updated!",
+          text: "Licence Have been updated successfully!",
+          icon: "success",
+          confirmButtonText: "Go to Login",
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = "/login";
+          }
+        });
       }
-  
       const data = response.data;
-      console.log('Upload successful:', data);
     } catch (error) {
-     
-        console.error('Error uploading audio:', error);
+      MySwal.fire({
+        title: "Error!",
+        text: error.response.data.message,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
       
     }
   
     setAudioFile(null);
-    window.location.href = "/login";
   };
 
 
@@ -181,6 +195,7 @@ const About_Us = () => {
                           type='file'
                           className=''
                           placeholder='Choose  File'
+                          accept=".xml"
                           name='audioFile'
                           onChange=
                           {(e) => {

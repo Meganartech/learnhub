@@ -35,7 +35,7 @@ public class Edituser {
 	 private JwtUtil jwtUtil;
 	
 	 public ResponseEntity<?> updateStudent( String originalEmail, String username, String newEmail, LocalDate dob,
-	     String phone, String skills,MultipartFile profile, Boolean isActive, String token
+	     String phone, String skills,MultipartFile profile, Boolean isActive,String countryCode, String token
 	 ) {
 	     try {
 	         // Validate the token
@@ -85,6 +85,7 @@ public class Edituser {
 	         student.setPhone(phone);
 	         student.setSkills(skills);
 	         student.setIsActive(isActive);
+	         student.setCountryCode(countryCode);
 
 	         // Compress and set profile image
 	         if (profile != null && !profile.isEmpty()) {
@@ -110,7 +111,7 @@ public class Edituser {
 	 
 	 public ResponseEntity<?> updateTrainer( String originalEmail, String username,
 			 String newEmail, LocalDate dob,String phone,String skills,
-	      MultipartFile profile, Boolean isActive, String token
+	      MultipartFile profile, Boolean isActive,String countryCode, String token
 	 ) {
 	     try {
 	         // Validate the token
@@ -160,6 +161,7 @@ public class Edituser {
 	         student.setPhone(phone);
 	         student.setSkills(skills);
 	         student.setIsActive(isActive);
+	         student.setCountryCode(countryCode);
 
 	         // Compress and set profile image
 	         if (profile != null && !profile.isEmpty()) {
@@ -184,7 +186,7 @@ public class Edituser {
 	 
 	 
 	 public ResponseEntity<?> EditProfile( String username, String newEmail, LocalDate dob, String phone,
-	     String skills, MultipartFile profile, Boolean isActive, String token
+	     String skills, MultipartFile profile, Boolean isActive,String countryCode ,String token
 	 ) {
 	     try {
 	         // Validate the token
@@ -220,6 +222,7 @@ public class Edituser {
 	         student.setPhone(phone);
 	         student.setSkills(skills);
 	         student.setIsActive(isActive);
+	         student.setCountryCode(countryCode);
 
 	         // Compress and set profile image
 	         if (profile != null && !profile.isEmpty()) {
