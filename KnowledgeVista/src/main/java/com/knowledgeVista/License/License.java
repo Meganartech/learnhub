@@ -32,6 +32,11 @@ public class License {
     @Column(name="course")
     private String course ;
     
+    @Column(name="students")
+    private String students ;
+    
+    @Column(name="trainer")
+    private String trainer ;
     
     @Column(name="type")
     private String type ;
@@ -66,15 +71,34 @@ public class License {
 		LicenseFile = licenseFile;
 	}
 	
+	public String getStudents() {
+		return students;
+	}
+
+	public void setStudents(String students) {
+		this.students = students;
+	}
+
+	public String getTrainer() {
+		return trainer;
+	}
+
+	public void setTrainer(String trainer) {
+		this.trainer = trainer;
+	}
+
 	
-	public License(long id, String company_name, String product_name, String key, String course, String type,
-			Date start_date, Date end_date, String filename, MultipartFile licenseFile) {
+
+	public License(long id, String company_name, String product_name, String key, String course, String students,
+			String trainer, String type, Date start_date, Date end_date, String filename, MultipartFile licenseFile) {
 		super();
 		this.id = id;
 		this.company_name = company_name;
 		this.product_name = product_name;
 		this.key = key;
 		this.course = course;
+		this.students = students;
+		this.trainer = trainer;
 		this.type = type;
 		this.start_date = start_date;
 		this.end_date = end_date;
