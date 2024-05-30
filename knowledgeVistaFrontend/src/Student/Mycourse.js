@@ -42,7 +42,7 @@ const Mycourse = () => {
     <ul className={styles.maincontainer}>
         {courses.length === 0 ? (
             <li>
-                 <div className='enroll'>
+                 <div className='enroll'  style={{marginLeft:"400px",marginTop:"150px"}}>
                 <h3 className='mt-4'>No courses Enrolled </h3>
                 <Link to="/dashboard/course" className='btn btn-primary'>Enroll Now</Link></div>
             </li>

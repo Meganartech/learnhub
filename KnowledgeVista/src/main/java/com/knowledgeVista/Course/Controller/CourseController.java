@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import java.util.stream.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -311,8 +311,7 @@ public class CourseController {
 	      	        if("USER".equals(user.getRole().getRoleName())) {
 	      	        List<CourseDetail> courses = user.getCourses();
 	        	  
-	               List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
-	               .stream()
+	               List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll().stream()
 	                 .map(course -> {
 
 			               boolean isSelected = courses.contains(course);

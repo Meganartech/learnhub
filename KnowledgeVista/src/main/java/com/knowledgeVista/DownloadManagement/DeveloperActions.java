@@ -56,7 +56,41 @@ public class DeveloperActions {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
-	    
+	 @PutMapping("/CustomerDownload/{email}")
+	 public ResponseEntity<?> updateCustomerDownloadFully(@PathVariable String email, @RequestBody Customer_downloads customerDownload) {
+	      try {
+	         // Check if customer lead exists
+	        Optional< Customer_downloads>opexistingDownload = customerdownloadRepo.findByEmail(email);
+	        System.out.println(opexistingDownload.get());
+	        if(opexistingDownload.isPresent()) {
+	        	Customer_downloads existingdownloads=opexistingDownload.get();
+	        	 // Update only the fields with values provided in the request body
+	            if (customerDownload.getName() != null) existingdownloads.setName(customerDownload.getName());
+	            if (customerDownload.getEmail() != null) existingdownloads.setEmail(customerDownload.getEmail());
+	            if (customerDownload.getCountryCode() != null) existingdownloads.setCountryCode(customerDownload.getCountryCode());
+	            if (customerDownload.getPhone() != null) existingdownloads.setPhone(customerDownload.getPhone());
+	            if (customerDownload.getDescription() != null) existingdownloads.setDescription(customerDownload.getDescription());
+	            if (customerDownload.getVersion() != null) existingdownloads.setVersion(customerDownload.getVersion());
+	            if (customerDownload.getCourseCount() != null) existingdownloads.setCourseCount(customerDownload.getCourseCount());
+	            if (customerDownload.getTrainerCount() != null) existingdownloads.setTrainerCount(customerDownload.getTrainerCount());
+	            if (customerDownload.getStudentCount() != null) existingdownloads.setStudentCount(customerDownload.getStudentCount());
+	            
+
+	         customerdownloadRepo.save(existingdownloads);
+	         System.out.println(existingdownloads);
+	        }else{
+	        	System.out.println("not a valid user");
+	        }
+
+	         return ResponseEntity.ok().body("Partially Updated");
+
+	     } catch (Exception e) {
+	         // Log any other exceptions for debugging purposes
+	         e.printStackTrace();
+	         // Return an internal server error response
+	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	     }
+	 }	
 
 	 @GetMapping("/getCustomerDownloads")
 	    public ResponseEntity<List< Customer_downloads>> getCustomerdownloads() {
@@ -108,6 +142,8 @@ public class DeveloperActions {
 	            custLead.setLicenseValidity(customerLeads.getLicenseValidity());
 	            custLead.setIsLicenseExpired(customerLeads.getIsLicenseExpired());
                    custLead.setLicenseKey(customerLeads.getLicenseKey());
+                   custLead.setLicencestartdate(customerLeads.getLicencestartdate());
+                   custLead.setLicenceEndDate(customerLeads.getLicenceEndDate());
 
 	            customerleadRepo.save(custLead);
 
@@ -143,6 +179,8 @@ public class DeveloperActions {
 	            if (customerLeads.getLicenseValidity() != null) existingLead.setLicenseValidity(customerLeads.getLicenseValidity());
 	            if (customerLeads.getIsLicenseExpired() != null) existingLead.setIsLicenseExpired(customerLeads.getIsLicenseExpired());
 	            if (customerLeads.getLicenseKey() != null) existingLead.setLicenseKey(customerLeads.getLicenseKey());
+	            if(customerLeads.getLicencestartdate()!=null)existingLead.setLicencestartdate(customerLeads.getLicencestartdate());
+	            if(customerLeads.getLicenceEndDate()!=null)existingLead.setLicenceEndDate(customerLeads.getLicenceEndDate());
 
 
 	         customerleadRepo.save(existingLead);

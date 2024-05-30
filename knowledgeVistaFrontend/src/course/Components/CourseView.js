@@ -24,34 +24,34 @@ const CourseView = ({ filteredCourses }) => {
             }
         });
 
-        if (!response.status===200) {
-            const errorMessage =  response.data;
-           
-        } else {
             const order =  response.data;
-
             const options = {
                 order_id: order,  
                 handler: function (response) {
-                    if (response.error) {
-                      MySwal.fire({
-                        icon: 'error',
-                        title: ' Payment canceled or failed:', 
-                        text: response.error
-                    }); 
-                    } else {
+                  if (response.error ){
+                    MySwal.fire({
+                      icon: 'error',
+                      title: 'Payment Failed:',
+                      text: response.error,
+                    });
+                  } else {
+                    
                         sendPaymentIdToServer(response.razorpay_payment_id, order);
+
                     }
                 },
                 theme: {
                     color: "#3399cc"
-                }
+                },
             };
 
             var pay = new window.Razorpay(options);
+           
             pay.open();
-        }
+           
+        
     } catch (error) {
+
       MySwal.fire({
         icon: 'error',
         title: 'Error creating order:', 
@@ -109,7 +109,7 @@ if(amount===0){
           } 
       });
     
-      if (response.status==200) {
+      if (response.status===200) {
           const message = response.data;
           window.location.href = message;
       } 

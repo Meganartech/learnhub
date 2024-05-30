@@ -42,6 +42,7 @@ import org.xml.sax.SAXException;
 
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.DownloadManagement.CustomerLeads;
+import com.knowledgeVista.DownloadManagement.Customer_downloads;
 import com.knowledgeVista.FileService.LicenceService;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
@@ -419,6 +420,8 @@ public class LicenseController {
 		                Element keyName = (Element) person.getElementsByTagName("key").item(0);
 		                Element typeName = (Element) person.getElementsByTagName("type").item(0);
 		                Element courses = (Element) person.getElementsByTagName("course").item(0);
+		                Element trainer =(Element) person.getElementsByTagName("trainer").item(0);
+		                Element student=(Element) person.getElementsByTagName("student").item(0);
 		                Element validityDate = (Element) person.getElementsByTagName("validity").item(0);
 
 		                String productName = product.getTextContent();
@@ -427,11 +430,22 @@ public class LicenseController {
 		                String key = keyName.getTextContent();
 		                String type = typeName.getTextContent();
 		                String course = courses.getTextContent();
+		                String trainercount=trainer.getTextContent();
+		                String studentcount=student.getTextContent();
 		                String validity = validityDate.getTextContent();
 		                
 		                
 		                this.licensedetails(productName, companyName, key, validity,course,type,file);
 //---------------------------------------CustomerLeads call-----------------------
+
+		                Integer CourseCount = Integer.parseInt(course);
+		                Integer TrainerCount =Integer.parseInt(trainercount);
+		                Integer StudentCount=Integer.parseInt(studentcount);
+		                Integer validitydays=Integer.parseInt(validity);
+		                LocalDate startdate= LocalDate.now();
+		                System.out.println("startdate"+startdate);
+                        LocalDate endDate = startdate.plusDays(validitydays);
+                        System.out.println("endDate"+endDate);
 		                
 		                RestTemplate restTemplate = new RestTemplate();
 		                String email = jwtUtil.getUsernameFromToken(token);
@@ -440,8 +454,27 @@ public class LicenseController {
 		                updateData.setLicenseKey(key);
 		                updateData.setLicenseType(type);
 		                updateData.setVersion(version);
-		                
+		               updateData.setTrainerCount(TrainerCount);
+		               updateData.setStudentCount(StudentCount);
+		               updateData.setCourseCount(CourseCount);
+		               updateData.setLicenseValidity(validitydays);
+		               updateData.setLicencestartdate(startdate);
+		               updateData.setLicenceEndDate(endDate);
+		               updateData.setIsLicenseExpired(false);
 		                restTemplate.put(apiurl3, updateData, String.class);
+		                
+		                
+
+		                String apiurl4 = "http://localhost:8080/Developer/CustomerDownload/" + email;
+		                Customer_downloads custdown=new Customer_downloads();
+		                custdown.setCourseCount(CourseCount);
+		                custdown.setStudentCount(StudentCount);
+		                custdown.setTrainerCount(TrainerCount);
+		                custdown.setVersion(version);
+		                
+
+		                restTemplate.put(apiurl4, updateData, String.class);
+		                
 //----------------------------------------CustomerLeads---------------------------
 		                
 

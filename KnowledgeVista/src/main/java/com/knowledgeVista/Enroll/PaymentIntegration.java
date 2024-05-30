@@ -1,5 +1,6 @@
 package com.knowledgeVista.Enroll;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,8 +26,11 @@ import com.knowledgeVista.Settings.Paymentsettings;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.razorpay.Order;
+import com.razorpay.Payment;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+
+import ch.qos.logback.core.net.server.Client;
 
 @RestController
 @RequestMapping("/buyCourse")
@@ -71,6 +75,7 @@ public class PaymentIntegration {
          Long courseId = requestData.get("courseId");
          Long userId = requestData.get("userId");
          
+         
          Optional<CourseDetail> courseOptional = coursedetail.findById(courseId);
          Optional<Muser> optionalUser = muserRepository.findById(userId);
          
@@ -94,16 +99,19 @@ public class PaymentIntegration {
              orderRequest.put("currency", currency);
              orderRequest.put("receipt", "receipt_" + courseId);
              orderRequest.put("notes", new JSONObject().put("user_id", userId));
+             orderRequest.put("partial_payment", 1);
+            orderRequest.put("first_payment_min_amount", 1000*100);
 
              Order order = client.orders.create(orderRequest);
 
              String orderId = order.get("id").toString();
+             
              Orderuser ordertable = new Orderuser();
              ordertable.setCourseId(courseId);
              ordertable.setOrderId(orderId);
              ordertable.setUserId(userId);
              ordertablerepo.save(ordertable);
-             
+             System.out.println("orderid ="+orderId);
              return ResponseEntity.ok(orderId);
              } else {
                  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -127,7 +135,32 @@ public ResponseEntity<String> updatePaymentId( Map<String, String> requestData) 
     try {
         String orderId = requestData.get("orderId");
         String paymentId = requestData.get("paymentId");
+        if(getpaydetails()!=null) {
+            String razorpayApiKey= getpaydetails().getRazorpay_key();
+            String razorpayApiSecret=getpaydetails().getRazorpay_secret_key();
+        RazorpayClient client = new RazorpayClient(razorpayApiKey, razorpayApiSecret);
+       Order detailedOrder = client.orders.fetch(orderId);
+        
 
+
+     // Access specific details from detailedOrder object
+    String amountPaid = detailedOrder.get("amount_paid").toString();
+    String amountPaidString = detailedOrder.get("amount_paid").toString();
+
+ // Try parsing the String to an integer and handle potential exceptions
+ int amountPaidIn;
+ try {
+   amountPaidIn = Integer.parseInt(amountPaidString) / 100;
+ } catch (NumberFormatException e) {
+   // Handle the case where amount_paid cannot be parsed to an integer
+   System.err.println("Error parsing amount_paid: " + e.getMessage());
+   amountPaidIn = 0; // Or set a default value based on your logic
+ }
+
+ System.out.println("Amount Paid : " + amountPaidIn);
+     String status = detailedOrder.get("status").toString();
+     System.out.println("status= "+status);
+        }
         Optional<Orderuser> orderUserOptional = ordertablerepo.findByOrderId(orderId);
         if (orderUserOptional.isPresent()) {
             Orderuser orderUser = orderUserOptional.get();

@@ -1,6 +1,8 @@
 package com.knowledgeVista.DownloadManagement;
 
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,6 +47,8 @@ public class CustomerLeads {
     private Integer studentCount;
     private String licenseType;
     private Boolean isFirst;
+    private LocalDate licencestartdate;
+    private LocalDate licenceEndDate;
     private Integer licenseValidity;
     private Boolean isLicenseExpired;
     @Column(length=200)

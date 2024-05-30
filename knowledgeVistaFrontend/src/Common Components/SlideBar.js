@@ -14,10 +14,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`);
-        if (response.status !== 200) {
-          setIsEmpty(response.data.empty);
-          throw new Error('Network response was not ok');
-        }
+        
         const data = response.data;
         setIsEmpty(data.empty);
         setIsvalid(data.valid);
@@ -27,6 +24,10 @@ const SlideBar = ({activeLink,setActiveLink}) => {
         const type = data.type;
       sessionStorage.setItem('type',type);
     } catch (error) {
+      if (error.response && error.response.status !== 200) {
+        setIsEmpty(error.response.data.empty);
+        throw new Error('Network response was not ok');
+      }
       console.error('Error fetching data:', error);
     }
   };
