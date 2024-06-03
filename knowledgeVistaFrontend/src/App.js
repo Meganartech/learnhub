@@ -134,6 +134,7 @@ function App() {
                       <Route path="/trainer/edit/:email" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditTrainer/></PrivateRoute>}/>
                       <Route path="/AssignedCourses" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} ><MyAssignedcourses/></PrivateRoute>}/>
                       <Route path="/about" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><About_Us/></PrivateRoute>}/>
+                       
                   </Route> 
 
            <Route path="/License" element={<License/>}/>

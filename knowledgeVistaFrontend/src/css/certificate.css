@@ -31,8 +31,16 @@
     display: grid;
     grid-template-rows: 1fr 3fr 1fr;
 }
+.mainform2{
+  display: grid;
+  padding: 10px;
+  grid-template-columns: 2fr 2fr;
+  gap:10px;
+  max-height: 320px;
+  overflow: auto;
+}
+
 .mainform{
- 
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap:10px
@@ -47,6 +55,7 @@
   padding-left: 10px;
 }
 
+
 .formgroup{
     display: grid;
     grid-template-rows: repeat(5,1fr);
@@ -55,28 +64,43 @@
     overflow:auto;
     padding-right: 20px;
 }
+.mainform2::-webkit-scrollbar,
 .formgroup::-webkit-scrollbar {
   width: 3px; /* Width of the scrollbar */
 
 }
-
+.mainform2::-webkit-scrollbar-track,
 .formgroup::-webkit-scrollbar-track {
   background-color: #f4f4f4; /* Track color */
 }
-
+.mainform2::-webkit-scrollbar-thumb ,
 .formgroup::-webkit-scrollbar-thumb {
   background-color: #ccc; /* Scrollbar thumb color */
   border-radius: 2px; /* Border radius for the scrollbar thumb */
 }
-
+.mainform2::-webkit-scrollbar-thumb:hover,
 .formgroup::-webkit-scrollbar-thumb:hover {
   background-color: #999; /* Hover color for the scrollbar thumb */
+}
+.inputgrp2{
+  display: grid;
+  
+grid-template-columns: 6fr 1fr 4fr;
+}
+.inputgrp2 input{
+  border: 1px solid black;
+  width: 50%;
+  height: 40px;
+  border-radius: 5px;
+  padding: 15px;
+ 
 }
 
 .inputgrp{
 display: grid;
 grid-template-columns: 6fr 1fr 12fr;
 }
+
 .inputgrp select{
   
   border: 1px solid black;
@@ -86,21 +110,23 @@ grid-template-columns: 6fr 1fr 12fr;
 .inputgrp input{
     border: 1px solid black;
     width: 100%;
-   
     border-radius: 5px;
     padding: 15px;
    
 }
+.inputgrp2 .disabledbox,
 .inputgrp .disabledbox{
   border:0px;
 }
 .inputgrp textarea{
   border: 1px solid black;
 }
+.inputgrp2 span,
 .inputgrp span{
     font-weight: bolder;
     font-size: 1.5rem;
 }
+.inputgrp2 label,
 .inputgrp label{
     font-size:1.5rem;
     margin-bottom: 0px;

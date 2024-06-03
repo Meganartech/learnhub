@@ -1,4 +1,4 @@
-package com.knowledgeVista.Enroll;
+package com.knowledgeVista.Payments;
 
 import org.springframework.stereotype.Repository;
 

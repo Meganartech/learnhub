@@ -181,10 +181,18 @@ input[type="radio"] {
   }
   
   /* Color for checked radio buttons */
+  input[type="checkbox"]{
+    width: 20px;
+    height: 20px;
+  }
+  input[type="checkbox"]:checked{
+        accent-color: black;
+  }
   input[type="radio"]:checked {
 
     accent-color: black;
   }
+  
   .notfound{
     margin-left: 350px;
     border-radius: 10px;

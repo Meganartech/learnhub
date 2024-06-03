@@ -4,6 +4,7 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
     
      const isAuthenticated = sessionStorage.getItem('token') !== null;
      const userRole = sessionStorage.getItem('role'); 
+   
     
     // Check if authentication is required and user is authenticated
     if (authenticationRequired && !isAuthenticated) {

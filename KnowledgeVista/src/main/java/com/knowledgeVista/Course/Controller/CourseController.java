@@ -108,16 +108,9 @@ public class CourseController {
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
-	        
-	        // Save the CourseDetail object
 	        CourseDetail savedCourse = coursedetailrepository.save(courseDetail);
-	        
-	        // Update the courseUrl based on the saved course's ID
 	        String courseUrl = "/courses/"+savedCourse.getCourseName()+"/" + savedCourse.getCourseId();
 	        savedCourse.setCourseUrl(courseUrl);
-	       
-
-	        // Save the updated CourseDetail object
 	       CourseDetail saved= coursedetailrepository.save(savedCourse);
 	       Long courseId=saved.getCourseId();
 	       String coursename =saved.getCourseName();

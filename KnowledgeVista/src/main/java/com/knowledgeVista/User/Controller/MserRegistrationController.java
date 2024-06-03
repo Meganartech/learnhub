@@ -33,7 +33,6 @@ public class MserRegistrationController {
 	public ResponseEntity<?> registerStudent( String username, String psw, String email, LocalDate dob,
 	                                         String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode) {
 	    try {
-	    	 countryCode = countryCode != null ? countryCode : "+91";
 	        long userCount = muserrepositories.count();
 	        Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	        if (userCount > 0) {

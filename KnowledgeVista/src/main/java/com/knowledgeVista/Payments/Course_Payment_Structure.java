@@ -1,7 +1,5 @@
 package com.knowledgeVista.Payments;
 
-
-
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -17,17 +15,18 @@ import lombok.Setter;
 @Entity
 @Table
 @Getter@Setter@NoArgsConstructor
-public class Orderuser {
-	   @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
-	    private String orderId;
-	    private Long userId;
-	    private Long courseId;
-	    private String paymentId;
-	    @Column(columnDefinition = "Varchar(50)")
-	    private String status;
-	    private Long amountReceived;
-	    private LocalDate date;
- 
+public class Course_Payment_Structure {
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long Id;
+	private Long CourseId;
+	private Long paymenttypeId;
+	private Long amount;
+	private LocalDate Date;
+	private Long CreatedBy;
+	private Long ApprevedBy; 
+	
+	
+	
+
 }

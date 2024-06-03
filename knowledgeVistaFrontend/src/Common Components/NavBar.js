@@ -81,13 +81,13 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
   
 
   return (
-    <nav className="navbar navbar-expand  navcolor topbar static-top navgrid ">
+    <nav className="navbar .navbar-expand  navcolor topbar static-top navgrid ">
       
-    <div className="searchgrid">
+    
       
     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
       <div className="searchbar">
-    <i className="fa fa-search pt-1 pl-1" aria-hidden="true"></i>
+    <i className="fa fa-search pt-1 pl-1 " aria-hidden="true"></i>
     
         <input
           className="searchinput"
@@ -105,9 +105,9 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
             onClick={() => setSearchQuery('')}></i>)}
     </div>
     )}
-    </div> 
+   
 
-      <ul className="navbar-nav ml-auto">
+      <ul className="navbar-nav ml-auto " style={{gridColumn: "2"}}>
         <li className="nav-item dropdown no-arrow ">
           <a
             className="nav-link dropdown-toggle profile"

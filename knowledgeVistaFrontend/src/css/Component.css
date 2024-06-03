@@ -22,9 +22,10 @@
 }
 .navgrid{
     display: grid;
-    grid-template-columns: 4fr 2fr;
+    grid-template-columns: 2fr 1fr;
     height: 80px;
     margin-bottom: 10px;
+    justify-items: end;
   }
   .profile{
     display: grid;
@@ -44,21 +45,19 @@
     opacity: 1;
     border: none;
   }
-  .searchgrid{
-    padding-left: 500px;
-  }
+ 
   .searchbar{
     width:50%;
-    align-self: end; 
     display: grid;
     grid-template-columns: 2fr 20fr 2fr;
     background-color: white;
     padding: 10px;
-    min-width: 500px;
+    min-width: 250px;
+    max-width: 500px;
     border: 2px solid rgb(255, 255, 255);
     box-shadow: 5px 5px 6px 0px #d6d6d6;
     border-radius: 30px;
-  
+   margin: auto;
   }
   
   .searchinput{
