@@ -127,6 +127,8 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
               height="100px"
             />
           </a>
+        
+      
           {/* <!-- Dropdown - User Information --> */}
           <div
             className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -149,8 +151,8 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
               Logout
             </button>
           </div>
-        </li>
-      </ul>
+          </li>
+          </ul>
     </nav>
   );
 };

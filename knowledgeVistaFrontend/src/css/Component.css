@@ -26,6 +26,7 @@
     height: 80px;
     margin-bottom: 10px;
     justify-items: end;
+    align-items: baseline;
   }
   .profile{
     display: grid;
@@ -47,7 +48,7 @@
   }
  
   .searchbar{
-    width:50%;
+     width: 50%;
     display: grid;
     grid-template-columns: 2fr 20fr 2fr;
     background-color: white;
@@ -57,7 +58,7 @@
     border: 2px solid rgb(255, 255, 255);
     box-shadow: 5px 5px 6px 0px #d6d6d6;
     border-radius: 30px;
-   margin: auto;
+    
   }
   
   .searchinput{
