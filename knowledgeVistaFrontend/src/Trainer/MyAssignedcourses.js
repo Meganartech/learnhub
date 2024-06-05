@@ -105,7 +105,7 @@ const MyAssignedcourses = () => {
 <ul className={styles.maincontainer}>
     {courses.length === 0 ? (
         <li>
-             <div className='enroll pb-5 pt-4' style={{marginLeft:"400px",marginTop:"150px"}}>
+             <div className='enroll pb-5 pt-4' >
             <h3 className='mt-5'>No courses Found </h3>
            </div>
             </li>

@@ -291,12 +291,12 @@ const CustomViewvideo = () => {
           </div>
         ) : (
           (role === "ADMIN" || role === "TRAINER") ? (
-            <div className='enroll' style={{marginLeft:"400px",marginTop:"150px"}}>
+            <div className='enroll' >
               <h3 className='mt-4'>No Lessons Found for {courseName}</h3>
               <Link to={`/course/Addlesson/${courseName}/${courseId}`} className='btn btn-primary'>Add Now</Link>
             </div>
           ) : (
-            <div className='enroll' style={{marginLeft:"400px",marginTop:"150px"}}>
+            <div className='enroll' >
               <h3 className='mt-4'>No Lessons Found for {courseName}</h3>
               <Link to="/dashboard/course" className='btn btn-primary'>Go Back</Link>
             </div>

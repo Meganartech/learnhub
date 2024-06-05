@@ -28,6 +28,7 @@ import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.Payments.InstallmentDetails;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -48,7 +49,8 @@ public class CourseController {
 	
 	
 //`````````````````````````WORKING``````````````````````````````````
-
+	
+	 
 	 public ResponseEntity<?> countCourse(String token) {
 	     try {
 	         if (!jwtUtil.validateToken(token)) {
@@ -87,8 +89,10 @@ public class CourseController {
 	 //--------------------------working------------------------------------
 	
 
-	    public ResponseEntity<?> addCourse( MultipartFile file,  String courseName,String description,String category,Long Duration,Long Noofseats,Long amount, String token) {
+	    public ResponseEntity<?> addCourse( MultipartFile file,  String courseName,String description,
+	    		String category,Long Duration,Long Noofseats,Long amount, String token) {
 		     try {
+		    	 
 		         if (!jwtUtil.validateToken(token)) {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		         }

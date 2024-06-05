@@ -138,7 +138,7 @@ const CreateTest = () => {
   const submitTest = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
 
-
+   console.log("questions",savedQuestions)
     try {
       const noOfQuestions = savedQuestions.length; // Count the number of questions
       const requestBody = {

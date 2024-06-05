@@ -1,7 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom';
-const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,onlyuser, onlytrainer,children }) => {
+import baseUrl from '../api/utils';
+import axios from 'axios';
+const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,onlyuser, onlytrainer,children ,licence}) => {
     
+  const [isvalid, setIsvalid] = useState();
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`);
+            
+            const data = response.data;
+            setIsvalid(data.valid);
+          
+           
+        } catch (error) {
+          if (error.response && error.response.status !== 200) {
+            throw new Error('Network response was not ok');
+          }
+          console.error('Error fetching data:', error);
+        }
+      };
+      fetchData();
+      }, []);
      const isAuthenticated = sessionStorage.getItem('token') !== null;
      const userRole = sessionStorage.getItem('role'); 
    
@@ -35,6 +56,22 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
         return <Navigate to="/unauthorized" />;
 
     } 
+
+
+
+    if (userRole === "ADMIN") {
+        if (isvalid===false) {
+            if (licence) {
+            return <>{children}</>; // Allow access with valid license
+            } else {
+            return <Navigate to="/about" />;
+            }
+    }
+      } else if (userRole === "TRAINER") {
+        if (isvalid===false) {
+          return <Navigate to="/unauthorized" />;
+        }
+      }
    
     // If authentication and authorization checks pass, render the children
     return <>{children}</>;

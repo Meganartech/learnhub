@@ -51,9 +51,7 @@ public class CourseDetail {
 	    private List<Muser> users;
 	    
 	    
-//	    @Column(name="Trainer")
-//	    private String Trainer;
-	    
+
 	    @Column(name="Duration")
 	    private Long Duration;
 	    

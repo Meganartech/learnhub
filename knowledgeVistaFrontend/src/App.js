@@ -100,7 +100,7 @@ function App() {
                   searchQuery={searchQuery}
                   handleSearchChange={handleSearchChange}
                   setSearchQuery={setSearchQuery}/>}>
-                    <Route path="/admin/dashboard" element={<PrivateRoute  onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><Dashboard/></PrivateRoute>}/>
+                    <Route path="/admin/dashboard" element={<PrivateRoute  onlyadmin={true} authenticationRequired={true} authorizationRequired={true} licence={true}><Dashboard/></PrivateRoute>}/>
                       <Route path="/lessonList/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><LessonList/></PrivateRoute>}/> 
                       <Route path="/edit/:courseName/:courseId/:Lessontitle/:lessonId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditLesson/></PrivateRoute>}/>
                       <Route path="/courses/:courseName/:courseId/" element={<PrivateRoute authenticationRequired={true} ><ViewVideo/></PrivateRoute>}/>                     
@@ -111,7 +111,7 @@ function App() {
                       <Route path="/addTrainer" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddTrainer/></PrivateRoute>}/>
                       <Route path="/addStudent" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddStudent/></PrivateRoute>}/>
                       <Route path="/mycourses" element={<PrivateRoute authenticationRequired={true} ><Mycourse/></PrivateRoute>}/>
-                      <Route path="/dashboard/course" element={<PrivateRoute authenticationRequired={true}><CourseView  filteredCourses={filteredCourses} /></PrivateRoute>} />
+                      <Route path="/dashboard/course" element={<PrivateRoute authenticationRequired={true} ><CourseView  filteredCourses={filteredCourses} /></PrivateRoute>} />
                       <Route path="/course/admin/edit" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><EditCourse  filteredCourses={filteredCourses} /></PrivateRoute>} />
                       <Route path="/course/AddTest/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CreateTest /></PrivateRoute>} />
                       <Route path="/test/start/:courseName/:courseId" element={<PrivateRoute onlyuser={true} authenticationRequired={true}><AttenTest/></PrivateRoute>}/>
@@ -133,10 +133,8 @@ function App() {
                       <Route path="/student/edit/:email" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditStudent/></PrivateRoute>}/>
                       <Route path="/trainer/edit/:email" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditTrainer/></PrivateRoute>}/>
                       <Route path="/AssignedCourses" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} ><MyAssignedcourses/></PrivateRoute>}/>
-                      <Route path="/about" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><About_Us/></PrivateRoute>}/>
-                       
-                  </Route> 
-
+                      <Route path="/about" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true} licence={true}><About_Us/></PrivateRoute>}/>
+                        </Route> 
            <Route path="/License" element={<License/>}/>
           <Route path="/" element={<StudentRegister/>}/>
           <Route path="/refresh" element={<PrivateRoute authenticationRequired={true}><RefreshToken/></PrivateRoute>}/>

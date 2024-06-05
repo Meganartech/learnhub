@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +31,7 @@ import com.knowledgeVista.Course.certificate.certificateController;
 import com.knowledgeVista.License.License;
 import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.UserListWithStatus;
+import com.knowledgeVista.Payments.InstallmentDetails;
 import com.knowledgeVista.Payments.PaymentIntegration;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.Paymentsettings;

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -44,6 +45,8 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.DownloadManagement.CustomerLeads;
 import com.knowledgeVista.DownloadManagement.Customer_downloads;
 import com.knowledgeVista.FileService.LicenceService;
+import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 import io.jsonwebtoken.Jwts;
@@ -54,7 +57,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class LicenseController {
 	 @Autowired
 	 private JwtUtil jwtUtil;
-	
+
+	 @Autowired
+	 private MuserRepositories muserrepo;
 	 @Autowired
 	    private licenseRepository licenseRepository;
 	 
@@ -449,8 +454,15 @@ public class LicenseController {
 		                
 		                RestTemplate restTemplate = new RestTemplate();
 		                String email = jwtUtil.getUsernameFromToken(token);
+		               Optional<Muser> opuser= muserrepo.findByEmail(email);
+		               if(opuser.isPresent()) {
+		            	   Muser user= opuser.get();
 		                String apiurl3 = "http://localhost:8080/Developer/CustomerLeads/" + email;
 		                CustomerLeads updateData = new CustomerLeads();
+		                updateData.setEmail(user.getEmail());
+		                updateData.setCountryCode(user.getCountryCode());
+		                updateData.setPhone(user.getPhone());
+		                updateData.setName(user.getUsername());
 		                updateData.setLicenseKey(key);
 		                updateData.setLicenseType(type);
 		                updateData.setVersion(version);
@@ -467,6 +479,10 @@ public class LicenseController {
 
 		                String apiurl4 = "http://localhost:8080/Developer/CustomerDownload/" + email;
 		                Customer_downloads custdown=new Customer_downloads();
+		                custdown.setCountryCode(user.getCountryCode());
+		                custdown.setName(user.getUsername());
+		                custdown.setEmail(user.getEmail());
+		                custdown.setPhone(user.getPhone());
 		                custdown.setCourseCount(CourseCount);
 		                custdown.setStudentCount(StudentCount);
 		                custdown.setTrainerCount(TrainerCount);
@@ -474,7 +490,9 @@ public class LicenseController {
 		                
 
 		                restTemplate.put(apiurl4, updateData, String.class);
-		                
+		               }else {
+		            	   return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		               }
 //----------------------------------------CustomerLeads---------------------------
 		                
 

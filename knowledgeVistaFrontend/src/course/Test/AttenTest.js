@@ -141,7 +141,7 @@ const AttenTest = () => {
     return (
         <div className='contentbackground'>
           {attemplimit?(<div className='contentinner'>
-            <div className='enroll ' style={{marginLeft:"400px",marginTop:"200px"}}> 
+            <div className='enroll ' > 
         <h2 className='mt-2'>Your Attempt Limit Exceeded for this test </h2>
         <p>Contact your Trainer</p>
         <button className='btn btn-primary' onClick={()=>{navigate(-1)}}>Go Back</button>

@@ -55,7 +55,7 @@ const CourseView = ({ filteredCourses }) => {
       MySwal.fire({
         icon: 'error',
         title: 'Error creating order:', 
-        text: error
+        text: error.response.data
     });
     }
 };

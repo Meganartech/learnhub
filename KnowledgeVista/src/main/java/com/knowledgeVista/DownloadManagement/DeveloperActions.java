@@ -61,7 +61,6 @@ public class DeveloperActions {
 	      try {
 	         // Check if customer lead exists
 	        Optional< Customer_downloads>opexistingDownload = customerdownloadRepo.findByEmail(email);
-	        System.out.println(opexistingDownload.get());
 	        if(opexistingDownload.isPresent()) {
 	        	Customer_downloads existingdownloads=opexistingDownload.get();
 	        	 // Update only the fields with values provided in the request body
@@ -77,9 +76,8 @@ public class DeveloperActions {
 	            
 
 	         customerdownloadRepo.save(existingdownloads);
-	         System.out.println(existingdownloads);
 	        }else{
-	        	System.out.println("not a valid user");
+	        	customerdownloadRepo.save(customerDownload);
 	        }
 
 	         return ResponseEntity.ok().body("Partially Updated");
@@ -141,9 +139,9 @@ public class DeveloperActions {
 	            custLead.setLicenseType(customerLeads.getLicenseType());
 	            custLead.setLicenseValidity(customerLeads.getLicenseValidity());
 	            custLead.setIsLicenseExpired(customerLeads.getIsLicenseExpired());
-                   custLead.setLicenseKey(customerLeads.getLicenseKey());
-                   custLead.setLicencestartdate(customerLeads.getLicencestartdate());
-                   custLead.setLicenceEndDate(customerLeads.getLicenceEndDate());
+                custLead.setLicenseKey(customerLeads.getLicenseKey());
+                custLead.setLicencestartdate(customerLeads.getLicencestartdate());
+                custLead.setLicenceEndDate(customerLeads.getLicenceEndDate());
 
 	            customerleadRepo.save(custLead);
 
@@ -162,7 +160,6 @@ public class DeveloperActions {
 	      try {
 	         // Check if customer lead exists
 	        Optional< CustomerLeads>opexistingLead = customerleadRepo.findByEmail(email);
-	        System.out.println(opexistingLead.get());
 	        if(opexistingLead.isPresent()) {
 	        	CustomerLeads existingLead=opexistingLead.get();
 	        	 // Update only the fields with values provided in the request body
@@ -184,9 +181,8 @@ public class DeveloperActions {
 
 
 	         customerleadRepo.save(existingLead);
-	         System.out.println(existingLead);
 	        }else{
-	        	System.out.println("not a valid user");
+	        	customerleadRepo.save(customerLeads);
 	        }
 
 	         return ResponseEntity.ok().body("Partially Updated");
