@@ -50,8 +50,8 @@ public class certificateController {
 		// @RequestParam("certificateTemplate") MultipartFile certificateTemplate
 	    try {
 	    	
-	    	 if (!jwtUtil.validateToken(token)) {
-	    		 return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).build();
+	    	 if (!jwtUtil.validateToken(token)) {return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                    .body("{\"message\": \"Unauthorized access\"}");
 	            
 	         }
 

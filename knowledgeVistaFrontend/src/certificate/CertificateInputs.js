@@ -136,17 +136,14 @@ setisnotFound(true);
           });
         }
       } catch (error) {
-       if (error.response && error.response.status === 307) {
-          window.location.href = "/refresh"; // Redirect to the specified location
-      }else{
-        console.error(error)
+      
         MySwal.fire({
           title: "Error!",
-          text: "An error occurred. Please try again later.",
+          text: error.response.data,
           icon: "error",
           confirmButtonText: "OK",
         });
-      }
+      
     }
     
           } else {
