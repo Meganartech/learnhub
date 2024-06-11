@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,8 +30,8 @@ import com.knowledgeVista.Course.certificate.certificateController;
 import com.knowledgeVista.License.License;
 import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.UserListWithStatus;
-import com.knowledgeVista.Payments.InstallmentDetails;
 import com.knowledgeVista.Payments.PaymentIntegration;
+import com.knowledgeVista.Payments.PaymentListController;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.Paymentsettings;
 import com.knowledgeVista.Settings.SettingsController;
@@ -71,6 +70,9 @@ public class FrontController {
 	
 	@Autowired
 	private PaymentIntegration payment;
+	
+	@Autowired
+	private PaymentListController paylist;
 	
 	@Autowired
 	private LicenseController licence;
@@ -114,8 +116,10 @@ public class FrontController {
 	    		@RequestParam("Duration") Long Duration,
 	    		@RequestParam("Noofseats") Long Noofseats,
 	    		@RequestParam("courseAmount") Long amount,
+	    		@RequestParam("paytype")String paytype,
+                @RequestParam(value="InstallmentDetails", required=false) String installmentDataJson,
 	    		@RequestHeader("Authorization") String token) {
-		 return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, amount, token);
+		 return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, amount,paytype,installmentDataJson, token);
 	 }
 	 
 	 
@@ -326,14 +330,42 @@ public class FrontController {
 		        }
 		        
 //----------------------PaymentIntegration----------------------	
-		        @PostMapping("/buyCourse/create")
-		        public ResponseEntity<?> createOrder(@RequestBody Map<String, Long> requestData) {
-		        	return payment.createOrder(requestData);
+		        @PostMapping("/full/buyCourse/create")
+		        public ResponseEntity<?> createOrderfull(@RequestBody Map<String, Long> requestData) {
+		        	return payment.createOrderfull(requestData);
+		        } 
+		        @PostMapping("/part/buyCourse/create")
+		        public ResponseEntity<?> createOrderPart(@RequestBody Map<String, Long> requestData) {
+		        	return payment.createOrderPart(requestData);
 		        }
                @PostMapping("/buyCourse/payment")
              public ResponseEntity<String> updatePaymentId(@RequestBody Map<String, String> requestData) {
             	   return payment.updatePaymentId(requestData);
                }
+               
+               
+               
+//-------------------------paymentListcontrller-------------
+               @GetMapping("/myPaymentHistory")
+               public ResponseEntity<?>ViewMypaymentHistry(@RequestHeader("Authorization") String token){
+            	   return paylist.ViewMypaymentHistry(token);
+               }
+               
+               @GetMapping("/viewPaymentList/{courseId}")
+               public ResponseEntity<?> ViewPaymentdetails(@RequestHeader("Authorization") String token,@PathVariable Long courseId){
+            	  
+            	   return paylist.ViewPaymentdetails(token, courseId);
+               }
+               
+               @GetMapping("/viewAllTransactionHistory")
+               public ResponseEntity<?>viewTransactionHistory(@RequestHeader("Authorization") String token){
+            	   return paylist.viewTransactionHistory(token);
+               }
+            	   
+           @GetMapping("/viewAllTransactionHistoryForTrainer")
+           public ResponseEntity<?>ViewMypaymentHistrytrainer(@RequestHeader("Authorization") String token){
+        	   return paylist.ViewMypaymentHistrytrainer(token);
+           }
                
 //-------------------------LicenseController-----------------------
                @GetMapping("/api/v2/GetAllUser")

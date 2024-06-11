@@ -1,6 +1,7 @@
 package com.knowledgeVista.Course.Controller;
 import org.springframework.http.MediaType;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +25,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.Payments.Course_PartPayment_Structure;
 import com.knowledgeVista.Payments.InstallmentDetails;
+import com.knowledgeVista.Payments.installmentdetilsrepo;
+import com.knowledgeVista.Payments.partpayrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -46,6 +52,12 @@ public class CourseController {
 	private CourseDetailRepository coursedetailrepository;
 	 @Autowired
 	 private JwtUtil jwtUtil;
+	 
+	 @Autowired
+	 private installmentdetilsrepo installmentrepo ;
+	 
+	 @Autowired
+	 private partpayrepo partpayrepo;
 	
 	
 //`````````````````````````WORKING``````````````````````````````````
@@ -90,13 +102,16 @@ public class CourseController {
 	
 
 	    public ResponseEntity<?> addCourse( MultipartFile file,  String courseName,String description,
-	    		String category,Long Duration,Long Noofseats,Long amount, String token) {
+	    		String category,Long Duration,Long Noofseats,Long amount,String paytype,String installmentDataJson, String token) {
 		     try {
-		    	 
+		    	 //Course_PartPayment_Structure
+
+		    	
 		         if (!jwtUtil.validateToken(token)) {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		         }
 		         String role = jwtUtil.getRoleFromToken(token);
+		         String email=jwtUtil.getUsernameFromToken(token);
 		 if("ADMIN".equals(role)) {
 	        CourseDetail courseDetail = new CourseDetail();
 	        courseDetail.setCourseName(courseName);
@@ -104,7 +119,7 @@ public class CourseController {
 	        courseDetail.setCourseCategory(category);
 	        courseDetail.setAmount(amount);
 	        courseDetail.setDuration(Duration);
-	        
+	        courseDetail.setPaytype(paytype);
 
 	        courseDetail.setNoofseats(Noofseats);
 	        try {
@@ -113,11 +128,41 @@ public class CourseController {
 	            e.printStackTrace();
 	        }
 	        CourseDetail savedCourse = coursedetailrepository.save(courseDetail);
+	        
 	        String courseUrl = "/courses/"+savedCourse.getCourseName()+"/" + savedCourse.getCourseId();
 	        savedCourse.setCourseUrl(courseUrl);
 	       CourseDetail saved= coursedetailrepository.save(savedCourse);
 	       Long courseId=saved.getCourseId();
 	       String coursename =saved.getCourseName();
+	       
+	       if("PART".equals(paytype)) {
+	       Course_PartPayment_Structure paystructure=new Course_PartPayment_Structure();
+	        paystructure.setCourse(savedCourse);
+	        paystructure.setCreatedBy(email);
+	        paystructure.setDatecreated(LocalDate.now());
+	        Course_PartPayment_Structure savedpartpay=partpayrepo.save(paystructure);
+	        ObjectMapper mapper = new ObjectMapper();
+	    	 JsonNode rootNode = mapper.readValue(installmentDataJson, JsonNode.class);
+
+	    	 if (rootNode.isArray()) {
+	    	     for (JsonNode installmentNode : rootNode) {
+	    	         Long installmentNumber = installmentNode.path("InstallmentNumber").asLong(); // Assuming "name" is string
+	    	         Long installmentAmount = installmentNode.path("InstallmentAmount").asLong(); // Default to 0 if missing
+	    	         Long durationInDays = installmentNode.path("DurationInDays").asLong(); // Default to 0 if missing
+	    	         InstallmentDetails installment=new InstallmentDetails();
+	    	         installment.setDurationInDays(durationInDays);
+	    	         installment.setInstallmentNumber(installmentNumber);
+	    	         installment.setInstallmentAmount(installmentAmount);
+	    	         installment.setPartpay(savedpartpay);
+	    	         installmentrepo.save(installment);
+	    	          
+	    	     }
+	    	 } else {
+	    	     System.err.println("Invalid JSON format - expected an array");
+	    	 }
+	       }else {
+	    	   System.out.println("full");
+	    	   }
 	       Map<String, Object> response = new HashMap<>();
            response.put("message", "savedSucessfully");
            response.put("courseId", courseId);

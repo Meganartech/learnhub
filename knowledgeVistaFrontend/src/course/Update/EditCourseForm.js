@@ -210,7 +210,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
               </div>
           
         </div>
-        <div class="vertical-line"></div>
+        <div ></div>
         <div className="second">
           <div className="form-group">
             <label htmlFor="courseImage" >

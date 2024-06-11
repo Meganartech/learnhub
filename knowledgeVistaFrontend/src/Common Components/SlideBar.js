@@ -101,10 +101,10 @@ const SlideBar = ({activeLink,setActiveLink}) => {
        )} 
         {userRole === "ADMIN"  && (
        
-<div className={`mt-2 ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "ActiveLink" : ""}`}>
+<div className={`mt-2 ${activeLink.includes("/course")  ? "ActiveLink" : ""}`}>
   <li className="nav-item">
     <a
-      className={`nav-link ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "text-light" : "text-muted"}`}
+      className={`nav-link ${activeLink.includes("/course")  ? "text-light" : "text-muted"}`}
       href="#"
       onClick={() => {
         setActiveLink("/course");
@@ -116,12 +116,12 @@ const SlideBar = ({activeLink,setActiveLink}) => {
         }
       }}
     >
-      <i className={`fa-solid fa-book-open ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "text-light" : "text-muted"}`}></i>
+      <i className={`fa-solid fa-book-open ${activeLink.includes("/course")  ? "text-light" : "text-muted"}`}></i>
       <span>Courses</span>
     </a>
   </li>
   <div  style={{width:"100%"}} id="collapseTwo" 
-   className={`collapse ml-3 newnav ${activeLink.includes("/course") || activeLink === "/dashboard/course" ? "show" : ""}`} 
+   className={`collapse ml-3 newnav ${activeLink.includes("/course")  ? "show" : ""}`} 
    aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 
     <div style={{width:"100%"}} className="text-light collapse-inner">
@@ -202,11 +202,23 @@ const SlideBar = ({activeLink,setActiveLink}) => {
         </li>
       )}
 
-
+{userRole === "USER" && (
+        <li className="nav-item mt-2">
+          <a
+            className={activeLink === "/myPayments" ? "ActiveLink nav-link text-light" : "nav-link text-muted"}
+            href="#"
+            onClick={() => handleClick("/myPayments")}
+          >
+            <i className={activeLink === "/myPayments" ? "fa-regular fa-credit-card text-light" : "fa-regular fa-credit-card text-muted"}></i>
+            <span>My Payments</span>
+          </a>
+        </li>
+      )}
       
 
      
    
+      
 
    {userRole === "TRAINER" && (
       <li className="nav-item mt-2">
@@ -245,6 +257,18 @@ const SlideBar = ({activeLink,setActiveLink}) => {
         </a>
       </li>
         )}
+        {userRole === "TRAINER" && (
+      <li className="nav-item mt-2">
+        <a
+          className={activeLink === "/payment/trainer/transactionHitory" ? "ActiveLink nav-link" : "nav-link text-muted"}
+          href="#"
+          onClick={() => handleClick("/payment/trainer/transactionHitory")}
+        >
+          <i className={activeLink === "/payment/trainer/transactionHitory" ? "fa-solid fa-clock-rotate-left text-light" : "fa-solid fa-clock-rotate-left  text-muted"}></i>
+          <span>Transaction History</span>
+        </a>
+      </li>
+      )}
 
      {userRole === "ADMIN" && (
       <li className="nav-item mt-2">
@@ -259,22 +283,61 @@ const SlideBar = ({activeLink,setActiveLink}) => {
       </li>
         )}
         
-{(userRole === "ADMIN" ) && (
-        <li className="nav-item mt-2">
-          <a
-            className={activeLink === "/settings/payment" ? "ActiveLink nav-link" : "nav-link text-muted"}
-            href="#"
-           
-            onClick={() => handleClick("/settings/payment")}
-          >
-            <i className={activeLink === "/settings/payment" ? "fa-solid fa-gear text-light" : "fa-solid fa-gear text-muted"}></i>
-            <span>Payment settings</span>
-          </a>
-     
-        </li>
-      )}
-       
 
+       
+       {(userRole === "ADMIN" ) && (
+       
+       <div className={`mt-2 ${activeLink.includes("/pay") ? "ActiveLink" : ""}`}>
+         <li className="nav-item">
+           <a
+             className={`nav-link ${activeLink.includes("/pay")  ? "text-light" : "text-muted"}`}
+             href="#"
+             onClick={() => {
+               setActiveLink("/pay");
+               const collapseTwo = document.getElementById("collapsepay");
+               if (collapseTwo.classList.contains("show")) {
+                 collapseTwo.classList.remove("show");
+               } else {
+                 collapseTwo.classList.add("show");
+               }
+             }}
+           >
+             <i className={`fa-regular fa-credit-card ${activeLink.includes("/pay") ? "text-light" : "text-muted"}`}></i>
+             <span>Payments</span>
+           </a>
+         </li>
+         <div  style={{width:"100%"}} id="collapsepay" 
+          className={`collapse ml-3 newnav ${activeLink.includes("/pay")  ? "show" : ""}`} 
+          aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+       
+           <div style={{width:"100%"}} className="text-light collapse-inner">
+             <a className={`nav-link mb-2 collapse-item text-light ${activeLink === "/settings/payment" ? " SubActiveLink " : ""}`}
+               href="#"
+       
+               onClick={() => {
+                 handleClick("/settings/payment");
+                 setActiveLink("/settings/payment");
+               }}>
+               <i className= "p-1 fa-solid fa-gear text-light"></i>
+               <span>Payment Settings</span>
+             </a>
+       
+             <a className={`collapse-item mb-2 text-light nav-link ${activeLink === "/payment/transactionHitory" ? "SubActiveLink " : " "}`}
+               href="#"
+               onClick={() => {
+                 handleClick("/payment/transactionHitory");
+                 setActiveLink("/payment/transactionHitory");
+               }} >
+               <i className= "pl-1 fa-solid fa-clock-rotate-left text-light"></i>
+               <span> Transaction History</span>
+             </a>
+      
+           </div>
+         </div>
+       </div>
+       
+            
+        )} 
        {userRole === "ADMIN"  && (
         <li className="nav-item mt-2">
           <a

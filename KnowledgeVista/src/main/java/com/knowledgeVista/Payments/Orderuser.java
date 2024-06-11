@@ -1,8 +1,7 @@
 package com.knowledgeVista.Payments;
 
 
-
-import java.time.LocalDate;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,11 +22,15 @@ public class Orderuser {
 	    private Long id;
 	    private String orderId;
 	    private Long userId;
+	    private String courseName;
+	    private String email;
+	    private String username;
 	    private Long courseId;
 	    private String paymentId;
+	    private Long installmentnumber;
 	    @Column(columnDefinition = "Varchar(50)")
 	    private String status;
-	    private Long amountReceived;
-	    private LocalDate date;
+	    private int amountReceived;
+	    private Date date;
  
 }

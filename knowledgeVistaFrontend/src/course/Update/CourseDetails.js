@@ -86,8 +86,8 @@ const CourseDetails = () => {
                   type="text"
                   id="courseName"
                   value={courseName}
-                  className='disabledbox'
-              
+                  className=' disabledbox '
+        
                   
                 />
               </div>
@@ -156,6 +156,10 @@ const CourseDetails = () => {
                   value={Duration}
                   className='disabledbox'
                 />
+              </div>
+               
+              <div className="form-group mt-1">
+                <a href={`/course/update/paymentSettings/${courseName}/${courseId}`}>  Payment Settings</a>
               </div>
             </div>
 

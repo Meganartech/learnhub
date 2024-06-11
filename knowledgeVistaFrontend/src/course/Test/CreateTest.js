@@ -45,7 +45,7 @@ const CreateTest = () => {
  }
  const shownext=(e)=>{
     const nextindex=selectedQuestionIndex+1;
-    console.log(nextindex)
+    
     if(nextindex<savedQuestions.length){
         const { questionText, option1, option2, option3, option4, answer } = savedQuestions[nextindex];
     setQuestionText(questionText);

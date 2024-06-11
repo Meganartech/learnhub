@@ -193,7 +193,7 @@ public class LicenseController {
 				courseString=license.getCourse();
 			}
 			Long course=0l;
-			System.out.println(courseString.isEmpty());
+			//System.out.println(courseString.isEmpty());
 			if(!(courseString.isEmpty())) {
 				course = Long.parseLong(courseString);
 				logger.info(course.toString());
@@ -235,16 +235,16 @@ public class LicenseController {
 	            String localFile="";
 		    	for (License license : licenseList) {
 		    		localFile=license.getFilename();
-		    		 System.out.println("---------------------------------------------------");
-		    	    System.out.println("ID: " + license.getId());
-		    	    System.out.println("Company Name: " + license.getCompany_name());
-		    	    System.out.println("Product Name: " + license.getProduct_name());
-		    	    System.out.println("key " + license.getKey());
-		    	    System.out.println("start_date: " + license.getStart_date());
-		    	    System.out.println("end_date: " + license.getEnd_date());
-//		            java.util.Date licenseStartDateUtil = java.sql.Date.valueOf(license.getStart_date().toLocaleString());
-		    	    System.out.println(" start date :"+license.getStart_date()+" present date :"+Datecurrent+" is equal"+license.getEnd_date().equals(timestamp));
-		    	    // Print other fields as needed
+//		    		 System.out.println("---------------------------------------------------");
+//		    	    System.out.println("ID: " + license.getId());
+//		    	    System.out.println("Company Name: " + license.getCompany_name());
+//		    	    System.out.println("Product Name: " + license.getProduct_name());
+//		    	    System.out.println("key " + license.getKey());
+//		    	    System.out.println("start_date: " + license.getStart_date());
+//		    	    System.out.println("end_date: " + license.getEnd_date());
+////		            java.util.Date licenseStartDateUtil = java.sql.Date.valueOf(license.getStart_date().toLocaleString());
+//		    	    System.out.println(" start date :"+license.getStart_date()+" present date :"+Datecurrent+" is equal"+license.getEnd_date().equals(timestamp));
+//		    	    // Print other fields as needed
 		    	}
 		    	
 		    	 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -255,10 +255,10 @@ public class LicenseController {
 							 NodeList personList = rootElement.getElementsByTagName("data");
 							File file = new File(licenceUploadDirectory+localFile);
 							long lastModified = file.lastModified();
-							System.out.println("----------------------------------------------------------------");
-							System.out.println("Last modified string"+lastModified);
+//							System.out.println("----------------------------------------------------------------");
+//							System.out.println("Last modified string"+lastModified);
 							 Date date = new Date(lastModified);
-							 System.out.println("Last modified date"+date);
+							// System.out.println("Last modified date"+date);
 							 SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
 							 Element person4 = (Element) personList.item(0);
 							  Element trai = (Element) person4.getElementsByTagName("course").item(0);
@@ -267,16 +267,16 @@ public class LicenseController {
 				              String tra = trai.getTextContent();
 				              String stude = stud.getTextContent();
 				              val = vale.getTextContent();
-				              System.out.println("No of trainer"+tra);
-				              System.out.println("No of student"+stude);
-				              System.out.println("No of student"+val.isEmpty());
+//				              System.out.println("No of trainer"+tra);
+//				              System.out.println("No of student"+stude);
+//				              System.out.println("No of student"+val.isEmpty());
 					         String formattedDate = formatter.format(date)+tra+stude+val;
-					         System.out.println("Last modified date complete"+formattedDate);
-				             System.out.println("----------------------------------------------------------------");
-				             System.out.println(Jwts.builder()
-				             .setSubject(formattedDate)
-					            .signWith(SignatureAlgorithm.HS256, "yourSecretKeyStringWithAtLeast256BitsLength")
-					            .compact());
+//					         System.out.println("Last modified date complete"+formattedDate);
+//				             System.out.println("----------------------------------------------------------------");
+//				             System.out.println(Jwts.builder()
+//				             .setSubject(formattedDate)
+//					            .signWith(SignatureAlgorithm.HS256, "yourSecretKeyStringWithAtLeast256BitsLength")
+//					            .compact());
 				             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				             Document doc = dBuilder.parse(file);
@@ -317,7 +317,7 @@ public class LicenseController {
 		    	 boolean valid = false; // Initialize valid to false
 //		    	 boolean same = this.areJwtsEqual();
 		    	 
-		    	 System.out.println("out of the loop"+valid);
+		    	// System.out.println("out of the loop"+valid);
 		    	    for (License license : licenseList) {
 		    	    	this.valu1=license.getKey();
 				 
@@ -415,7 +415,7 @@ public class LicenseController {
 					
 					
 		            Element rootElement = document.getDocumentElement();
-		            System.out.println("Root Element = " + rootElement.getNodeName());
+		          //  System.out.println("Root Element = " + rootElement.getNodeName());
 		            NodeList personList = rootElement.getElementsByTagName("data");
 		            for (int i = 0; i < personList.getLength(); i++) {
 		                Element person = (Element) personList.item(i);
@@ -448,9 +448,9 @@ public class LicenseController {
 		                Integer StudentCount=Integer.parseInt(studentcount);
 		                Integer validitydays=Integer.parseInt(validity);
 		                LocalDate startdate= LocalDate.now();
-		                System.out.println("startdate"+startdate);
+		               // System.out.println("startdate"+startdate);
                         LocalDate endDate = startdate.plusDays(validitydays);
-                        System.out.println("endDate"+endDate);
+                       // System.out.println("endDate"+endDate);
 		                
 		                RestTemplate restTemplate = new RestTemplate();
 		                String email = jwtUtil.getUsernameFromToken(token);
@@ -496,9 +496,9 @@ public class LicenseController {
 //----------------------------------------CustomerLeads---------------------------
 		                
 
-		                System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		                System.out.println("product_name: " + productName + " company_name: " + companyName + " version: " + version + " key: " + key + " type: " + type + " validity: " + validity + " Video: " + course + " lastModifiedDate: " + lastModifiedDate);
-		                System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+//		                System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+//		                System.out.println("product_name: " + productName + " company_name: " + companyName + " version: " + version + " key: " + key + " type: " + type + " validity: " + validity + " Video: " + course + " lastModifiedDate: " + lastModifiedDate);
+//		                System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 		            }
 	
 		               
@@ -574,7 +574,7 @@ public class LicenseController {
 		    		{
 		    			
 		    			license.getFilename();
-		    		System.out.println("file are same  :"+(file.equals(license.getFilename())));
+		    		//System.out.println("file are same  :"+(file.equals(license.getFilename())));
 		    			
 		    			 String filePath = licenceUploadDirectory+license.getFilename();
 		    		        File file1 = new File(filePath);

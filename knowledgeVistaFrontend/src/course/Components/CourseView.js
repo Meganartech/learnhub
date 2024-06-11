@@ -1,32 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../../css/CourseView.module.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import axios from "axios";
-
+import logo from "../../images/logo.png"
 const CourseView = ({ filteredCourses }) => {
   const MySwal = withReactContent(Swal);
   const role = sessionStorage.getItem("role");
   const userId = sessionStorage.getItem("userid");
   const token = sessionStorage.getItem("token");
-
-  const handlesubmit = async (courseId, userId) => {
+  const handlepaytype =(courseId, userId,paytype)=>{
+    let url=""
+    if(paytype==="FULL"){
+      url="/full/buyCourse/create";
+      handlesubmit(courseId,userId,url);
+    }else{
+    
+    MySwal.fire({
+      icon:"question",
+      title: 'Payment Type?',
+      text:"Want To Pay the Amount Partially or Fully? ",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonColor:"#4e73df",
+      denyButtonColor:"#4e73df",
+      confirmButtonText: `Pay Fully `,
+      denyButtonText: `Pay in  Part`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        url="/full/buyCourse/create";
+        handlesubmit(courseId,userId,url);
+      } else if (result.isDenied) {
+        url="/part/buyCourse/create";
+        
+        handlesubmit(courseId,userId,url);
+      }
+    })
+    }
+  }
+  const handlesubmit = async (courseId, userId,url) => {
     try {
-      const data=JSON.stringify({
+      
+  const data=JSON.stringify({
         courseId: courseId,
         userId: userId
     })
-        const response = await axios.post(`${baseUrl}/buyCourse/create`,data, {
+     
+        const response = await axios.post(`${baseUrl}${url}`,data, {
       
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-
+        
             const order =  response.data;
             const options = {
-                order_id: order,  
+                order_id: order.orderId,  
+                description :order.description,
+               name:order.name,
                 handler: function (response) {
                   if (response.error ){
                     MySwal.fire({
@@ -36,17 +68,18 @@ const CourseView = ({ filteredCourses }) => {
                     });
                   } else {
                     
-                        sendPaymentIdToServer(response.razorpay_payment_id, order);
+                        sendPaymentIdToServer(response.razorpay_payment_id, order.orderId,response.razorpay_signature);
 
                     }
                 },
+                
                 theme: {
                     color: "#3399cc"
                 },
             };
 
             var pay = new window.Razorpay(options);
-           
+            
             pay.open();
            
         
@@ -60,11 +93,12 @@ const CourseView = ({ filteredCourses }) => {
     }
 };
 
-  const sendPaymentIdToServer = async (paymentId, order) => {
+  const sendPaymentIdToServer = async (paymentId, order ,signature) => {
     try {
       const paydata=JSON.stringify({
         paymentId: paymentId,
         orderId: order,
+        signature:signature,
     })
         const response = await axios.post(`${baseUrl}/buyCourse/payment`,paydata, {
             headers: {
@@ -90,7 +124,7 @@ const CourseView = ({ filteredCourses }) => {
       MySwal.fire({
         icon: 'error',
         title: 'Error sending payment ID to server:', 
-        text: error
+        text: error.response.data
     });
     }
 };
@@ -191,7 +225,7 @@ if(amount===0){
                           </div>
                           <a
                             className="btn btn-outline-primary"
-                            onClick={() => handlesubmit(item.courseId, userId)}
+                            onClick={() => handlepaytype(item.courseId, userId,item.paytype)}
                           >
                             Enroll Now
                           </a>

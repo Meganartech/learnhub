@@ -33,8 +33,8 @@ public class Course_PartPayment_Structure {
 	private Long paymenttypeId;
 	
 	private LocalDate datecreated;
-	private Long createdBy;
-	private Long AppreovedBy;
+	private String createdBy;
+	private String AppreovedBy;
 	
 	@Column(columnDefinition ="Varchar(100)")
 	private String ReferalCode;

@@ -56,8 +56,8 @@ const About_Us = () => {
     
       const response=await axios.post(`${baseUrl}/api/v2/uploadfile`,formData, {
        headers: {
-           Authorization: token,
-       }
+           Authorization: token
+          }
    });
   
       if (response.status === 200) {
@@ -72,18 +72,28 @@ const About_Us = () => {
           }
         });
       }
-      const data = response.data;
+   
     } catch (error) {
-      MySwal.fire({
-        title: "Error!",
-        text: error.response.data.message,
-        icon: "error",
-        confirmButtonText: "OK",
-      });
-      
+      if(error.response && error.response.status===401){
+        MySwal.fire({
+          title: "Error!",
+          text: "you are unAuthorized to access this page",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }else{
+        MySwal.fire({
+          title: "Error!",
+         text: "Some unexpected error occured try again later",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+     
+    
     }
   
-    setAudioFile(null);
+   // setAudioFile(null);
   };
 
 

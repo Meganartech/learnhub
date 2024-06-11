@@ -215,7 +215,7 @@ public class certificateController {
 	        // Return the list of HashMaps as the response body
 	        return ResponseEntity.ok().body(allActivityHashMaps);
 	    }
-	    return ResponseEntity.ok().body("something fuzzy happen");
+	    return ResponseEntity.notFound().build();
 	}
 
 public ResponseEntity<?> getByActivityId( Long activityId, String token) {

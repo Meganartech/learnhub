@@ -13,7 +13,7 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
             const data = response.data;
             setIsvalid(data.valid);
           
-           
+
         } catch (error) {
           if (error.response && error.response.status !== 200) {
             throw new Error('Network response was not ok');

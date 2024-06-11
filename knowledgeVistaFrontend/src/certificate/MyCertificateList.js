@@ -41,7 +41,7 @@ const MyCertificateList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {myCertificates.map((certificate, index) => (
+                {  myCertificates.map((certificate, index) => (
                         <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{certificate.course}</td>

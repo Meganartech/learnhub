@@ -4,11 +4,15 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
 import { json, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Partialpaymentsetting from './Partialpaymentsetting';
 
 const CourseCreation = () => {
     const token = sessionStorage.getItem("token");
     const MySwal = withReactContent(Swal);
     const navigate =useNavigate();
+    const [nextclick,setnextclick]=useState(false)
+    const [installmentData, setInstallmentData] = useState([]);
+  const [durations, setDurations] = useState([]);
   
   const [enablechecked,setenablechecked]=useState(false);
     // Initial state for form errors
@@ -155,8 +159,20 @@ const CourseCreation = () => {
         formDataToSend.append("Trainer", formData.Trainer);
         formDataToSend.append("Duration", formData.Duration);
         formDataToSend.append("Noofseats", formData.Noofseats);
-     
-        // Send the form data
+        if(enablechecked){
+         formDataToSend.append("paytype","PART")
+        
+        const installmentDataJson = JSON.stringify(installmentData);
+  formDataToSend.append("InstallmentDetails", installmentDataJson);
+ 
+        }else{
+            
+         formDataToSend.append("paytype","FULL")
+        }
+    
+          
+        
+       
         try {
             const response = await axios.post(`${baseUrl}/course/add`,formDataToSend,{
             headers:{
@@ -204,9 +220,12 @@ const CourseCreation = () => {
     return (
         <div className='contentbackground'>
             <div className='contentinner'>
+                {nextclick?(<Partialpaymentsetting enablechecked={enablechecked} setenablechecked={setenablechecked} handleSubmit={handleSubmit}
+                setnextclick={setnextclick} courseamount={formData.courseAmount} setDurations={setDurations} durations={durations}
+                 installmentData={installmentData} setInstallmentData={setInstallmentData}/>):(
                 <div className='divider ml-2'>
                     <h1 style={{ textDecoration: "underline" }}>Setting up a Course</h1>
-                    <form  onSubmit={handleSubmit}>
+                    <form >
                         {/* Form fields */}
                         <div className='formgroup mt-2' style={{ fontSize: "larger" }}>
                             {/* Course Title */}
@@ -395,15 +414,15 @@ const CourseCreation = () => {
                             </button>
                             <button
                                 className='btn btn-primary'
-                                type='submit'
+                                
                                 disabled={!canSubmit()}
-                               
+                                onClick={()=>{setnextclick(true)}}
                             >
-                                Submit
+                                next
                             </button>
                         </div>
                     </form>
-                </div>
+                </div>)}
             </div>
         </div>
     );

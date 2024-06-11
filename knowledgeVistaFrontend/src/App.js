@@ -49,6 +49,10 @@ import About_Us from "./AuthenticationPages/About_Us";
 import baseUrl from "./api/utils.js";
 import axios from "axios";
 import RefreshToken from "./AuthenticationPages/RefreshToken.js";
+import MyPayments from "./Student/MyPayments.js";
+import UpdatePartialPaymentSettings from "./course/Components/UpdatePartialPaymentSettings.js";
+import Paymenttransactions from "./course/Components/Paymenttransactions.js";
+import TransactionHistoryTrainer from "./Trainer/TransactionHistoryTrainer.js";
 
 
 function App() {
@@ -134,6 +138,10 @@ function App() {
                       <Route path="/trainer/edit/:email" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditTrainer/></PrivateRoute>}/>
                       <Route path="/AssignedCourses" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} ><MyAssignedcourses/></PrivateRoute>}/>
                       <Route path="/about" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true} licence={true}><About_Us/></PrivateRoute>}/>
+                      <Route path="/myPayments" element={<PrivateRoute authenticationRequired={true} onlyuser={true}><MyPayments/></PrivateRoute>}/>
+                      <Route path="/payment/transactionHitory" element={<PrivateRoute authenticationRequired={true} onlyadmin={true} authorizationRequired={true}><Paymenttransactions/></PrivateRoute>}/>
+                      <Route path="/payment/trainer/transactionHitory" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} authorizationRequired={true} ><TransactionHistoryTrainer/></PrivateRoute>}/>
+                      <Route path="/course/update/paymentSettings/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><UpdatePartialPaymentSettings/></PrivateRoute>}/>
                         </Route> 
            <Route path="/License" element={<License/>}/>
           <Route path="/" element={<StudentRegister/>}/>
