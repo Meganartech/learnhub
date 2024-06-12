@@ -57,10 +57,10 @@ public class videolessonController {
 		 @Autowired
 		 private JwtUtil jwtUtil;
 //
-//		 @Value("${upload.video.directory}")
-//		 private  String videoStorageDirectory;
+		 @Value("${upload.video.directory}")
+		 private  String videoStorageDirectory;
 		 
-		private final String videoStorageDirectory = "video/";
+		//private final String videoStorageDirectory = "video/";
 		
 		
 		

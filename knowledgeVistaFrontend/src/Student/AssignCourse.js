@@ -86,7 +86,7 @@ const handleAssignCourse = async () => {
          MySwal.fire({
             icon: 'error',
             title: 'An unexpected error occurred!',
-            text: error.response.data.message ,
+            text: error.response ,
             confirmButtonText: "OK"
         });
         window.location.reload()

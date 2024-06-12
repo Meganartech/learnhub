@@ -55,10 +55,10 @@ const AttenTest = () => {
                   if(error.response && error.response.status===400){
                     setattemptlimit(true);
                   }else{
-                  const message=error.response.data
+                 
                 MySwal.fire({
                     title: "Error",
-                    text: message.error,
+                    text: error.response,
                     icon: "error",
                     confirmButtonText: "OK"
                 });}
@@ -125,10 +125,10 @@ const AttenTest = () => {
       } catch (error) {
         
         setIsSubmitting(false);
-        const message=error.response.data
+        const message=error.response
         MySwal.fire({
             title: "Error",
-            text: message.error,
+            text: message,
             icon: "error",
             confirmButtonText: "OK"
         });

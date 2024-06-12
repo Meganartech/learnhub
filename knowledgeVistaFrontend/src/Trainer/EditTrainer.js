@@ -75,7 +75,7 @@ const EditTrainer = () => {
           }else{
             MySwal.fire({
               title: "Error!",
-              text: `${error.response.data}`,
+              text: error.response,
               icon: "error",
               confirmButtonText: "OK",
             });
