@@ -209,19 +209,35 @@ public class videolessonController {
 
 		    private ResponseEntity<?> handleUserRole(Long lessId, Long courseId, Muser user,HttpServletRequest request) {
 		        Optional<CourseDetail> opcourse = coursedetailrepostory.findById(courseId);
-		        if (opcourse.isPresent() && user.getCourses().contains(opcourse.get())) {
+		       
+		        
+		        if (opcourse.isPresent()) {
+		        	 CourseDetail course=opcourse.get();
+		        	 if(course.getAmount()==0) {
+		        		  return getVideo(lessId,request); 
+		        	 } else if(user.getCourses().contains(course)) {
 		            return getVideo(lessId,request);
+		        	 }else {
+		        		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        	 }
 		        } else {
-		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        	 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		        }
 		    }
 
 		    private ResponseEntity<?> handleTrainerRole(Long lessId, Long courseId, Muser user,HttpServletRequest request) {
 		        Optional<CourseDetail> opcourse = coursedetailrepostory.findById(courseId);
-		        if (opcourse.isPresent() && user.getAllotedCourses().contains(opcourse.get())) {
-		            return getVideo(lessId ,request);
+		        if (opcourse.isPresent()) {
+		        	 CourseDetail course=opcourse.get();
+		        	 if(course.getAmount()==0) {
+		        		  return getVideo(lessId,request); 
+		        	 } else if(user.getAllotedCourses().contains(course)) {
+		            return getVideo(lessId,request);
+		        	 }else {
+		        		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        	 }
 		        } else {
-		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		        }
 		    }
 		    
