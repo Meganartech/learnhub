@@ -494,6 +494,13 @@ public class CourseController {
 	           String role = jwtUtil.getRoleFromToken(token);
 
 	           if (!"ADMIN".equals(role)) {
+	        	   Optional<CourseDetail> opcourse=coursedetailrepository.findById(courseId);
+	        	   if(opcourse.isPresent()) {
+	        		   CourseDetail course=opcourse.get();
+	        		   if(course.getAmount()== 0) {
+	        			   return getVideoLessonsResponse(courseId); 
+	        		   }
+	        	   }
 	               String email = jwtUtil.getUsernameFromToken(token);
 	               Optional<Muser> opuser = muserRepository.findByEmail(email);
 	               if (!opuser.isPresent()) {
@@ -506,6 +513,7 @@ public class CourseController {
 	                       return getVideoLessonsResponse(courseId);
 	                   }
 	               } else if ("USER".equals(role)) {
+	            	   
 	                   if (user.getCourses().stream().anyMatch(course -> course.getCourseId().equals(courseId))) {
 	                       return getVideoLessonsResponse(courseId);
 	                   }
