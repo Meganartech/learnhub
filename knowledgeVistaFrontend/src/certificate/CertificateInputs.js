@@ -181,7 +181,7 @@ const certificateInputs=(
 
   <div className='formgroup'>
     <div className='inputgrp'>
-      <label htmlFor='institutionName'>Institution Name</label>
+      <label htmlFor='institutionName'>Institution Name <span className="text-danger">*</span></label>
       <span>:</span>
       <input
         id='institutionName'
@@ -193,7 +193,7 @@ const certificateInputs=(
     </div>
 
     <div className='inputgrp'>
-      <label htmlFor='ownerName'>Owner Name</label>
+      <label htmlFor='ownerName'>Owner Name <span className="text-danger">*</span></label>
       <span>:</span>
       <input
         id='ownerName'
@@ -205,7 +205,7 @@ const certificateInputs=(
     </div>
 
     <div className='inputgrp'>
-      <label htmlFor='qualification'>Qualification</label>
+      <label htmlFor='qualification'>Qualification <span className="text-danger">*</span></label>
       <span>:</span>
       <input
       name='qualification'
@@ -218,7 +218,7 @@ const certificateInputs=(
     </div>
 
     <div className='inputgrp'>
-      <label htmlFor='address'>Address</label>
+      <label htmlFor='address'>Address <span className="text-danger">*</span></label>
       <span>:</span>
       <input
         id='address'

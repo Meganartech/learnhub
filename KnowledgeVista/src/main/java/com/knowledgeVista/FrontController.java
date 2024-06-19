@@ -30,6 +30,7 @@ import com.knowledgeVista.Course.certificate.certificateController;
 import com.knowledgeVista.License.License;
 import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.UserListWithStatus;
+import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Payments.PaymentIntegration;
 import com.knowledgeVista.Payments.PaymentListController;
 import com.knowledgeVista.Settings.Feedback;
@@ -100,6 +101,9 @@ public class FrontController {
 	
 	@Autowired
 	private certificateController  certi;
+	
+	@Autowired
+	private NotificationController noticontroller;
 
 //----------------------------COURSECONTROLLER----------------------------
     
@@ -468,15 +472,15 @@ public class FrontController {
     	  
  //----------------------Assign course---------------------
     		@PostMapping("/AssignCourse/{userId}/courses")
-    		public ResponseEntity<String> assignCoursesToUser(@PathVariable Long userId, @RequestBody List<Long> courseIds, 
+    		public ResponseEntity<String> assignCoursesToUser(@PathVariable Long userId, @RequestBody Map<String, List<Long>> data, 
     				@RequestHeader("Authorization") String token) {
-    			return assign.assignCoursesToUser(userId, courseIds, token);
+    			return assign.assignCoursesToUser(userId, data, token);
     		}
     		
     		@PostMapping("/AssignCourse/trainer/{userId}/courses")
-    		public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long userId, @RequestBody List<Long> courseIds,
+    		public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long userId, @RequestBody Map<String, List<Long>> data,
     				 @RequestHeader("Authorization") String token) {
-    			return assign.assignCoursesToTrainer(userId, courseIds, token);
+    			return assign.assignCoursesToTrainer(userId, data, token);
     		}
     		
     		@GetMapping("/AssignCourse/student/courselist")
@@ -667,5 +671,27 @@ public class FrontController {
                                          @RequestHeader("Authorization") String token) {
             	   return certi.getByActivityId(activityId, token);
     				}
+               
+               
+ //-----------------------------------Notification Controller-------------------------------------------------
+               @GetMapping("/notifications")
+               public ResponseEntity<?>GetAllNotification( @RequestHeader("Authorization") String token){
+            	   return noticontroller.GetAllNotification(token);
+               }
+               
+               @PostMapping("/MarkAllASRead")
+               public ResponseEntity<?>MarkALLAsRead(@RequestHeader("Authorization") String token,@RequestBody List<Long> notiIds ){
+            	   return noticontroller.MarkALLasRead(token, notiIds);
+               }
+               
+               @GetMapping("/unreadCount")
+               public ResponseEntity<?>UreadCount(@RequestHeader("Authorization") String token){
+            	   return noticontroller.UreadCount(token);
+               }
+               
+               @GetMapping("/clearAll")
+               public ResponseEntity<?>ClearAll(@RequestHeader("Authorization") String token){
+            	   return noticontroller.ClearAll(token);
+               }
 }
 

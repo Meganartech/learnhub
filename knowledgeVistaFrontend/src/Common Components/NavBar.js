@@ -5,14 +5,21 @@ import withReactContent from "sweetalert2-react-content";
 import "../css/Component.css"
 import baseUrl from "../api/utils";
 import axios from "axios";
+import bell from "../images/bell.png"
+import Notification from "./Notification";
 
 const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) => {
   const [data,setdata]=useState({
     name:"",
     profileImage:null
   })
+  const [isopen,setisopen]=useState(false);
+  const[count,setcount]=useState(0);
   const token =sessionStorage.getItem("token");
+ 
+
   useEffect(() => {
+    
     const fetchItems = async () => {
         try {
             const response = await axios.get(`${baseUrl}/Edit/profiledetails`, {
@@ -32,6 +39,44 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
 
     fetchItems();
 }, [token]);  
+const fetchUnreadCount = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}/unreadCount`, {
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    if (response.status === 200) {
+      const data = response.data;
+      setcount(data);
+    }
+  } catch (error) {
+    console.error("Error fetching unread count:", error);
+  }
+};
+useEffect(() => {
+
+
+
+  // Fetch initially
+  fetchUnreadCount();
+
+  // Cleanup for interval
+}, [count]); // Only re-run on token change
+
+const handlemarkallasRead =async (notificationIds)=>{
+  const markread=  await axios.post(`${baseUrl}/MarkAllASRead`, notificationIds, {
+      headers: {
+        Authorization: token,
+      },
+      
+    });
+    if(markread.status===200){
+
+      fetchUnreadCount();
+    }
+ }
 
  
 
@@ -84,7 +129,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
     <nav className="navbar .navbar-expand  navcolor topbar static-top navgrid ">
       
     
-      
+      <div className="gridnav">
     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
       <div className="searchbar">
     <i className="fa fa-search pt-1 pl-1 " aria-hidden="true"></i>
@@ -101,14 +146,38 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
         />
       
               {searchQuery && (  
-            <i class="fa-solid fa-xmark pt-1"
+            <i className="fa-solid fa-xmark pt-1"
             onClick={() => setSearchQuery('')}></i>)}
     </div>
     )}
-   
-
-      <ul className="navbar-nav ml-auto " style={{gridColumn: "2"}}>
+<div className="navbar-nav ml-auto " style={{gridColumn:"2"}}>
+  <div className="nav-item dropdown no-arrow">
+    <a
+    onClick={()=>{setisopen(! isopen)}}
+      href="#"
+      
+    >
+      <span className="w-100"></span>
+      <span className="notification-container">
+        <div> <img
+            className="img-profile rounded-circle borderimg"
+            src={bell}
+            alt="User Profile"
+            width="40px"
+            height="40px"
+          />
+        {count > 0 ?<span className="notification-count">{count}</span>:<></>}
+        </div>
+      </span>
+    </a>
+    
+    </div>
+</div>
+ 
+      <ul className="navbar-nav ml-auto " style={{gridColumn:"3"}} >
         <li className="nav-item dropdown no-arrow ">
+          
+      
           <a
             className="nav-link dropdown-toggle profile"
             href="#"
@@ -117,7 +186,9 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-          ><h5 className="username">{data.name.length > 20 ? data.name.substring(0, 20) : data.name}</h5>
+          >
+            <span></span>
+            <h5 className="username">{data.name.length > 20 ? data.name.substring(0, 20) : data.name}</h5>
 
             <img
               className="img-profile rounded-circle  borderimg "
@@ -131,7 +202,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
       
           {/* <!-- Dropdown - User Information --> */}
           <div
-            className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+            className="dropdown-menu dropdown-menu-left shadow animated--grow-in"
             aria-labelledby="userDropdown"
           >
             <a className="dropdown-item" href="/course/dashboard/profile">
@@ -151,8 +222,17 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) =>
               Logout
             </button>
           </div>
+
           </li>
           </ul>
+          </div>
+          <div></div>
+          <div></div>
+          {isopen && <div >
+        <Notification setisopen={setisopen} isopen={isopen} setcount={setcount} handlemarkallasRead={handlemarkallasRead}/>
+      
+    </div>}
+  
     </nav>
   );
 };

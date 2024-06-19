@@ -1,5 +1,7 @@
 package com.knowledgeVista.Notification;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,4 +22,5 @@ public class NotificationUser {
 	private Long notificationId;
 	private Boolean is_read;
 	private Boolean Is_Active;
+	private LocalDate datetonotify;
 }

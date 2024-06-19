@@ -45,6 +45,7 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.DownloadManagement.CustomerLeads;
 import com.knowledgeVista.DownloadManagement.Customer_downloads;
 import com.knowledgeVista.FileService.LicenceService;
+import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -68,8 +69,8 @@ public class LicenseController {
 	 @Autowired
 	 private LicenceService licenceservice;
 	
-	 @Value("${upload.video.directory}")
-	    private String audioUploadDirectory;
+	 @Autowired
+		private NotificationService notiservice;
 	 
 
 	    @Value("${upload.licence.directory}")
@@ -451,13 +452,23 @@ public class LicenseController {
 		               // System.out.println("startdate"+startdate);
                         LocalDate endDate = startdate.plusDays(validitydays);
                        // System.out.println("endDate"+endDate);
-		                
+		               //------------for licence Expired Notificatio-------------
+                        String heading=" Licence Expiring Soon !";
+     	 		       String link="/about";
+     	 		       String notidescription= "Your Licence Was Expiring Soon.. Upload A New Licence File" ;
+     	 		      Long NotifyId =  notiservice.createNotification("CourseAdd","system",notidescription ,"system",heading,link);
+     	 		        if(NotifyId!=null) {
+     	 		        	for (int iv = 1; iv < 6; iv++) {
+     	 		        	  LocalDate notificationDate = endDate.minusDays(iv);
+     	 		        	  notiservice.LicenceExpitedNotification(NotifyId, notificationDate);
+     	 		        	}
+     	 		        }
 		                RestTemplate restTemplate = new RestTemplate();
 		                String email = jwtUtil.getUsernameFromToken(token);
 		               Optional<Muser> opuser= muserrepo.findByEmail(email);
 		               if(opuser.isPresent()) {
 		            	   Muser user= opuser.get();
-		                String apiurl3 = "http://localhost:8080/Developer/CustomerLeads/" + email;
+			                String apiurl3 = "http://localhost:8080/Developer/CustomerLeads/" + email;
 		                CustomerLeads updateData = new CustomerLeads();
 		                updateData.setEmail(user.getEmail());
 		                updateData.setCountryCode(user.getCountryCode());

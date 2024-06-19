@@ -60,7 +60,7 @@ const StudentProfile = () => {
         {notfound ? (
         <h1 style={{textAlign:"center",marginTop:"250px"}}>No Student found with the email</h1>) : (
             <div className='innerFrame '>
-              <h2 style={{textDecoration:"underline"}}> Trainer Profile</h2>
+              <h2 style={{textDecoration:"underline"}}> Student Profile</h2>
               <div className='mainform'>
                 <div className='profile-picture'>
                   <div className='image-group' >

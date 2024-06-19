@@ -57,9 +57,13 @@ const AssignCourseTRAINER = () => {
   
 const handleAssignCourse = async () => {
   const selected = courses.filter(course => course.selected);
- const datatosend=JSON.stringify(selected.map(course => course.courseId))
+  const unselected = courses.filter(course => !course.selected);
+  const courseData = {
+    selectedCourses: selected.map(course => course.courseId), // List of Longs
+    unselectedCourses: unselected.map(course => course.courseId) // List of Longs
+  };
   try {
-    const response = await axios.post(`${baseUrl}/AssignCourse/trainer/${userId}/courses`,datatosend, {
+    const response = await axios.post(`${baseUrl}/AssignCourse/trainer/${userId}/courses`,courseData, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': token

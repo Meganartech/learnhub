@@ -21,8 +21,9 @@ const Layout = ({searchQuery,handleSearchChange,setSearchQuery}) => {
                     <NavBar  
                 activeLink={activeLink}searchQuery={searchQuery} handleSearchChange={handleSearchChange} setSearchQuery={setSearchQuery}/>
 
-                    
+                
                  <Outlet/>
+                
                     </div>
                    
               </div>

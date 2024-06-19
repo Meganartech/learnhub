@@ -52,16 +52,17 @@ const AttenTest = () => {
                 {
                     setNotFound(true); 
                   }
-                  if(error.response && error.response.status===400){
+                  else if(error.response && error.response.status===400){
                     setattemptlimit(true);
                   }else{
                  
                 MySwal.fire({
                     title: "Error",
-                    text: error.response,
+                    text: error.response.data,
                     icon: "error",
                     confirmButtonText: "OK"
-                });}
+                });
+            }
             }
         };
 

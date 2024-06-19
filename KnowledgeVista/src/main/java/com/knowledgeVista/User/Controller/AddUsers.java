@@ -2,6 +2,8 @@ package com.knowledgeVista.User.Controller;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -36,6 +39,9 @@ public class AddUsers {
     private MusertestactivityRepo activityrepo;
 	@Autowired
 	private MuserRoleRepository muserrolerepository;
+	
+	 @Autowired
+	private NotificationService notiservice;
 //===========================================ADMIN ADDING TRAINER==========================================	
 	
 	  public ResponseEntity<?> addTrainer( String username, String psw,String email,
@@ -73,7 +79,10 @@ public class AddUsers {
 	                  } catch (IOException e) {
 	                      e.printStackTrace();
 	                  }
-	                  muserrepositories.save(trainer);
+	                Muser savedtrainer=  muserrepositories.save(trainer);
+	                  
+
+
 	                  return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	              }
 	          } else {
@@ -106,6 +115,18 @@ public class AddUsers {
 	          }
 
 	          String role = jwtUtil.getRoleFromToken(token);
+	          String emailofadd=jwtUtil.getUsernameFromToken(token);
+	          String usernameofadding="";
+	          String emailofadding="";
+	          Optional<Muser> optiUser = muserrepositories.findByEmail(emailofadd);
+              if (optiUser.isPresent()) {
+            	  Muser addinguser= optiUser.get();
+            	  usernameofadding=addinguser.getUsername();
+            	  emailofadding=addinguser.getEmail();
+              }else {
+
+	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+              }
 
 	          // Perform authentication based on role
 	          if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
@@ -129,7 +150,18 @@ public class AddUsers {
 	                  } catch (IOException e) {
 	                      e.printStackTrace();
 	                  }
-	                  muserrepositories.save(user);
+	                 Muser saveduser= muserrepositories.save(user);
+		       	       String heading="New Student Added !";
+		       	       String link="/view/Student/profile/"+saveduser.getEmail();
+		       	       String notidescription= "A new Student "+saveduser.getUsername() + " was added";
+		       	       
+		       	      Long NotifyId =  notiservice.createNotification("UserAdd",usernameofadding,notidescription ,emailofadding,heading,link, Optional.ofNullable(profile));
+		       	        if(NotifyId!=null) {
+		       	        	List<String> notiuserlist = new ArrayList<>(); 
+		       	        	notiuserlist.add("ADMIN");
+		       	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+		       	        }
+	                 
 	                  return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	              }
 	          } else {

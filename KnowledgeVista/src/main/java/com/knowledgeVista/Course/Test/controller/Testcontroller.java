@@ -31,6 +31,7 @@ import com.knowledgeVista.Course.Test.Question;
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.Course.Test.Repository.QuestionRepository;
 import com.knowledgeVista.Course.Test.Repository.TestRepository;
+import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -54,6 +55,12 @@ public class Testcontroller {
 	    
 		 @Autowired
 		 private JwtUtil jwtUtil;
+		 
+		 @Autowired
+			private NotificationService notiservice;
+
+			@Autowired
+			private MuserRepositories muserRepository;
 //-----------------------------WORKING for ADMIN View-------------------------
 
 	    public ResponseEntity<String> createTest( Long courseId, CourseTest test,String token) {
@@ -66,11 +73,24 @@ public class Testcontroller {
 
 		          String role = jwtUtil.getRoleFromToken(token);
 		          String email=jwtUtil.getUsernameFromToken(token);
+		          String username="";
+				     Optional<Muser> opuser =muserRepository.findByEmail(email);
+				     if(opuser.isPresent()) {
+				    	 Muser user=opuser.get();
+				    	 username=user.getUsername();
+				     }else {
+			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				     }
 		          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 		        	 
 	            // Find the course by its ID
 	            CourseDetail courseDetail = courseDetailRepo.findById(courseId)
 	                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
+	            List<Muser> users=courseDetail.getUsers();
+                List<Long> ids = new ArrayList<>(); 
+                for (Muser user : users) {
+                	ids.add(user.getUserId());
+                }
 	            if("TRAINER".equals(role)) {
 	        		Optional< Muser> trainerop= muserRepo.findByEmail(email);
 	        		  if(trainerop.isPresent()) {
@@ -98,7 +118,13 @@ public class Testcontroller {
 	                question.setTest(savedTest);
 	                questionRepository.save(question);
 	            }
-
+	            String heading="New Test Added !";
+			       String link="/test/start/"+courseDetail.getCourseName()+"/"+courseDetail.getCourseId();
+			       String notidescription= "A new test "+savedTest.getTestName() + " was added  in the " + courseDetail.getCourseName();
+			      Long NotifyId =  notiservice.createNotification("LessonAdd",username,notidescription ,email,heading,link);
+			        if(NotifyId!=null) {
+			        	notiservice.SpecificCreateNotification(NotifyId, ids);
+			        }
 	            return ResponseEntity.ok("Test created successfully");
 		          }else {
 
@@ -192,7 +218,7 @@ public class Testcontroller {
 	            // Validate the JWT token
 	            if (!jwtUtil.validateToken(token)) {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                        .body("{\"error\": \"Invalid Token\"}");
+	                        .body("Invalid Token");
 	            }
 
 	            // Retrieve role and email from token
@@ -200,7 +226,7 @@ public class Testcontroller {
 	            String email = jwtUtil.getUsernameFromToken(token);
 
 	            if ("ADMIN".equals(role)) {
-      	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+      	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
 
 	            } else if ("USER".equals(role)) {
 	                // For User role
@@ -213,7 +239,7 @@ public class Testcontroller {
 	                        CourseDetail course = opCourse.get();
 	                        if(!user.getCourses().contains(course)) {
 
-	           	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	           	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are Not Enrolled to  Access  this course");
 	           	             
 	                        }
 	                        Optional<CourseTest> opTest = testRepository.findByCourseDetail(course);
@@ -224,7 +250,7 @@ public class Testcontroller {
 
 	                            // Check if user exceeds allowed attempts
 	                            if (attemptCount >= test.getNoofattempt()) {
-	                                return ResponseEntity.badRequest().body("{\"error\": \"Attempt Limit Exceeded\"}");
+	                                return ResponseEntity.badRequest().body("Attempt Limit Exceeded");
 	                                
 	                            }
 	                            
@@ -235,18 +261,18 @@ public class Testcontroller {
 	                        } else {
 
 	                            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                                    .body("{\"error\": \"Test not found for course\"}");
+	                                    .body("Test not found for course");
 	                        }
 	                    } else {
 
 	                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                                .body("{\"error\": \"Course not found with ID: " + courseId + "\"}");
+	                                .body("Course not found with ID: " + courseId);
 	                    }
 
 	                } else {
 
 	                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                            .body("{\"error\": \"User not found\"}");
+	                            .body("User not found");
 	                }
 
 	            } else {
@@ -254,7 +280,7 @@ public class Testcontroller {
 	            	System.out.println("forbitten");
 	                // Handle other roles if needed
 	                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-	                        .body("{\"error\": \"Access denied\"}");
+	                        .body("Access denied");
 	            }
 	        }
 	    private void prepareTestDataForResponse(CourseTest test) {

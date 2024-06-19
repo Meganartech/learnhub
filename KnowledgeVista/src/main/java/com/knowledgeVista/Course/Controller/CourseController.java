@@ -31,6 +31,7 @@ import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.Payments.Course_PartPayment_Structure;
 import com.knowledgeVista.Payments.InstallmentDetails;
 import com.knowledgeVista.Payments.installmentdetilsrepo;
@@ -58,6 +59,9 @@ public class CourseController {
 	 
 	 @Autowired
 	 private partpayrepo partpayrepo;
+	 
+	 @Autowired
+	private NotificationService notiservice;
 	
 	
 //`````````````````````````WORKING``````````````````````````````````
@@ -104,14 +108,20 @@ public class CourseController {
 	    public ResponseEntity<?> addCourse( MultipartFile file,  String courseName,String description,
 	    		String category,Long Duration,Long Noofseats,Long amount,String paytype,String installmentDataJson, String token) {
 		     try {
-		    	 //Course_PartPayment_Structure
-
 		    	
 		         if (!jwtUtil.validateToken(token)) {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		         }
 		         String role = jwtUtil.getRoleFromToken(token);
 		         String email=jwtUtil.getUsernameFromToken(token);
+		         String username="";
+			     Optional<Muser> opuser =muserRepository.findByEmail(email);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 username=user.getUsername();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 		 if("ADMIN".equals(role)) {
 	        CourseDetail courseDetail = new CourseDetail();
 	        courseDetail.setCourseName(courseName);
@@ -134,7 +144,16 @@ public class CourseController {
 	       CourseDetail saved= coursedetailrepository.save(savedCourse);
 	       Long courseId=saved.getCourseId();
 	       String coursename =saved.getCourseName();
-	       
+	       String heading="New Course Added !";
+	       String link=courseUrl;
+	       String notidescription= "A new Course "+coursename + " was added " + saved.getCourseDescription();
+	      Long NotifyId =  notiservice.createNotification("CourseAdd",username,notidescription ,email,heading,link, Optional.ofNullable(file));
+	        if(NotifyId!=null) {
+	        	List<String> notiuserlist = new ArrayList<>(); 
+	        	notiuserlist.add("ADMIN");
+	        	notiuserlist.add("USER");
+	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+	        }
 	       if("PART".equals(paytype)) {
 	       Course_PartPayment_Structure paystructure=new Course_PartPayment_Structure();
 	        paystructure.setCourse(savedCourse);
@@ -220,12 +239,26 @@ public class CourseController {
 	       
 	       Long courseId=saved.getCourseId();
 	       String coursename =saved.getCourseName();
+	       String username="";
 	       Optional<Muser> optrainer=muserRepository.findByEmail(email);
 	    	if(optrainer.isPresent()) {
 	    		Muser trainer =optrainer.get();
+	    		 username=trainer.getUsername();
 	    		trainer.getAllotedCourses().add(saved);
 	    		  muserRepository.save(trainer);
 	    	}
+	    	String coursenametosend =saved.getCourseName();
+		       String heading="New Course Added !";
+		       String link=courseUrl;
+		       String notidescription= "A new Course "+coursenametosend + " was added " + saved.getCourseDescription();
+		      Long NotifyId =  notiservice.createNotification("CourseAdd",username,notidescription ,email,heading,link, Optional.ofNullable(file));
+		        if(NotifyId!=null) {
+		        	List<String> notiuserlist = new ArrayList<>(); 
+		        	notiuserlist.add("ADMIN");
+		        	notiuserlist.add("USER");
+		        	notiuserlist.add("TRAINER");
+		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+		        }
 	       Map<String, Object> response = new HashMap<>();
         response.put("message", "savedSucessfully");
         response.put("courseId", courseId);
@@ -247,11 +280,30 @@ public class CourseController {
 	         }
 
 	         String role = jwtUtil.getRoleFromToken(token);
+	         String email=jwtUtil.getUsernameFromToken(token);
+	         String username="";
+		     Optional<Muser> opuser =muserRepository.findByEmail(email);
+		     if(opuser.isPresent()) {
+		    	 Muser user=opuser.get();
+		    	 username=user.getUsername();
+		     }else {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
 	         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 	       	 
 	            Optional<CourseDetail> courseDetailOptional = coursedetailrepository.findById(courseId);
 	            if (courseDetailOptional.isPresent()) {
 	                CourseDetail existingCourseDetail = courseDetailOptional.get();
+	                //need to work
+	                List<Muser> users=existingCourseDetail.getUsers();
+	                System.out.println("users");
+	                List<Long> ids = new ArrayList<>(); 
+	                if(users != null) {
+	                for (Muser user : users) {
+	                	System.out.println(user.getUserId());
+	                	ids.add(user.getUserId());
+	                }
+	                }
 	                if (!courseName.isEmpty()) {
 	                    existingCourseDetail.setCourseName(courseName);
 	                    String courseUrl = "/courses/" + existingCourseDetail.getCourseName() + "/" + existingCourseDetail.getCourseId();
@@ -279,6 +331,17 @@ public class CourseController {
 	                }
 
 	                CourseDetail updatedCourse = coursedetailrepository.saveAndFlush(existingCourseDetail);
+	            
+	                String heading=" Course Updated !";
+	 		       String link=updatedCourse.getCourseUrl();
+	 		       String notidescription= " Course "+updatedCourse.getCourseName() + " was Updated " ;
+	 		      Long NotifyId =  notiservice.createNotification("CourseAdd",username,notidescription ,email,heading,link, Optional.ofNullable(file));
+	 		        if(NotifyId!=null) {
+	 		         	notiservice.SpecificCreateNotification(NotifyId, ids);
+	 		        	List<String> notiuserlist = new ArrayList<>(); 
+	 		        	notiuserlist.add("ADMIN");
+	 		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+	 		        }
 	                return ResponseEntity.ok("{\"message\": \"Saved successfully\"}");
 	            } else {
 	                return ResponseEntity.notFound().build();

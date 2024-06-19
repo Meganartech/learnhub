@@ -229,7 +229,7 @@ const ViewTrainerList = () => {
                   <i className="fa-solid fa-lock"></i>
                   </button>:
                   <button  className='hidebtn ' onClick={()=>handleActivate(user.userId,user.username,user.email)}>
-                  <i class="fa-solid fa-lock-open"></i>
+                  <i className="fa-solid fa-lock-open"></i>
                   </button>}
                 </td>
               </tr>

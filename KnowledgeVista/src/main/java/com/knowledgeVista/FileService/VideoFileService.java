@@ -33,7 +33,7 @@ public class VideoFileService {
 	        Files.copy(videoFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
 	        // Return the relative path to the file
-	        return modifiedPath;
+	        return uniqueFileName;
 	    }
 public boolean deleteVideoFile(String fileName) {
     Path filePath = Paths.get(videoUploadDirectory, fileName);

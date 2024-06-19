@@ -1,5 +1,7 @@
 package com.knowledgeVista.Payments;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.Settings.PaymentsettingRepository;
 import com.knowledgeVista.Settings.Paymentsettings;
 import com.knowledgeVista.User.Muser;
@@ -46,6 +49,9 @@ public class PaymentIntegration {
 	private OrderuserRepo ordertablerepo;
 	 @Autowired
 	private MuserRepositories muserRepository;
+	 
+	 @Autowired
+	private NotificationService notiservice;
 	 
 	 public Paymentsettings getpaydetails() {
 		    try {
@@ -280,7 +286,7 @@ public ResponseEntity<String> updatePaymentId( Map<String, String> requestData) 
 						             orderUser.setDate(paymentDate);
 						         }
 			
-			            ordertablerepo.save(orderUser); // Update the OrderUser entity with the paymentId
+			           Orderuser savedorder= ordertablerepo.save(orderUser); // Update the OrderUser entity with the paymentId
 			            
 			            Long courseId = orderUser.getCourseId();
 			            Long userId = orderUser.getUserId();
@@ -291,11 +297,41 @@ public ResponseEntity<String> updatePaymentId( Map<String, String> requestData) 
 		            if (optionalUser.isPresent() && optionalCourse.isPresent()) {
 		                Muser user = optionalUser.get();
 		                CourseDetail course = optionalCourse.get();
+		                
+		                //for notification
+		                List<Muser> trainers=course.getTrainer();
+		                List<Long> ids = new ArrayList<>(); 
+		                for (Muser trainer : trainers) {
+		                	ids.add(trainer.getUserId());
+		                }
+		                
 				                if (!user.getCourses().contains(course)) {
 				                     user.getCourses().add(course);
 				                     muserRepository.save(user);
 				                }
+				                this.notifiinstallment(courseId, userId);
 		                  String courseUrl=course.getCourseUrl();
+		                  String heading=" Payment Credited !";
+			       	       String link="/payment/transactionHitory";
+			       	       String linkfortrainer="/payment/trainer/transactionHitory";
+			       	       String notidescription= "The payment for "+ course.getCourseName() + " was Credited  By "
+			       	       + user.getUsername()+" for installment" + savedorder.getInstallmentnumber();
+			       	       
+			       	      Long NotifyId =  notiservice.createNotification("Payment",user.getUsername(),notidescription ,user.getEmail(),heading,link);
+			       	    Long NotifyIdfortrainer =  notiservice.createNotification("Payment",user.getUsername(),notidescription ,user.getEmail(),heading,linkfortrainer);
+		       	         
+			       	      if(NotifyId!=null) {
+			       	        	List<String> notiuserlist = new ArrayList<>(); 
+			       	        	notiuserlist.add("ADMIN");
+			       	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+			       	        }
+			       	        if(ids !=null) {
+			       	        	notiservice.SpecificCreateNotification(NotifyIdfortrainer, ids);
+			       	        }
+		                  
+		                  
+		                  
+		                  
 		                  return ResponseEntity.ok().body(courseUrl);
 		                
 					  } else {
@@ -323,7 +359,39 @@ public ResponseEntity<String> updatePaymentId( Map<String, String> requestData) 
     }
 }
 
-
+public void  notifiinstallment(Long courseId ,Long userId ) {
+	   Optional<CourseDetail> courseOptional = coursedetail.findById(courseId);
+       Optional<Muser> optionalUser = muserRepository.findById(courseId);
+       
+       if (courseOptional.isPresent() && optionalUser.isPresent()) {
+           CourseDetail course = courseOptional.get();
+	       Optional<Course_PartPayment_Structure>opPartpay=partpayrepo.findBycourse(course);
+           if(opPartpay.isPresent()) {
+        	   Course_PartPayment_Structure partpay=opPartpay.get();
+        	   	  List<InstallmentDetails> installmentslist=partpay.getInstallmentDetail();
+        	   	  int count =ordertablerepo.findCountByUserIDAndCourseID(userId, courseId, "paid");
+        	   	  int installmentlength=installmentslist.size();
+        	       	  if(installmentlength >count) {
+        	       	      InstallmentDetails installment=installmentslist.get(count);
+        	       	      Long Duration=installment.getDurationInDays();
+        	       	      LocalDate startdate= LocalDate.now();
+        	       	      LocalDate datetonotify=startdate.plusDays(Duration);
+		                  String heading=" Installment Pending!";
+			       	       String link="/dashboard/course";
+			       	       String notidescription= "Installment date Of "+ course.getCourseName() + " for installment "+ installment.getInstallmentNumber() +" was pending";
+			       	       
+			       	      Long NotifyId =  notiservice.createNotification("Payment","system",notidescription ,"system",heading,link);
+			       	     if(NotifyId!=null) {
+			       	    	List<Long> ids = new ArrayList<>(); 
+			       	    	ids.add(userId);
+			       	        notiservice.SpecificCreateNotification(NotifyId, ids,datetonotify);
+			       	        }
+        	       	  }
+           }
+       }
+   	 
+	
+}
 
 
 }

@@ -59,10 +59,13 @@ const AssignCourse = () => {
   
 const handleAssignCourse = async () => {
     const selected = courses.filter(course => course.selected);
-    const datatosend=JSON.stringify(selected.map(course => course.courseId))
-
+    const unselected = courses.filter(course => !course.selected);
+    const courseData = {
+      selectedCourses: selected.map(course => course.courseId), // List of Longs
+      unselectedCourses: unselected.map(course => course.courseId) // List of Longs
+    };
     try {
-        const response = await axios.post(`${baseUrl}/AssignCourse/${userId}/courses`,datatosend, {
+        const response = await axios.post(`${baseUrl}/AssignCourse/${userId}/courses`,courseData, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': token
@@ -82,14 +85,22 @@ const handleAssignCourse = async () => {
             window.location.href = "/view/Students";
         } 
     } catch (error) {
-      
+      if(error.response && error.response.status===400){
          MySwal.fire({
             icon: 'error',
             title: 'An unexpected error occurred!',
-            text: error.response ,
+            text: error.response.data.error,
             confirmButtonText: "OK"
         });
-        window.location.reload()
+      }else{
+        MySwal.fire({
+          icon: 'error',
+          title: 'An unexpected error occurred!',
+          text: "Try Again After Some Time",
+          confirmButtonText: "OK"
+      });
+      }
+       // window.location.reload()
     }
 };
 

@@ -149,6 +149,7 @@ public class certificateController {
 	
 //````````````````````````````WORING````````````````````````````````````````````````````````)
 	public ResponseEntity<?> viewCoursecertificate() {
+		 try {
 	    List<certificate> certificates = certificaterepo.findAll();
 	    
 	    if (certificates.isEmpty()) {
@@ -179,12 +180,19 @@ public class certificateController {
         	            .body("No certificates found");
 	        }
 	    }
+		 } catch (Exception e) {
+		        // Handle internal server error and return a JSON response
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
+		    }
 	}
 	
 	
 //-------------------Table view of certificates in user---------------------------------
 
 	public ResponseEntity<?> sendAllCertificate( String token) {
+		 try {
+	
 	    String username = jwtUtil.getUsernameFromToken(token);
 	    Optional<Muser> opuser = muserRepository.findByEmail(username);
 	    if (opuser.isPresent()) {
@@ -215,11 +223,16 @@ public class certificateController {
 	        // Return the list of HashMaps as the response body
 	        return ResponseEntity.ok().body(allActivityHashMaps);
 	    }
-	    return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+		 } catch (Exception e) {
+		        // Handle internal server error and return a JSON response
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
+		    }
 	}
 
 public ResponseEntity<?> getByActivityId( Long activityId, String token) {
-	
+	 try {
     if (jwtUtil.validateToken(token)) {
         Optional<MuserTestActivity> opActivity = activityrepo.findById(activityId);
         if (opActivity.isPresent()) {
@@ -239,6 +252,11 @@ public ResponseEntity<?> getByActivityId( Long activityId, String token) {
         // Invalid token
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
+	 } catch (Exception e) {
+	        // Handle internal server error and return a JSON response
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
+	    }
 }
 
 }

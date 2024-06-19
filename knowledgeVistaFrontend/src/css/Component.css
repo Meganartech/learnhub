@@ -21,9 +21,13 @@
     color:#f8f9fc;
 }
 .navgrid{
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+
     height: 80px;
+  
+  }
+  .gridnav{
+    display: grid;
+    grid-template-columns: 6fr  1fr 1fr;
     margin-bottom: 10px;
     justify-items: end;
     align-items: baseline;
@@ -36,7 +40,69 @@
   .username{
     color:black;
   }
-  
+  .notification-container {
+    position: relative; /* Make the container positionable */
+    display: inline-block; /* Allow inline elements inside */
+  }
+  .notification-count {
+    width: 25px;
+    height: 25px;
+    position: absolute; /* Position the count badge on top of the bell */
+    top: 0; /* Align the top edge with the bell's top */
+    right: 3px; /* Position slightly to the right for spacing */
+    padding: 5px 5px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Make the badge circular */
+    background-color: red; /* Set the background color to red */
+    color: white; /* Set the text color to white */
+    font-size: 15px; /* Adjust font size as needed */
+    font-weight: bold; /* Make the number stand out */
+  }
+  #notipanel{
+    position: relative;
+    z-index: 99 !important;
+    
+  }
+  .notificationElement{
+    display: grid;
+    margin-bottom: 5px;
+    grid-template-columns: 1fr 4fr ;
+    padding: 3px;
+    border: 2px solid rgb(196, 196, 230);
+    border-radius: 5px;
+  }
+  .notificationcontent{
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+   
+  }
+  .scrollclass{
+    height: 95%;
+    width: 100%;
+    overflow-y: auto;
+  }
+  .headcontrols{
+    display: grid;
+    grid-template-columns: 3fr 3fr 1fr;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  .alignright{
+    text-align: right;
+  }
+  .notificationPanel{
+    width: 450px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    height: 88vh;
+    z-index: 99 !important; 
+  }
   .borderimg{
    border: 2px solid rgb(255, 255, 255);
   margin-right: 20px;
@@ -186,21 +252,21 @@
   overflow-x: auto;
   padding-right: 10px;
 }
-
+.scrollclass::-webkit-scrollbar,
 .scrolldiv::-webkit-scrollbar {
   width: 3px; /* Width of the scrollbar */
 
 }
-
+.scrollclass::-webkit-scrollbar-track,
 .scrolldiv::-webkit-scrollbar-track {
   background-color:  #f4f4f4; /* Track color */
 }
-
+.scrollclass::-webkit-scrollbar-thumb,
 .scrolldiv::-webkit-scrollbar-thumb {
   background-color: #ccc; 
   border-radius: 2px;
 }
-
+.scrollclass::-webkit-scrollbar-thumb:hover,
 .scrolldiv::-webkit-scrollbar-thumb:hover {
   background-color:#999 /* Hover color for the scrollbar thumb */
 }

@@ -30,7 +30,6 @@ import UploadVideo from "./course/Components/UploadVideo";
 import CourseCreation from "./course/Components/CourseCreation";
 import ViewVideo from "./course/Components/ViewVideo";
 import LessonList from "./course/Components/LessonList";
-import License from "./AuthenticationPages/License.js";
 import Razorpay_Settings from "./AuthenticationPages/Razorpay_Settings.js";
 import TrainerProfile from "./Trainer/TrainerProfile.js";
 import StudentProfile from "./Student/StudentProfile.js";
@@ -142,8 +141,11 @@ function App() {
                       <Route path="/payment/transactionHitory" element={<PrivateRoute authenticationRequired={true} onlyadmin={true} authorizationRequired={true}><Paymenttransactions/></PrivateRoute>}/>
                       <Route path="/payment/trainer/transactionHitory" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} authorizationRequired={true} ><TransactionHistoryTrainer/></PrivateRoute>}/>
                       <Route path="/course/update/paymentSettings/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><UpdatePartialPaymentSettings/></PrivateRoute>}/>
+                      
+                       
+                       
                         </Route> 
-           <Route path="/License" element={<License/>}/>
+           
           <Route path="/" element={<StudentRegister/>}/>
           <Route path="/refresh" element={<PrivateRoute authenticationRequired={true}><RefreshToken/></PrivateRoute>}/>
           <Route path="/unauthorized" element={<Unauthorized/>}/>

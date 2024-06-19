@@ -7,7 +7,7 @@ import baseUrl from "../../api/utils";
 import axios from "axios";
 
 const CreateTest = () => {
-  const { courseId } = useParams();
+  const { courseId} = useParams();
   const MySwal = withReactContent(Swal);
   const [testName, setTestName] = useState("");
   const [questionText, setQuestionText] = useState("");
@@ -32,6 +32,9 @@ const CreateTest = () => {
     },
     selectedOption: ''
   });
+
+
+
  const showprevious=(e)=>{
     const index=selectedQuestionIndex-1;
     console.log(index)

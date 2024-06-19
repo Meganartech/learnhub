@@ -4,8 +4,12 @@ import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -33,6 +37,8 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.FileService.VideoFileService;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.License.LicenseController;
+import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -45,9 +51,12 @@ import jakarta.servlet.http.HttpServletRequest;
 @CrossOrigin
 public class videolessonController {
 
-	@Autowired
-	private MuserRepositories muserRepo;
+	 private  Logger logger = LoggerFactory.getLogger(videolessonController.class);
+	    @Autowired
+	    private MuserRepositories muserRepo;
 
+		@Autowired
+		private MuserRepositories muserRepository;
 		@Autowired
 		private CourseDetailRepository coursedetailrepostory;
 		@Autowired
@@ -60,7 +69,8 @@ public class videolessonController {
 		 @Value("${upload.video.directory}")
 		 private  String videoStorageDirectory;
 		 
-		//private final String videoStorageDirectory = "video/";
+		 @Autowired
+		private NotificationService notiservice;
 		
 		
 		
@@ -74,6 +84,15 @@ public class videolessonController {
 				     }
 
 				     String role = jwtUtil.getRoleFromToken(token);
+				     String email=jwtUtil.getUsernameFromToken(token);
+			         String username="";
+				     Optional<Muser> opuser =muserRepository.findByEmail(email);
+				     if(opuser.isPresent()) {
+				    	 Muser user=opuser.get();
+				    	 username=user.getUsername();
+				     }else {
+			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				     }
 				     if ("ADMIN".equals(role)|| "TRAINER".equals(role)) {
 		          Optional<CourseDetail> courseDetailOptional = coursedetailrepostory.findById(courseId);
 		          if (!courseDetailOptional.isPresent()) {
@@ -81,6 +100,14 @@ public class videolessonController {
 		          }
 
 		          CourseDetail courseDetail = courseDetailOptional.get();
+		          //for notification
+	                List<Muser> users=courseDetail.getUsers();
+	                List<Long> ids = new ArrayList<>(); 
+	                if(users!=null) {
+	                for (Muser user : users) {
+	                	ids.add(user.getUserId());
+	                }
+	                }
                   videoLessons lesson=new videoLessons();
                    lesson.setLessonDescription(LessonDescription);
                    lesson.setLessontitle(Lessontitle);
@@ -97,8 +124,14 @@ public class videolessonController {
 		              return ResponseEntity.badRequest().body("{\"error\": \"Either video file or file URL must be provided\"}");
 		          }
 
-		         lessonrepo.save(lesson);
-
+		       videoLessons savedlesson=  lessonrepo.save(lesson);
+		         String heading="New video Added !";
+			       String link="/courses/java/"+courseDetail.getCourseId();
+			       String notidescription= "A new Lesson "+savedlesson.getLessontitle() + " was added  in the " + courseDetail.getCourseName();
+			      Long NotifyId =  notiservice.createNotification("LessonAdd",username,notidescription ,email,heading,link, Optional.ofNullable(file));
+			        if(NotifyId!=null) {
+			        	notiservice.SpecificCreateNotification(NotifyId, ids);
+			        }
 		              return ResponseEntity.ok("{\"message\": \"Lesson saved successfully\"}");
 				     }else {
 				    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -120,6 +153,17 @@ public class videolessonController {
 		     }
 
 		     String role = jwtUtil.getRoleFromToken(token);
+		     
+	         String email=jwtUtil.getUsernameFromToken(token);
+	         String username="";
+		     Optional<Muser> opuser =muserRepository.findByEmail(email);
+		     if(opuser.isPresent()) {
+		    	 Muser user=opuser.get();
+		    	 username=user.getUsername();
+		     }else {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
+		     
 		     if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
 		         try {
 		             Optional<videoLessons> opvideo = lessonrepo.findById(lessonId);
@@ -152,9 +196,28 @@ public class videolessonController {
 		                		  video.setFileUrl(fileUrl);
 		                	  }
 		                	 
-		                     
+		                    
 		                 } 
 		                 lessonrepo.saveAndFlush(video);
+		                 CourseDetail updatedCourse=video.getCourseDetail();
+		                 List<Muser> users=updatedCourse.getUsers();
+			                List<Long> ids = new ArrayList<>(); 
+			                if(users != null) {
+			                for (Muser user : users) {
+			                	ids.add(user.getUserId());
+			                }
+			                }
+			                String heading=" Lesson Updated !";
+			 		       String link=updatedCourse.getCourseUrl();
+			 		       String notidescription= "Lesson "+ video.getLessontitle() + " in Course "+updatedCourse.getCourseName() + " was Updated " ;
+			 		      Long NotifyId =  notiservice.createNotification("CourseAdd",username,notidescription ,email,heading,link, Optional.ofNullable(file));
+			 		        if(NotifyId!=null) {
+			 		         	notiservice.SpecificCreateNotification(NotifyId, ids);
+			 		        	List<String> notiuserlist = new ArrayList<>(); 
+			 		        	notiuserlist.add("ADMIN");
+			 		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+			 		        }
+		                 
 		                 return ResponseEntity.ok("{\"message\": \"Lessons Edited successfully\"}");
 		             } else {
 		                 return ResponseEntity.notFound().build();
@@ -254,6 +317,11 @@ public class videolessonController {
 		            if (filename != null) {
 		            	Path filePath = Paths.get(videoStorageDirectory, filename);
 		            	System.out.println("filePath"+ filePath);
+		            	
+		            	logger.info("-------------------------------------------------------");
+						logger.info("file path of Video File");
+						logger.info("path= "+ filePath);
+						logger.info("-------------------------------------------------------");
 		    		    try {
 		    		        if (filePath.toFile().exists() && filePath.toFile().isFile()) {
 		    		            Resource resource = new UrlResource(filePath.toUri());
