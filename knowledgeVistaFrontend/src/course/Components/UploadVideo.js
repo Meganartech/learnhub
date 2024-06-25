@@ -225,7 +225,7 @@ const token=sessionStorage.getItem("token")
 
             </div>
             <div className='grp'>
-                <label>Description <span className="text-danger">*</span></label>
+                <label>Description<span className="text-danger">*</span></label>
                 <div>
                 <textarea 
                 name='LessonDescription'

@@ -54,8 +54,8 @@ const CourseDetails = () => {
     };
     fetchcourse();
   }, [courseId]);
- const  courseName= courseEdit.courseName;
- const  courseCategory=courseEdit.courseCategory;
+   const  courseName= courseEdit.courseName;
+   const  courseCategory=courseEdit.courseCategory;
    const  courseDescription=courseEdit.courseDescription;
    const amount=courseEdit.amount;
    const  courseImage=img;
@@ -63,13 +63,13 @@ const CourseDetails = () => {
    const Noofseats=courseEdit.noofseats;
 
   return (
-    <div>
+    <div className="contentbackground">
+          <div className="contentinner">
       {editMode ? (
         <EditCourseForm id={courseId} toggleEditMode={toggleEditMode} />
       ) : (
-        <div className="contentbackground">
-          <div className="contentinner">
-          <div className="outer ">
+       
+          <div className="outer">
             <div className="first">
               <div className="head">
                 <h2>Course Details</h2>{" "}
@@ -128,9 +128,8 @@ const CourseDetails = () => {
               {courseImage && (
                 <img src={courseImage} alt="Course"  
                 style={{
-                  maxWidth: "100%",
-                  maxHeight: "200px",
-                  alignItems: "center",
+                  width:'100px',
+                  height:'100px'
                 }}
                 className="img-fluid" />
               )}
@@ -164,9 +163,9 @@ const CourseDetails = () => {
             </div>
 
           </div>
-          </div>
-        </div>
+    
       )}
+    </div>
     </div>
   );
 };

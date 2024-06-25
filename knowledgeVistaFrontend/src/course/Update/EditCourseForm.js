@@ -9,8 +9,17 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
   const  courseId=id
   const token =sessionStorage.getItem("token")
   const [courseEdit, setCourseEdit] = useState([
-   
+
   ]);
+
+  const [errors, setErrors] = useState({
+    courseName: "",
+    courseDescription: "",
+    courseCategory: "",
+    amount: "",
+    noofseats: "",
+    duration: "",
+    courseImage: null,});
   const [img, setimg] = useState();
   useEffect(() => {
     const fetchcourse = async () => {
@@ -44,10 +53,24 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
     };
     fetchcourse();
   }, [courseId]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCourseEdit({ ...courseEdit, [name]: value });
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: validateField(name, value) }));
   };
+  const validateField = (fieldName, fieldValue) => {
+    const validations = {
+      courseName: (value) => (value ? "" : "Course Name is required"),
+      courseDescription: (value) => (value ? "" : "Course Description is required"),
+      courseCategory: (value) => (value ? "" : "Course Category is required"),
+      amount: (value) => (value && !isNaN(value) ? "" : "Invalid Amount (must be a number)"),
+      noofseats: (value) => (value > 0 ? "" : "Number of Seats must be greater than 0"),
+      duration: (value) => (value > 0 ? "" : "Duration must be greater than 0"),
+     };
+    return validations[fieldName](fieldValue);
+  };
+
 
   // Function to convert file to Base64
   const convertImageToBase64 = (file) => {
@@ -79,7 +102,17 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
   };
 
   const handleSubmit = async (e) => {
-    const formData = new FormData();
+    
+    e.preventDefault();
+    for (const key in errors) {
+      if (errors[key]) {
+        // Scroll to the first field with an error (optional)
+        document.getElementById(key).scrollIntoView({ behavior: "smooth", block: 'nearest', inline: 'start' });
+        return; // Exit function if there are errors
+      }
+    }
+    
+      const formData = new FormData();
     if (courseEdit.courseName) {
       formData.append("courseName", courseEdit.courseName);
     }
@@ -102,7 +135,6 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
       formData.append("Noofseats", courseEdit.noofseats);
     }
 
-    e.preventDefault();
     try {
       const response = await axios.patch(
         `${baseUrl}/course/edit/${courseId}`,
@@ -137,9 +169,9 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
     }
   };
   return (
-    <div className="contentbackground">
+   
     <form onSubmit={handleSubmit}>
-      <div className="contentinner">
+     
       <div className="outer " >
         <div className="first">
           <div className="head">
@@ -154,59 +186,77 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
             <label htmlFor="courseName" >
               Course Name <span className="text-danger">*</span>
             </label>
+            <div>
             <input
               type="text"
               name="courseName"
               id="courseName"
-              className="form-control "
+              className={`form-control form-control-lg ${errors.courseName && 'is-invalid'}`}
               placeholder="Enter the Course Name"
               value={courseEdit.courseName}
               onChange={handleChange}
-              required
               autoFocus
+              
             />
+             <div className="invalid-feedback">
+                                        {errors.courseName}
+                                    </div>
+                                </div>
           </div>
           <div className="form-group">
             <label htmlFor="courseDescription" >
               Course Description <span className="text-danger">*</span>
             </label>
+            <div>
             <textarea
               name="courseDescription"
               id="courseDescription"
               rows={5}
-              className="form-control "
+              className={`form-control form-control-lg ${errors.courseDescription && 'is-invalid'}`}
               placeholder="Description about the Course"
               value={courseEdit.courseDescription}
               onChange={handleChange}
-              required
+              
             />
+            <div className="invalid-feedback">
+                                        {errors.courseDescription}
+                                    </div>
+                                    </div>
           </div>
           <div className="form-group">
             <label htmlFor="courseCategory" >
               Course Category <span className="text-danger">*</span>
             </label>
-            <input
+          <div>       
+          <input
               type="text"
               name="courseCategory"
               id="courseCategory"
-              className="form-control "
+              className={`form-control form-control-lg  ${errors.courseCategory && 'is-invalid'}`}
               placeholder="Category"
               value={courseEdit.courseCategory}
               onChange={handleChange}
-              required
-            />
+              
+            /> <div className="invalid-feedback">
+            {errors.courseCategory}
+        </div>
+    </div>
           </div>
           <div className="form-group ">
                 <label htmlFor="noofseats">No of Seats <span className="text-danger">*</span></label>
-                <input
+                <div><input
                   name="noofseats"
                   type="number"
-                  id="doofseats"
-                  className="form-control "
+                  id="noofseats"
                   value={courseEdit.noofseats}
+                  className={`form-control form-control-lg  ${errors.noofseats && 'is-invalid'}`}
                   onChange={handleChange}
-                  required
+                  
                 />
+                 <div className="invalid-feedback">
+                                        {errors.noofseats}
+                                    </div>
+                                </div>
               </div>
           
         </div>
@@ -216,23 +266,31 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
             <label htmlFor="courseImage" >
               <h2>Course Image <span className="text-danger">*</span></h2>
             </label>
+            <label
+                                        htmlFor='courseImage'
+                                        style={{ width: "400px" }}
+                                        className={`file-upload-btn ${errors.courseImage && `is-invalid`}`}
+                                    >
+                                        Upload Image
+                                    </label>
+                                    <div className="invalid-feedback">
+                                        {errors.courseImage}
+                                    </div>
             <input
               type="file"
               name="courseImage"
               id="courseImage"
               accept="image/jpeg, image/png, image/gif"
               placeholder="Upload Image"
+              className='file-upload'
               onChange={handleFileChange}
-            />{" "}
-            <br />
-            {/* Display the image */}
+            />
             <img
               src={img}
               alt="selected pic of course"
               style={{
-                maxWidth: "100%",
-                maxHeight: "200px",
-                alignItems: "center",
+                width:'100px',
+                height:'100px'
               }}
             />
             <br />
@@ -240,28 +298,37 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
             <label htmlFor="courseAmount" >
              Amount <span className="text-danger">*</span>
             </label>
-            <input
+            <div><input
               type="number"
               name="amount"
               id="amount"
-              className="form-control "
+              className={`form-control form-control-lg mt-1 ${errors.courseAmount && 'is-invalid'}`}
               placeholder="Amount"
               value={courseEdit.amount} 
               onChange={handleChange}
-              required
+              
             />
+             <div className="invalid-feedback">
+                                        {errors.courseAmount}
+                                    </div>
+                                </div>
           </div>
           <div className="form-group mt-1">
                 <label htmlFor="duration">Course Duration <span className="text-danger">*</span></label>
+               <div>
                 <input
                   name="duration"
                   type="number"
                   id="duration"
-                  className="form-control "
+                  className={`form-control form-control-lg mt-1 ${errors.duration && 'is-invalid'}`}
                   value={courseEdit.duration}
                   onChange={handleChange}
-                  required
+                  
                 />
+                 <div className="invalid-feedback">
+                                        {errors.duration}
+                                    </div>
+                </div>
               </div>
           
             <div>
@@ -272,9 +339,9 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
           </div>
         </div>
       </div>
-      </div>
+      
     </form>
-  </div>
+
   );
 };
 

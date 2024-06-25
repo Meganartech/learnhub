@@ -171,8 +171,8 @@ public class LicenseController {
 //	    		            System.out.println(data);
 //	    		        }
 	    	
-		  
-		    
+		  //need to change when uploading
+//		    valid=true;
 		   
 //		    logger.info(" total no of course  ======="+count.toString());
 		    UserListWithStatus userListWithStatus = new UserListWithStatus(isEmpty, valid,type, dataList);
