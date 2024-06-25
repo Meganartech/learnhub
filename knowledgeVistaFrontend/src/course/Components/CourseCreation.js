@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, {  useEffect, useRef, useState } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
@@ -25,6 +25,14 @@ const CourseCreation = () => {
         Noofseats: "",
         courseImage: "",
     });
+    const courseName=useRef(null);
+    const  courseCategory=useRef(null);
+    const  courseDescription =useRef(null);
+    const  courseAmount=useRef(null);
+    const Duration=useRef(null);
+    const Noofseats=useRef(null);
+    const courseImage=useRef(null);
+;
 
     // Initial state for form data
     const [formData, setFormData] = useState({
@@ -91,7 +99,26 @@ const CourseCreation = () => {
             reader.onerror = (error) => reject(error);
         });
     };
-
+   
+    const scrollToError = () => {
+        if (errors.courseName) {
+          courseName.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        }else if (errors.courseCategory) {
+            courseCategory.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+          }else if (errors.courseDescription) {
+            courseDescription.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+          }else if (errors.courseAmount) {
+            courseAmount.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+          }else if (errors.Duration) {
+            Duration.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+          }else if (errors.Noofseats) {
+            Noofseats.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+          }
+      };
+    
+      useEffect(() => {
+        scrollToError();
+      }, [errors]);
     // Handle changes to the file input
     const handleFileChange = (e) => {
       const file = e.target.files[0];
@@ -144,11 +171,37 @@ const CourseCreation = () => {
               }));
           });
   };
-
+const handlenextclick =(e)=>{
+    e.preventDefault();
+    let hasErrors = false;
+    const requiredFields = ['courseName', 'courseDescription', 'courseCategory',  'courseAmount','Duration','Noofseats','courseImage'];
+  
+    requiredFields.forEach(field => {
+      if (!formData[field] || formData[field].length === 0 || errors[field]) {
+        hasErrors = true;
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          [field]: !formData[field] ? 'This field is required' : errors[field]
+        }));
+      }
+    });
+    if(!formData.courseImage){
+      hasErrors = true;
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        courseImage: 'Image is Required'
+      }));
+    }
+  
+    if (!hasErrors) {
+        setnextclick(true);
+    }
+   
+}
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+       
         // Create a FormData object to send the form data
         const formDataToSend = new FormData();
         formDataToSend.append("courseName", formData.courseName);
@@ -209,13 +262,13 @@ const CourseCreation = () => {
     };
 
     // Calculate if the form can be submitted
-    const canSubmit = () => {
-        // Check if all form data fields are filled and there are no errors
-        const hasNoErrors = Object.values(errors).every((error) => error === '');
-        const hasNoEmptyFields = Object.values(formData).every((value) => value !== '' && value !== null);
+    // const canSubmit = () => {
+    //     // Check if all form data fields are filled and there are no errors
+    //     const hasNoErrors = Object.values(errors).every((error) => error === '');
+    //     const hasNoEmptyFields = Object.values(formData).every((value) => value !== '' && value !== null);
         
-        return hasNoErrors && hasNoEmptyFields;
-    };
+    //     return hasNoErrors && hasNoEmptyFields;
+    // };
 
     return (
         <div className='contentbackground'>
@@ -229,7 +282,7 @@ const CourseCreation = () => {
                         {/* Form fields */}
                         <div className='formgroup mt-2' style={{ fontSize: "larger" }}>
                             {/* Course Title */}
-                            <div className='inputgrp'>
+                            <div className='inputgrp' ref={courseName}>
                                 <label htmlFor='courseName'>Course Title <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
@@ -252,7 +305,7 @@ const CourseCreation = () => {
                             </div>
                             
                             {/* Course Description */}
-                            <div className='inputgrp'>
+                            <div className='inputgrp' ref={courseDescription}>
                                 <label htmlFor='courseDescription'>Course Description <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
@@ -275,7 +328,7 @@ const CourseCreation = () => {
                             </div>
                             
                             {/* Course Category */}
-                            <div className='inputgrp'>
+                            <div className='inputgrp' ref={courseCategory}>
                                 <label htmlFor='courseCategory'>Course Category <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
@@ -297,7 +350,7 @@ const CourseCreation = () => {
                             </div>
                             
                             {/* Course Image */}
-                            <div className='inputgrp'>
+                            <div className='inputgrp' ref={courseImage}>
                                 <label htmlFor='courseImage'>Course Image <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
@@ -337,7 +390,7 @@ const CourseCreation = () => {
                                     </div>
                                 </div>
                             )}
-                            <div className='inputgrp'>
+                            <div className='inputgrp' ref={Duration}>
                                 <label htmlFor='Duration'>Duration (Hours) <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
@@ -358,7 +411,7 @@ const CourseCreation = () => {
                             </div>
 
                             {/* Number of Seats */}
-                            <div className='inputgrp'>
+                            <div className='inputgrp' ref={Noofseats}>
                                 <label htmlFor='Noofseats'>Number of Seats <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
@@ -379,7 +432,7 @@ const CourseCreation = () => {
                             </div>
 
                             {/* Course Amount */}
-                            <div className='inputgrp'>
+                            <div className='inputgrp' ref={courseAmount}>
                                 <label htmlFor='courseAmount'>Course Amount <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
@@ -414,9 +467,7 @@ const CourseCreation = () => {
                             </button>
                             <button
                                 className='btn btn-primary'
-                                
-                                disabled={!canSubmit()}
-                                onClick={()=>{setnextclick(true)}}
+                                onClick={handlenextclick}
                             >
                                 next
                             </button>

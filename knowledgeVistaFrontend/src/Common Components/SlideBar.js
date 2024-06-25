@@ -157,9 +157,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
       </a>
     </div>
   </div>
-</div>
-
-     
+</div>  
  )} 
 
 {(userRole === "USER" || userRole === "TRAINER") && (
@@ -174,6 +172,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
           </a>
         </li>
       )}
+
       {userRole === "USER" && (
         <li className="nav-item mt-2">
           <a
@@ -245,7 +244,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
         </a>
       </li>
       )}
-        {(userRole === "TRAINER" || userRole === "ADMIN") && (
+        {userRole === "ADMIN" && (
       <li className="nav-item mt-2">
         <a
           className={activeLink === "/view/Students" ? "ActiveLink nav-link" : "nav-link text-muted"}
@@ -335,8 +334,6 @@ const SlideBar = ({activeLink,setActiveLink}) => {
            </div>
          </div>
        </div>
-       
-            
         )} 
        {userRole === "ADMIN"  && (
         <li className="nav-item mt-2">
@@ -352,7 +349,60 @@ const SlideBar = ({activeLink,setActiveLink}) => {
      
         </li>
       )}
-     
+
+
+
+{userRole === "TRAINER"  && (
+      <div className={`mt-2 ${activeLink.includes("Stu")  ? "ActiveLink" : ""}`}>
+  <li className="nav-item">
+    <a
+      className={`nav-link ${activeLink.includes("Stu")  ? "text-light" : "text-muted"}`}
+      href="#"
+      onClick={() => {
+        setActiveLink("Stu");
+        const collapseTw = document.getElementById("collapseTw");
+        if (collapseTw.classList.contains("show")) {
+          collapseTw.classList.remove("show");
+        } else {
+          collapseTw.classList.add("show");
+        }
+      }}
+    >
+      <i className={`fa-solid fa-users ${activeLink.includes("Stu")  ? "text-light" : "text-muted"}`}></i>
+      <span>Students</span>
+    </a>
+  </li>
+  <div  style={{width:"100%"}} id="collapseTw" 
+   className={`collapse ml-3 newnav ${activeLink.includes("Stu")  ? "show" : ""}`} 
+   aria-labelledby="headingTw" data-parent="#accordionSidebar">
+
+    <div style={{width:"100%"}} className="text-light collapse-inner">
+    
+
+      <a className={`collapse-item mb-2 text-light nav-link ${activeLink === "/view/Students" ? "SubActiveLink " : " "}`}
+        href="#"
+        onClick={() => {
+          handleClick("/view/Students");
+          setActiveLink("/view/Students");
+        }} >
+        <i className= "pl-1 fa-solid fa-users text-light"></i>
+        <span> All Students</span>
+      </a>
+      <a className={`collapse-item text-light nav-link ${activeLink === "/myStudents" ? "SubActiveLink " : ""}`}
+        href="#"
+        onClick={() => {
+          handleClick("/myStudents");
+          setActiveLink("/myStudents");
+        }}>
+        <i className=" pl-1 fa-solid fa-users-between-lines text-light"></i>
+        <span> My Students</span>
+      </a>
+    </div>
+  </div>
+</div> 
+        )} 
+
+
       <hr className="sidebar-divider d-none d-md-block" />
       
     </ul>

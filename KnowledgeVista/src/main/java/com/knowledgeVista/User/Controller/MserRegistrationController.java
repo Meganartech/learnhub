@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,8 @@ public class MserRegistrationController {
 	 private JwtUtil jwtUtil;
 	@Autowired
 	private MuserRoleRepository muserrolerepository;
+	@Autowired
+	private Environment env;
 	
 
 	public ResponseEntity<?> registerStudent( String username, String psw, String email, LocalDate dob,
@@ -97,8 +100,13 @@ public class MserRegistrationController {
 	            muserrepositories.save(user);
 	            RestTemplate restTemplate = new RestTemplate();
 
-	            String apiUrl = "http://localhost:8080/Developer/CustomerDownloads";
-                String apiurl2= "http://localhost:8080/Developer/CustomerLeads";
+	            String baseUrl = env.getRequiredProperty("base.url");
+	            int port = Integer.parseInt(env.getRequiredProperty("server.port"));
+	            String contextPath = env.getProperty("api.context-path", ""); 
+	            
+	            String apiUrl = baseUrl + port + contextPath+"/Developer/CustomerDownloads";
+	            String apiUrl2 = baseUrl + port +contextPath+ "/Developer/CustomerLeads";
+
                 
 	            Customer_downloads custDown = new Customer_downloads();
 	            custDown.setName(user.getUsername());
@@ -114,7 +122,7 @@ public class MserRegistrationController {
 	            
 	            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, custDown, String.class);
 
-	            ResponseEntity<String> response2 = restTemplate.postForEntity(apiurl2, custlead, String.class);
+	            ResponseEntity<String> response2 = restTemplate.postForEntity(apiUrl2, custlead, String.class);
 
 	        }
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");

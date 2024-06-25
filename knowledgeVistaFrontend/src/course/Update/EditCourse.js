@@ -69,7 +69,7 @@ const EditCourse = ({filteredCourses}) => {
             }else{
               MySwal.fire({
                 title: "Error!",
-                text: error.response.data,
+                text: error.response.data ? error.response.data : "error occured",
                 icon: "error",
                 confirmButtonText: "OK",
               });
@@ -134,7 +134,7 @@ const EditCourse = ({filteredCourses}) => {
                      Lessons
                     </Link>
                     <div className="dropdown-divider"></div>
-                    <Link to={`/course/testlist/${item.courseId}`}
+                    <Link to={`/course/testlist/${item.courseName}/${item.courseId}`}
                       className="dropdown-item"
                       data-toggle="modal"
                       data-target="#logoutModal"   

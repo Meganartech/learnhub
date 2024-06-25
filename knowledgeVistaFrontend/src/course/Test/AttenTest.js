@@ -58,7 +58,7 @@ const AttenTest = () => {
                  
                 MySwal.fire({
                     title: "Error",
-                    text: error.response.data,
+                    text: error.response.data ? error.response.data : "error occured",
                     icon: "error",
                     confirmButtonText: "OK"
                 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import profile from "../images/profile.png"
@@ -27,7 +27,7 @@ const EditStudent = () => {
     email: '',
     dob: '',
     skills:'',
-   
+   profile:'',
     phone: '',
     fileInput:''
     
@@ -42,13 +42,31 @@ const EditStudent = () => {
     '+967', '+968', '+970', '+971', '+972', '+973', '+974', '+975', '+976', '+977',
     '+992', '+993', '+994', '+995', '+996', '+998'
   ];
-  useEffect(() => {
-    const hasErrors = Object.values(errors).some(error => !!error) ;
-    const submitBtn = document.querySelector('#submitbtn');
-    if (submitBtn) {
-        submitBtn.disabled = hasErrors;
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const dobRef = useRef(null);
+  const skillsRef = useRef(null);
+  const phoneRef = useRef(null);
+  const countryCodeRef = useRef(null);
+  const scrollToError = () => {
+    if (errors.username) {
+      nameRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.email) {
+      emailRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.dob) {
+      dobRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    }  else if (errors.skills) {
+      skillsRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.phone) {
+      phoneRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.countryCode) {
+      countryCodeRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
-}, [errors, formData]);
+  };
+
+  useEffect(() => {
+    scrollToError();
+  }, [errors]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -137,7 +155,7 @@ const EditStudent = () => {
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
-    });
+    }); 
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -164,7 +182,30 @@ const EditStudent = () => {
 
   const handleSubmit = async (e) => {
       e.preventDefault();
-     
+      let hasErrors = false;
+      const requiredFields = ['username', 'skills', 'email', 'dob', 'phone', 'countryCode','profile'];
+    
+      requiredFields.forEach(field => {
+        if (!formData[field] || formData[field].length === 0 || errors[field]) {
+          hasErrors = true;
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            [field]: !formData[field] ? 'This field is required' : errors[field]
+          }));
+        }
+      });
+      
+      if (!formData.profile) {
+        hasErrors = true;
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          profile: 'Image is required'
+        }));
+      }
+      if (hasErrors) {
+        scrollToError(); // Scroll to the first error field
+        return;
+      }
       const formDataToSend = new FormData();
       formDataToSend.append("username", formData.username);
       formDataToSend.append("psw", formData.psw);
@@ -265,7 +306,8 @@ const EditStudent = () => {
           <label htmlFor='fileInput' className='file-upload-btn'>
             Upload
           </label>
-    
+        
+          <div className='text-danger'> {errors.profile}</div>
           <input
                 type='file'
                 name="fileInput"
@@ -278,7 +320,7 @@ const EditStudent = () => {
         </div>
 
         <div className='formgroup'>
-          <div className='inputgrp'>
+          <div className='inputgrp' ref={nameRef}>
             <label htmlFor='Name'> Name <span className="text-danger">*</span></label>
             <span>:</span>
           <div> 
@@ -299,7 +341,7 @@ const EditStudent = () => {
             </div>
             </div> 
           </div>
-          <div className='inputgrp'>
+          <div className='inputgrp' ref={emailRef}>
           
             <label htmlFor='email'> Email<span className="text-danger">*</span></label>
             <span>:</span>
@@ -318,7 +360,7 @@ const EditStudent = () => {
                   </div></div>
 
           </div>
-          <div className='inputgrp'>
+          <div className='inputgrp' ref={skillsRef}>
             <label htmlFor='skills'> Skills <span className="text-danger">*</span></label>
             <span>:</span>
           <div> <input
@@ -338,7 +380,7 @@ const EditStudent = () => {
             </div></div> 
           </div>
 
-          <div className='inputgrp'>
+          <div className='inputgrp' ref={dobRef}>
             <label htmlFor='dob'>Date of Birth<span className="text-danger">*</span></label>
             <span>:</span>
             <div>
@@ -356,7 +398,7 @@ const EditStudent = () => {
               {errors.dob}
             </div></div>
           </div>
-          <div className='inputgrp '>
+          <div className='inputgrp ' ref={countryCodeRef}>
               <label htmlFor='CountryCode'> Country Code<span className="text-danger">*</span></label>
               <span>:</span>
             <div>
@@ -380,7 +422,7 @@ const EditStudent = () => {
                 </div>
                 </div>
        
-          <div className='inputgrp '>
+          <div className='inputgrp ' ref={phoneRef}>
             <label htmlFor='Phone'> Phone<span className="text-danger">*</span></label>
             <span>:</span>
             <div>

@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,7 +72,8 @@ public class LicenseController {
 	
 	 @Autowired
 		private NotificationService notiservice;
-	 
+	 @Autowired
+		private Environment env;
 
 	    @Value("${upload.licence.directory}")
 	    private String licenceUploadDirectory;
@@ -453,6 +455,10 @@ public class LicenseController {
                         LocalDate endDate = startdate.plusDays(validitydays);
                        // System.out.println("endDate"+endDate);
 		               //------------for licence Expired Notificatio-------------
+                        String baseUrl = env.getRequiredProperty("base.url");
+        	            int port = Integer.parseInt(env.getRequiredProperty("server.port"));
+        	            String contextPath = env.getProperty("api.context-path", ""); 
+                        
                         String heading=" Licence Expiring Soon !";
      	 		       String link="/about";
      	 		       String notidescription= "Your Licence Was Expiring Soon.. Upload A New Licence File" ;
@@ -468,7 +474,7 @@ public class LicenseController {
 		               Optional<Muser> opuser= muserrepo.findByEmail(email);
 		               if(opuser.isPresent()) {
 		            	   Muser user= opuser.get();
-			                String apiurl3 = "http://localhost:8080/Developer/CustomerLeads/" + email;
+			                String apiurl3 = baseUrl + port +contextPath+"/Developer/CustomerLeads/" + email;
 		                CustomerLeads updateData = new CustomerLeads();
 		                updateData.setEmail(user.getEmail());
 		                updateData.setCountryCode(user.getCountryCode());
@@ -488,7 +494,7 @@ public class LicenseController {
 		                
 		                
 
-		                String apiurl4 = "http://localhost:8080/Developer/CustomerDownload/" + email;
+		                String apiurl4 = baseUrl + port +contextPath+"/Developer/CustomerDownload/" + email;
 		                Customer_downloads custdown=new Customer_downloads();
 		                custdown.setCountryCode(user.getCountryCode());
 		                custdown.setName(user.getUsername());

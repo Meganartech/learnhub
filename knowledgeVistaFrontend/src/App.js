@@ -52,6 +52,7 @@ import MyPayments from "./Student/MyPayments.js";
 import UpdatePartialPaymentSettings from "./course/Components/UpdatePartialPaymentSettings.js";
 import Paymenttransactions from "./course/Components/Paymenttransactions.js";
 import TransactionHistoryTrainer from "./Trainer/TransactionHistoryTrainer.js";
+import Mystudents from "./Trainer/Mystudents.js";
 
 
 function App() {
@@ -114,14 +115,15 @@ function App() {
                       <Route path="/addTrainer" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddTrainer/></PrivateRoute>}/>
                       <Route path="/addStudent" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><AddStudent/></PrivateRoute>}/>
                       <Route path="/mycourses" element={<PrivateRoute authenticationRequired={true} ><Mycourse/></PrivateRoute>}/>
+                      <Route path="/myStudents" element={<PrivateRoute authenticationRequired={true} onlytrainer={true}><Mystudents/></PrivateRoute>}></Route>
                       <Route path="/dashboard/course" element={<PrivateRoute authenticationRequired={true} ><CourseView  filteredCourses={filteredCourses} /></PrivateRoute>} />
                       <Route path="/course/admin/edit" element={<PrivateRoute onlyadmin={true} authenticationRequired={true} authorizationRequired={true}><EditCourse  filteredCourses={filteredCourses} /></PrivateRoute>} />
-                      <Route path="/course/AddTest/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CreateTest /></PrivateRoute>} />
+                      <Route path="/course/AddTest/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CreateTest /></PrivateRoute>} />
                       <Route path="/test/start/:courseName/:courseId" element={<PrivateRoute onlyuser={true} authenticationRequired={true}><AttenTest/></PrivateRoute>}/>
                       <Route path="/test/Edit/:questionId" element={<PrivateRoute authorizationRequired={true} authenticationRequired={true}><EditQuestion/></PrivateRoute>}/>
                       <Route path="/test/AddMore/:testId" element={<PrivateRoute authorizationRequired={true} authenticationRequired={true}><AddMoreQuestion/></PrivateRoute>}/>
                       <Route path="/course/edit/:courseId" element={<PrivateRoute authenticationRequired={true}><CourseDetails/></PrivateRoute>}/>
-                      <Route path="/course/testlist/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TestList /></PrivateRoute>} />
+                      <Route path="/course/testlist/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TestList /></PrivateRoute>} />
                       <Route path="/course/dashboard/profile" element={<PrivateRoute authenticationRequired={true}><ProfileView/></PrivateRoute>}/>
                       <Route path="/MyCertificateList" element={<PrivateRoute authenticationRequired={true}><MyCertificateList /></PrivateRoute>}/>
                       <Route path="/template/:activityId" element={<PrivateRoute authenticationRequired={true}><Template/></PrivateRoute>}/>

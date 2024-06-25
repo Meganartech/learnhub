@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import profile from "../images/profile.png"
@@ -28,11 +28,18 @@ const EditTrainer = () => {
       email: '',
       dob: '',
       skills:'',
-     
+     profile:'',
       phone: '',
       fileInput:''
       
     });
+    
+    const nameRef = useRef(null);
+    const emailRef = useRef(null);
+    const dobRef = useRef(null);
+    const skillsRef = useRef(null);
+    const phoneRef = useRef(null);
+    const countryCodeRef = useRef(null);
     const countrycodelist = [
       '+1', '+7', '+20', '+27', '+30', '+31', '+32', '+33', '+34', '+36', '+39',
       '+40', '+41', '+43', '+44', '+45', '+46', '+47', '+48', '+49', '+51', '+52',
@@ -43,13 +50,13 @@ const EditTrainer = () => {
       '+967', '+968', '+970', '+971', '+972', '+973', '+974', '+975', '+976', '+977',
       '+992', '+993', '+994', '+995', '+996', '+998'
     ];
-    useEffect(() => {
-      const hasErrors = Object.values(errors).some(error => !!error) ;
-      const submitBtn = document.querySelector('#submitbtn');
-      if (submitBtn) {
-          submitBtn.disabled = hasErrors;
-      }
-  }, [errors, formData]);
+  //   useEffect(() => {
+  //     const hasErrors = Object.values(errors).some(error => !!error) ;
+  //     const submitBtn = document.querySelector('#submitbtn');
+  //     if (submitBtn) {
+  //         submitBtn.disabled = hasErrors;
+  //     }
+  // }, [errors, formData]);
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -154,16 +161,57 @@ const EditTrainer = () => {
             profile: file,
             base64Image: base64Data,
           }));
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            profile: ''
+          }));
         })
         .catch((error) => {
           console.error("Error converting image to base64:", error);
         });
     };
-    
-  
+    const scrollToError = () => {
+      if (errors.username) {
+        nameRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      } else if (errors.email) {
+        emailRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      } else if (errors.dob) {
+        dobRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      } else if (errors.skills) {
+        skillsRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      } else if (errors.phone) {
+        phoneRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      } else if (errors.countryCode) {
+        countryCodeRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      }
+    };
+    useEffect(() => {
+      scrollToError();
+    }, [errors]);
     const handleSubmit = async (e) => {
         e.preventDefault();
-       
+        let hasErrors = false;
+        const requiredFields = ['username', 'skills','profile', 'email', 'dob',  'phone', 'countryCode'];
+      
+        requiredFields.forEach(field => {
+          if (!formData[field] || formData[field].length === 0 || errors[field]) {
+            hasErrors = true;
+            setErrors(prevErrors => ({
+              ...prevErrors,
+              [field]: !formData[field] ? 'This field is required' : errors[field]
+            }));
+          }
+        });
+        if (!formData.profile) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            profile: 'Image is required'
+          }));
+        }
+        if (hasErrors) {
+          scrollToError(); // Scroll to the first error field
+          return;
+        }
         const formDataToSend = new FormData();
         formDataToSend.append("username", formData.username);
         formDataToSend.append("psw", formData.psw);
@@ -261,6 +309,7 @@ const EditTrainer = () => {
             Upload
           </label>
     
+          <div className='text-danger'> {errors.profile}</div>
           <input
                 type='file'
                 name="fileInput"
@@ -273,7 +322,7 @@ const EditTrainer = () => {
         </div>
 
         <div className='formgroup'>
-          <div className='inputgrp'>
+          <div className='inputgrp' ref={nameRef}>
             <label htmlFor='Name'> Name <span className="text-danger">*</span></label>
             <span>:</span>
           <div> <input
@@ -292,7 +341,7 @@ const EditTrainer = () => {
               {errors.username}
             </div></div> 
           </div>
-          <div className='inputgrp'>
+          <div className='inputgrp' ref={emailRef}>
           
             <label htmlFor='email'> Email<span className="text-danger">*</span></label>
             <span>:</span><div>              <input
@@ -310,7 +359,7 @@ const EditTrainer = () => {
                   </div></div>
 
           </div>
-          <div className='inputgrp'>
+          <div className='inputgrp' ref={skillsRef}>
             <label htmlFor='skills'> Skills <span className="text-danger">*</span></label>
             <span>:</span>
           <div> <input
@@ -330,7 +379,7 @@ const EditTrainer = () => {
             </div></div> 
           </div>
 
-          <div className='inputgrp'>
+          <div className='inputgrp' ref={dobRef}>
             <label htmlFor='dob'>Date of Birth<span className="text-danger">*</span></label>
             <span>:</span>
             <div>
@@ -349,7 +398,7 @@ const EditTrainer = () => {
             </div></div>
           </div>
 
-          <div className='inputgrp '>
+          <div className='inputgrp '  ref={countryCodeRef}>
               <label htmlFor='CountryCode'> Country Code<span className="text-danger">*</span></label>
               <span>:</span>
             <div>
@@ -372,7 +421,7 @@ const EditTrainer = () => {
                 </div>
                 </div>
                 
-          <div className='inputgrp '>
+          <div className='inputgrp ' ref={phoneRef}>
             <label htmlFor='Phone'> Phone<span className="text-danger">*</span></label>
             <span>:</span>
             <div>

@@ -7,7 +7,7 @@ import baseUrl from "../../api/utils";
 import axios from "axios";
 
 const CreateTest = () => {
-  const { courseId} = useParams();
+  const { courseName,courseId} = useParams();
   const MySwal = withReactContent(Swal);
   const [testName, setTestName] = useState("");
   const [questionText, setQuestionText] = useState("");
@@ -108,11 +108,27 @@ const CreateTest = () => {
 
 
   const addQuestion = () => {
-    if (!questionText || options.some((option) => !option) || !answer) {
-      // If any field is empty, do not add the question
+    
+    if(!testName){
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        testName: 'This field is required ',
+      }));
       return;
     }
-
+    if (!questionText) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        questionText: 'This field is required ',
+      }));
+      return;
+    }  if (!answer) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        selectedOption: 'Please select the correct answer',
+      }));
+      return;
+    }
     const newQuestion = {
       questionText: questionText,
       option1: options[0],
@@ -225,6 +241,14 @@ const handleTestNameChange =(e)=>{
         }));
     }
 };
+const handleselectanswer=(e)=>{
+  const { value } = e.target;
+  setAnswer(value)
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    selectedOption: '',
+  }));
+}
 const handleOptionChange = (e, index) => {
     const { value } = e.target;
 
@@ -249,7 +273,6 @@ const handleOptionChange = (e, index) => {
 
   return (
     <div className="contentbackground">
-      {/* Show criteria div based on showCriteria state */}
       {showCriteria ? (
         <div className="contentinner p-5">
           <h1>Test Criteria</h1>
@@ -317,6 +340,9 @@ const handleOptionChange = (e, index) => {
               
               <div className='atgrid ' style={{height:"400px"}}>
              <div>
+             <h4 style={{textDecoration:"underline"}}> Create Test For {courseName}</h4>   {errors.selectedOption && (
+              <div className="text-danger">{errors.selectedOption}</div>
+            )}
               <div className="mb-3" > 
               <input
                 className={`form-control form-control-lg  ${errors.testName && 'is-invalid'}`}
@@ -343,8 +369,9 @@ const handleOptionChange = (e, index) => {
                 required
               />
                {errors.questionText && <div className="invalid-feedback">{errors.questionText}</div>}
+              
 <ul className='listgroup' >                
-             
+
 {options.map((option, index) => (
   <li className='choice' key={index} >
     <input
@@ -353,7 +380,7 @@ const handleOptionChange = (e, index) => {
       name="answer"
       value={option}
       checked={option !== "" && answer === option}
-      onChange={(e) => setAnswer(e.target.value)}
+      onChange={handleselectanswer}
       required
     /> 
     <div>
@@ -365,7 +392,6 @@ const handleOptionChange = (e, index) => {
     onChange={(e) => handleOptionChange(e, index)}
     required
 />
-{/* Display error message for the current option */}
 {errors.options[index] && (
     <div className="invalid-feedback">{errors.options[index]}</div>
 )}
@@ -374,7 +400,7 @@ const handleOptionChange = (e, index) => {
   </li>
 ))}
 </ul>
-{errors.selectedOption && <div className="invalid-feedback">{errors.selectedOption}</div>}
+
                     </div>
 
 
@@ -408,6 +434,7 @@ const handleOptionChange = (e, index) => {
                 </button>)}
             
             </div>
+          
             <div>
             {savedQuestions.length > 0 && (
                             <button

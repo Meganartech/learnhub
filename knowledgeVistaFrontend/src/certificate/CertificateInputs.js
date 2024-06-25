@@ -21,12 +21,21 @@ const CertificateInputs = () => {
   });
 
   
+
   const [certificate, setCertificate] = useState({
     institutionName: '',
     ownerName: '',
     qualification: '',
     address: '',
     authorizedSign: null, 
+  });
+
+  const [errors, setErrors]= useState({
+    institutionName: '',
+    ownerName: '',
+    qualification: '',
+    address: '',
+    authorizedSign: '', 
   });
 const [isnotFound,setisnotFound]=useState();
 const[sign,setsign]=useState();
@@ -71,6 +80,10 @@ setisnotFound(true);
           ...prevState,
           authorizedSign: file // Store file object in certificate state
         }));
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          authorizedSign: ''
+        }));
       };
       reader.readAsDataURL(file);
     } 
@@ -81,6 +94,31 @@ setisnotFound(true);
 
   const handleChange = (event) => {
     const { id, value } = event.target;
+    let error = '';
+
+    switch (id) {
+      case 'institutionName':
+        error = value.length < 1 ? 'Please enter  Instituition Name' : '';
+        break;
+      case 'ownerName':
+        error = value.length < 1 ? 'Please enter  ownerName' : '';
+        break;
+        case 'qualification':
+          error = value.length < 1 ? 'Please enter  qualification' : '';
+          break;
+          case 'address':
+            error = value.length < 1 ? 'Please enter  address' : '';
+            break;
+      
+      default:
+        break;
+    }
+
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [id]: error
+    }));
+
     setCertificate(prevState => ({
       ...prevState,
       [id]: value
@@ -88,15 +126,32 @@ setisnotFound(true);
   };
 
   const handleSave = async () => {
-    // Check if all fields are filled
-    if (
-        certificate.institutionName &&
-        certificate.ownerName &&
-        certificate.qualification &&
-        certificate.address &&
-        certificate.authorizedSign
-    ) {
-      try {
+   try {
+
+      let hasErrors = false;
+      const requiredFields = ['institutionName', 'ownerName', 'qualification',  'address'];
+    
+      requiredFields.forEach(field => {
+        if (!certificate[field] || certificate[field].length === 0 || errors[field]) {
+          hasErrors = true;
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            [field]: !certificate[field] ? 'This field is required' : errors[field]
+          }));
+        }
+      });
+      if(!certificate.authorizedSign){
+        hasErrors = true;
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          authorizedSign: 'Image is Required'
+        }));
+      }
+    
+      if (hasErrors) {
+        return;
+      }
+     
         const formData = new FormData();
         formData.append('institutionName', certificate.institutionName);
         formData.append('ownerName', certificate.ownerName);
@@ -139,16 +194,14 @@ setisnotFound(true);
       
         MySwal.fire({
           title: "Error!",
-          text: error.response.data,
+          text: error.response.data ? error.response.data : "error occured",
           icon: "error",
           confirmButtonText: "OK",
         });
       
     }
     
-          } else {
-        alert('Please fill in all fields before saving.');
-    }
+         
 };
 
 const certificateInputs=(
@@ -165,10 +218,12 @@ const certificateInputs=(
             className='profile-image'
           />
       
+    
     </div>
     <label htmlFor='fileInput' className='file-upload-btn'>
       Upload
     </label>
+    <div className="text-danger">{errors.authorizedSign}</div>
     <input
       type='file'
       id='fileInput'
@@ -183,50 +238,76 @@ const certificateInputs=(
     <div className='inputgrp'>
       <label htmlFor='institutionName'>Institution Name <span className="text-danger">*</span></label>
       <span>:</span>
+      <div>
       <input
         id='institutionName'
+        className={`${errors.institutionName && 'is-invalid'}`}
         placeholder='Institution Name'
         value={certificate.institutionName}
         onChange={handleChange}
         required
       />
+      <div className="invalid-feedback">
+                {errors.institutionName}
+              </div>
+              </div>
     </div>
 
     <div className='inputgrp'>
       <label htmlFor='ownerName'>Owner Name <span className="text-danger">*</span></label>
       <span>:</span>
+      <div>
       <input
         id='ownerName'
         placeholder='Owner Name'
+        
+        className={`${errors.ownerName && 'is-invalid'}`}
         value={certificate.ownerName}
         onChange={handleChange}
         required
       />
+       <div className="invalid-feedback">
+                {errors.ownerName}
+              </div>
+              </div>
     </div>
 
     <div className='inputgrp'>
       <label htmlFor='qualification'>Qualification <span className="text-danger">*</span></label>
       <span>:</span>
+      <div>
       <input
       name='qualification'
         id='qualification'
+        className={`${errors.qualification && 'is-invalid'}`}
         placeholder='Qualification'
         value={certificate.qualification}
         onChange={handleChange}
         required
       />
+       <div className="invalid-feedback">
+                {errors.qualification}
+              </div>
+              </div>
     </div>
 
     <div className='inputgrp'>
       <label htmlFor='address'>Address <span className="text-danger">*</span></label>
       <span>:</span>
+      <div>
       <input
         id='address'
         placeholder='Address'
+        
+        className={`${errors.address && 'is-invalid'}`}
         value={certificate.address}
         onChange={handleChange}
         required
       />
+       <div className="invalid-feedback">
+                {errors.address}
+              </div>
+              </div>
     </div>
 
    

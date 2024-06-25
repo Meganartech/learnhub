@@ -51,7 +51,7 @@ const navigate=useNavigate();
               if(error.response.status===401){
                 MySwal.fire({
                   title: "Un Authorized",
-                  text: error.response.data,
+                  text: error.response.data ? error.response.data : "error occured",
                   icon: "error",
                 }).then((result) => {
                   if (result.isConfirmed) {
@@ -62,7 +62,7 @@ const navigate=useNavigate();
                 setenablechecked(false)
                 MySwal.fire({
                   title: "Not Found",
-                  text: error.response.data,
+                  text: error.response.data ? error.response.data : "error occured",
                   icon: "error",
                 }).then((result) => {
                   if (result.isConfirmed) {

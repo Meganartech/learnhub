@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -54,6 +57,46 @@ public class Listview {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    
+    
+    public ResponseEntity<List<Muser>> GetStudentsOfTrainer(String token) {
+        try {
+        	if (!jwtUtil.validateToken(token)) {
+   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+   	     }
+
+   	     String role = jwtUtil.getRoleFromToken(token);
+   	     String email=jwtUtil.getUsernameFromToken(token);
+   	  ArrayList<Muser> students= new ArrayList<Muser>();
+   	     if("TRAINER".equals(role)){
+           Optional<Muser> opusers = muserrepositories.findByEmail(email);
+            if(opusers.isPresent()) {
+            	Muser trainer=opusers.get();
+            	List<CourseDetail> courses =trainer.getAllotedCourses();
+            	for(CourseDetail course : courses) {
+            		students.addAll(course.getUsers());
+            		
+            	}
+            }
+            List<Muser> Uniquestudents = students.stream().distinct().collect( Collectors.toList());
+            Uniquestudents.forEach(user -> {
+                byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
+                user.setProfile(decompressedImage);
+                user.setCourses(null);
+            });
+            return ResponseEntity.ok(Uniquestudents);
+   	     }else {
+
+   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+   	     }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }  
+    
+    
+    
+    
 //```````````````WORKING````````````````````````````````````
     
     public ResponseEntity<Muser> getUserById( Long userId,String token) {

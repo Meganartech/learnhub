@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.knowledgeVista.Course.CourseDetail;
@@ -50,7 +53,9 @@ import jakarta.transaction.Transactional;
 @RestController
 @CrossOrigin
 public class FrontController {
-	
+	  @Value("${spring.profiles.active}")
+	    private String activeProfile;
+	  
 	@Autowired
     private CourseController courseController;
 	
@@ -72,7 +77,7 @@ public class FrontController {
 	@Autowired
 	private PaymentIntegration payment;
 	
-	@Autowired
+	@Autowired(required = false)
 	private PaymentListController paylist;
 	
 	@Autowired
@@ -336,15 +341,30 @@ public class FrontController {
 //----------------------PaymentIntegration----------------------	
 		        @PostMapping("/full/buyCourse/create")
 		        public ResponseEntity<?> createOrderfull(@RequestBody Map<String, Long> requestData) {
+		        	 if (paylist != null && activeProfile.equals("demo")) {
+
+		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+	            	   }else {
 		        	return payment.createOrderfull(requestData);
+	            	   }
 		        } 
 		        @PostMapping("/part/buyCourse/create")
 		        public ResponseEntity<?> createOrderPart(@RequestBody Map<String, Long> requestData) {
+		        	 if (paylist != null && activeProfile.equals("demo")) {
+
+		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+	            	   }else {
 		        	return payment.createOrderPart(requestData);
+	            	   }
 		        }
                @PostMapping("/buyCourse/payment")
              public ResponseEntity<String> updatePaymentId(@RequestBody Map<String, String> requestData) {
+            	   if (paylist != null && activeProfile.equals("demo")) {
+
+              		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+            	   }else {
             	   return payment.updatePaymentId(requestData);
+            	   }
                }
                
                
@@ -352,23 +372,47 @@ public class FrontController {
 //-------------------------paymentListcontrller-------------
                @GetMapping("/myPaymentHistory")
                public ResponseEntity<?>ViewMypaymentHistry(@RequestHeader("Authorization") String token){
-            	   return paylist.ViewMypaymentHistry(token);
+            	   if (paylist != null && activeProfile.equals("demo")) {
+
+              		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+            	   }else {
+            		   return paylist.ViewMypaymentHistry(token);
+            		      
+            	   }
                }
                
                @GetMapping("/viewPaymentList/{courseId}")
                public ResponseEntity<?> ViewPaymentdetails(@RequestHeader("Authorization") String token,@PathVariable Long courseId){
-            	  
-            	   return paylist.ViewPaymentdetails(token, courseId);
+            	   if (paylist != null && activeProfile.equals("demo")) {
+
+              		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+            	
+               }else {
+            	   return paylist.ViewPaymentdetails(token, courseId);    
+        	   }
                }
                
                @GetMapping("/viewAllTransactionHistory")
                public ResponseEntity<?>viewTransactionHistory(@RequestHeader("Authorization") String token){
-            	   return paylist.viewTransactionHistory(token);
+            	   if (paylist != null && activeProfile.equals("demo")) {
+
+              		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+            	   }
+            	   else {
+            		   return paylist.viewTransactionHistory(token); 
+            	   }
                }
             	   
            @GetMapping("/viewAllTransactionHistoryForTrainer")
            public ResponseEntity<?>ViewMypaymentHistrytrainer(@RequestHeader("Authorization") String token){
-        	   return paylist.ViewMypaymentHistrytrainer(token);
+        	   if (paylist != null && activeProfile.equals("demo")) {
+
+          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+        	 
+        	   }
+        	   else {
+        		   return paylist.ViewMypaymentHistrytrainer(token); 
+        	   }
            }
                
 //-------------------------LicenseController-----------------------
@@ -390,23 +434,39 @@ public class FrontController {
            		@PostMapping("/api/Paymentsettings")
            		public ResponseEntity<?> SavePaymentDetails(@RequestBody Paymentsettings data,
            		          @RequestHeader("Authorization") String token) {
+           		 if (paylist != null && activeProfile.equals("demo")) {
+
+          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+          	   }else {
            			return settings.SavePaymentDetails(data, token);
+          	   }
            		}
            		@GetMapping("/api/getPaymentDetails")
            		public ResponseEntity<?> GetPaymentDetails (
            		          @RequestHeader("Authorization") String token){
+           		 if (paylist != null && activeProfile.equals("demo")) {
+
+            		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+          	   }else {
            			return settings.GetPaymentDetails(token);
+          	   }
            		}
            		@PatchMapping("/api/update/{payid}")
            		public ResponseEntity<?> editpayment(@PathVariable Long payid,
            	            @RequestParam(value="razorpay_key", required=false) String razorpay_key,
            	            @RequestParam(value="razorpay_secret_key", required=false) String razorpay_secret_key,
            		          @RequestHeader("Authorization") String token){
+           		 if (paylist != null && activeProfile.equals("demo")) {
+
+            		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+          	   }else {
            			return settings.editpayment(payid, razorpay_key, razorpay_secret_key, token);
+          	   }
            		}
 
            		@PostMapping("/api/feedback")
            		public Feedback feedback(@RequestBody Feedback data) {
+           			
            			return settings.feedback(data);
            		}
 //--------------------AddUser---------------------------
@@ -592,6 +652,11 @@ public class FrontController {
     		    @GetMapping("/view/Trainer")
     		    public ResponseEntity<List<Muser>> getTrainerByRoleName(@RequestHeader("Authorization") String token) {
     		    	return listview.getTrainerByRoleName(token);
+    		    }
+    		    
+    		    @GetMapping("/view/Mystudent")
+    		    public ResponseEntity<List<Muser>> GetStudentsOfTrainer(@RequestHeader("Authorization") String token){
+    		    	return listview.GetStudentsOfTrainer(token);
     		    }
 //------------------------MuserRegistrationController------------------------------
 

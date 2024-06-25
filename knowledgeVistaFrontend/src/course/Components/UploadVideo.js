@@ -208,7 +208,7 @@ const token=sessionStorage.getItem("token")
             <div className='innerdivider'>
             <div className='textinputs'>
             <div className='grp'>
-                <label>Video Title</label>
+                <label>Video Title <span className="text-danger">*</span></label>
                 <div>                <input type='text'
                  placeholder='Video Title'
                  name='Lessontitle'
@@ -225,7 +225,7 @@ const token=sessionStorage.getItem("token")
 
             </div>
             <div className='grp'>
-                <label>Description</label>
+                <label>Description <span className="text-danger">*</span></label>
                 <div>
                 <textarea 
                 name='LessonDescription'
@@ -240,7 +240,7 @@ const token=sessionStorage.getItem("token")
               </div>
             </div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 0fr 1fr",gap:"10px",padding:"20px"}}>
-                <label>Thumbnail</label>
+                <label>Thumbnail <span className="text-danger">*</span></label>
                     <label htmlFor='fileInput' style={{width:"100px", height:"40px"}} className='file-upload-btn'>
                     Upload
                     </label>
@@ -277,7 +277,7 @@ const token=sessionStorage.getItem("token")
                 onChange={handleUploadTypeChange}
                 disabled={isSubmitting}
                 />
-                <label htmlFor="video" style={{marginLeft:"20px"}} >Video</label>
+                <label htmlFor="video" style={{marginLeft:"20px"}} >Video <span className="text-danger">*</span></label>
                  </div>
                  <div>
                 <input
@@ -289,7 +289,7 @@ const token=sessionStorage.getItem("token")
                 onChange={handleUploadTypeChange}
                 disabled={isSubmitting}
                 />
-                <label htmlFor="url" style={{marginLeft:"20px"}}>Youtube Url</label>
+                <label htmlFor="url" style={{marginLeft:"20px"}}>Youtube Url <span className="text-danger">*</span></label>
             </div>
 
             {uploadType === 'url' ? (

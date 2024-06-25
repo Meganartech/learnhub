@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 import profile from "../images/profile.png";
 import Swal from "sweetalert2";
@@ -38,21 +38,18 @@ const AddTrainer = () => {
       skills:'',
       confirm_password: '',
       phone: '',
-      fileInput:''
-      
+      fileInput:'',
+      profile:''
     });
   
-    useEffect(() => {
-      // Check if any errors exist or if any input is null
-      const hasErrors = Object.values(errors).some(error => !!error) || Object.values(formData).some(value => value === null);
-      // Enable or disable submit button based on error presence
-      const submitBtn = document.querySelector('.btn.btn-primary');
-      if (hasErrors) {
-        submitBtn.disabled = true;
-      } else {
-        submitBtn.disabled = false;
-      }
-    }, [errors, formData]);
+    const nameRef = useRef(null);
+    const emailRef = useRef(null);
+    const dobRef = useRef(null);
+    const pswRef = useRef(null);
+    const confirmPswRef = useRef(null);
+    const skillsRef = useRef(null);
+    const phoneRef = useRef(null);
+    const countryCodeRef = useRef(null);
   
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -126,16 +123,64 @@ const AddTrainer = () => {
             profile: file,
             base64Image: base64Data,
           }));
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            profile: ''
+          }));
         })
         .catch((error) => {
           console.error("Error converting image to base64:", error);
         });
     };
     
+  const scrollToError = () => {
+    if (errors.username) {
+      nameRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.email) {
+      emailRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.dob) {
+      dobRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.psw || errors.confirm_password) {
+      pswRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.skills) {
+      skillsRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.phone) {
+      phoneRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    } else if (errors.countryCode) {
+      countryCodeRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    }
+  };
+
+  useEffect(() => {
+    scrollToError();
+  }, [errors]);
   
     const handleSubmit = async (e) => {
         e.preventDefault();
-       
+        let hasErrors = false;
+  const requiredFields = ['username', 'skills', 'email', 'dob', 'psw', 'confirm_password', 'phone', 'countryCode'];
+
+  requiredFields.forEach(field => {
+    if (!formData[field] || formData[field].length === 0 || errors[field]) {
+      hasErrors = true;
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [field]: !formData[field] ? 'This field is required' : errors[field]
+      }));
+    }
+  });
+  if(!formData.profile){
+    hasErrors = true;
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      profile: 'Image is Required'
+    }));
+  }
+
+  if (hasErrors) {
+    scrollToError(); // Scroll to the first error field
+    return;
+  }
         const formDataToSend = new FormData();
         formDataToSend.append("username", formData.username);
         formDataToSend.append("psw", formData.psw);
@@ -226,7 +271,7 @@ const AddTrainer = () => {
             <label htmlFor='fileInput' className='file-upload-btn'>
               Upload
             </label>
-      
+      <div className="text-danger">{errors.profile}</div>
             <input
                   type='file'
                   name="fileInput"
@@ -239,7 +284,7 @@ const AddTrainer = () => {
           </div>
 
           <div className='formgroup'>
-            <div className='inputgrp'>
+            <div className='inputgrp' ref={nameRef}>
               <label htmlFor='Name'> Name <span className="text-danger">*</span></label>
               <span>:</span>
             <div> <input
@@ -258,7 +303,7 @@ const AddTrainer = () => {
                 {errors.username}
               </div></div> 
             </div>
-            <div className='inputgrp'>
+            <div className='inputgrp' ref={emailRef}>
             
               <label htmlFor='email'> Email<span className="text-danger">*</span></label>
               <span>:</span><div>              <input
@@ -276,7 +321,7 @@ const AddTrainer = () => {
                     </div></div>
 
             </div>
-            <div className='inputgrp'>
+            <div className='inputgrp' ref={skillsRef} >
               <label htmlFor='skills'> Skills <span className="text-danger">*</span></label>
               <span>:</span>
             <div> <input
@@ -296,7 +341,7 @@ const AddTrainer = () => {
               </div></div> 
             </div>
 
-            <div className='inputgrp'>
+            <div className='inputgrp' ref={dobRef}>
               <label htmlFor='dob'>Date of Birth<span className="text-danger">*</span></label>
               <span>:</span>
               <div>
@@ -315,7 +360,7 @@ const AddTrainer = () => {
               </div></div>
             </div>
 
-            <div className='inputgrp'>
+            <div className='inputgrp' ref={pswRef}>
               <label htmlFor='Password'>Password<span className="text-danger">*</span></label>
               <span>:</span>
               <div>
@@ -335,7 +380,7 @@ const AddTrainer = () => {
 
             </div>
 
-            <div className='inputgrp'>
+            <div className='inputgrp' ref={confirmPswRef}>
               <label htmlFor='confirm_password'>Re-type password<span className="text-danger">*</span></label>
               <span>:</span>
               <div>
@@ -354,7 +399,7 @@ const AddTrainer = () => {
                       </div>
                       </div>
             </div>
-            <div className='inputgrp '>
+            <div className='inputgrp ' ref={countryCodeRef}>
               <label htmlFor='CountryCode'> Country Code<span className="text-danger">*</span></label>
               <span>:</span>
             <div>
@@ -377,7 +422,7 @@ const AddTrainer = () => {
                 </div>
                 </div>
             <div className='inputgrp mb-5'>
-              <label htmlFor='Phone'> Phone<span className="text-danger">*</span></label>
+              <label htmlFor='Phone' ref={phoneRef}> Phone<span className="text-danger">*</span></label>
               <span>:</span>
               <div>
               <input

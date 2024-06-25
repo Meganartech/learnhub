@@ -31,8 +31,8 @@ const[initialsave,setinitialsave]=useState(false);
         if (response.status === 200) {
           const data = response.data;
           setdefaultsettings(data);
-          setRazorpay_Key(data.razorpay_key);
-          setRazorpay_Secret_Key(data.razorpay_secret_key);
+          setRazorpay_Key(data.razorpay_key || ''); // Set default empty string if not found
+          setRazorpay_Secret_Key(data.razorpay_secret_key || '');
         } 
       } catch (error) {
         if (error.response) {
@@ -59,7 +59,7 @@ const[initialsave,setinitialsave]=useState(false);
   const changeRazorpay_KeyHandler = (event) => {
     const newValue = event.target.value;
     setRazorpay_Key(newValue); 
-    if (newValue.trim() !== '') {
+    if (newValue?.trim() !== '') {
       setErrors(prevErrors => ({
         ...prevErrors,
         Razorpay_Key: ""

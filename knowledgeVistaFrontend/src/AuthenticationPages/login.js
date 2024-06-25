@@ -77,7 +77,7 @@ const Login = () => {
           username: "User not found"
         }));
       } else if (error.response && error.response.status === 401){
-        const { message } = error.response.data;
+        const { message } = error.response.data ? error.response.data : "error occured";
         console.log(message)
         if (message === 'Incorrect password') {
           setErrors((prevErrors) => ({

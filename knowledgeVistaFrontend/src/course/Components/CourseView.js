@@ -84,11 +84,11 @@ const CourseView = ({ filteredCourses }) => {
            
         
     } catch (error) {
-
+     
       MySwal.fire({
         icon: 'error',
         title: 'Error creating order:', 
-        text: error.response.data
+        text:  error.response.data ? error.response.data :"error occured"
     });
     }
 };
@@ -124,7 +124,7 @@ const CourseView = ({ filteredCourses }) => {
       MySwal.fire({
         icon: 'error',
         title: 'Error sending payment ID to server:', 
-        text: error.response.data
+        text: error.response.data ? error.response.data : "error occured"
     });
     }
 };

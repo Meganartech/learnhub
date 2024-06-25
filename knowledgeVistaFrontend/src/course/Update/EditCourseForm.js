@@ -152,7 +152,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
           </div>
           <div className="form-group">
             <label htmlFor="courseName" >
-              Course Name
+              Course Name <span className="text-danger">*</span>
             </label>
             <input
               type="text"
@@ -168,7 +168,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
           </div>
           <div className="form-group">
             <label htmlFor="courseDescription" >
-              Course Description
+              Course Description <span className="text-danger">*</span>
             </label>
             <textarea
               name="courseDescription"
@@ -183,7 +183,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
           </div>
           <div className="form-group">
             <label htmlFor="courseCategory" >
-              Course Category
+              Course Category <span className="text-danger">*</span>
             </label>
             <input
               type="text"
@@ -197,7 +197,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
             />
           </div>
           <div className="form-group ">
-                <label htmlFor="noofseats">No of Seats</label>
+                <label htmlFor="noofseats">No of Seats <span className="text-danger">*</span></label>
                 <input
                   name="noofseats"
                   type="number"
@@ -214,7 +214,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
         <div className="second">
           <div className="form-group">
             <label htmlFor="courseImage" >
-              <h2>Course Image</h2>
+              <h2>Course Image <span className="text-danger">*</span></h2>
             </label>
             <input
               type="file"
@@ -238,7 +238,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
             <br />
             <div className="form-group mt-1">
             <label htmlFor="courseAmount" >
-             Amount
+             Amount <span className="text-danger">*</span>
             </label>
             <input
               type="number"
@@ -252,7 +252,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
             />
           </div>
           <div className="form-group mt-1">
-                <label htmlFor="duration">Course Duration</label>
+                <label htmlFor="duration">Course Duration <span className="text-danger">*</span></label>
                 <input
                   name="duration"
                   type="number"

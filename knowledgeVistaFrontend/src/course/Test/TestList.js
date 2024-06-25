@@ -7,7 +7,7 @@ import baseUrl from '../../api/utils';
 import axios from 'axios';
 
 const TestList = () => {
-  const { courseId } = useParams();
+  const {courseName, courseId } = useParams();
   const MySwal = withReactContent(Swal);
   const [test, setTest] = useState(null); // Change to single test instead of array
   const [notFound, setNotFound] = useState(false); // State to track if test is not found
@@ -112,7 +112,7 @@ const TestList = () => {
           }else{
             MySwal.fire({
               title: "Error!",
-              text: error.response.data,
+              text: error.response.data ? error.response.data : "error occured",
               icon: "error",
               confirmButtonText: "OK",
             });
@@ -188,8 +188,8 @@ const TestList = () => {
       <div className='contentinner'>
         {notFound ? (
           <div className='enroll'>
-            <h2>No test found for this course.</h2>
-            <a href={`/course/AddTest/${courseId}`} className='btn btn-primary'>Add Test</a>
+            <h2>No test found for the  course {courseName}</h2>
+            <a href={`/course/AddTest/${courseName}/${courseId}`} className='btn btn-primary'>Add Test</a>
           </div>
         ) : (
           test && (
