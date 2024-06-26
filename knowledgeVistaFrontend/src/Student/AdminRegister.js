@@ -8,7 +8,7 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../api/utils";
 import axios from "axios";
 
-const StudentRegister = () => {
+const AdminRegister = () => {
   const MySwal = withReactContent(Swal);
   
   const [formData, setFormData] = useState({
@@ -21,6 +21,7 @@ const StudentRegister = () => {
     profile: null,
     countryCode: "+91",
     isActive: true,
+    role:"ADMIN"
   });
 
   const countrycodelist = [
@@ -174,6 +175,7 @@ const StudentRegister = () => {
     formDataToSend.append("psw", formData.psw);
     formDataToSend.append("email", formData.email);
     formDataToSend.append("dob", formData.dob);
+    formDataToSend.append("role",formData.role);
     formDataToSend.append("phone", formData.phone);
     formDataToSend.append("isActive", formData.isActive);
     formDataToSend.append("profile", formData.profile);
@@ -181,7 +183,7 @@ const StudentRegister = () => {
     formDataToSend.append("countryCode", formData.countryCode);
 
     try {
-      const response = await axios.post(`${baseUrl}/student/register`, formDataToSend);
+      const response = await axios.post(`${baseUrl}/admin/register`, formDataToSend);
 
       if (response.status === 200) {
         MySwal.fire({
@@ -472,6 +474,6 @@ const StudentRegister = () => {
   );
 };
 
-export default StudentRegister;
+export default AdminRegister;
 
 

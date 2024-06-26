@@ -33,52 +33,17 @@ public class MserRegistrationController {
 	private Environment env;
 	
 
-	public ResponseEntity<?> registerStudent( String username, String psw, String email, LocalDate dob,
+	public ResponseEntity<?> registerAdmin( String username, String psw, String email, LocalDate dob,String role,
 	                                         String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode) {
 	    try {
-	        long userCount = muserrepositories.count();
 	        Optional<Muser> existingUser = muserrepositories.findByEmail(email);
-	        if (userCount > 0) {
+	       
 	            if (existingUser.isPresent()) {
 	                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"EMAIL ALREADY EXISTS\"}");
-	            } else {
-	                MuserRoles roleUser = muserrolerepository.findByroleName("USER");
-	                Muser user = new Muser();
-	                user.setUsername(username);
-	                user.setEmail(email);
-	                user.setIsActive(isActive);
-	                user.setPsw(psw);
-	                user.setPhone(phone);
-	                user.setDob(dob);
-	                user.setSkills(skills);
-	                user.setRole(roleUser);
-	                user.setCountryCode(countryCode);
-	                try {
-	                    user.setProfile(ImageUtils.compressImage(profile.getBytes()));
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
-	                }
-	                muserrepositories.save(user);
-	            }
-	        } else {
-	            MuserRoles roleuser = new MuserRoles();
-	            roleuser.setRoleName("USER");
-	            roleuser.setIsActive(true);
-	            roleuser.setUsers(null);
-	            muserrolerepository.save(roleuser);
-
-	            MuserRoles roletrainer = new MuserRoles();
-	            roletrainer.setRoleName("TRAINER");
-	            roletrainer.setIsActive(true);
-	            roletrainer.setUsers(null);
-	            muserrolerepository.save(roletrainer);
-
-	            MuserRoles role = new MuserRoles();
-	            role.setRoleName("ADMIN");
-	            role.setIsActive(true);
-	            role.setUsers(null);
-	            MuserRoles savedroleadmin = muserrolerepository.save(role);
+	            }     
+	            Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName(role);
+	            if(oproleUser.isPresent()) {
+	            	MuserRoles roleuser=oproleUser.get();
 	            Muser user = new Muser();
 	            user.setUsername(username);
 	            user.setEmail(email);
@@ -88,8 +53,8 @@ public class MserRegistrationController {
 	            user.setDob(dob);
 	            user.setSkills(skills);
 	            user.setCountryCode(countryCode);	   
-	            user.setRole(savedroleadmin);     
-	            
+	            user.setRole(roleuser);     
+	           
 	                            
 	            try {
 	                user.setProfile(ImageUtils.compressImage(profile.getBytes()));
@@ -98,6 +63,7 @@ public class MserRegistrationController {
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 	            }
 	            muserrepositories.save(user);
+	           
 	            RestTemplate restTemplate = new RestTemplate();
 
 	            String baseUrl = env.getRequiredProperty("base.url");
@@ -124,8 +90,12 @@ public class MserRegistrationController {
 
 	            ResponseEntity<String> response2 = restTemplate.postForEntity(apiUrl2, custlead, String.class);
 
-	        }
+	           
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
+	            }else {
+	            	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
+	   	            
+	            }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");

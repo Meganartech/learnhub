@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState ,useEffect } from "react";
 import "./css/StudentRegister.css"
-import StudentRegister from "./Student/StudentRegister";
+import StudentRegister from "./Student/AdminRegister.js";
 import ForgetPassword from "./AuthenticationPages/forgetpassword";
 import Login from "./AuthenticationPages/login";
 import React from "react";
@@ -53,6 +53,7 @@ import UpdatePartialPaymentSettings from "./course/Components/UpdatePartialPayme
 import Paymenttransactions from "./course/Components/Paymenttransactions.js";
 import TransactionHistoryTrainer from "./Trainer/TransactionHistoryTrainer.js";
 import Mystudents from "./Trainer/Mystudents.js";
+import AdminRegister from "./Student/AdminRegister.js";
 
 
 function App() {
@@ -148,11 +149,12 @@ function App() {
                        
                         </Route> 
            
-          <Route path="/" element={<StudentRegister/>}/>
+          <Route path="/" element={<Login/>}/>
+          <Route path="/login" element={<Login/>}/>
           <Route path="/refresh" element={<PrivateRoute authenticationRequired={true}><RefreshToken/></PrivateRoute>}/>
           <Route path="/unauthorized" element={<Unauthorized/>}/>
           <Route path="/forgot-password" element={<ForgetPassword />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/adminRegistration" element={<AdminRegister/>} />
           <Route path="*" element={<Missing/>}/>
                   </Routes>
       </div>

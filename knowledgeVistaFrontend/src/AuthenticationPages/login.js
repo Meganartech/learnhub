@@ -160,8 +160,8 @@ const Login = () => {
           >
             Forgot Password?
           </Link> 
-          <Link className="user text-decoration-none ml-3" to="/">
-            New User?
+          <Link className="user text-decoration-none ml-3" to="/adminRegistration">
+           Register as Admin
           </Link>
         </div>
   

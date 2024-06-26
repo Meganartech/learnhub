@@ -660,17 +660,18 @@ public class FrontController {
     		    }
 //------------------------MuserRegistrationController------------------------------
 
-    			@PostMapping("/student/register")
-    			public ResponseEntity<?> registerStudent(@RequestParam("username") String username,
+    			@PostMapping("/admin/register")
+    			public ResponseEntity<?> registerAdmin(@RequestParam("username") String username,
     			                                          @RequestParam("psw") String psw,
     			                                          @RequestParam("email") String email,
     			                                          @RequestParam("dob") LocalDate dob,
+    			                                          @RequestParam("role")String role,
     			                                          @RequestParam("phone") String phone,
     			                                          @RequestParam("skills") String skills,
     			                                          @RequestParam("profile") MultipartFile profile,
     			                                          @RequestParam("isActive") Boolean isActive,
     			                                          @RequestParam("countryCode")String countryCode) {
-    				return muserreg.registerStudent(username, psw, email, dob, phone, skills, profile, isActive,countryCode);
+    				return muserreg.registerAdmin(username, psw, email, dob,role, phone, skills, profile, isActive,countryCode);
     			}
 
     			@GetMapping("/student/users/{email}")

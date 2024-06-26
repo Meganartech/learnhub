@@ -13,6 +13,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +32,7 @@ public class Muser {
 	    private String skills;
 	    @Lob
 	    @Column(name="profile" ,length=1000000)
+	   
 	    private byte[] profile;
 	    @ManyToOne
 	    @JoinColumn(name = "roleId")
