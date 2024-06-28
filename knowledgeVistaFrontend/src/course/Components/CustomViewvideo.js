@@ -58,7 +58,11 @@ const CustomViewvideo = () => {
         if(error.response && error.response.status===401){
           
           window.location.href = '/unauthorized';
-        }else{
+        }else if(error.response && error.response.status===404){
+          
+          window.location.href = '/missing';
+        }
+        else{
         MySwal.fire({
         icon: 'error',
         title: 'Some Error Occurred',

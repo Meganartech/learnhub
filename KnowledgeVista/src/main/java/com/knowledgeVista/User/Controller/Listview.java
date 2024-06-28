@@ -40,8 +40,18 @@ public class Listview {
    	     }
 
    	     String role = jwtUtil.getRoleFromToken(token);
+   	     String roleu="USER";
+   	     String email=jwtUtil.getUsernameFromToken(token);
+   	     Optional<Muser>opreq=muserrepositories.findByEmail(email);
+   	     String institution="";
+   	     if(opreq.isPresent()) {
+   	    	 Muser requser=opreq.get();
+   	    	institution=requser.getInstitutionName();
+   	     }else {
+   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+   	     }
    	     if("ADMIN".equals(role)||"TRAINER".equals(role)){
-            List<Muser> users = muserrepositories.findByRoleName("USER");
+            List<Muser> users = muserrepositories.findByRoleNameAndInstitutionName(roleu, institution);
            
             users.forEach(user -> {
                 byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
@@ -99,23 +109,36 @@ public class Listview {
     
 //```````````````WORKING````````````````````````````````````
     
-    public ResponseEntity<Muser> getUserById( Long userId,String token) {
+    public ResponseEntity<?> getUserById( Long userId,String token) {
         try {
         	if (!jwtUtil.validateToken(token)) {
       	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
       	     }
 
       	     String role = jwtUtil.getRoleFromToken(token);
+      	   String email=jwtUtil.getUsernameFromToken(token);
+	   	     Optional<Muser>opreq=muserrepositories.findByEmail(email);
+	   	     String institution="";
+	   	     if(opreq.isPresent()) {
+	   	    	 Muser requser=opreq.get();
+	   	    	institution=requser.getInstitutionName();
+	   	     }else {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+	   	     }
       	     if("ADMIN".equals(role)||"TRAINER".equals(role)){
-            Muser user = muserrepositories.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-      
+           Optional<Muser> opuser = muserrepositories.findByuserIdandInstitutionName(userId, institution);
+         if(opuser.isPresent()) {
+        	 Muser user=opuser.get();
+         
             byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
             user.setProfile(decompressedImage);
             user.setCourses(null);
 
         	user.setAllotedCourses(null);
             return ResponseEntity.ok(user);
+         }else {
+        	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
+         }
       	   }else {
 
      	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -134,8 +157,18 @@ public ResponseEntity<List<Muser>> getTrainerByRoleName( String token) {
 	     }
 
 	     String role = jwtUtil.getRoleFromToken(token);
+	     String roleu="TRAINER";
+   	     String email=jwtUtil.getUsernameFromToken(token);
+   	     Optional<Muser>opreq=muserrepositories.findByEmail(email);
+   	     String institution="";
+   	     if(opreq.isPresent()) {
+   	    	 Muser requser=opreq.get();
+   	    	institution=requser.getInstitutionName();
+   	     }else {
+   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+   	     }
 	     if("ADMIN".equals(role)){
-	    		 List<Muser> users = muserrepositories.findByRoleName("TRAINER");
+	    		 List<Muser> users = muserrepositories.findByRoleNameAndInstitutionName(roleu, institution);
        
         users.forEach(user -> {
         	user.setAllotedCourses(null);

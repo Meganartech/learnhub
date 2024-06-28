@@ -280,7 +280,7 @@ const handlenextclick =(e)=>{
                     <h1 style={{ textDecoration: "underline" }}>Setting up a Course</h1>
                     <form >
                         {/* Form fields */}
-                        <div className='formgroup mt-2' style={{ fontSize: "larger" }}>
+                        <div className='formgroup mt-1' >
                             {/* Course Title */}
                             <div className='inputgrp' ref={courseName}>
                                 <label htmlFor='courseName'>Course Title <span className="text-danger">*</span></label>
@@ -367,7 +367,7 @@ const handlenextclick =(e)=>{
                                     <input
                                         type="file"
                                         onChange={handleFileChange}
-                                        style={{ width: "400px" }}
+                                        style={{ width: "100px",  height:"100px"}}
                                         id='courseImage'
                                         name="courseImage"
                                         accept='image/*'

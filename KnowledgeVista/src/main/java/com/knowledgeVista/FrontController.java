@@ -36,9 +36,9 @@ import com.knowledgeVista.License.UserListWithStatus;
 import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Payments.PaymentIntegration;
 import com.knowledgeVista.Payments.PaymentListController;
+import com.knowledgeVista.Payments.Paymentsettings;
+import com.knowledgeVista.Payments.SettingsController;
 import com.knowledgeVista.Settings.Feedback;
-import com.knowledgeVista.Settings.Paymentsettings;
-import com.knowledgeVista.Settings.SettingsController;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Controller.AddUsers;
 import com.knowledgeVista.User.Controller.AssignCourse;
@@ -169,8 +169,8 @@ public class FrontController {
 	 }
 	 
 	 @GetMapping("/course/viewAll")
-	    public ResponseEntity<List<CourseDetail>> viewCourse() {
-		 return courseController.viewCourse();
+	    public ResponseEntity<List<CourseDetail>> viewCourse(@RequestHeader("Authorization") String token) {
+		 return courseController.viewCourse(token);
 		 }
 	 
 
@@ -340,30 +340,30 @@ public class FrontController {
 		        
 //----------------------PaymentIntegration----------------------	
 		        @PostMapping("/full/buyCourse/create")
-		        public ResponseEntity<?> createOrderfull(@RequestBody Map<String, Long> requestData) {
+		        public ResponseEntity<?> createOrderfull(@RequestBody Map<String, Long> requestData ,@RequestHeader("Authorization") String token) {
 		        	 if (paylist != null && activeProfile.equals("demo")) {
 
 		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 	            	   }else {
-		        	return payment.createOrderfull(requestData);
+		        	return payment.createOrderfull(requestData,token);
 	            	   }
 		        } 
 		        @PostMapping("/part/buyCourse/create")
-		        public ResponseEntity<?> createOrderPart(@RequestBody Map<String, Long> requestData) {
+		        public ResponseEntity<?> createOrderPart(@RequestBody Map<String, Long> requestData ,@RequestHeader("Authorization") String token) {
 		        	 if (paylist != null && activeProfile.equals("demo")) {
 
 		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 	            	   }else {
-		        	return payment.createOrderPart(requestData);
+		        	return payment.createOrderPart(requestData,token);
 	            	   }
 		        }
                @PostMapping("/buyCourse/payment")
-             public ResponseEntity<String> updatePaymentId(@RequestBody Map<String, String> requestData) {
+             public ResponseEntity<String> updatePaymentId(@RequestBody Map<String, String> requestData,@RequestHeader("Authorization") String token) {
             	   if (paylist != null && activeProfile.equals("demo")) {
 
               		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
             	   }else {
-            	   return payment.updatePaymentId(requestData);
+            	   return payment.updatePaymentId(requestData ,token);
             	   }
                }
                
@@ -646,7 +646,7 @@ public class FrontController {
     		    	return listview.getUsersByRoleName(token);
     		    }
     		    @GetMapping("/view/users/{userId}")
-    		    public ResponseEntity<Muser> getUserById(@PathVariable Long userId,@RequestHeader("Authorization") String token) {
+    		    public ResponseEntity<?> getUserById(@PathVariable Long userId,@RequestHeader("Authorization") String token) {
     		    	return listview.getUserById(userId,token);
     		    }
     		    @GetMapping("/view/Trainer")
@@ -664,6 +664,7 @@ public class FrontController {
     			public ResponseEntity<?> registerAdmin(@RequestParam("username") String username,
     			                                          @RequestParam("psw") String psw,
     			                                          @RequestParam("email") String email,
+    			                                          @RequestParam("institutionname") String institutionName,
     			                                          @RequestParam("dob") LocalDate dob,
     			                                          @RequestParam("role")String role,
     			                                          @RequestParam("phone") String phone,
@@ -671,7 +672,7 @@ public class FrontController {
     			                                          @RequestParam("profile") MultipartFile profile,
     			                                          @RequestParam("isActive") Boolean isActive,
     			                                          @RequestParam("countryCode")String countryCode) {
-    				return muserreg.registerAdmin(username, psw, email, dob,role, phone, skills, profile, isActive,countryCode);
+    				return muserreg.registerAdmin(username, psw, email, institutionName, dob,role, phone, skills, profile, isActive,countryCode);
     			}
 
     			@GetMapping("/student/users/{email}")
@@ -723,8 +724,8 @@ public class FrontController {
     			  }
     			  
     				@GetMapping("/certificate/viewAll")
-    				public ResponseEntity<?> viewCoursecertificate() {
-    					return certi.viewCoursecertificate();
+    				public ResponseEntity<?> viewCoursecertificate(@RequestHeader("Authorization") String token) {
+    					return certi.viewCoursecertificate(token);
     				}
     				@GetMapping("/certificate/getAllCertificate")
     				public ResponseEntity<?> sendAllCertificate(@RequestHeader("Authorization") String token) {

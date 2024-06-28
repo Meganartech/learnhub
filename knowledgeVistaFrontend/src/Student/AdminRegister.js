@@ -14,7 +14,9 @@ const AdminRegister = () => {
   const [formData, setFormData] = useState({
     username: "",
     psw: "",
+    confirm_password:"",
     email: "",
+    institution:"",
     dob: "",
     phone: "",
     skills: "",
@@ -38,6 +40,7 @@ const AdminRegister = () => {
   const [errors, setErrors] = useState({
     username: '',
     email: '',
+    institution:'',
     dob: '',
     psw: '',
     skills: '',
@@ -55,6 +58,7 @@ const AdminRegister = () => {
   const skillsRef = useRef(null);
   const phoneRef = useRef(null);
   const countryCodeRef = useRef(null);
+  const institutionRef=useRef(null);
 
   // useEffect(() => {
   //   const hasErrors = Object.values(errors).some(error => !!error) || Object.values(formData).some(value => value === null);
@@ -79,6 +83,9 @@ const AdminRegister = () => {
         break;
       case 'email':
         error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'Please enter a valid email address';
+        break;
+      case 'institution':
+        error = value.length < 1 ? 'Please enter a Institution Name' : '';
         break;
       case 'dob':
         const dobDate = new Date(value);
@@ -147,7 +154,7 @@ const AdminRegister = () => {
 
   // Check if any required fields are empty or have errors
   let hasErrors = false;
-  const requiredFields = ['username', 'skills', 'email', 'dob', 'psw', 'confirm_password', 'phone', 'countryCode'];
+  const requiredFields = ['username', 'skills', 'email', 'dob', 'psw', 'confirm_password', 'phone'];
 
   requiredFields.forEach(field => {
     if (!formData[field] || formData[field].length === 0 || errors[field]) {
@@ -174,6 +181,7 @@ const AdminRegister = () => {
     formDataToSend.append("username", formData.username);
     formDataToSend.append("psw", formData.psw);
     formDataToSend.append("email", formData.email);
+    formDataToSend.append("institutionname",formData.institution);
     formDataToSend.append("dob", formData.dob);
     formDataToSend.append("role",formData.role);
     formDataToSend.append("phone", formData.phone);
@@ -200,22 +208,33 @@ const AdminRegister = () => {
             setFormData({
               username: "",
               psw: "",
+              confirm_password:"",
               email: "",
+              institution:"",
               dob: "",
               phone: "",
               skills: "",
               profile: null,
-              isActive: true
+              isActive: true,
+              base64Image:null
             });
           }
         });
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
+        const data=error.response.data;
+        if(data==="EMAIL"){
         setErrors(prevErrors => ({
           ...prevErrors,
           email: "This email is already registered."
         }));
+      }else if (data==="INSTITUTE"){
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          institution: "This institution is already registered."
+        }));
+      }
       } else {
         MySwal.fire({
           title: "Error!",
@@ -330,6 +349,27 @@ const AdminRegister = () => {
                     </div></div>
 
             </div>
+
+            <div className='inputgrp' ref={institutionRef}>
+            
+            <label htmlFor='institution'> Institution Name<span className="text-danger" >*</span></label>
+            <span>:</span><div>              <input
+                    type="text"
+                    autoComplete="off"
+                    className={`form-control form-control-lg ${errors.institution && 'is-invalid'}`}
+                    name="institution"
+                    value={formData.institution}
+                    onChange={handleChange}
+                    placeholder="Institution Name"
+                    required
+                  />
+                  <div className="invalid-feedback">
+                    {errors.institution}
+                  </div></div>
+
+          </div>
+
+
             <div className='inputgrp'>
               <label htmlFor='skills'> Skills <span className="text-danger" ref={skillsRef}>*</span></label>
               <span>:</span>
@@ -396,6 +436,7 @@ const AdminRegister = () => {
               <input
                         type="password"
                         name="confirm_password"
+                        value={formData.confirm_password}
                         className={`form-control form-control-lg ${errors.confirm_password && 'is-invalid'}`}
                         id="exampleRepeatPassword"
                         onChange={handleChange}
@@ -426,7 +467,8 @@ const AdminRegister = () => {
             {code}
           </option>
         ))}
-      </select> 
+      </select>
+      <div className="invalid-feedback">{errors.countryCode}</div> 
                 
                 </div>
                 </div>

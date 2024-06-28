@@ -62,6 +62,7 @@ public class AssignCourse {
 
 	        if (optionalUser.isPresent()) {
 	            Muser user = optionalUser.get();
+	            String institution=user.getInstitutionName();
 	            List<CourseDetail> courselistold=user.getCourses();
 	        	List<Long> userlist = new ArrayList<>();
 	        	userlist.add(userId);
@@ -116,7 +117,7 @@ public class AssignCourse {
 	             		        if(NotifyIdA!=null) {
 	             		        	List<String> admin = new ArrayList<>();
 	             		          admin.add("ADMIN");
-	             		        	notiservice.CommoncreateNotificationUser(NotifyIdA,admin );
+	             		        	notiservice.CommoncreateNotificationUser(NotifyIdA,admin,institution );
 	             		        }
 	             		        
 	                        } else { 

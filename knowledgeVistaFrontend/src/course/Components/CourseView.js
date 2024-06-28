@@ -49,9 +49,10 @@ const CourseView = ({ filteredCourses }) => {
      
         const response = await axios.post(`${baseUrl}${url}`,data, {
       
-            headers: {
-                'Content-Type': 'application/json'
-            }
+          headers: {
+            "Authorization": token,
+            'Content-Type': 'application/json'
+          }
         });
         
             const order =  response.data;
@@ -101,9 +102,10 @@ const CourseView = ({ filteredCourses }) => {
         signature:signature,
     })
         const response = await axios.post(`${baseUrl}/buyCourse/payment`,paydata, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+          headers: {
+            "Authorization": token,
+            'Content-Type': 'application/json'
+          }
         });
 
         if (response.status===200) {

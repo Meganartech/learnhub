@@ -51,16 +51,25 @@ public class certificateController {
 	    try {
 	    	
 	    	 if (!jwtUtil.validateToken(token)) {return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                    .body("{\"message\": \"Unauthorized access\"}");
+	                    .body("Unauthorized access");
 	            
 	         }
 
 	         String role = jwtUtil.getRoleFromToken(token);
+	         String email=jwtUtil.getUsernameFromToken(token); 
+	         String userinstitution="";
+		     Optional<Muser> opuser =muserRepository.findByEmail(email);
+		     if(opuser.isPresent()) {
+		    	 Muser user=opuser.get();
+		    	 userinstitution=user.getInstitutionName();
+		     }else {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
 	         if("ADMIN".equals(role)) {
-	         if(certificaterepo.count()>0) {
-	        	 return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"Certificate already exists\"}");
+	        	 Optional<certificate> opcertificate=certificaterepo.findByInstitution(userinstitution);
+	         if(opcertificate.isPresent()) {
+	        	 return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Certificate already exists");
 	        
-	      
 	         }else {
 	        	  // Compress the authorized sign image
 	 	        byte[] compressedAuthorizedSign = ImageUtils.compressImage(authorizedSign.getBytes());
@@ -70,21 +79,20 @@ public class certificateController {
 	 	        certificate.setOwnerName(ownerName);
 	 	        certificate.setQualification(qualification);
 	 	        certificate.setAddress(address);
+	 	        certificate.setInstitution(userinstitution);
 	 	        certificate.setAuthorizedSign(compressedAuthorizedSign);
-	 	        //certificate.setCertificateTemplate(compressedCertificateTemplate);
-
-	 	        // Save the certificate object to the database
+	 	        
 	 	        certificaterepo.save(certificate);
-	            return ResponseEntity.ok("{\"message\": \"Certificate updated successfully.\"}");
+	            return ResponseEntity.ok("Certificate Saved successfully.");
 	 	        }
 	         }else {
 		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-		                    .body("{\"message\": \"Unauthorized access\"}");
+		                    .body("Unauthorized access");
 	         }
 	        
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
+	                .body("An error occurred while updating the certificate: " + e.getMessage() );
 	    }
 	}
 	
@@ -97,22 +105,31 @@ public class certificateController {
 	        // Validate the token
 	        if (!jwtUtil.validateToken(token)) {
 	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                    .body("{\"message\": \"Invalid token\"}");
+	                    .body("Invalid token");
 	        }
 
 	        // Get the role from the token
 	        String role = jwtUtil.getRoleFromToken(token);
-
+	        String email=jwtUtil.getUsernameFromToken(token);
+	      
+	         String institution="";
+		     Optional<Muser> opuser =muserRepository.findByEmail(email);
+		     if(opuser.isPresent()) {
+		    	 Muser user=opuser.get();
+		    	 institution=user.getInstitutionName();
+		     }else {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
 	        // Check if the user is an admin
 	        if (!"Admin".equalsIgnoreCase(role)) {
 	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                    .body("{\"message\": \"Unauthorized access\"}");
+	                    .body("Unauthorized access");
 	        }
 
 	        // Find the certificate by ID
-	        Optional<certificate> optionalCertificate = certificaterepo.findById(certificateId);
-	        System.out.println("found");
-
+	        Optional<certificate> optionalCertificate = certificaterepo.findByIdAndInstitution(certificateId, institution);
+	       System.out.println(certificateId);
+	       System.out.println(institutionName);
 	        if (optionalCertificate.isPresent()) {
 	            certificate certificate = optionalCertificate.get();
                 if(authorizedSign!=null) {
@@ -132,58 +149,61 @@ public class certificateController {
 	            certificaterepo.saveAndFlush(certificate);
 
 	            // Return a JSON response with a success message
-	            return ResponseEntity.ok("{\"message\": \"Certificate updated successfully.\"}");
+	            return ResponseEntity.ok("Certificate updated successfully.");
 	        } else {
 	            // Certificate not found
 	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                    .body("{\"message\": \"Certificate not found.\"}");
+	                    .body("Certificate not found.");
 	        }
 	    } catch (Exception e) {
 	        // Handle internal server error and return a JSON response
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
+	                .body("An error occurred while updating the certificate: " + e.getMessage() );
 	    }
 	}
 	
 	
 	
 //````````````````````````````WORING````````````````````````````````````````````````````````)
-	public ResponseEntity<?> viewCoursecertificate() {
+	public ResponseEntity<?> viewCoursecertificate(String token) {
 		 try {
-	    List<certificate> certificates = certificaterepo.findAll();
+			 if (!jwtUtil.validateToken(token)) {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+		                    .body("Invalid token");
+		        }
+
+		        // Get the role from the token
+		        String role = jwtUtil.getRoleFromToken(token);
+		        String email=jwtUtil.getUsernameFromToken(token);
+		         String institution="";
+			     Optional<Muser> opuser =muserRepository.findByEmail(email);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 institution=user.getInstitutionName();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
+	    Optional<certificate> opcertificate = certificaterepo.findByInstitution(institution);
 	    
-	    if (certificates.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	            .body("No certificates found");
-	    } else {
-	        // If there's only one certificate, return it directly
-	        if (certificates.size() == 1) {
-	            certificate certi = certificates.get(0);
+	    if (opcertificate.isPresent()) {
+	    	 certificate certi = opcertificate.get();
 	            byte[] sign = ImageUtils.decompressImage(certi.getAuthorizedSign());
 	            certi.setAuthorizedSign(sign);
 	            return ResponseEntity.ok()
 	                .contentType(MediaType.APPLICATION_JSON)
 	                .body(certi);
+	       
+	    } else {
+	    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	 	            .body("No certificates found");
+	           
 	        }
-	        else {
-	            // If there are multiple certificates, return all of them
-	            for (certificate certi : certificates) {
-	                byte[] sign = ImageUtils.decompressImage(certi.getAuthorizedSign());
-	                certi.setAuthorizedSign(sign);
-	                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	        	            .body("No certificates found");
-	            }
-//	            return ResponseEntity.ok()
-//	                .contentType(MediaType.APPLICATION_JSON)
-//	                .body(certificates);
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-        	            .body("No certificates found");
-	        }
-	    }
+	    
+	    
 		 } catch (Exception e) {
 		        // Handle internal server error and return a JSON response
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-		                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
+		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
 	}
 	
@@ -227,10 +247,11 @@ public class certificateController {
 		 } catch (Exception e) {
 		        // Handle internal server error and return a JSON response
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-		                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
+		                .body("An error occurred while updating the certificate: " + e.getMessage());
 		    }
 	}
 
+	
 public ResponseEntity<?> getByActivityId( Long activityId, String token) {
 	 try {
     if (jwtUtil.validateToken(token)) {
@@ -255,7 +276,7 @@ public ResponseEntity<?> getByActivityId( Long activityId, String token) {
 	 } catch (Exception e) {
 	        // Handle internal server error and return a JSON response
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("{\"message\": \"An error occurred while updating the certificate: " + e.getMessage() + "\"}");
+	                .body("An error occurred while updating the certificate: " + e.getMessage() );
 	    }
 }
 

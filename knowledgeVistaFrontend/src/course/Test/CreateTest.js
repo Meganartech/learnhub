@@ -190,7 +190,7 @@ const CreateTest = () => {
         confirmButtonText: "OK"
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = `/course/testlist/${courseId}`;
+          window.location.href = `/course/testlist/${courseName}/${courseId}`;
         }
       });
 

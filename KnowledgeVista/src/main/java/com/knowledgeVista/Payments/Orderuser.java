@@ -20,6 +20,7 @@ public class Orderuser {
 	   @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
+	   private String institutionName;
 	    private String orderId;
 	    private Long userId;
 	    private String courseName;

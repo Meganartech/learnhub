@@ -38,6 +38,9 @@ public class CourseDetail {
 	    private String courseDescription;
 	    @Column(name="courseCategory")
 	    private String courseCategory;
+	    @Column(name="licenceType")
+	    private String licenceType;
+	    
 	    @Column(name="amount")
 	    private Long amount;
 	    @Lob
@@ -54,6 +57,9 @@ public class CourseDetail {
 
 	    @Column(name="Duration")
 	    private Long Duration;
+	    
+	    @Column(name="institution")
+	    private String institutionName;
 	    
 	    @Column(name="Noofseats")
 	    private Long Noofseats;

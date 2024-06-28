@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState ,useEffect } from "react";
 import "./css/StudentRegister.css"
-import StudentRegister from "./Student/AdminRegister.js";
 import ForgetPassword from "./AuthenticationPages/forgetpassword";
 import Login from "./AuthenticationPages/login";
 import React from "react";
@@ -84,7 +83,12 @@ function App() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/course/viewAll`);
+        const token=sessionStorage.getItem("token");
+        const response = await axios.get(`${baseUrl}/course/viewAll`,{
+          headers: {
+            'Authorization': token
+          }
+        });
         const data = response.data;
         setCourse(data);
    
@@ -101,7 +105,6 @@ function App() {
       <div className="App ">
         <Routes>
                   <Route element={<Layout  
-                
                   searchQuery={searchQuery}
                   handleSearchChange={handleSearchChange}
                   setSearchQuery={setSearchQuery}/>}>
@@ -123,7 +126,7 @@ function App() {
                       <Route path="/test/start/:courseName/:courseId" element={<PrivateRoute onlyuser={true} authenticationRequired={true}><AttenTest/></PrivateRoute>}/>
                       <Route path="/test/Edit/:questionId" element={<PrivateRoute authorizationRequired={true} authenticationRequired={true}><EditQuestion/></PrivateRoute>}/>
                       <Route path="/test/AddMore/:testId" element={<PrivateRoute authorizationRequired={true} authenticationRequired={true}><AddMoreQuestion/></PrivateRoute>}/>
-                      <Route path="/course/edit/:courseId" element={<PrivateRoute authenticationRequired={true}><CourseDetails/></PrivateRoute>}/>
+                      <Route path="/course/edit/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CourseDetails/></PrivateRoute>}/>
                       <Route path="/course/testlist/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TestList /></PrivateRoute>} />
                       <Route path="/course/dashboard/profile" element={<PrivateRoute authenticationRequired={true}><ProfileView/></PrivateRoute>}/>
                       <Route path="/MyCertificateList" element={<PrivateRoute authenticationRequired={true}><MyCertificateList /></PrivateRoute>}/>

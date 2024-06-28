@@ -66,23 +66,29 @@ public class CourseController {
 	
 //`````````````````````````WORKING``````````````````````````````````
 	
-	 
 	 public ResponseEntity<?> countCourse(String token) {
 	     try {
 	         if (!jwtUtil.validateToken(token)) {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	         }
 	         String role = jwtUtil.getRoleFromToken(token);
-	         // Perform authentication based on role
+	         String email=jwtUtil.getUsernameFromToken(token);
+	   	     Optional<Muser>opreq=muserRepository.findByEmail(email);
+	   	     String institution="";
+	   	     if(opreq.isPresent()) {
+	   	    	 Muser requser=opreq.get();
+	   	    	institution=requser.getInstitutionName();
+	   	     }else {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+	   	     }
 	         if (!"ADMIN".equals(role)) {
-	        		
-	             // If the role is not ADMIN, return unauthorized status
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	         }
-	         Long count = coursedetailrepository.count();
-	            Long trainercount = muserRepository.countByRoleName("TRAINER");
-	            Long usercount = muserRepository.countByRoleName("USER");
-	            Long  totalAvailableSeats = coursedetailrepository.countTotalAvailableSeats();
+	         Long count = coursedetailrepository.countCourseByInstitutionName(institution);
+	            Long trainercount = muserRepository.countByRoleNameandInstitutionName("TRAINER", institution);
+	            Long usercount = muserRepository.countByRoleNameandInstitutionName("USER", institution);
+	            
+	            Long  totalAvailableSeats = coursedetailrepository.countTotalAvailableSeats(institution);
 	            
 
 	 	       Map<String, Long> response = new HashMap<>();
@@ -115,10 +121,12 @@ public class CourseController {
 		         String role = jwtUtil.getRoleFromToken(token);
 		         String email=jwtUtil.getUsernameFromToken(token);
 		         String username="";
+		         String institution="";
 			     Optional<Muser> opuser =muserRepository.findByEmail(email);
 			     if(opuser.isPresent()) {
 			    	 Muser user=opuser.get();
 			    	 username=user.getUsername();
+			    	 institution=user.getInstitutionName();
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -130,7 +138,7 @@ public class CourseController {
 	        courseDetail.setAmount(amount);
 	        courseDetail.setDuration(Duration);
 	        courseDetail.setPaytype(paytype);
-
+            courseDetail.setInstitutionName(institution);
 	        courseDetail.setNoofseats(Noofseats);
 	        try {
 	        	 courseDetail.setCourseImage(ImageUtils.compressImage(file.getBytes()));
@@ -152,7 +160,7 @@ public class CourseController {
 	        	List<String> notiuserlist = new ArrayList<>(); 
 	        	notiuserlist.add("ADMIN");
 	        	notiuserlist.add("USER");
-	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,institution);
 	        }
 	       if("PART".equals(paytype)) {
 	       Course_PartPayment_Structure paystructure=new Course_PartPayment_Structure();
@@ -209,15 +217,22 @@ public class CourseController {
 
 	     String role = jwtUtil.getRoleFromToken(token);
 	     String email=jwtUtil.getUsernameFromToken(token);
-	     if ( "TRAINER".equals(role)) {
-	    	
-		 
+	       Optional<Muser> optrainer=muserRepository.findByEmail(email);
+	       if(optrainer.isPresent()) {
+	    	   String username="";
+	    		Muser trainer =optrainer.get();
+	    		 username=trainer.getUsername();
+	    		 String institution= trainer.getInstitutionName();
+	    		 if(! "TRAINER".equals(trainer.getRole().getRoleName())) {
+	                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    		 }
 	        CourseDetail courseDetail = new CourseDetail();
 	        courseDetail.setCourseName(courseName);
 	        courseDetail.setCourseDescription(description);
 	        courseDetail.setCourseCategory(category);
 	        courseDetail.setAmount(amount);
 	        courseDetail.setDuration(Duration);
+	        courseDetail.setInstitutionName(institution);
 	        courseDetail.setNoofseats(Noofseats);
 	        try {
 	        	 courseDetail.setCourseImage(ImageUtils.compressImage(file.getBytes()));
@@ -239,14 +254,10 @@ public class CourseController {
 	       
 	       Long courseId=saved.getCourseId();
 	       String coursename =saved.getCourseName();
-	       String username="";
-	       Optional<Muser> optrainer=muserRepository.findByEmail(email);
-	    	if(optrainer.isPresent()) {
-	    		Muser trainer =optrainer.get();
-	    		 username=trainer.getUsername();
+	      
 	    		trainer.getAllotedCourses().add(saved);
 	    		  muserRepository.save(trainer);
-	    	}
+	    	
 	    	String coursenametosend =saved.getCourseName();
 		       String heading="New Course Added !";
 		       String link=courseUrl;
@@ -257,7 +268,7 @@ public class CourseController {
 		        	notiuserlist.add("ADMIN");
 		        	notiuserlist.add("USER");
 		        	notiuserlist.add("TRAINER");
-		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,institution);
 		        }
 	       Map<String, Object> response = new HashMap<>();
         response.put("message", "savedSucessfully");
@@ -282,10 +293,12 @@ public class CourseController {
 	         String role = jwtUtil.getRoleFromToken(token);
 	         String email=jwtUtil.getUsernameFromToken(token);
 	         String username="";
+	         String institution="";
 		     Optional<Muser> opuser =muserRepository.findByEmail(email);
 		     if(opuser.isPresent()) {
 		    	 Muser user=opuser.get();
 		    	 username=user.getUsername();
+		    	 institution=user.getInstitutionName();
 		     }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }
@@ -296,11 +309,9 @@ public class CourseController {
 	                CourseDetail existingCourseDetail = courseDetailOptional.get();
 	                //need to work
 	                List<Muser> users=existingCourseDetail.getUsers();
-	                System.out.println("users");
 	                List<Long> ids = new ArrayList<>(); 
 	                if(users != null) {
 	                for (Muser user : users) {
-	                	System.out.println(user.getUserId());
 	                	ids.add(user.getUserId());
 	                }
 	                }
@@ -340,7 +351,7 @@ public class CourseController {
 	 		         	notiservice.SpecificCreateNotification(NotifyId, ids);
 	 		        	List<String> notiuserlist = new ArrayList<>(); 
 	 		        	notiuserlist.add("ADMIN");
-	 		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+	 		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,institution);
 	 		        }
 	                return ResponseEntity.ok("{\"message\": \"Saved successfully\"}");
 	            } else {
@@ -361,8 +372,17 @@ public class CourseController {
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
          }
          String role = jwtUtil.getRoleFromToken(token);
+         String email=jwtUtil.getUsernameFromToken(token);
+         String institution="";
+	     Optional<Muser> opuser =muserRepository.findByEmail(email);
+	     if(opuser.isPresent()) {
+	    	 Muser user=opuser.get();
+	    	 institution=user.getInstitutionName();
+	     }else {
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	     }
          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-		    Optional<CourseDetail> courseOptional = coursedetailrepository.findById(courseId);
+		    Optional<CourseDetail> courseOptional = coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
 		    if (courseOptional.isPresent()) {
 		        CourseDetail course = courseOptional.get();
 		        byte[] image= ImageUtils.decompressImage(course.getCourseImage());
@@ -382,9 +402,20 @@ public class CourseController {
 
 	//--------------------------working------------------------------------
 
-	    public ResponseEntity<List<CourseDetail>> viewCourse() {
-	        List<CourseDetail> courses = coursedetailrepository.findAll();
-	        // Decompress image data for each course
+	    public ResponseEntity<List<CourseDetail>> viewCourse(String token ) {
+	    	 if (!jwtUtil.validateToken(token)) {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	         }
+	         String email=jwtUtil.getUsernameFromToken(token);
+	         String institution="";
+		     Optional<Muser> opuser =muserRepository.findByEmail(email);
+		     if(opuser.isPresent()) {
+		    	 Muser user=opuser.get();
+		    	 institution=user.getInstitutionName();
+		     }else {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
+	        List<CourseDetail> courses = coursedetailrepository.findAllByInstitutionName(institution);
 	        
 	        for (CourseDetail course : courses) {
 	        
@@ -408,15 +439,24 @@ public class CourseController {
 	          }
 
 	          String role = jwtUtil.getRoleFromToken(token);
-
+	          String adding=jwtUtil.getUsernameFromToken(token);
+		         String institution="";
+			     Optional<Muser> opaddinguser =muserRepository.findByEmail(adding);
+			     if(opaddinguser.isPresent()) {
+			    	 Muser addinguser=opaddinguser.get();
+			    	 institution=addinguser.getInstitutionName();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 	          if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
 	        	  Optional<Muser> optionalUser = muserRepository.findByEmail(email);
 	      	    if (optionalUser.isPresent()) {
 	      	        Muser user = optionalUser.get();
+	      	        
 	      	        if("USER".equals(user.getRole().getRoleName())) {
 	      	        List<CourseDetail> courses = user.getCourses();
 	        	  
-	               List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll().stream()
+	               List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllByInstitutionName(institution).stream()
 	                 .map(course -> {
 
 			               boolean isSelected = courses.contains(course);
@@ -447,7 +487,15 @@ public class CourseController {
 	          }
 
 	          String role = jwtUtil.getRoleFromToken(token);
-
+	          String adding=jwtUtil.getUsernameFromToken(token);
+		         String institution="";
+			     Optional<Muser> opaddinguser =muserRepository.findByEmail(adding);
+			     if(opaddinguser.isPresent()) {
+			    	 Muser addinguser=opaddinguser.get();
+			    	 institution=addinguser.getInstitutionName();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 	          if ("ADMIN".equals(role)) {
 	        	  Optional<Muser> optionalUser = muserRepository.findByEmail(email);
 	      	    if (optionalUser.isPresent()) {
@@ -456,7 +504,7 @@ public class CourseController {
 	      	        if("TRAINER".equals(user.getRole().getRoleName())) {
 	      	        List<CourseDetail> courses = user.getAllotedCourses();
 	        	  
-	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAll()
+	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllByInstitutionName(institution)
 	               .stream()
 	               .map(course -> {
 
@@ -495,8 +543,19 @@ public class CourseController {
 
 	           String role = jwtUtil.getRoleFromToken(token);
 		          String email=jwtUtil.getUsernameFromToken(token);
+		          
+		          String adding=jwtUtil.getUsernameFromToken(token);
+			         String institution="";
+				     Optional<Muser> opaddinguser =muserRepository.findByEmail(adding);
+				     if(opaddinguser.isPresent()) {
+				    	 Muser addinguser=opaddinguser.get();
+				    	 institution=addinguser.getInstitutionName();
+				     }else {
+			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				     }
+				     
 		          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-	           Optional<CourseDetail> optionalCourse = coursedetailrepository.findById(courseId);
+	           Optional<CourseDetail> optionalCourse = coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
 	           
 	           if (optionalCourse.isPresent()) {
 	               CourseDetail course = optionalCourse.get();
@@ -555,14 +614,24 @@ public class CourseController {
 	           }
 
 	           String role = jwtUtil.getRoleFromToken(token);
-
+	           String adding=jwtUtil.getUsernameFromToken(token);
+		         String institution="";
+			     Optional<Muser> opaddinguser =muserRepository.findByEmail(adding);
+			     if(opaddinguser.isPresent()) {
+			    	 Muser addinguser=opaddinguser.get();
+			    	 institution=addinguser.getInstitutionName();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 	           if (!"ADMIN".equals(role)) {
-	        	   Optional<CourseDetail> opcourse=coursedetailrepository.findById(courseId);
+	        	   Optional<CourseDetail> opcourse=coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
 	        	   if(opcourse.isPresent()) {
 	        		   CourseDetail course=opcourse.get();
 	        		   if(course.getAmount()== 0) {
 	        			   return getVideoLessonsResponse(courseId); 
 	        		   }
+	        	   }else {
+	        		   return ResponseEntity.notFound().build();
 	        	   }
 	               String email = jwtUtil.getUsernameFromToken(token);
 	               Optional<Muser> opuser = muserRepository.findByEmail(email);
@@ -583,7 +652,14 @@ public class CourseController {
 	               }
 	               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	           } else {
-	               return getVideoLessonsResponse(courseId);
+	        	   Optional<CourseDetail> opcourse=coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
+	        	   if(opcourse.isPresent()) {
+	        		   CourseDetail course=opcourse.get();
+	        			   return getVideoLessonsResponse(courseId); 
+	        		   
+	        	   }else {
+	        		   return ResponseEntity.notFound().build();
+	        	   }
 	           }
 	       } catch (Exception e) {
 	           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -615,9 +691,20 @@ public class CourseController {
 
 		           String role = jwtUtil.getRoleFromToken(token);
 			          String email=jwtUtil.getUsernameFromToken(token);
+			          
+			          String reqUser=jwtUtil.getUsernameFromToken(token);
+				         String institution="";
+					     Optional<Muser> opreqsUser =muserRepository.findByEmail(reqUser);
+					     if(opreqsUser.isPresent()) {
+					    	 Muser requestuser=opreqsUser.get();
+					    	 institution=requestuser.getInstitutionName();
+					     }else {
+				             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+					     }
+					     
 			          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 			
-			    Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
+			    Optional<CourseDetail> opcourse = coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
 			    if (opcourse.isPresent()) {
 			    	
 			    	 if("TRAINER".equals(role)) {

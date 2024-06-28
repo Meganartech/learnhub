@@ -31,7 +31,8 @@ public class CourseControllerSecond {
 	private CourseDetailRepository coursedetailrepository;
 	 @Autowired
 	 private JwtUtil jwtUtil;
-	
+	@Autowired
+	private MuserRepositories muserRepository;
 		
 	 
 	
@@ -42,8 +43,17 @@ public class CourseControllerSecond {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	         }
 	         String role = jwtUtil.getRoleFromToken(token);
+	         String email=jwtUtil.getUsernameFromToken(token);
+	         String institution="";
+		     Optional<Muser> opuser =muserRepository.findByEmail(email);
+		     if(opuser.isPresent()) {
+		    	 Muser user=opuser.get();
+		    	 institution=user.getInstitutionName();
+		     }else {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
 	         if("ADMIN".equals(role)) {
-	         List<CourseDetail> allCoursesOrderedByUserCount = coursedetailrepository.findAllOrderByUserCountDesc();
+	         List<CourseDetail> allCoursesOrderedByUserCount = coursedetailrepository.findAllByInstitutionNameOrderByUserCountDesc(institution);
 	         List<CourseDetail> top4Courses = allCoursesOrderedByUserCount.stream().limit(4).collect(Collectors.toList());
 	        
 	         top4Courses.forEach(course -> {

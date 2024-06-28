@@ -27,7 +27,11 @@ const[sign,setsign]=useState();
         const token = sessionStorage.getItem("token");
         const fetchCertificate = async () => {
             try {
-                const certificatedata = await axios.get(`${baseUrl}/certificate/viewAll`);
+                const certificatedata = await axios.get(`${baseUrl}/certificate/viewAll`,{
+                    headers: {
+                      Authorization: token,
+                    }
+                  });
                 if (certificatedata.status===200) {
                     const certificateJson = certificatedata.data;
                     setsign(`data:image/jpeg;base64,${certificateJson.authorizedSign}`);

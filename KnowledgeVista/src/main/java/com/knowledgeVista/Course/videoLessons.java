@@ -27,7 +27,8 @@ public class videoLessons {
 	   @ManyToOne
 	    @JoinColumn(name = "courseId" )
 	    private CourseDetail courseDetail;
-	   
+	    @Column(name="institution")
+	    private String institutionName;
 	    private String Lessontitle;
 
 	    @Column(length=1000)
@@ -38,8 +39,10 @@ public class videoLessons {
 	    
 	    @Transient
 	    @Column(nullable = true)
-	    @XmlTransient
 		private MultipartFile videoFile;
+	    
+	    private Double size;
+	    
 	    @Column(nullable = true)
 	    private String videofilename;
 	    @Column(nullable = true)

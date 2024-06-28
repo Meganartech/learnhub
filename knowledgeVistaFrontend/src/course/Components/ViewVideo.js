@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, redirect, useNavigate, useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
@@ -20,7 +20,7 @@ const ViewVideo = () => {
   const [currentLesson, setCurrentLesson] = useState();
   const role=sessionStorage.getItem("role");
   const token=sessionStorage.getItem("token")
- 
+ const [found,notfound]=useState(true);
   const navigate = useNavigate();
   useEffect(() => {
     
@@ -40,7 +40,10 @@ const ViewVideo = () => {
         if(error.response && error.response.status===401){
           window.location.href = '/unauthorized'; 
           return;
-        }else {
+        }else if(error.response && error.response.status===404){
+          window.location.href='/missing'
+        }
+        else {
           await MySwal.fire({
             icon: 'error',
             title: 'Some Error Occurred',

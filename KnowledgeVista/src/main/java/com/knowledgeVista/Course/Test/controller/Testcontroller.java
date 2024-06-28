@@ -74,9 +74,11 @@ public class Testcontroller {
 		          String role = jwtUtil.getRoleFromToken(token);
 		          String email=jwtUtil.getUsernameFromToken(token);
 		          String username="";
+		          String institution="";
 				     Optional<Muser> opuser =muserRepository.findByEmail(email);
 				     if(opuser.isPresent()) {
 				    	 Muser user=opuser.get();
+				    	 institution=user.getInstitutionName();
 				    	 username=user.getUsername();
 				     }else {
 			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -84,7 +86,7 @@ public class Testcontroller {
 		          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 		        	 
 	            // Find the course by its ID
-	            CourseDetail courseDetail = courseDetailRepo.findById(courseId)
+	            CourseDetail courseDetail = courseDetailRepo.findByCourseIdAndInstitutionName(courseId, institution)
 	                    .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
 	            List<Muser> users=courseDetail.getUsers();
                 List<Long> ids = new ArrayList<>(); 
@@ -148,10 +150,18 @@ public class Testcontroller {
 
 		          String role = jwtUtil.getRoleFromToken(token);
 		          String email=jwtUtil.getUsernameFromToken(token);
+		          String institution="";
+				     Optional<Muser> opuser =muserRepository.findByEmail(email);
+				     if(opuser.isPresent()) {
+				    	 Muser user=opuser.get();
+				    	 institution=user.getInstitutionName();
+				     }else {
+				    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				     }
 		          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 			        	 
 	            // Find the course by its ID
-	            CourseDetail courseDetail = courseDetailRepo.findById(courseId)
+	            CourseDetail courseDetail = courseDetailRepo.findByCourseIdAndInstitutionName(courseId, institution)
 	                    .orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found with the specified ID: " + courseId));
 	            if("TRAINER".equals(role)) {
 	        		Optional< Muser> trainerop= muserRepo.findByEmail(email);
@@ -224,6 +234,14 @@ public class Testcontroller {
 	            // Retrieve role and email from token
 	            String role = jwtUtil.getRoleFromToken(token);
 	            String email = jwtUtil.getUsernameFromToken(token);
+	            String institution="";
+			     Optional<Muser> opuser =muserRepository.findByEmail(email);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 institution=user.getInstitutionName();
+			     }else {
+			    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 
 	            if ("ADMIN".equals(role)) {
       	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
@@ -233,15 +251,20 @@ public class Testcontroller {
 	                Optional<Muser> opUser = muserRepo.findByEmail(email);
 	                if (opUser.isPresent()) {
 	                    Muser user = opUser.get();
-	                    Optional<CourseDetail> opCourse = courseDetailRepo.findById(courseId);
+	                    Optional<CourseDetail> opCourse = courseDetailRepo.findByCourseIdAndInstitutionName(courseId, institution);
                           
 	                    if (opCourse.isPresent()) {
 	                        CourseDetail course = opCourse.get();
+	                        if(course.getAmount()!=0) {
+	                        	
+	                        
 	                        if(!user.getCourses().contains(course)) {
 
 	           	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are Not Enrolled to  Access  this course");
 	           	             
 	                        }
+	                        }
+	                        
 	                        Optional<CourseTest> opTest = testRepository.findByCourseDetail(course);
 
 	                        if (opTest.isPresent()) {
@@ -317,7 +340,14 @@ public class Testcontroller {
 	            // Retrieve role and email from token
 	            String role = jwtUtil.getRoleFromToken(token);
 	            String email = jwtUtil.getUsernameFromToken(token);
-
+	            String institution="";
+			     Optional<Muser> opuser =muserRepository.findByEmail(email);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 institution=user.getInstitutionName();
+			     }else {
+			    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 	            if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 
 	                // Find the CourseTest by its ID
@@ -327,15 +357,17 @@ public class Testcontroller {
 	                }
 	                
 	                CourseTest courseTest = courseTestOptional.get();
-	                CourseDetail courseDetail = courseTest.getCourseDetail();
-
-	                if ("TRAINER".equals(role)) {
+	                Long courseid = courseTest.getCourseDetail().getCourseId();
+                   Optional<CourseDetail> opcourseDetail=courseDetailRepo.findByCourseIdAndInstitutionName(courseid, institution);
+	               if(opcourseDetail.isPresent()) {
+                   if ("TRAINER".equals(role)) {
 	                    Optional<Muser> trainerOptional = muserRepo.findByEmail(email);
 	                    if (!trainerOptional.isPresent()) {
 	                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Trainer with email " + email + " not found");
 	                    }
 	                    
 	                    Muser trainer = trainerOptional.get();
+	                    CourseDetail courseDetail=opcourseDetail.get();
 	                    if (!trainer.getAllotedCourses().contains(courseDetail)) {
 	                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	                    }
@@ -345,7 +377,10 @@ public class Testcontroller {
 	                questionRepository.deleteByTest(courseTest);
 	                testRepository.delete(courseTest);
 	                return ResponseEntity.ok().body("CourseTest with ID " + testId + " and its associated questions deleted successfully");
-	            } else {
+	               }else {
+	            	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Trainer with email " + email + " not found");
+	               }
+	               } else {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	            }
 	        } catch (Exception e) {
@@ -361,10 +396,18 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
     try {
     	System.out.println(passPercentage);
     	 if (!jwtUtil.validateToken(token)) {
-         	System.out.println("unauthorized");
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                      .body("{\"error\": \"Invalid Token\"}");
          }
+    	 String email = jwtUtil.getUsernameFromToken(token);
+         String institution="";
+		     Optional<Muser> opuser =muserRepository.findByEmail(email);
+		     if(opuser.isPresent()) {
+		    	 Muser user=opuser.get();
+		    	 institution=user.getInstitutionName();
+		     }else {
+		    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
 
          // Retrieve role and email from token
          String role = jwtUtil.getRoleFromToken(token);
@@ -372,6 +415,8 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
         Optional<CourseTest> optest = testRepository.findById(testId);
         if (optest.isPresent()) {
             CourseTest test = optest.get();
+            String instituionoftest=test.getCourseDetail().getInstitutionName();
+            if(instituionoftest==institution) {
             if (testName != null) {
                 test.setTestName(testName);
             }
@@ -383,6 +428,9 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
             }
             testRepository.saveAndFlush(test);
             return ResponseEntity.ok().body("{\"message\": \"Test updated successfully\"}");
+            }else {
+            	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
         } else {
             return ResponseEntity.notFound().build();
         }}else {

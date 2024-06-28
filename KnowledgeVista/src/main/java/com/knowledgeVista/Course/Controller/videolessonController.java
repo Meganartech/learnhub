@@ -86,15 +86,17 @@ public class videolessonController {
 				     String role = jwtUtil.getRoleFromToken(token);
 				     String email=jwtUtil.getUsernameFromToken(token);
 			         String username="";
+			         String institution="";
 				     Optional<Muser> opuser =muserRepository.findByEmail(email);
 				     if(opuser.isPresent()) {
 				    	 Muser user=opuser.get();
 				    	 username=user.getUsername();
+				    	 institution=user.getInstitutionName();
 				     }else {
 			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 				     }
 				     if ("ADMIN".equals(role)|| "TRAINER".equals(role)) {
-		          Optional<CourseDetail> courseDetailOptional = coursedetailrepostory.findById(courseId);
+		          Optional<CourseDetail> courseDetailOptional = coursedetailrepostory.findByCourseIdAndInstitutionName(courseId, institution);
 		          if (!courseDetailOptional.isPresent()) {
 		              return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"CourseDetail not found for courseId: " + courseId + "\"}");
 		          }
@@ -112,10 +114,14 @@ public class videolessonController {
                    lesson.setLessonDescription(LessonDescription);
                    lesson.setLessontitle(Lessontitle);
                    lesson.setCourseDetail(courseDetail);
+                   lesson.setInstitutionName(courseDetail.getInstitutionName());
                    lesson.setThumbnail(ImageUtils.compressImage(file.getBytes()));
 		         
 		          if (videoFile != null) {
 		              String videoFilePath = fileService.saveVideoFile(videoFile);
+		              Long fileSize = videoFile.getSize();
+	                     double fileSizeMB = (double) fileSize / (1024 * 1024);
+			              lesson.setSize(fileSizeMB);
 		              lesson.setVideofilename(videoFilePath);
 		              lesson.setVideoFile(videoFile);
 		          } else if (fileUrl != null && !fileUrl.isEmpty()) {
@@ -156,17 +162,19 @@ public class videolessonController {
 		     
 	         String email=jwtUtil.getUsernameFromToken(token);
 	         String username="";
+	         String institution="";
 		     Optional<Muser> opuser =muserRepository.findByEmail(email);
 		     if(opuser.isPresent()) {
 		    	 Muser user=opuser.get();
 		    	 username=user.getUsername();
+		    	 institution=user.getInstitutionName();
 		     }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }
 		     
 		     if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
 		         try {
-		             Optional<videoLessons> opvideo = lessonrepo.findById(lessonId);
+		             Optional<videoLessons> opvideo = lessonrepo.findBylessonIdAndInstitutionName(lessonId, institution);
 		             if (opvideo.isPresent()) {
 		                 videoLessons video = opvideo.get();
 		                 if (Lessontitle != null && !Lessontitle.isEmpty()) {
@@ -181,6 +189,9 @@ public class videolessonController {
 		                 }
 		                 if (videoFile != null) {
 		                     String videoFilePath = fileService.saveVideoFile(videoFile);
+		                     Long fileSize = videoFile.getSize();
+		                     double fileSizeMB = (double) fileSize / (1024 * 1024);
+				              video.setSize(fileSizeMB);
 		                     video.setVideofilename(videoFilePath);
 		                     video.setVideoFile(videoFile);
 		                     video.setFileUrl(null);
@@ -215,7 +226,7 @@ public class videolessonController {
 			 		         	notiservice.SpecificCreateNotification(NotifyId, ids);
 			 		        	List<String> notiuserlist = new ArrayList<>(); 
 			 		        	notiuserlist.add("ADMIN");
-			 		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+			 		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,institution);
 			 		        }
 		                 
 		                 return ResponseEntity.ok("{\"message\": \"Lessons Edited successfully\"}");
@@ -251,13 +262,13 @@ public class videolessonController {
 		            }
 		            
 		            Muser user = opuser.get();
-		            
+		            String institution=user.getInstitutionName();
 		            if ("USER".equals(role)) {
-		                return handleUserRole(lessId, courseId, user,request);
+		                return handleUserRole(institution,lessId, courseId, user,request);
 		            } else if ("ADMIN".equals(role)) {
-		                return getVideo(lessId ,request);
+		                return getVideo(institution,lessId ,request);
 		            } else if ("TRAINER".equals(role)) {
-		                return handleTrainerRole(lessId, courseId, user ,request);
+		                return handleTrainerRole(institution,lessId, courseId, user ,request);
 		            } else {
 		                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		            }
@@ -270,16 +281,16 @@ public class videolessonController {
 		        }
 		    }
 
-		    private ResponseEntity<?> handleUserRole(Long lessId, Long courseId, Muser user,HttpServletRequest request) {
-		        Optional<CourseDetail> opcourse = coursedetailrepostory.findById(courseId);
+		    private ResponseEntity<?> handleUserRole(String institution,Long lessId, Long courseId, Muser user,HttpServletRequest request) {
+		        Optional<CourseDetail> opcourse = coursedetailrepostory.findByCourseIdAndInstitutionName(courseId, institution);
 		       
 		        
 		        if (opcourse.isPresent()) {
 		        	 CourseDetail course=opcourse.get();
 		        	 if(course.getAmount()==0) {
-		        		  return getVideo(lessId,request); 
+		        		  return getVideo(institution,lessId,request); 
 		        	 } else if(user.getCourses().contains(course)) {
-		            return getVideo(lessId,request);
+		            return getVideo(institution,lessId,request);
 		        	 }else {
 		        		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		        	 }
@@ -288,14 +299,14 @@ public class videolessonController {
 		        }
 		    }
 
-		    private ResponseEntity<?> handleTrainerRole(Long lessId, Long courseId, Muser user,HttpServletRequest request) {
-		        Optional<CourseDetail> opcourse = coursedetailrepostory.findById(courseId);
+		    private ResponseEntity<?> handleTrainerRole(String institution,Long lessId, Long courseId, Muser user,HttpServletRequest request) {
+		        Optional<CourseDetail> opcourse = coursedetailrepostory.findByCourseIdAndInstitutionName(courseId, institution);
 		        if (opcourse.isPresent()) {
 		        	 CourseDetail course=opcourse.get();
 		        	 if(course.getAmount()==0) {
-		        		  return getVideo(lessId,request); 
+		        		  return getVideo(institution,lessId,request); 
 		        	 } else if(user.getAllotedCourses().contains(course)) {
-		            return getVideo(lessId,request);
+		            return getVideo(institution,lessId,request);
 		        	 }else {
 		        		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		        	 }
@@ -304,9 +315,9 @@ public class videolessonController {
 		        }
 		    }
 		    
-		    private ResponseEntity<?> getVideo(Long lessId, HttpServletRequest request) {
+		    private ResponseEntity<?> getVideo(String institution,Long lessId, HttpServletRequest request) {
 		        try {
-		            Optional<videoLessons> optionalLesson = lessonrepo.findById(lessId);
+		            Optional<videoLessons> optionalLesson = lessonrepo.findBylessonIdAndInstitutionName(lessId, institution);
 		            if (!optionalLesson.isPresent()) {
 		                return ResponseEntity.notFound().build();
 		            }
@@ -477,8 +488,18 @@ public class videolessonController {
 		          }
 
 		          String role = jwtUtil.getRoleFromToken(token);
+		          String email=jwtUtil.getUsernameFromToken(token);
+			        
+			         String institution="";
+				     Optional<Muser> opuser =muserRepository.findByEmail(email);
+				     if(opuser.isPresent()) {
+				    	 Muser user=opuser.get();
+				    	 institution=user.getInstitutionName();
+				     }else {
+			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				     }
 		          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
-		        	  Optional<videoLessons> oplesson =lessonrepo.findById(lessonId);
+		        	  Optional<videoLessons> oplesson =lessonrepo.findBylessonIdAndInstitutionName(lessonId, institution);
 		        	  if(oplesson.isPresent()) {
 		        		  videoLessons video=oplesson.get();
 		        		  video.setCourseDetail(null);
@@ -514,8 +535,18 @@ public class videolessonController {
 		          }
 
 		          String role = jwtUtil.getRoleFromToken(token);
+		          String email=jwtUtil.getUsernameFromToken(token);
+			        
+			         String institution="";
+				     Optional<Muser> opuser =muserRepository.findByEmail(email);
+				     if(opuser.isPresent()) {
+				    	 Muser user=opuser.get();
+				    	 institution=user.getInstitutionName();
+				     }else {
+			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				     }
 		          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
-		        	  Optional<videoLessons> opvideo =lessonrepo.findById(lessonId);
+		        	  Optional<videoLessons> opvideo =lessonrepo.findBylessonIdAndInstitutionName(lessonId, institution);
 		        	  if(opvideo.isPresent()) {
 		        		  videoLessons videolesson=opvideo.get();
 		        		  

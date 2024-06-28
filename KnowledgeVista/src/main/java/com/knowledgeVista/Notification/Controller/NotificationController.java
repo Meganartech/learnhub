@@ -41,7 +41,6 @@ public class NotificationController {
 	         Optional<Muser> opmuser= muserRepository.findByEmail(email);
 	         if(opmuser.isPresent()) {
 	        	 Muser user=opmuser.get();
-	        	 //LocalDate today = LocalDate.of(2025, 6, 17);
 	        	 LocalDate today=LocalDate.now();
 	        	 List<Long> ids=notiuserRepo.findNotificationIdsByUserId(user.getUserId(),today);
 

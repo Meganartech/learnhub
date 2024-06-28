@@ -45,7 +45,11 @@ const[isinitial,setisinitial]=useState(true);
 useEffect(() => {
   const fetchCertificate = async () => {
     try {
-      const certificatedata = await axios.get(`${baseUrl}/certificate/viewAll`);
+      const certificatedata = await axios.get(`${baseUrl}/certificate/viewAll`,{
+        headers: {
+          Authorization: token,
+        }
+      });
       if (certificatedata.status === 200) {
         const certificateJson = certificatedata.data;
         setsign(`data:image/jpeg;base64,${certificateJson.authorizedSign}`);
@@ -181,7 +185,7 @@ setisnotFound(true);
         if (response.status===200) {
           MySwal.fire({
             title: "Saved",
-            text: data.message,
+            text: data,
             icon: "success",
             confirmButtonText: "OK",
           }).then((result) => {

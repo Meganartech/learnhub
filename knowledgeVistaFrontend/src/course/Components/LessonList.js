@@ -29,7 +29,10 @@ const LessonList = () => {
             if(error.response && error.response.status===401)
             {
               window.location.href="/unauthorized";
-            }else{
+            }else if(error.response && error.response.status===404){
+              window.location.href="/missing";
+            }
+            else{
               MySwal.fire({
                 title: "Error!",
                 text: error.response.data ? error.response.data : "error occured",

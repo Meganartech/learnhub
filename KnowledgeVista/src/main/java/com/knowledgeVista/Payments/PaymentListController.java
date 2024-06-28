@@ -37,7 +37,7 @@ public class PaymentListController {
 		    	
 		    	 if (!jwtUtil.validateToken(token)) {
 		    		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-		                    .body("{\"message\": \"Unauthorized access\"}");
+		                    .body("Unauthorized access");
 		         }
 		    	 String email=jwtUtil.getUsernameFromToken(token);
 		    	Optional< Muser> opuser = muserRepository.findByEmail(email);
@@ -53,12 +53,12 @@ public class PaymentListController {
 		              	   }
 		    			}else {
 		    				 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-		 		                    .body("{\"message\": \"Unauthorized access\"}");
+		 		                    .body("Unauthorized access");
 		    			}
 
 		  }catch (Exception e) {
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-		                .body("{\"message\": \"An error occurred : " + e.getMessage() + "\"}");
+		                .body("An error occurred : " + e.getMessage() );
 		    }
 	}
 	
@@ -66,16 +66,25 @@ public class PaymentListController {
 		try {
 			 if (!jwtUtil.validateToken(token)) {
 	    		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                    .body("{\"message\": \"invalid  Token\"}");
+	                    .body("invalid  Token");
 	         }
 			 String role=jwtUtil.getRoleFromToken(token);
 			 if("USER".equals(role)) {
 				 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-		                    .body("{\"message\": \"Students Cannot access this page\"}");
+		                    .body("Students Cannot access this page");
 			 }
+			 String email=jwtUtil.getUsernameFromToken(token);
+	   	     Optional<Muser>opreq=muserRepository.findByEmail(email);
+	   	     String institution="";
+	   	     if(opreq.isPresent()) {
+	   	    	 Muser requser=opreq.get();
+	   	    	institution=requser.getInstitutionName();
+	   	     }else {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+	   	     }
 			 if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 
-		            Optional<CourseDetail> courseOptional = coursedetail.findById(courseId);
+		            Optional<CourseDetail> courseOptional = coursedetail.findByCourseIdAndInstitutionName(courseId, institution);
 		            if(courseOptional.isPresent()) {
 		            	CourseDetail course=courseOptional.get();
 			            Optional<Course_PartPayment_Structure>opPartpay=partpayrepo.findBycourse(course);
@@ -95,12 +104,12 @@ public class PaymentListController {
 
 			 }else {
 				 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-		                    .body("{\"message\": \"Unauthorized access\"}");
+		                    .body("Unauthorized access");
 			 }
 			
 		}catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("{\"message\": \"An error occurred : " + e.getMessage() + "\"}");
+	                .body("An error occurred : " + e.getMessage() );
 	    }
 	}
 	
@@ -109,18 +118,26 @@ public ResponseEntity<?> viewTransactionHistory(String token) {
     try {
         if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("{\"message\": \"Invalid Token\"}");
+                    .body("Invalid Token");
         }
 
         String role = jwtUtil.getRoleFromToken(token);
-
+        String email=jwtUtil.getUsernameFromToken(token);
+  	     Optional<Muser>opreq=muserRepository.findByEmail(email);
+  	     String institution="";
+  	     if(opreq.isPresent()) {
+  	    	 Muser requser=opreq.get();
+  	    	institution=requser.getInstitutionName();
+  	     }else {
+  	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+  	     }
         if ("USER".equals(role)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("{\"message\": \"Students cannot access this page\"}");
+                    .body("Students cannot access this page");
         }
 
         if ("ADMIN".equals(role) ) {
-                List<Orderuser> orderUsers = ordertablerepo.findAll();
+                List<Orderuser> orderUsers = ordertablerepo.findAllByinstitutionName(institution);
 
                 if (!orderUsers.isEmpty()) {
                     return ResponseEntity.ok(orderUsers);
@@ -135,7 +152,7 @@ public ResponseEntity<?> viewTransactionHistory(String token) {
     } catch (Exception e) {
         // Log the exception and return a more informative error response
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("{\"message\": \"An error occurred: " + e.getMessage() + "\"}");
+                .body("An error occurred: " + e.getMessage() );
     }
 }
 
@@ -144,18 +161,19 @@ public ResponseEntity<?>ViewMypaymentHistrytrainer(String token){
 	    	
 	    	 if (!jwtUtil.validateToken(token)) {
 	    		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                    .body("{\"message\": \"Unauthorized access\"}");
+	                    .body("Unauthorized access");
 	         }
 	    	 String email=jwtUtil.getUsernameFromToken(token);
 	    	Optional< Muser> opuser = muserRepository.findByEmail(email);
 	    			if(opuser.isPresent()) {
 	    				Muser user=opuser.get();
+	    				String institutionName=user.getInstitutionName();
 	    				List<CourseDetail> courses =user.getAllotedCourses();
 	    				   
 		              	 List<Object> courseOrderMap = new ArrayList<>();
 	    			        for (CourseDetail course : courses) {
 	    			            Long courseId = course.getCourseId();
-	    			            List<Orderuser> orderUsersForCourse = ordertablerepo.findAllBycourseId(courseId);
+	    			            List<Orderuser> orderUsersForCourse = ordertablerepo.findAllBycourseIdandinstitutionName(courseId, institutionName);
 
 	    			            if (!orderUsersForCourse.isEmpty()) {
 	    			                courseOrderMap.addAll(orderUsersForCourse);
@@ -171,12 +189,12 @@ public ResponseEntity<?>ViewMypaymentHistrytrainer(String token){
 
 	    			}else {
 	    				 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	 		                    .body("{\"message\": \"Unauthorized access\"}");
+	 		                    .body("Unauthorized access");
 	    			}
 
 	  }catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("{\"message\": \"An error occurred : " + e.getMessage() + "\"}");
+	                .body("An error occurred : " + e.getMessage() );
 	    }
 }
 

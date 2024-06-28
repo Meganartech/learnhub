@@ -36,7 +36,8 @@ const About_Us = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
-    setLastModifiedDate(file ? new Date(file.lastModified).toLocaleString() : null);
+   // setLastModifiedDate(file ? new Date(file.lastModified).toLocaleString() : null);
+   setLastModifiedDate(file ? new Date(file.lastModified).toISOString().replace('Z', '') : null);
   };
 
   const handleSubmit = async (e) => {

@@ -1,4 +1,4 @@
-package com.knowledgeVista.Settings;
+package com.knowledgeVista.Payments;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.certificate.certificate;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.Settings.Feedback;
+import com.knowledgeVista.Settings.FeedbackRepository;
+import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
@@ -33,18 +37,36 @@ public class SettingsController {
 	@Autowired
 	private FeedbackRepository feedback;
 	
+	@Autowired
+	private MuserRepositories muserRepository;
+	
 	public ResponseEntity<?> SavePaymentDetails( Paymentsettings data, String token) {
+		
 		if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }  String role = jwtUtil.getRoleFromToken(token);
-
+        }  
+		String role = jwtUtil.getRoleFromToken(token);
+		String email=jwtUtil.getUsernameFromToken(token);
+  	     Optional<Muser>opreq=muserRepository.findByEmail(email);
+  	     String institution="";
+  	     if(opreq.isPresent()) {
+  	    	 Muser requser=opreq.get();
+  	    	institution=requser.getInstitutionName();
+  	     }else {
+  	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+  	     }
         if ("ADMIN".equals(role)) {
-        if(paymentsetting.count()>0) {
-       	 return new ResponseEntity<>(" payment Data already exists", HttpStatus.BAD_REQUEST);
+        	Optional<Paymentsettings> oppaysetting=paymentsetting.findByinstitutionName(institution);
+        if(oppaysetting.isPresent()) {
+
+         	 return new ResponseEntity<>("payment Data already exists", HttpStatus.BAD_REQUEST);
         }else {
+        	data.setInstitutionName(institution);
         	paymentsetting.save(data);
         	return ResponseEntity.ok("saved sucessfully");
-        }}else {
+        	
+        }
+        }else {
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -56,30 +78,31 @@ public class SettingsController {
 			 if (!jwtUtil.validateToken(token)) {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	          }  String role = jwtUtil.getRoleFromToken(token);
-
+	          String email=jwtUtil.getUsernameFromToken(token);
+	   	     Optional<Muser>opreq=muserRepository.findByEmail(email);
+	   	     String institution="";
+	   	     if(opreq.isPresent()) {
+	   	    	 Muser requser=opreq.get();
+	   	    	institution=requser.getInstitutionName();
+	   	     }else {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+	   	     }
 	          // Perform authentication based on role
 	          if ("ADMIN".equals(role)) {
-			List<Paymentsettings> datalist=paymentsetting.findAll();
+			Optional<Paymentsettings> opdatalist=paymentsetting.findByinstitutionName(institution);
 			
-			if (datalist.isEmpty()) {
-		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-		            .body("No payment data found");
-		    } else {
 		        // If there's only one certificate, return it directly
-		        if (datalist.size() == 1) {
-		            Paymentsettings pay = datalist.get(0);
+		        if (opdatalist.isPresent()) {
+		            Paymentsettings pay = opdatalist.get();
 		            return ResponseEntity.ok()
-		                .body(pay);
-		            
+		                .body(pay);  
+		        }else {
+		        	return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				            .body("No payment data found");
 		        }
-		        else {
-		        	
-		        	 Paymentsettings lastPayment = datalist.get(datalist.size() - 1);
-		                return ResponseEntity.ok()
-		                    .body(lastPayment);
-		        	
-		            }
-		        }}else {
+		        
+		        
+			}else {
 		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		        }
 		    } catch (Exception e) {
@@ -96,10 +119,18 @@ public class SettingsController {
          } 
 		 
 		 String role = jwtUtil.getRoleFromToken(token);
-
+		 String email=jwtUtil.getUsernameFromToken(token);
+   	     Optional<Muser>opreq=muserRepository.findByEmail(email);
+   	     String institution="";
+   	     if(opreq.isPresent()) {
+   	    	 Muser requser=opreq.get();
+   	    	institution=requser.getInstitutionName();
+   	     }else {
+   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+   	     }
          // Perform authentication based on role
          if ("ADMIN".equals(role)) {
-		 Optional<Paymentsettings> oldsettings=paymentsetting.findById(payid);
+		 Optional<Paymentsettings> oldsettings=paymentsetting.findByinstitutionName(institution);
 		 if (oldsettings.isPresent()) {
 			 Paymentsettings  updatedsettings =oldsettings.get();
 			 if(razorpay_key!=null) {

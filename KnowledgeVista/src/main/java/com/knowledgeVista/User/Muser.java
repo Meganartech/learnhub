@@ -30,9 +30,10 @@ public class Muser {
 	    private LocalDate dob;
 	    private String phone;
 	    private String skills;
+	    @Column
+	    private String institutionName;
 	    @Lob
 	    @Column(name="profile" ,length=1000000)
-	   
 	    private byte[] profile;
 	    @ManyToOne
 	    @JoinColumn(name = "roleId")

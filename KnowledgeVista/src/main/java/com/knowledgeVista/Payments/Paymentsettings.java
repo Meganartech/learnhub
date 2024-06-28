@@ -1,4 +1,4 @@
-package com.knowledgeVista.Settings;
+package com.knowledgeVista.Payments;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +18,17 @@ public class Paymentsettings {
 	
 	@Column (name ="razorpay_secret_key")
 	private String razorpay_secret_key;
-	  public Paymentsettings() {
+	
+	@Column (name ="institutionName" ,unique =true)
+	private String institutionName;
+	
+	  public String getInstitutionName() {
+		return institutionName;
+	}
+	public void setInstitutionName(String institutionName) {
+		this.institutionName = institutionName;
+	}
+	public Paymentsettings() {
 	        // Default constructor is empty
 	    }
 	public long getId() {

@@ -33,14 +33,18 @@ public class MserRegistrationController {
 	private Environment env;
 	
 
-	public ResponseEntity<?> registerAdmin( String username, String psw, String email, LocalDate dob,String role,
+	public ResponseEntity<?> registerAdmin( String username, String psw, String email, String institutionName, LocalDate dob,String role,
 	                                         String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode) {
 	    try {
 	        Optional<Muser> existingUser = muserrepositories.findByEmail(email);
-	       
+	        Optional<Muser>existingInstitute =muserrepositories.findByInstitutionName(institutionName);
 	            if (existingUser.isPresent()) {
-	                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"EMAIL ALREADY EXISTS\"}");
-	            }     
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
+	            } 
+	            if(existingInstitute.isPresent()) {
+	            	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("INSTITUTE");
+	            }
+	            
 	            Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName(role);
 	            if(oproleUser.isPresent()) {
 	            	MuserRoles roleuser=oproleUser.get();
@@ -52,6 +56,7 @@ public class MserRegistrationController {
 	            user.setPhone(phone);
 	            user.setDob(dob);
 	            user.setSkills(skills);
+	            user.setInstitutionName(institutionName);
 	            user.setCountryCode(countryCode);	   
 	            user.setRole(roleuser);     
 	           
@@ -109,9 +114,16 @@ public class MserRegistrationController {
 	    	if (!jwtUtil.validateToken(token)) {
 	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	   	     }
-
-	        // Attempt to find a user by email
-	        Optional<Muser> userOptional = muserrepositories.findByEmail(email);
+	    	 String emailofreq=jwtUtil.getUsernameFromToken(token);
+	         String institution="";
+		     Optional<Muser> opuser =muserrepositories.findByEmail(emailofreq);
+		     if(opuser.isPresent()) {
+		    	 Muser user=opuser.get();
+		    	 institution=user.getInstitutionName();
+		     }else {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
+	        Optional<Muser> userOptional = muserrepositories.findByEmailandInstitutionName(email, institution);
 	        
 	        // If the user is found, process the user data
 	        if (userOptional.isPresent()) {
@@ -151,12 +163,19 @@ public class MserRegistrationController {
 	                // If the token is not valid, return unauthorized status
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	            }
-
+		    	 String emailofreq=jwtUtil.getUsernameFromToken(token);
 	            String role = jwtUtil.getRoleFromToken(token);
-
+	            String institution="";
+			     Optional<Muser> opuser =muserrepositories.findByEmail(emailofreq);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 institution=user.getInstitutionName();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 	            // Perform authentication based on role
 	            if ("ADMIN".equals(role)) {
-	                Optional<Muser> userOptional = muserrepositories.findByEmail(email);
+	                Optional<Muser> userOptional = muserrepositories.findByEmailandInstitutionName(email, institution);
 	                if (userOptional.isPresent()) {
 	                    Muser user = userOptional.get();
 	                    if("TRAINER".equals(user.getRole().getRoleName())) {
@@ -195,12 +214,21 @@ public class MserRegistrationController {
 	                // If the token is not valid, return unauthorized status
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	            }
-
+ 
 	            String role = jwtUtil.getRoleFromToken(token);
-
+	            String emailofreq=jwtUtil.getUsernameFromToken(token);
+	          
+	            String institution="";
+			     Optional<Muser> opuser =muserrepositories.findByEmail(emailofreq);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 institution=user.getInstitutionName();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 	            // Perform authentication based on role
 	            if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
-	                Optional<Muser> userOptional = muserrepositories.findByEmail(email);
+	                Optional<Muser> userOptional = muserrepositories.findByEmailandInstitutionName(email, institution);
 	                if (userOptional.isPresent()) {
 	                    Muser user = userOptional.get();
 	                    if("USER".equals(user.getRole().getRoleName())) {

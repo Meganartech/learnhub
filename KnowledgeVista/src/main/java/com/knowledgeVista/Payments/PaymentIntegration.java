@@ -20,16 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
-import com.knowledgeVista.Settings.PaymentsettingRepository;
-import com.knowledgeVista.Settings.Paymentsettings;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
+import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 
 @RestController
-@RequestMapping("/buyCourse")
 @CrossOrigin
 public class PaymentIntegration {
 
@@ -39,7 +37,8 @@ public class PaymentIntegration {
 	 
 	 @Autowired
 	 private partpayrepo partpayrepo;
-
+	 @Autowired
+	 private JwtUtil jwtUtil;
 	@Autowired
 	private PaymentsettingRepository paymentsetting;
     
@@ -53,25 +52,29 @@ public class PaymentIntegration {
 	 @Autowired
 	private NotificationService notiservice;
 	 
-	 public Paymentsettings getpaydetails() {
+	 public Paymentsettings getpaydetails(String token) {
 		    try {
-		        List<Paymentsettings> dataList = paymentsetting.findAll();
-		        
-		        if (dataList.isEmpty()) {
-		            return null; // or throw an exception
-		        } else {
-		            if (dataList.size() == 1) {
-		                return dataList.get(0);
-		            } else {
-		                return dataList.get(dataList.size() - 1);
-		            }
+		    	String email=jwtUtil.getUsernameFromToken(token);
+		   	     Optional<Muser>opreq=muserRepository.findByEmail(email);
+		   	     String institution="";
+		   	     if(opreq.isPresent()) {
+		   	    	 Muser requser=opreq.get();
+		   	    	institution=requser.getInstitutionName();
+		   	     }
+		       Optional <Paymentsettings> opdataList = paymentsetting.findByinstitutionName(institution);
+		        if(opdataList.isPresent()) {
+		        	Paymentsettings data=opdataList.get();
+		        	return data;
+		        }else {
+		        	return null;
 		        }
+		        
 		    } catch (Exception e) {
 		        e.printStackTrace(); // or log the error
 		        return null; // or throw an exception
 		    }
 		}
- public ResponseEntity<?> createOrderfull( Map<String, Long> requestData) {
+ public ResponseEntity<?> createOrderfull( Map<String, Long> requestData,String token) {
      try {
          Long courseId = requestData.get("courseId");
          Long userId = requestData.get("userId");
@@ -110,11 +113,11 @@ public class PaymentIntegration {
 
              //need to work-----------
              String coursename=course.getCourseName();
-             if(getpaydetails()!=null) {
+             if(getpaydetails(token)!=null) {
             	 
-             String razorpayApiKey= getpaydetails().getRazorpay_key();
-             String razorpayApiSecret=getpaydetails().getRazorpay_secret_key();
-             
+             String razorpayApiKey= getpaydetails(token).getRazorpay_key();
+             String razorpayApiSecret=getpaydetails(token).getRazorpay_secret_key();
+             String institution=getpaydetails(token).getInstitutionName();
              RazorpayClient client = new RazorpayClient(razorpayApiKey, razorpayApiSecret);
              JSONObject orderRequest = new JSONObject();
              orderRequest.put("amount", amt * 100); // Convert amount to paisa
@@ -129,6 +132,7 @@ public class PaymentIntegration {
              ordertable.setCourseId(courseId);
              ordertable.setOrderId(orderId);
              ordertable.setUserId(userId);
+             ordertable.setInstitutionName(institution);
              ordertable.setUsername(user.getUsername());
              ordertable.setEmail(user.getEmail());
              ordertable.setInstallmentnumber((long) 1);
@@ -160,7 +164,7 @@ public class PaymentIntegration {
      }
  }
 
- public ResponseEntity<?> createOrderPart( Map<String, Long> requestData) {
+ public ResponseEntity<?> createOrderPart( Map<String, Long> requestData ,String token) {
      try {
          Long courseId = requestData.get("courseId");
          Long userId = requestData.get("userId");
@@ -176,10 +180,7 @@ public class PaymentIntegration {
             }
              CourseDetail course = courseOptional.get();
              
-//             if (user.getCourses().contains(course)) {
-//                 // User is already enrolled in the course
-//                 return ResponseEntity.badRequest().body("User is already enrolled in the course");
-//             }
+
              List<Orderuser>orderuserlist=ordertablerepo.findAllByUserIDAndCourseID(userId, courseId,"paid");
              int amount =0;
              for(Orderuser order:orderuserlist ) {
@@ -200,10 +201,10 @@ public class PaymentIntegration {
 	            	  if(installmentlength >count) {
 	            	      InstallmentDetails installment=installmentslist.get(count);
 	            	      Long installmentamount=installment.getInstallmentAmount();
-			            	  if(getpaydetails()!=null) {
-			                      String razorpayApiKey= getpaydetails().getRazorpay_key();
-			                      String razorpayApiSecret=getpaydetails().getRazorpay_secret_key();
-			                      
+			            	  if(getpaydetails(token)!=null) {
+			                      String razorpayApiKey= getpaydetails(token).getRazorpay_key();
+			                      String razorpayApiSecret=getpaydetails(token).getRazorpay_secret_key();
+			                      String institution=getpaydetails(token).getInstitutionName();
 			                      RazorpayClient client = new RazorpayClient(razorpayApiKey, razorpayApiSecret);
 			                      JSONObject orderRequest = new JSONObject();
 			                      orderRequest.put("amount", installmentamount * 100); 
@@ -221,6 +222,7 @@ public class PaymentIntegration {
 						             ordertable.setCourseName(course.getCourseName());
 						             ordertable.setDate(new java.util.Date());
 						             ordertable.setStatus(status);
+						             ordertable.setInstitutionName(institution);
 						             ordertable.setEmail(user.getEmail());
 						             ordertable.setUsername(user.getUsername());
 						             ordertable.setInstallmentnumber(installment.getInstallmentNumber());
@@ -258,7 +260,7 @@ public class PaymentIntegration {
  }
 
 
-public ResponseEntity<String> updatePaymentId( Map<String, String> requestData) {
+public ResponseEntity<String> updatePaymentId( Map<String, String> requestData ,String token) {
     try {
         String orderId = requestData.get("orderId");
         String paymentId = requestData.get("paymentId");
@@ -268,9 +270,9 @@ public ResponseEntity<String> updatePaymentId( Map<String, String> requestData) 
             Orderuser orderUser = orderUserOptional.get();
             orderUser.setPaymentId(paymentId);
             int amountPaidIn; 
-            if(getpaydetails()!=null) {
-                String razorpayApiKey= getpaydetails().getRazorpay_key();
-                String razorpayApiSecret=getpaydetails().getRazorpay_secret_key();
+            if(getpaydetails(token)!=null) {
+                String razorpayApiKey= getpaydetails(token).getRazorpay_key();
+                String razorpayApiSecret=getpaydetails(token).getRazorpay_secret_key();
                 // Signature Verification (Crucial)
            
 			            RazorpayClient client = new RazorpayClient(razorpayApiKey, razorpayApiSecret);
@@ -296,11 +298,13 @@ public ResponseEntity<String> updatePaymentId( Map<String, String> requestData) 
 			            
 		            if (optionalUser.isPresent() && optionalCourse.isPresent()) {
 		                Muser user = optionalUser.get();
+		                String institution=user.getInstitutionName();
 		                CourseDetail course = optionalCourse.get();
 		                
 		                //for notification
 		                List<Muser> trainers=course.getTrainer();
-		                List<Long> ids = new ArrayList<>(); 
+		                List<Long> ids = new ArrayList<>();
+		                
 		                for (Muser trainer : trainers) {
 		                	ids.add(trainer.getUserId());
 		                }
@@ -323,14 +327,11 @@ public ResponseEntity<String> updatePaymentId( Map<String, String> requestData) 
 			       	      if(NotifyId!=null) {
 			       	        	List<String> notiuserlist = new ArrayList<>(); 
 			       	        	notiuserlist.add("ADMIN");
-			       	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+			       	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,institution);
 			       	        }
 			       	        if(ids !=null) {
 			       	        	notiservice.SpecificCreateNotification(NotifyIdfortrainer, ids);
 			       	        }
-		                  
-		                  
-		                  
 		                  
 		                  return ResponseEntity.ok().body(courseUrl);
 		                

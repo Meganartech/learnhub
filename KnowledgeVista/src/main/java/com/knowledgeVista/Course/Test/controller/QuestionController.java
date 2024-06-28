@@ -47,15 +47,20 @@ public class QuestionController {
 		private MusertestactivityRepo muserActivityRepo;
 
 		public ResponseEntity<?> calculateMarks( List<Map<String, Object>> answers, Long courseId, String token) {
-		    Optional<CourseDetail> opcourse = coursedetailrepository.findById(courseId);
-		    String username = jwtUtil.getUsernameFromToken(token);
+		   
+		 
 
-		    if (username == null) {
-		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
-		    }
+		    String email=jwtUtil.getUsernameFromToken(token);
+	         String institution="";
+		     Optional<Muser> opuser =muserRepository.findByEmail(email);
+		     if(opuser.isPresent()) {
+		    	 Muser user=opuser.get();
+		    	 institution=user.getInstitutionName();
+		     }else {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		     }
 
-		    Optional<Muser> opuser = muserRepository.findByEmail(username);
-
+		    Optional<CourseDetail> opcourse = coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
 		    if (opuser.isPresent() && opcourse.isPresent()) {
 		        CourseDetail course = opcourse.get();
 		        Muser user = opuser.get();
@@ -125,13 +130,21 @@ public class QuestionController {
 			        }
 			        // Extract role from JWT token
 			        String role = jwtUtil.getRoleFromToken(token);
-
+			        String email=jwtUtil.getUsernameFromToken(token);
+			         String institution="";
+				     Optional<Muser> opuser =muserRepository.findByEmail(email);
+				     if(opuser.isPresent()) {
+				    	 Muser user=opuser.get();
+				    	 institution=user.getInstitutionName();
+				     }else {
+			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				     }
 			        // Check if user has admin or trainer role
 			        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 			        	Question existingQuestion = questionRepository.findById(questionId)
 				                .orElse(null);
-				     
-				        if (existingQuestion == null) {
+				     String questioninstitution=existingQuestion.getTest().getCourseDetail().getInstitutionName();
+				        if ((questioninstitution != institution) || (existingQuestion==null)) {
 				            return ResponseEntity.notFound().build();
 				        }else {
 				        	existingQuestion.setTest(null);
@@ -159,14 +172,22 @@ public class QuestionController {
 
 		        // Extract role from JWT token
 		        String role = jwtUtil.getRoleFromToken(token);
-
+		        String email=jwtUtil.getUsernameFromToken(token);
+		         String institution="";
+			     Optional<Muser> opuser =muserRepository.findByEmail(email);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 institution=user.getInstitutionName();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 		        // Check if user has admin or trainer role
 		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 		            // Fetch the question from the repository based on the provided ID
 		            Question question = questionRepository.findById(questionId).orElse(null);
-
-		            // If question exists, delete it
-		            if (question != null) {
+		            String questioninstitution=question.getTest().getCourseDetail().getInstitutionName();
+		            
+			        if ((questioninstitution != institution) || (question==null)) {
 		            	Long noofques=question.getTest().getNoOfQuestions()-1;
 		            	question.getTest().setNoOfQuestions(noofques);
 		            	questionRepository.save(question);
@@ -200,13 +221,21 @@ public class QuestionController {
 		        }
 		        // Extract role from JWT token
 		        String role = jwtUtil.getRoleFromToken(token);
-
+		        String email=jwtUtil.getUsernameFromToken(token);
+		         String institution="";
+			     Optional<Muser> opuser =muserRepository.findByEmail(email);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 institution=user.getInstitutionName();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 		        // Check if user has admin or trainer role
 		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 		            Question existingQuestion = questionRepository.findById(questionId)
 		                    .orElse(null);
-		         
-		            if (existingQuestion == null) {
+		            String questioninstitution=existingQuestion.getTest().getCourseDetail().getInstitutionName();
+			        if ((questioninstitution != institution) || (existingQuestion==null)) {
 		                return ResponseEntity.notFound().build();
 		            }
 		            existingQuestion.setQuestionText(questionText);
@@ -240,13 +269,21 @@ public class QuestionController {
 		        }
 		        // Extract role from JWT token
 		        String role = jwtUtil.getRoleFromToken(token);
-
+		        String email=jwtUtil.getUsernameFromToken(token);
+		         String institution="";
+			     Optional<Muser> opuser =muserRepository.findByEmail(email);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 institution=user.getInstitutionName();
+			     }else {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			     }
 		        // Check if user has admin or trainer role
 		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 		            CourseTest test = testrepo.findById(testId)
 		                    .orElse(null);
-		         
-		            if (test == null) {
+		         String testinstitution= test.getCourseDetail().getInstitutionName();
+		            if ((testinstitution!= institution)||(test == null)) {
 		                return ResponseEntity.notFound().build();
 		            }
 		            test.setNoOfQuestions(test.getNoOfQuestions() +1);

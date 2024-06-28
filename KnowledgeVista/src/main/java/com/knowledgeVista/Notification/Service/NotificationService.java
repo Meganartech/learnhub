@@ -32,7 +32,7 @@ public class NotificationService {
 	private NotificationTypeRepo notitypeRepo;
 	
 	
-
+  //Create Notification with Multipart
     public Long  createNotification(String type,String username, String description, String createdBy,String heading,String link ,Optional<MultipartFile> file) {
     	NotificationType notificationType = notitypeRepo.findByType(type)
                 .orElseGet(() -> {
@@ -60,6 +60,7 @@ public class NotificationService {
         NotificationDetails savedNotiDetails= notidetailRepo.save(notiDetails);
         return (savedNotiDetails.getNotifyId());
     }
+    //Create Notification with byte image
     public Long  createNotification(String type,String username, String description, String createdBy,String heading,String link ,byte[] file) {
     	NotificationType notificationType = notitypeRepo.findByType(type)
                 .orElseGet(() -> {
@@ -82,7 +83,7 @@ public class NotificationService {
         NotificationDetails savedNotiDetails= notidetailRepo.save(notiDetails);
         return (savedNotiDetails.getNotifyId());
     }
-    
+ //create notification without pic   
     public Long  createNotification(String type,String username, String description, String createdBy,String heading,String link ) {
     	NotificationType notificationType = notitypeRepo.findByType(type)
                 .orElseGet(() -> {
@@ -115,6 +116,7 @@ public class NotificationService {
     	}
     	return(true);
     }
+    
     public Boolean SpecificCreateNotification(Long notificationId, List<Long> userlist,LocalDate datetonotify) {
     	for(Long singleuser :userlist) {
     		 NotificationUser notificationUser = new NotificationUser();
@@ -127,8 +129,8 @@ public class NotificationService {
     	}
     	return(true);
     }
-    public Boolean LicenceExpitedNotification(Long notificationId ,LocalDate datetonotify) {
-    	List<Muser> listofadmins =muserrepositories.findByRoleName("ADMIN");
+    public Boolean LicenceExpitedNotification(Long notificationId ,LocalDate datetonotify,String institution) {
+    	List<Muser> listofadmins =muserrepositories.findByRoleNameAndInstitutionName("ADMIN", institution);
 		for(Muser admin :listofadmins) {
 			 NotificationUser notificationUser = new NotificationUser();
 			 notificationUser.setUserid(admin.getUserId());
@@ -141,10 +143,10 @@ public class NotificationService {
     	return(true);
     }
     
-    public Boolean CommoncreateNotificationUser(Long notificationId , List<String> userlist) {
+    public Boolean CommoncreateNotificationUser(Long notificationId , List<String> userlist,String institution) {
     	for(String singleuser :userlist) {
     		if("ADMIN".equals(singleuser)) {
-    			List<Muser> listofadmins =muserrepositories.findByRoleName(singleuser);
+    			List<Muser> listofadmins =muserrepositories.findByRoleNameAndInstitutionName(singleuser, institution);
     			for(Muser admin :listofadmins) {
     				 NotificationUser notificationUser = new NotificationUser();
     				 notificationUser.setUserid(admin.getUserId());
@@ -155,7 +157,7 @@ public class NotificationService {
     			}
     		}
     		if("TRAINER".equals(singleuser)) {
-    			List<Muser> listofTrainer =muserrepositories.findByRoleName(singleuser);
+    			List<Muser> listofTrainer =muserrepositories.findByRoleNameAndInstitutionName(singleuser, institution);
     			for(Muser user :listofTrainer) {
     				 NotificationUser notificationTrainer = new NotificationUser();
     				 notificationTrainer.setUserid(user.getUserId());
@@ -166,7 +168,7 @@ public class NotificationService {
     		}
     		}
     		if("USER".equals(singleuser)) {
-    			List<Muser> listofuser =muserrepositories.findByRoleName(singleuser);
+    			List<Muser> listofuser =muserrepositories.findByRoleNameAndInstitutionName(singleuser, institution);
     			for(Muser user :listofuser) {
     				 NotificationUser notificationUser = new NotificationUser();
     				 notificationUser.setUserid(user.getUserId());
@@ -179,5 +181,8 @@ public class NotificationService {
     	}
     	return(true);
     }
+    
+    
+    
     
 }

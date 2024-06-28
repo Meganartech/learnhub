@@ -51,12 +51,12 @@ public class AddUsers {
 	          if (!jwtUtil.validateToken(token)) {
 	              System.out.println("Invalid Token");
 	             
-	              // If the token is not valid, return unauthorized status
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	          }
 
 	          String role = jwtUtil.getRoleFromToken(token);
-
+              String adminemail=jwtUtil.getUsernameFromToken(token);
+             
 	          // Perform authentication based on role
 	          if ("ADMIN".equals(role)) {
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
@@ -65,6 +65,13 @@ public class AddUsers {
 	              } else {
 	                  MuserRoles roletrainer = muserrolerepository.findByroleName("TRAINER");
 	                  Muser trainer = new Muser();
+	                  Optional<Muser>addingadmin=muserrepositories.findByEmail(adminemail);
+	                  if(addingadmin.isPresent()) {
+	                    trainer.setInstitutionName(addingadmin.get().getInstitutionName());
+	                  }else {
+
+	    	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	                  }
 	                  trainer.setUsername(username);
 	                  trainer.setEmail(email);
 	                  trainer.setIsActive(isActive);
@@ -118,13 +125,15 @@ public class AddUsers {
 	          String emailofadd=jwtUtil.getUsernameFromToken(token);
 	          String usernameofadding="";
 	          String emailofadding="";
+	          String instituiton="";
 	          Optional<Muser> optiUser = muserrepositories.findByEmail(emailofadd);
               if (optiUser.isPresent()) {
             	  Muser addinguser= optiUser.get();
             	  usernameofadding=addinguser.getUsername();
             	  emailofadding=addinguser.getEmail();
+            	   instituiton=addinguser.getInstitutionName();
               }else {
-
+                 System.out.println("usernot present");
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
               }
 
@@ -143,6 +152,7 @@ public class AddUsers {
 	                  user.setPhone(phone);
 	                  user.setDob(dob);
 	                  user.setRole(roletrainer);
+	                  user.setInstitutionName(instituiton);
 	                  user.setSkills(skills);	
 	                  user.setCountryCode(countryCode);
 	                  try {
@@ -159,18 +169,22 @@ public class AddUsers {
 		       	        if(NotifyId!=null) {
 		       	        	List<String> notiuserlist = new ArrayList<>(); 
 		       	        	notiuserlist.add("ADMIN");
-		       	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist);
+		       	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,instituiton);
 		       	        }
 	                 
 	                  return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	              }
 	          } else {
+
+	                 System.out.println("not a trainer or admin");
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	          }
 	      } catch (DecodingException ex) {
 	          // Log the decoding exception
 	          ex.printStackTrace(); // You can replace this with logging framework like Log4j
 	          // Return an error response indicating invalid token
+
+              System.out.println("catch ");
 	          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	      } catch (Exception e) {
 	          // Log any other exceptions for debugging purposes

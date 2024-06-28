@@ -171,9 +171,7 @@ public class LicenseController {
 //	    		            System.out.println(data);
 //	    		        }
 	    	
-		  //need to change when uploading
-//		    valid=true;
-		   
+		
 //		    logger.info(" total no of course  ======="+count.toString());
 		    UserListWithStatus userListWithStatus = new UserListWithStatus(isEmpty, valid,type, dataList);
 		   
@@ -391,7 +389,8 @@ public class LicenseController {
 		            DocumentBuilder builder = factory.newDocumentBuilder();
 		            
 		         // Define the date-time formatter for the custom format
-		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:mm:ss a");
+		            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+		           // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:mm:ss a");
 
 		            // Parse the string to a LocalDateTime
 		            LocalDateTime localDateTime;
@@ -459,21 +458,23 @@ public class LicenseController {
         	            int port = Integer.parseInt(env.getRequiredProperty("server.port"));
         	            String contextPath = env.getProperty("api.context-path", ""); 
                         
-                        String heading=" Licence Expiring Soon !";
-     	 		       String link="/about";
-     	 		       String notidescription= "Your Licence Was Expiring Soon.. Upload A New Licence File" ;
-     	 		      Long NotifyId =  notiservice.createNotification("CourseAdd","system",notidescription ,"system",heading,link);
-     	 		        if(NotifyId!=null) {
-     	 		        	for (int iv = 1; iv < 6; iv++) {
-     	 		        	  LocalDate notificationDate = endDate.minusDays(iv);
-     	 		        	  notiservice.LicenceExpitedNotification(NotifyId, notificationDate);
-     	 		        	}
-     	 		        }
+                        
 		                RestTemplate restTemplate = new RestTemplate();
 		                String email = jwtUtil.getUsernameFromToken(token);
 		               Optional<Muser> opuser= muserrepo.findByEmail(email);
 		               if(opuser.isPresent()) {
 		            	   Muser user= opuser.get();
+		            	   String institution=user.getInstitutionName();
+		            	   String heading=" Licence Expiring Soon !";
+	     	 		       String link="/about";
+	     	 		       String notidescription= "Your Licence Was Expiring Soon.. Upload A New Licence File" ;
+	     	 		      Long NotifyId =  notiservice.createNotification("CourseAdd","system",notidescription ,"system",heading,link);
+	     	 		        if(NotifyId!=null) {
+	     	 		        	for (int iv = 1; iv < 6; iv++) {
+	     	 		        	  LocalDate notificationDate = endDate.minusDays(iv);
+	     	 		        	  notiservice.LicenceExpitedNotification(NotifyId, notificationDate,institution);
+	     	 		        	}
+	     	 		        }
 			                String apiurl3 = baseUrl + port +contextPath+"/Developer/CustomerLeads/" + email;
 		                CustomerLeads updateData = new CustomerLeads();
 		                updateData.setEmail(user.getEmail());
