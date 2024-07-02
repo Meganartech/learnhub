@@ -53,6 +53,7 @@ import Paymenttransactions from "./course/Components/Paymenttransactions.js";
 import TransactionHistoryTrainer from "./Trainer/TransactionHistoryTrainer.js";
 import Mystudents from "./Trainer/Mystudents.js";
 import AdminRegister from "./Student/AdminRegister.js";
+import LicenceExpired from "./AuthenticationPages/LicenceExpired.js";
 
 
 function App() {
@@ -158,6 +159,7 @@ function App() {
           <Route path="/unauthorized" element={<Unauthorized/>}/>
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/adminRegistration" element={<AdminRegister/>} />
+          <Route path="/LicenceExpired" element={<LicenceExpired/>}/>
           <Route path="*" element={<Missing/>}/>
                   </Routes>
       </div>

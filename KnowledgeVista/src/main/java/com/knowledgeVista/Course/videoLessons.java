@@ -41,7 +41,7 @@ public class videoLessons {
 	    @Column(nullable = true)
 		private MultipartFile videoFile;
 	    
-	    private Double size;
+	    private Long size;
 	    
 	    @Column(nullable = true)
 	    private String videofilename;

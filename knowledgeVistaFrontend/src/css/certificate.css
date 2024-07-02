@@ -4,7 +4,15 @@
     --back-color-secondary:white;
     --button-color:#2F3CED;
     --input-bg:#CBCBCB;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
+
+  body {
+    font-size: 16px;
+  }
+
 .background{
     background-color: var(--back-color);
     padding: 40px;
@@ -14,22 +22,22 @@
 
 .contentbackground{
   background-color:#EAEAEA;
-  padding: 40px;
-  height: 94vh;
+  padding: 30px;
+  height:90vh;
 }
 .contentinner{
   background-color: white;
   padding: 20px;
   border-radius: 10px;
   width: 100%;
-  height: 80vh;
+  height: 100%;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 .innerFrame{
     padding: 5px;
-    height:100%;
+    height:90%;
     display: grid;
-    grid-template-rows: 1fr 3fr 1fr;
+    grid-template-rows: 1fr 4fr 1fr;
 }
 .mainform2{
   display: grid;
@@ -242,4 +250,37 @@ grid-template-columns: 6fr 1fr 12fr;
   word-wrap:break-word;
   font-size: smaller;
   margin-bottom: 0px;
+}
+
+/* Media Queries */
+
+/* Mobile Mode (adjust breakpoints as needed) */
+@media screen and (max-width: 480px) {
+  .contentbackground{
+    width: 100%;
+    padding: 10px;
+    height: max-content;
+  }
+ .contentinner{
+  height: 250vh;
+ }
+ .innerFrame{
+  grid-template-rows: 1fr 8fr 1fr;
+ }
+  .mainform {
+    grid-template-columns: 1fr;  
+    display: flex;
+    flex-direction: column;
+  }
+ 
+  .formgroup {
+    order: 1;  
+    max-height: none;
+    height: 100%;
+
+  }
+  .profile-picture {
+    order: 2;  
+    height: 400px;
+  }
 }

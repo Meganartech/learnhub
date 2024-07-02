@@ -223,6 +223,13 @@ useEffect(() => {
             icon: "warning",
             confirmButtonText: "OK",
           });
+      } if(error.response && error.response.status === 413){
+        setIsSubmitting(false);
+        MySwal.fire({
+          title: "Storage Limit Exceeded",
+          text: error.response.data,
+          icon: "warning",
+        })
       }else{
       setIsSubmitting(false);
        MySwal.fire({

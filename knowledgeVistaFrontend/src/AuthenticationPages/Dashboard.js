@@ -25,11 +25,15 @@ const Dashboard = () => {
  useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`);
+      const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`,{
+        headers:{
+          "Authorization":token,
+          }
+        });
 
       if (response.status !== 200) {
         setIsEmpty(response.data.empty);
-        throw new Error('Network response was not ok');
+        console.error('Error fetching data:');
       }
 
       const data = response.data;

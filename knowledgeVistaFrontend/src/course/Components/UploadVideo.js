@@ -156,15 +156,24 @@ const token=sessionStorage.getItem("token")
       }
     
    } catch (error) {
-      setIsSubmitting(false);
+    setIsSubmitting(false);
+    if(error.response && error.response.status === 413){
+      MySwal.fire({
+        title: "Storage Limit Exceeded",
+        text: error.response.data,
+        icon: "warning",
+      })
+    }else{
+     
       // Handle network errors or other exceptions
       MySwal.fire({
         title: "Error!",
-        text: "Some Unexpected Error occured . Please try again later.",
+        text: "Some Unexpected Error occured . Please try again ....later.",
         icon: "error",
         confirmButtonText: "OK",
       });
     }
+  }
   };
     const handleDrop = (e) => {
       e.preventDefault();

@@ -11,22 +11,25 @@ const EditCourse = ({filteredCourses}) => {
  const token=sessionStorage.getItem("token");
  const createCourse = async () => {
   try {
- const response = await axios.get(`${baseUrl}/api/v2/count`);
+ const response = await axios.get(`${baseUrl}/api/v2/count`,{
+  headers:{
+    "Authorization":token,
+    }
+  });
 
     if (response.status===200) {
       window.location.href = "/course/addcourse";
     }
-    else{
-      Swal.fire({
-        title: "Course Limit is Reached",
-        text: "Need to upgrade your lisense",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ok",
-      })
-
-    }
+   
   } catch (error) {
+    Swal.fire({
+      title: "Course Limit is Reached",
+      text: "Need to upgrade your lisense",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ok",
+    })
+
     console.error('Error ', error);
   }
 };

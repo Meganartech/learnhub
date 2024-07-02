@@ -38,8 +38,9 @@ public class CourseDetail {
 	    private String courseDescription;
 	    @Column(name="courseCategory")
 	    private String courseCategory;
-	    @Column(name="licenceType")
-	    private String licenceType;
+	    
+//	    @Column(name="licenceType")
+//	    private String licenceType;
 	    
 	    @Column(name="amount")
 	    private Long amount;

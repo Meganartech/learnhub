@@ -38,6 +38,7 @@ import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.FileService.VideoFileService;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.License.LicenseController;
+import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -65,12 +66,15 @@ public class videolessonController {
 		private videoLessonRepo lessonrepo;
 		 @Autowired
 		 private JwtUtil jwtUtil;
-//
+
 		 @Value("${upload.video.directory}")
 		 private  String videoStorageDirectory;
 		 
 		 @Autowired
 		private NotificationService notiservice;
+		 
+		 @Autowired
+		 private licenseRepository licencerepo;
 		
 		
 		
@@ -118,9 +122,22 @@ public class videolessonController {
                    lesson.setThumbnail(ImageUtils.compressImage(file.getBytes()));
 		         
 		          if (videoFile != null) {
+		        	  long totalExistingFileSize = lessonrepo.findAllByInstitutionName(courseDetail.getInstitutionName()).stream()
+                              .mapToLong(lessonsing -> lessonsing.getSize()) // Use lambda expression
+                              .sum();
+                         Long num = licencerepo.FindstoragesizeByinstitution(courseDetail.getInstitutionName());
+		        	    // Determine maximum allowed video size (1 GB)
+		        	    Long maxVideoFileSize = num*(1024*1024*1024) ;
+                        		 // 1 GB in bytes 1024*1024*1024
+                      System.out.println("totalExisting File Size"+totalExistingFileSize);
+		        	    // Check if total file size exceeds limit after adding new video
+		        	    if (totalExistingFileSize + videoFile.getSize() > maxVideoFileSize) {
+		        	        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+		        	                .body(" video  cannot Be added size for this institution exceeds 1 GB limit. Upgrade Your Licence To Access More Storage ");
+		        	    }
 		              String videoFilePath = fileService.saveVideoFile(videoFile);
 		              Long fileSize = videoFile.getSize();
-	                     double fileSizeMB = (double) fileSize / (1024 * 1024);
+	                     Long fileSizeMB =  fileSize ;
 			              lesson.setSize(fileSizeMB);
 		              lesson.setVideofilename(videoFilePath);
 		              lesson.setVideoFile(videoFile);
@@ -131,6 +148,7 @@ public class videolessonController {
 		          }
 
 		       videoLessons savedlesson=  lessonrepo.save(lesson);
+		       
 		         String heading="New video Added !";
 			       String link="/courses/java/"+courseDetail.getCourseId();
 			       String notidescription= "A new Lesson "+savedlesson.getLessontitle() + " was added  in the " + courseDetail.getCourseName();
@@ -188,10 +206,23 @@ public class videolessonController {
 		                     video.setThumbnail(ImageUtils.compressImage(file.getBytes()));
 		                 }
 		                 if (videoFile != null) {
-		                     String videoFilePath = fileService.saveVideoFile(videoFile);
-		                     Long fileSize = videoFile.getSize();
-		                     double fileSizeMB = (double) fileSize / (1024 * 1024);
-				              video.setSize(fileSizeMB);
+		                	 long totalExistingFileSize = lessonrepo.findAllByInstitutionName(institution).stream()
+		                              .mapToLong(lessonsing -> lessonsing.getSize()) // Use lambda expression
+		                              .sum();
+		                         Long num = licencerepo.FindstoragesizeByinstitution(institution);
+				        	    // Determine maximum allowed video size (1 GB)
+				        	    Long maxVideoFileSize = num*(1024*1024*1024) ;
+		                        		 // 1 GB in bytes 1024*1024*1024
+		                      System.out.println("totalExisting File Size"+totalExistingFileSize);
+				        	    // Check if total file size exceeds limit after adding new video
+				        	    if (totalExistingFileSize + videoFile.getSize() > maxVideoFileSize) {
+				        	        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+				        	                .body(" video  cannot Be added size for this institution exceeds 1 GB limit. Upgrade Your Licence To Access More Storage ");
+				        	    }
+				              String videoFilePath = fileService.saveVideoFile(videoFile);
+				              Long fileSize = videoFile.getSize();
+			                     Long fileSizeMB =  fileSize ;
+					              video.setSize(fileSizeMB);
 		                     video.setVideofilename(videoFilePath);
 		                     video.setVideoFile(videoFile);
 		                     video.setFileUrl(null);
@@ -365,7 +396,7 @@ public class videolessonController {
 		    		                    // Calculate the content length
 		    		                    long contentLength = rangeEnd - rangeStart + 1;
 
-		    		                    System.out.println("Range Start: " + rangeStart + ", Range End: " + rangeEnd + ", Content Length: " + contentLength);
+		    		                    System.out.println("Range Start : " + rangeStart + ", Range End: " + rangeEnd + ", Content Length: " + contentLength);
 		    		                    // Create a RandomAccessFile to read the specified range
 		    		                    try (RandomAccessFile file = new RandomAccessFile(filePath.toFile(), "r")) {
 		    		                        file.seek(rangeStart);
@@ -377,7 +408,7 @@ public class videolessonController {
 
 		    		                        // Set the Content-Range header
 		    		                        headers.add(HttpHeaders.CONTENT_RANGE, String.format("bytes %d-%d/%d", rangeStart, rangeEnd, fileSize));
-		    		                        System.out.println("Range Start: " + rangeStart + ", Range End: " + rangeEnd + ", Content Length: " + contentLength);
+		    		                        System.out.println("Range Start : " + rangeStart + ", Range End: " + rangeEnd + ", Content Length: " + contentLength);
 
 		    		                        // Return a 206 Partial Content response
 		    		                        return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
@@ -390,7 +421,7 @@ public class videolessonController {
 		    		                    long rangeStart = 0;
 		    		                    long rangeEnd = Math.min(INITIAL_CHUNK_SIZE - 1, fileSize - 1);
 		    		                    long contentLength = rangeEnd - rangeStart + 1;
-	    		                    System.out.println("Range Start: " + rangeStart + ", Range End: " + rangeEnd + ", Content Length: " + contentLength);
+	    		                    System.out.println("Range Start initial: " + rangeStart + ", Range End: " + rangeEnd + ", Content Length: " + contentLength);
 
 		    		                    // Create a RandomAccessFile to read the specified range
 		    		                    try (RandomAccessFile file = new RandomAccessFile(filePath.toFile(), "r")) {
@@ -435,7 +466,7 @@ public class videolessonController {
 		        }
 		        
 		    }
-		
+	
 
 //		    private ResponseEntity<?> getVideo(Long lessId) {
 //		        try {

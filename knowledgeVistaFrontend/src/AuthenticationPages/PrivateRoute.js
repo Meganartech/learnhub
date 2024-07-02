@@ -4,11 +4,16 @@ import baseUrl from '../api/utils';
 import axios from 'axios';
 const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,onlyuser, onlytrainer,children ,licence}) => {
     
+  const token=sessionStorage.getItem("token")
   const [isvalid, setIsvalid] = useState();
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`);
+            const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`,{
+              headers:{
+                "Authorization":token,
+                }
+              });
             
             const data = response.data;
             setIsvalid(data.valid);
@@ -16,7 +21,7 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
 
         } catch (error) {
           if (error.response && error.response.status !== 200) {
-            throw new Error('Network response was not ok');
+            throw new Error('');
           }
           console.error('Error fetching data:', error);
         }
@@ -69,7 +74,7 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
     }
       } else if (userRole === "TRAINER") {
         if (isvalid===false) {
-          return <Navigate to="/unauthorized" />;
+          return <Navigate to="/LicenceExpired" />;
         }
       }
    

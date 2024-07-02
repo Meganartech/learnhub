@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -74,10 +75,13 @@ public class LicenseController {
 		private NotificationService notiservice;
 	 @Autowired
 		private Environment env;
+	 @Autowired
+		private mAdminLicenceRepo madminrepo;
 
 	    @Value("${upload.licence.directory}")
 	    private String licenceUploadDirectory;
-	 
+	    @Value("${upload.licence.directory}")
+	    private String olddir;
 	 
 
 	 
@@ -88,23 +92,35 @@ public class LicenseController {
 	 private  Logger logger = LoggerFactory.getLogger(LicenseController.class);
 
 
-		public ResponseEntity<UserListWithStatus> getAllUser() {
-//		    List<AddUser> getUser = adduserrepository.findAll();
-		    Iterable<License> licenseIterable = licenseRepository.findAll();
-	    	List<License> licenseList = StreamSupport.stream(licenseIterable.spliterator(), false)
-	    	                                         .collect(Collectors.toList());
-	    	
-	    	
-	    	  boolean isEmpty = licenseList.isEmpty();
-			boolean valid = !(licenseList.isEmpty())?this.getall():false;
-	    	boolean type=true;
-	    	
-	    			if (!(licenseList.isEmpty())) {	
-	    				if(licenseList.get(0).getType().equals("Demo")) {
-	    				type=false;
-	    				System.out.println("licenseList.get(0).getType()"+licenseList.get(0).getType());
-	    				}
-	    			}	
+		public ResponseEntity<?> getAllUser(String token) {
+			if (!jwtUtil.validateToken(token)) {
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	         }
+			String uemail = jwtUtil.getUsernameFromToken(token);
+            Optional<Muser> opuser= muserrepo.findByEmail(uemail);
+            if(opuser.isPresent()) {
+
+         	   Muser user= opuser.get();
+         	   String institution=user.getInstitutionName();
+         	   Madmin_Licence madmin= madminrepo.findByInstitutionName(institution);
+         	
+	
+         	  Boolean isEmpty=false;
+         	  Boolean valid=true;
+              Boolean type=false;
+  
+         	  Optional<License> oplicence=licenseRepository.findByinstitution(institution);
+         	    if(oplicence.isEmpty()) {
+         	    	 isEmpty = true;
+        			 valid =false;
+        	    	 type=true;
+        	    	 List<Map<String, Object>> dataList = new ArrayList<>();
+        	    	  UserListWithStatus userListWithStatusss = new UserListWithStatus(isEmpty, valid,type, dataList);
+        	    	
+        			    return new ResponseEntity<>(userListWithStatusss,HttpStatus.OK);
+         	    }else {
+         	    	
+         	    License license =oplicence.get();
 	    			List<Map<String, Object>> dataList = new ArrayList<>();
     		        Map<String, Object> data1 = new HashMap<>();
 	    			 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -129,15 +145,15 @@ public class LicenseController {
 		              String EndDate="";
 		              SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		              
-		              for (License license : licenseList) {
+		             
 		  				
 		            	  ProductName=license.getProduct_name();
 		            	  CompanyName=license.getCompany_name();
-//		            	  
+		            	  
 		            	  Type=license.getType();
 		            	  StartDate=dateFormat.format(license.getStart_date());
 		            	  EndDate=dateFormat.format(license.getEnd_date());
-		  			}
+		  			
 		              if(StartDate.equals(EndDate)) {
 		            	  StartDate="";
 		            	  EndDate="";
@@ -151,8 +167,6 @@ public class LicenseController {
 	    		        data1.put("Type", Type);
 	    		        data1.put("StartDate",StartDate);
 	    		        data1.put("EndDate", EndDate);
-
-	    		       
 	    		        dataList.add(data1);
 	    		        inputStream.close();
 	    			} else {
@@ -165,34 +179,39 @@ public class LicenseController {
 		                 e.printStackTrace();
 		             }
 	    			
-	    		       
-//	    		        // Print the list
-//	    		        for (Map<String, Object> data : dataList) {
-//	    		            System.out.println(data);
-//	    		        }
-	    	
-		
-//		    logger.info(" total no of course  ======="+count.toString());
+	    		valid=this.getall(institution, madmin ,license);
+	    		
 		    UserListWithStatus userListWithStatus = new UserListWithStatus(isEmpty, valid,type, dataList);
-		   
+         	    
 		    return new ResponseEntity<>(userListWithStatus,HttpStatus.OK);
+         	    }
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		
-	
+		}
 		
-		public ResponseEntity<Integer> count() {
+		public ResponseEntity<Integer> count(String token) {
+			if (!jwtUtil.validateToken(token)) {
+				 return new ResponseEntity<>(401, HttpStatus.UNAUTHORIZED);
+	         }
+			String uemail = jwtUtil.getUsernameFromToken(token);
+           Optional<Muser> opuser= muserrepo.findByEmail(uemail);
+           if(opuser.isPresent()) {
+
+        	   Muser user= opuser.get();
+        	   String institution=user.getInstitutionName();
 			
-			Iterable<License> licenseIterable = licenseRepository.findAll();
-	    	List<License> licenseList = StreamSupport.stream(licenseIterable.spliterator(), false)
-	    	                                         .collect(Collectors.toList());
+			Optional<License> oplicense = licenseRepository.findByinstitution(institution);
+	    
 	    	
-			Long count = coursedetailrepository.count();
+			Long count = coursedetailrepository.countCourseByInstitutionName(institution);
 			String courseString=" ";
 //			System.out.println("out side for"+courseString==null);
-			for (License license : licenseList) {
-				
+			if(oplicense.isPresent()) {
+				License license=oplicense.get();
 				courseString=license.getCourse();
-			}
+			
 			Long course=0l;
 			//System.out.println(courseString.isEmpty());
 			if(!(courseString.isEmpty())) {
@@ -207,8 +226,8 @@ public class LicenseController {
 				logger.info("-------------------------------------------------------");
 		    return new ResponseEntity<>(200, HttpStatus.OK);
 			}
-			
-			else if(!(licenseList.isEmpty())&&courseString.isEmpty()) {
+		}
+			else if(!(oplicense.isEmpty())&&courseString.isEmpty()) {
 				logger.info("-------------------------------------------------------");
 				logger.info("unlimited course");
 				logger.info("-------------------------------------------------------");
@@ -220,46 +239,41 @@ public class LicenseController {
 				logger.info("limited reached");
 				 return new ResponseEntity<>(401, HttpStatus.BAD_REQUEST);
 			}
-				
+          }else {
+        	   return new ResponseEntity<>(401, HttpStatus.BAD_REQUEST);
+           }
+           return new ResponseEntity<>(401, HttpStatus.BAD_REQUEST);
 		}
 		
-		 public boolean getall(){
+		 public boolean getall( String institution ,Madmin_Licence madmin, License license){
 		    	
-		    	Iterable<License> licenseIterable = licenseRepository.findAll();
-		    	List<License> licenseList = StreamSupport.stream(licenseIterable.spliterator(), false)
-		    	                                         .collect(Collectors.toList());
+
+		     
 		    	LocalDate currentDate = LocalDate.now();
 	            java.util.Date Datecurrent = java.sql.Date.valueOf(currentDate);
 	            long milliseconds = Datecurrent.getTime(); // Get the time in milliseconds
 	            java.sql.Timestamp timestamp = new java.sql.Timestamp(milliseconds);
 	           String val="";
 	            String localFile="";
-		    	for (License license : licenseList) {
-		    		localFile=license.getFilename();
-//		    		 System.out.println("---------------------------------------------------");
-//		    	    System.out.println("ID: " + license.getId());
-//		    	    System.out.println("Company Name: " + license.getCompany_name());
-//		    	    System.out.println("Product Name: " + license.getProduct_name());
-//		    	    System.out.println("key " + license.getKey());
-//		    	    System.out.println("start_date: " + license.getStart_date());
-//		    	    System.out.println("end_date: " + license.getEnd_date());
-////		            java.util.Date licenseStartDateUtil = java.sql.Date.valueOf(license.getStart_date().toLocaleString());
-//		    	    System.out.println(" start date :"+license.getStart_date()+" present date :"+Datecurrent+" is equal"+license.getEnd_date().equals(timestamp));
-//		    	    // Print other fields as needed
-		    	}
 		    	
+		    		localFile=license.getFilename();
+
 		    	 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				  try {
 						 DocumentBuilder builder = factory.newDocumentBuilder();
+						 if(madmin.getLicenceType().equals("FREE")) {
+//							final String licenseSubdirectory = "Free";
+//								licenceUploadDirectory = licenceUploadDirectory + licenseSubdirectory + "/";
+							 //For Future Use
+							 licenceUploadDirectory = licenceUploadDirectory;
+						 }
+						
 							Document document = builder.parse(new File(licenceUploadDirectory+localFile));
 							 Element rootElement=document.getDocumentElement();
 							 NodeList personList = rootElement.getElementsByTagName("data");
 							File file = new File(licenceUploadDirectory+localFile);
 							long lastModified = file.lastModified();
-//							System.out.println("----------------------------------------------------------------");
-//							System.out.println("Last modified string"+lastModified);
 							 Date date = new Date(lastModified);
-							// System.out.println("Last modified date"+date);
 							 SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
 							 Element person4 = (Element) personList.item(0);
 							  Element trai = (Element) person4.getElementsByTagName("course").item(0);
@@ -268,16 +282,9 @@ public class LicenseController {
 				              String tra = trai.getTextContent();
 				              String stude = stud.getTextContent();
 				              val = vale.getTextContent();
-//				              System.out.println("No of trainer"+tra);
-//				              System.out.println("No of student"+stude);
-//				              System.out.println("No of student"+val.isEmpty());
+
 					         String formattedDate = formatter.format(date)+tra+stude+val;
-//					         System.out.println("Last modified date complete"+formattedDate);
-//				             System.out.println("----------------------------------------------------------------");
-//				             System.out.println(Jwts.builder()
-//				             .setSubject(formattedDate)
-//					            .signWith(SignatureAlgorithm.HS256, "yourSecretKeyStringWithAtLeast256BitsLength")
-//					            .compact());
+
 				             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				             Document doc = dBuilder.parse(file);
@@ -288,25 +295,7 @@ public class LicenseController {
 				 		            .signWith(SignatureAlgorithm.HS256, "yourSecretKeyStringWithAtLeast256BitsLength")
 				 		            .compact());
 				             		
-//				             NodeList dataList = root.getElementsByTagName("data");
-//				             Element data = (Element) dataList.item(0);
-//				             Element type2 = (Element) data.getElementsByTagName("version").item(0);
-//				            
-//				             Element person1 = (Element) personList.item(0);
-//				             Element key_name1 = (Element) person1.getElementsByTagName("key").item(0);
-//				             
-//				             if(key_name1== null) {
-//				             data.insertBefore(validity2, type2.getNextSibling());
-//				             doc.normalize();
-//				             FileOutputStream fileOutputStream = new FileOutputStream(file);
-//				             try {
-//				             javax.xml.transform.TransformerFactory.newInstance().newTransformer().transform(
-//				                     new javax.xml.transform.dom.DOMSource(doc),
-//				                     new javax.xml.transform.stream.StreamResult(fileOutputStream));
-//				             fileOutputStream.close();
-//
-//				             logger.info("XML file updated successfully!");
-//
+
 				             }
 				             catch (Exception e) {
 				                 e.printStackTrace();
@@ -316,27 +305,23 @@ public class LicenseController {
 		    	
 		  
 		    	 boolean valid = false; // Initialize valid to false
-//		    	 boolean same = this.areJwtsEqual();
-		    	 
-		    	// System.out.println("out of the loop"+valid);
-		    	    for (License license : licenseList) {
+
+		    	
 		    	    	this.valu1=license.getKey();
 				 
-//		    	        if (license.getEnd_date().equals(timestamp)) {
 //		    -------------------------------------testarea-----------------------------
 		    	        	  if ((valu.equals(valu1)) && !(license.getEnd_date().equals(timestamp)) && !(val.isEmpty())) {  
 		    	        		 
-		    	        	
+		    	        		
 		    	            valid =  true;
+		    	            System.out.println("361"+valid);
 		    	            logger.info("License is Valid"+valid);
-////		    	            System.out.println("inside of the loop IF of same!!!*!*!*!*!*!*!*!"+same);
-//		    	            System.out.println("generated valueeee======"+this.valu);
-//		    	            System.out.println("license  valueeee======"+this.valu1);
-//		    	            System.out.println("license"+license.getEnd_date()+"       "+timestamp+"          "+ !(license.getEnd_date().equals(timestamp)));
-		    	            break; 
+		    	          
 		    	        }
 		    	        	else if((val.isEmpty()) && (valu.equals(valu1))) {
+		    	        		
 			    	        		valid=true;
+			    	        		System.out.println("else if "+valid);
 				    	        	logger.info("License is valid");
 				    	        	logger.info("License validy is unlimited");
 				    	        	
@@ -347,7 +332,9 @@ public class LicenseController {
 		    	        	logger.info("License is InValid");
 		    	        	if(!(valu.equals(valu1)))
 		    	        			{
+		    	        		
 		    	        	valid=false;
+		    	        	System.out.println( "383"+valid);
 		    	        	logger.info("License is Modified");
 		    	        			}
 		    	        	else if((license.getEnd_date().equals(timestamp))&&  !(val.isEmpty())) {
@@ -356,12 +343,14 @@ public class LicenseController {
 		    	        	
 		    	        	}
 		    	        }
-		    	    }
+		    	    
 
-//		    	  List<Addaudio1> allAudio = audiorepository.findAll();
-		    	
+		    	        	  licenceUploadDirectory=olddir;
+		     
 		    	return valid;
-		    }
+		     }
+		     
+		    
 		 
 //		 public boolean areJwtsEqual() {
 //		        // Decode and parse the payloads of both JWTs
@@ -380,12 +369,28 @@ public class LicenseController {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		         }
 
-
+		    	
 	                      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		        
 		        try {
-		            // Save audio with file using the service 
+		        	String email = jwtUtil.getUsernameFromToken(token);
+		               Optional<Muser> opuser= muserrepo.findByEmail(email);
+		               if(opuser.isPresent()) {
+
+		            	   Muser user= opuser.get();
+		            	   String institution=user.getInstitutionName();
+		            	   Madmin_Licence madmin= madminrepo.findByInstitutionName(institution);
+		            	   if(madmin.getLicenceType().equals("FREE")) {
+		            			licenceUploadDirectory = licenceUploadDirectory ;
+		            			  //in future can be changed as licenceUploadDirectory
+//						final String licenseSubdirectory = "Free";
+//						licenceUploadDirectory = licenceUploadDirectory + "/" + licenseSubdirectory + "/";
+		            		  
+		            	   }
+		        	
+		            	   
 		        	License savedAudio = this.saveFile(File);
+		        	
 		            DocumentBuilder builder = factory.newDocumentBuilder();
 		            
 		         // Define the date-time formatter for the custom format
@@ -412,17 +417,14 @@ public class LicenseController {
 
 		            Document document = builder.parse(new File(licenceUploadDirectory  + File.getOriginalFilename()));
 		            
-		            
-		            
-					
-					
 		            Element rootElement = document.getDocumentElement();
-		          //  System.out.println("Root Element = " + rootElement.getNodeName());
 		            NodeList personList = rootElement.getElementsByTagName("data");
 		            for (int i = 0; i < personList.getLength(); i++) {
+		            	 
 		                Element person = (Element) personList.item(i);
 		                Element product = (Element) person.getElementsByTagName("product_name").item(0);
 		                Element company = (Element) person.getElementsByTagName("company_name").item(0);
+		                Element storagesize = (Element) person.getElementsByTagName("storagesize").item(0);
 		                Element versionName = (Element) person.getElementsByTagName("version").item(0);
 		                Element keyName = (Element) person.getElementsByTagName("key").item(0);
 		                Element typeName = (Element) person.getElementsByTagName("type").item(0);
@@ -433,6 +435,7 @@ public class LicenseController {
 
 		                String productName = product.getTextContent();
 		                String companyName = company.getTextContent();
+		                String storage=storagesize.getTextContent();
 		                String version = versionName.getTextContent();
 		                String key = keyName.getTextContent();
 		                String type = typeName.getTextContent();
@@ -440,9 +443,8 @@ public class LicenseController {
 		                String trainercount=trainer.getTextContent();
 		                String studentcount=student.getTextContent();
 		                String validity = validityDate.getTextContent();
-		                
-		                
-		                this.licensedetails(productName, companyName, key, validity,course,type,file);
+		               
+		                this.licensedetails(productName, companyName,storage, key, validity,course,trainercount,studentcount,type,file,institution);
 //---------------------------------------CustomerLeads call-----------------------
 
 		                Integer CourseCount = Integer.parseInt(course);
@@ -450,21 +452,16 @@ public class LicenseController {
 		                Integer StudentCount=Integer.parseInt(studentcount);
 		                Integer validitydays=Integer.parseInt(validity);
 		                LocalDate startdate= LocalDate.now();
-		               // System.out.println("startdate"+startdate);
                         LocalDate endDate = startdate.plusDays(validitydays);
-                       // System.out.println("endDate"+endDate);
-		               //------------for licence Expired Notificatio-------------
+ 		               //------------for licence Expired Notificatio-------------
                         String baseUrl = env.getRequiredProperty("base.url");
         	            int port = Integer.parseInt(env.getRequiredProperty("server.port"));
         	            String contextPath = env.getProperty("api.context-path", ""); 
                         
                         
 		                RestTemplate restTemplate = new RestTemplate();
-		                String email = jwtUtil.getUsernameFromToken(token);
-		               Optional<Muser> opuser= muserrepo.findByEmail(email);
-		               if(opuser.isPresent()) {
-		            	   Muser user= opuser.get();
-		            	   String institution=user.getInstitutionName();
+		               
+		               
 		            	   String heading=" Licence Expiring Soon !";
 	     	 		       String link="/about";
 	     	 		       String notidescription= "Your Licence Was Expiring Soon.. Upload A New Licence File" ;
@@ -505,23 +502,15 @@ public class LicenseController {
 		                custdown.setStudentCount(StudentCount);
 		                custdown.setTrainerCount(TrainerCount);
 		                custdown.setVersion(version);
-		                
-
 		                restTemplate.put(apiurl4, updateData, String.class);
-		               }else {
+		            
+//----------------------------------------CustomerLeads---------------------------
+ } 
+		            licenceUploadDirectory=olddir;
+		            return ResponseEntity.ok().body(savedAudio);
+		            }else {
 		            	   return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		               }
-//----------------------------------------CustomerLeads---------------------------
-		                
-
-//		                System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-//		                System.out.println("product_name: " + productName + " company_name: " + companyName + " version: " + version + " key: " + key + " type: " + type + " validity: " + validity + " Video: " + course + " lastModifiedDate: " + lastModifiedDate);
-//		                System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		            }
-	
-		               
-			            
-		            return ResponseEntity.ok().body(savedAudio);
 		        } catch (ParserConfigurationException | SAXException | IOException e) {
 		            e.printStackTrace();
 		            return ResponseEntity.badRequest().build();
@@ -529,70 +518,46 @@ public class LicenseController {
 		    }
 			
 			 public  License saveFile(MultipartFile File) throws IOException {
-			        // Save the audio file to the server and get the file path
-			        // this.savFile(File);
+			        
 				   this.file=File.getOriginalFilename();
-				licenceservice.saveLicence(File);
-				 
-				 
-//			        license
-			          
+				this.saveLicence(File);
+				
 			        return null ;
 			    }
-//			 public String savFile(MultipartFile File) throws IOException {
-//			        // Generate a unique file name (you can use other strategies)
-//			        String uniqueFileName =File.getOriginalFilename();
-//			        System.out.println("audioFile.getOriginalFilename()");
-//			        System.out.println(File.getOriginalFilename());
-//			        this.file=File.getOriginalFilename();
-////			        logger.info(file);
-//			        Path uploadPath = Paths.get(audioUploadDirectory);
-//			        if (!Files.exists(uploadPath)) {
-//			            Files.createDirectories(uploadPath);
-//			        }
-//			        // Define the file path where the audio file will be stored
-//			        String filePath = Paths.get(audioUploadDirectory).resolve(uniqueFileName).toString();
-////			        String modifiedPath = filePath.replace("Audio\\", "");
-////			        System.out.println(modifiedPath);
-//	
-//			        // Save the file to the server
-//			        Files.copy(File.getInputStream(), Path.of(filePath), StandardCopyOption.REPLACE_EXISTING);
-//	
-//			        return "modifiedPath";   
-//			        
-//			    }
-//			   
+			   
 //		//   -------------------------------
-		    public String licensedetails(String product_name, String company_name, String key, String validity,String course,String type,String file) {
-		    	
-		    	Iterable<License> licenseIterable = licenseRepository.findAll();
-		    	List<License> licenseList = StreamSupport.stream(licenseIterable.spliterator(), false)
-                        .collect(Collectors.toList());
+		    public String licensedetails(String product_name, String company_name, String storage,String key, String validity,String course,String trainercount,String studentcount,String type,String file,String institution) {
+
+		   Optional< License >licenseList=licenseRepository.findByinstitution(institution);
 		    	if(licenseList.isEmpty())
 		    	{
 		    	License data =new License();
 		        LocalDate currentDate = LocalDate.now();
 		        java.util.Date Datecurrent = java.sql.Date.valueOf(currentDate);
 		        int num = validity.isEmpty()?0:Integer.parseInt(validity);
+		        Long size = (long) (validity.isEmpty()?0:Integer.parseInt(storage));
 		        LocalDate futureDate = currentDate.plusDays(num);
 		        java.util.Date Datefuture = java.sql.Date.valueOf(futureDate);
 		        data.setStart_date(Datecurrent);
 		        data.setEnd_date(Datefuture);
 		        data.setCompany_name(company_name);
+		        data.setStoragesize(size);
 		        data.setKey(key);
 		        data.setProduct_name(product_name);
-		        data.setCourse(course);;
+		        data.setCourse(course);
+		        data.setTrainer(trainercount);
+		        data.setStudents(studentcount);
 		        data.setType(type);
 		        data.setFilename(file);
+		        data.setInstitution(institution);
 		        licenseRepository.save(data);   
 		    	}
 		    	else {
-		    		for (License license : licenseList) {
+		    		License license =licenseList.get();
 		    		if(!(license.getKey().equals(key)))
 		    		{
 		    			
 		    			license.getFilename();
-		    		//System.out.println("file are same  :"+(file.equals(license.getFilename())));
 		    			
 		    			 String filePath = licenceUploadDirectory+license.getFilename();
 		    		        File file1 = new File(filePath);
@@ -607,36 +572,52 @@ public class LicenseController {
 		    		        	logger.info("File does not exist.");
 		    		        }
 		    			
-		    			licenseRepository.deleteAll();
-		    			
-		    			
-		    			
-		    			License data =new License();
 				        LocalDate currentDate = LocalDate.now();
 				        java.util.Date Datecurrent = java.sql.Date.valueOf(currentDate);
 				        int num = validity.isEmpty()?0:Integer.parseInt(validity);
+				        Long size = (long) (validity.isEmpty()?0:Integer.parseInt(storage));
 				        LocalDate futureDate = currentDate.plusDays(num);
 				        java.util.Date Datefuture = java.sql.Date.valueOf(futureDate);
-				        data.setStart_date(Datecurrent);
-				        data.setEnd_date(Datefuture);
-				        data.setCompany_name(company_name);
-				        data.setKey(key);
-				        data.setProduct_name(product_name);
-				        data.setCourse(course);;
-				        data.setType(type);
-				        data.setFilename(file);
-				        licenseRepository.save(data);   
+				        license.setStart_date(Datecurrent);
+				        license.setEnd_date(Datefuture);
+				        license.setCompany_name(company_name);
+				        license.setStoragesize(size);
+				        license.setKey(key);
+				        license.setProduct_name(product_name);
+				        license.setCourse(course);;
+				        license.setType(type);
+				        license.setFilename(file);
+				        license.setTrainer(trainercount);
+				        license.setStudents(studentcount);
+				        license.setInstitution(institution);
+				        licenseRepository.save(license);  
 		    			
 		    			
 		    		}
 		    			
-		    		}
+		    		
 		    		
 		    	}
 		    	
 		    	
 		    	
 		        return null;
+		    }
+		    
+		    
+		    public String saveLicence(MultipartFile File) throws IOException {
+		        String uniqueFileName =File.getOriginalFilename();
+		       
+		        Path uploadPath = Paths.get(licenceUploadDirectory);
+		        if (!Files.exists(uploadPath)) {
+		            Files.createDirectories(uploadPath);
+		        }
+		        String filePath = Paths.get(licenceUploadDirectory).resolve(uniqueFileName).toString();
+
+		        Files.copy(File.getInputStream(), Path.of(filePath), StandardCopyOption.REPLACE_EXISTING);
+
+		        return "modifiedPath";   
+		        
 		    }
 
 }

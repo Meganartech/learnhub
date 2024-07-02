@@ -202,7 +202,7 @@ const CreateCourseTrainer = () => {
                     <h1 style={{ textDecoration: "underline" }}>Setting up a Course</h1>
                     <form onSubmit={handleSubmit}>
                         {/* Form fields */}
-                        <div className='formgroup mt-2' style={{ fontSize: "larger" }}>
+                        <div className='formgroup mt-2'>
                             {/* Course Title */}
                             <div className='inputgrp'>
                                 <label htmlFor='courseName'>Course Title <span className="text-danger">*</span></label>
@@ -210,7 +210,7 @@ const CreateCourseTrainer = () => {
                                 <div>
                                     <input
                                         type="text"
-                                        style={{ width: "400px" }}
+                                       
                                         id='courseName'
                                         name="courseName"
                                         value={formData.courseName}
@@ -234,7 +234,7 @@ const CreateCourseTrainer = () => {
                                     <textarea
                                         type="text"
                                         rows={3}
-                                        style={{ width: "400px" }}
+                                        
                                         id='courseDescription'
                                         name="courseDescription"
                                         value={formData.courseDescription}
@@ -256,7 +256,7 @@ const CreateCourseTrainer = () => {
                                 <div>
                                     <input
                                         type="text"
-                                        style={{ width: "400px" }}
+                                       
                                         id='courseCategory'
                                         name="courseCategory"
                                         onChange={handleChange}
@@ -321,7 +321,7 @@ const CreateCourseTrainer = () => {
                                 <div>
                                     <input
                                         type="number"
-                                        style={{ width: "400px" }}
+                                      
                                         id='Duration'
                                         name="Duration"
                                         value={formData.Duration}
@@ -342,7 +342,7 @@ const CreateCourseTrainer = () => {
                                 <div>
                                     <input
                                         type="number"
-                                        style={{ width: "400px" }}
+                                       
                                         id='Noofseats'
                                         name="Noofseats"
                                         className={`form-control form-control-lg mt-1 ${errors.Noofseats && 'is-invalid'}`}
@@ -363,7 +363,7 @@ const CreateCourseTrainer = () => {
                                 <div>
                                     <input
                                         type="number"
-                                        style={{ width: "400px", marginBottom: "4px" }}
+                                        style={{  marginBottom: "4px" }}
                                         id='courseAmount'
                                         name="courseAmount"
                                         value={formData.courseAmount}

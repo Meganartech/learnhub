@@ -92,6 +92,7 @@ const ViewVideo = () => {
   }, [lessonId, AllLessons]);
 
   const handleOnProgress = (progress) => {
+
     // Check if progress and its buffered and played properties exist
     if (progress && progress.buffered && progress.played) {
         // Calculate buffered amount
@@ -159,8 +160,7 @@ const handleOnSeek = (progress) => {
               // If URL is null or doesn't contain 'youtube.com' or 'youtu.be', consider it as a local video
               setVideoType('local');
               setVideoSource(`${baseUrl}/lessons/getvideoByid/${lessId}/${courseId}/${token}`);
-            
-             
+          
           }
               }
       

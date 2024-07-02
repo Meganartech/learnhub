@@ -417,12 +417,12 @@ public class FrontController {
                
 //-------------------------LicenseController-----------------------
                @GetMapping("/api/v2/GetAllUser")
-       		public ResponseEntity<UserListWithStatus> getAllUser() {
-            	   return licence.getAllUser();
+       		public ResponseEntity<?> getAllUser(  @RequestHeader("Authorization") String token) {
+            	   return licence.getAllUser(token);
                }
            	@GetMapping("/api/v2/count")
-    		public ResponseEntity<Integer> count() {
-           		return licence.count();
+    		public ResponseEntity<Integer> count(@RequestHeader("Authorization") String token) {
+           		return licence.count(token);
            	}
            		
            		@PostMapping("/api/v2/uploadfile")

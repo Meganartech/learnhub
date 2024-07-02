@@ -2,6 +2,8 @@ package com.knowledgeVista.User.Controller;
 import com.knowledgeVista.DownloadManagement.CustomerLeads;
 import com.knowledgeVista.DownloadManagement.Customer_downloads;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.License.Madmin_Licence;
+import com.knowledgeVista.License.mAdminLicenceRepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Repository.*;
@@ -31,6 +33,8 @@ public class MserRegistrationController {
 	private MuserRoleRepository muserrolerepository;
 	@Autowired
 	private Environment env;
+	@Autowired
+	private mAdminLicenceRepo madminrepo;
 	
 
 	public ResponseEntity<?> registerAdmin( String username, String psw, String email, String institutionName, LocalDate dob,String role,
@@ -67,8 +71,12 @@ public class MserRegistrationController {
 	                e.printStackTrace();
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 	            }
-	            muserrepositories.save(user);
-	           
+	          Muser savedadmin=  muserrepositories.save(user);
+	            Madmin_Licence madmin= new Madmin_Licence();
+	            madmin.setAdminId(savedadmin.getUserId());
+	            madmin.setInstitution(institutionName);
+	            madmin.setLicenceType("FREE");
+	            madminrepo.save(madmin);
 	            RestTemplate restTemplate = new RestTemplate();
 
 	            String baseUrl = env.getRequiredProperty("base.url");

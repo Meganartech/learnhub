@@ -9,7 +9,7 @@ const Layout = ({searchQuery,handleSearchChange,setSearchQuery}) => {
   const userRole = sessionStorage.getItem("role");
   const [activeLink, setActiveLink] =  useState(localStorage.getItem('activeLink') ||(userRole==="ADMIN"?"admin/dashboard":"/dashboard/course"));
   return (
-    <div id="page-top" >
+    <div >
             <div id="wrapper">          
                 <SlideBar
                 activeLink={activeLink}

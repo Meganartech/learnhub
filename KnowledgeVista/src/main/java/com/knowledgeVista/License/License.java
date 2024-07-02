@@ -50,10 +50,31 @@ public class License {
     @Column(name="file_name")
     private String filename ;
     
-    @Transient
+	@Column(name="institution", unique=true)
+    private String institution;
+	
+	@Column(name="storagesize")
+    private Long storagesize;
+    
+   
+	@Transient
 	 private MultipartFile LicenseFile;
     
-    
+	 public Long getStoragesize() {
+			return storagesize;
+		}
+
+		public void setStoragesize(Long storagesize) {
+			this.storagesize = storagesize;
+		}
+		
+    public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(String institution) {
+		this.institution = institution;
+	}
 	public long getId() {
 		return id;
 	}

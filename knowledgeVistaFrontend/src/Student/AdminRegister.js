@@ -270,12 +270,13 @@ const AdminRegister = () => {
 
   return (
    
-    <div className='contentbackground' style={{height:"100vh"}}>
-       <div className='contentinner' style={{height:"88vh"}}>
+    <div className='contentbackground'style={{height:"100vh"}} >
+       <div className='contentinner' >
       <div className='innerFrame'>
       
       <h2  style={{textDecoration:"underline"}}>Join with us</h2>
         <div className='mainform'>
+          
           <div className='profile-picture'>
             <div className='image-group'>
             {formData.base64Image ? (
@@ -497,9 +498,9 @@ const AdminRegister = () => {
             </div>
            </div>
        
-        </div>
+        
       </div>
-      
+      </div>
         <div className='btngrp'>
         <button className={`btn btn-primary `} onClick={handleSubmit}>Register</button>
 

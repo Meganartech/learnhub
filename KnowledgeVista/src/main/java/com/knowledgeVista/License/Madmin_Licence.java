@@ -1,4 +1,4 @@
-package com.knowledgeVista.User;
+package com.knowledgeVista.License;
 
 import java.time.LocalDate;
 
@@ -15,11 +15,13 @@ import lombok.Setter;
 @Entity
 @Table
 @Getter@Setter@NoArgsConstructor
-public class Madmin {
+public class Madmin_Licence {
 	 @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long madminId;
-	    private Long userId;
+	    private Long AdminId;
+	    private String institution;
+//	    private String admincode;
 	    private String licenceType;
 	    private LocalDate updatedDate;
 

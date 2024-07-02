@@ -454,25 +454,26 @@ const handlenextclick =(e)=>{
                         </div>
 
                         {/* Submit and Cancel Buttons */}
-                        <div className='cornerbtn'>
-                           
-                            <button
-                                className='btn btn-primary'
-                                type="button"
-                                onClick={() => {
-                                   navigate(-1) 
-                                }}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className='btn btn-primary'
-                                onClick={handlenextclick}
-                            >
-                                next
-                            </button>
-                        </div>
+                       
                     </form>
+                    <div className='cornerbtn'>
+                           
+                           <button
+                               className='btn btn-primary'
+                               type="button"
+                               onClick={() => {
+                                  navigate(-1) 
+                               }}
+                           >
+                               Cancel
+                           </button>
+                           <button
+                               className='btn btn-primary'
+                               onClick={handlenextclick}
+                           >
+                               next
+                           </button>
+                       </div>
                 </div>)}
             </div>
         </div>

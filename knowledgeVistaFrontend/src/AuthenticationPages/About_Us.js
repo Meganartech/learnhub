@@ -13,13 +13,18 @@ const About_Us = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [lastModifiedDate, setLastModifiedDate] = useState(null);
 
+  const token=sessionStorage.getItem("token")
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`);
+        const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`,{
+          headers:{
+            "Authorization":token,
+            }
+          });
   
         if (response.status !== 200) {
-          throw new Error('Network response was not ok');
+          console.error('Error fetching data:');
         }
   
         const data = response.data;

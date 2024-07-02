@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import undraw_profile from "../images/profile.png";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import "./SlideBar"
 import "../css/Component.css"
 import baseUrl from "../api/utils";
 import axios from "axios";
 import bell from "../images/bell.png"
 import Notification from "./Notification";
+import SlideBar from "./SlideBar";
 
 const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) => {
   const [data,setdata]=useState({
@@ -127,9 +129,11 @@ const handlemarkallasRead =async (notificationIds)=>{
 
   return (
     <nav className="navbar .navbar-expand  navcolor topbar static-top navgrid ">
-      
+  
     
       <div className="gridnav">
+       
+
     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
       <div className="searchbar">
     <i className="fa fa-search pt-1 pl-1 " aria-hidden="true"></i>

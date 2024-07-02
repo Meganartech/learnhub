@@ -25,6 +25,7 @@ public class certificate {
 	 @Lob
 	 @Column(length=1000000)
 	 private byte[] AuthorizedSign;
+	 
 	 private String institution;
 //	 @Lob
 //	 @Column(length=1000000)
