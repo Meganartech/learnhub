@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import undraw_profile from "../images/profile.png";
 import Swal from "sweetalert2";
+import logo from "../images/logo.png"
 import withReactContent from "sweetalert2-react-content";
 import "./SlideBar"
 import "../css/Component.css"
@@ -8,9 +9,8 @@ import baseUrl from "../api/utils";
 import axios from "axios";
 import bell from "../images/bell.png"
 import Notification from "./Notification";
-import SlideBar from "./SlideBar";
 
-const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink}) => {
+const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,handleSidebarToggle,showSidebar}) => {
   const [data,setdata]=useState({
     name:"",
     profileImage:null
@@ -132,7 +132,15 @@ const handlemarkallasRead =async (notificationIds)=>{
   
     
       <div className="gridnav">
-       
+      {/* <a href="#" className="sidebar-brand">
+        <div className='logoicon'>
+          <img src={logo} alt='logo'/> 
+        <div className="sidebar-brand-text  ">Learn HUB</div>
+        </div>
+        
+      </a> */}
+      
+      <div className="barhide"  onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
 
     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
       <div className="searchbar">
@@ -154,6 +162,7 @@ const handlemarkallasRead =async (notificationIds)=>{
             onClick={() => setSearchQuery('')}></i>)}
     </div>
     )}
+   
 <div className="navbar-nav ml-auto " style={{gridColumn:"2"}}>
   <div className="nav-item dropdown no-arrow">
     <a
@@ -230,6 +239,7 @@ const handlemarkallasRead =async (notificationIds)=>{
           </li>
           </ul>
           </div>
+          <div></div>
           <div></div>
           <div></div>
           {isopen && <div >

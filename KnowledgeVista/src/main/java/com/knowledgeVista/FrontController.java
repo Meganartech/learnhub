@@ -39,6 +39,7 @@ import com.knowledgeVista.Payments.PaymentListController;
 import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.SettingsController;
 import com.knowledgeVista.Settings.Feedback;
+import com.knowledgeVista.SysAdminPackage.SysadminController;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Controller.AddUsers;
 import com.knowledgeVista.User.Controller.AssignCourse;
@@ -110,6 +111,9 @@ public class FrontController {
 	@Autowired
 	private NotificationController noticontroller;
 
+	
+	@Autowired
+	private SysadminController sysadmin;
 //----------------------------COURSECONTROLLER----------------------------
     
 	 @GetMapping("/course/countcourse")
@@ -426,7 +430,7 @@ public class FrontController {
            	}
            		
            		@PostMapping("/api/v2/uploadfile")
-    		    public ResponseEntity<License> upload(@RequestParam("audioFile") MultipartFile File,@RequestParam("lastModifiedDate") String lastModifiedDate,@RequestHeader("Authorization") String token){
+    		    public ResponseEntity<?> upload(@RequestParam("audioFile") MultipartFile File,@RequestParam("lastModifiedDate") String lastModifiedDate,@RequestHeader("Authorization") String token){
            			return licence.upload(File,lastModifiedDate,token);
            		}
            	
@@ -504,8 +508,9 @@ public class FrontController {
       	  @DeleteMapping("/admin/deactivate/trainer")
       	  public ResponseEntity<?> DeactivateTrainer(
       	          @RequestParam("email") String email,
+      	        @RequestParam("reason") String reason,
       	          @RequestHeader("Authorization") String token) {
-      		  return adduser.DeactivateTrainer(email, token);
+      		  return adduser.DeactivateTrainer(reason,email, token);
       	  }
       	  
       	  @DeleteMapping("/admin/Activate/trainer")
@@ -519,8 +524,9 @@ public class FrontController {
     	  @DeleteMapping("/admin/deactivate/Student")	  
     	  public ResponseEntity<?> DeactivateStudent(
     	          @RequestParam("email") String email,
+    	          @RequestParam("reason") String reason,
     	          @RequestHeader("Authorization") String token) {
-    		  return adduser.DeactivateStudent(email, token);
+    		  return adduser.DeactivateStudent(reason,email, token);
     	  }
     	  
     	  @DeleteMapping("/admin/Activate/Student")	  
@@ -759,6 +765,32 @@ public class FrontController {
                @GetMapping("/clearAll")
                public ResponseEntity<?>ClearAll(@RequestHeader("Authorization") String token){
             	   return noticontroller.ClearAll(token);
+               }
+               
+               
+ //------------------------------------------SYSADMIN CONTROl------------------------------              
+               
+               @GetMapping("/ViewAll/Admins")
+               public ResponseEntity<?>ViewAllAdmins(@RequestHeader("Authorization") String token){
+            	   return sysadmin.viewAdmins(token);
+               }
+               @GetMapping("/ViewAll/Trainers")
+               public ResponseEntity<?>ViewAllTrainers(@RequestHeader("Authorization") String token){
+            	   return sysadmin.viewTrainers(token);
+               }
+               @GetMapping("/ViewAll/Students")
+               public ResponseEntity<?>ViewAllStudents(@RequestHeader("Authorization") String token){
+            	   return sysadmin.viewStudents(token);
+               }
+               @DeleteMapping("/activate/admin")
+               public ResponseEntity<?>ActiveteAdmin(@RequestParam("email") String email, 
+            		   @RequestHeader("Authorization") String token){
+            	   return sysadmin.activateAdmin(email, token);
+               }
+               @DeleteMapping("/deactivate/admin")
+               public ResponseEntity<?>DeActiveteAdmin(@RequestParam("email") String email,
+            		   @RequestParam("reason") String reason, @RequestHeader("Authorization") String token){
+            	   return sysadmin.DeactivateAdmin(reason,email, token);
                }
 }
 

@@ -179,11 +179,12 @@ const[initialsave,setinitialsave]=useState(false);
   };
 
 
-  const getsettings=( <div className="contentinner">
-  <div className='innerFrame p-5'>
-    <div className='mainform' style={{ gridTemplateColumns:"none"}}>
-      <div className='formgroup'>
-        <h2>Razorpay Settings</h2>
+  const getsettings=( 
+  <div className="contentinner">
+  <div className='innerFrameforset '>
+  <h2>Razorpay Settings</h2>
+    <div >
+      <div className='formgroup pt-4' style={{height:'400px '}}>
         <div style={{ paddingLeft:"5rem", paddingRight:"10rem"}}>
           <div className='inputgrp'>
             <label htmlFor='Razorpay_Key'>Razorpay Key <span className="text-danger">*</span></label>
@@ -241,10 +242,11 @@ const[initialsave,setinitialsave]=useState(false);
 
 
 const oldSettings =(<div className="contentinner">
-<div className='innerFrame p-5'>
-  <div className='mainform' style={{ gridTemplateColumns:"none"}}>
+<div className='innerFrameforset '>
+<h2>Razorpay Settings</h2>
+  <div >
     <div className='formgroup'>
-      <h2>Razorpay Settings</h2>
+   
       <div style={{ paddingLeft:"5rem", paddingRight:"10rem"}}>
         <div className='inputgrp'>
           <label htmlFor='Razorpay_Key'>Razorpay Key </label>

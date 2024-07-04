@@ -96,6 +96,10 @@ public class videolessonController {
 				    	 Muser user=opuser.get();
 				    	 username=user.getUsername();
 				    	 institution=user.getInstitutionName();
+				    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+				   	    	if(!adminIsactive) {
+				   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				   	    	}
 				     }else {
 			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 				     }
@@ -186,6 +190,10 @@ public class videolessonController {
 		    	 Muser user=opuser.get();
 		    	 username=user.getUsername();
 		    	 institution=user.getInstitutionName();
+		    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+		   	    	if(!adminIsactive) {
+		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		   	    	}
 		     }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }
@@ -294,6 +302,10 @@ public class videolessonController {
 		            
 		            Muser user = opuser.get();
 		            String institution=user.getInstitutionName();
+		            boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+		   	    	if(!adminIsactive) {
+		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		   	    	}
 		            if ("USER".equals(role)) {
 		                return handleUserRole(institution,lessId, courseId, user,request);
 		            } else if ("ADMIN".equals(role)) {
@@ -526,6 +538,10 @@ public class videolessonController {
 				     if(opuser.isPresent()) {
 				    	 Muser user=opuser.get();
 				    	 institution=user.getInstitutionName();
+				    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+				   	    	if(!adminIsactive) {
+				   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				   	    	}
 				     }else {
 			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 				     }
@@ -573,6 +589,10 @@ public class videolessonController {
 				     if(opuser.isPresent()) {
 				    	 Muser user=opuser.get();
 				    	 institution=user.getInstitutionName();
+				    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+				   	    	if(!adminIsactive) {
+				   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				   	    	}
 				     }else {
 			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 				     }

@@ -79,6 +79,10 @@ public class Testcontroller {
 				     if(opuser.isPresent()) {
 				    	 Muser user=opuser.get();
 				    	 institution=user.getInstitutionName();
+				    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+				   	    	if(!adminIsactive) {
+				   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				   	    	}
 				    	 username=user.getUsername();
 				     }else {
 			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -155,6 +159,10 @@ public class Testcontroller {
 				     if(opuser.isPresent()) {
 				    	 Muser user=opuser.get();
 				    	 institution=user.getInstitutionName();
+				    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+				   	    	if(!adminIsactive) {
+				   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				   	    	}
 				     }else {
 				    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 				     }
@@ -239,6 +247,10 @@ public class Testcontroller {
 			     if(opuser.isPresent()) {
 			    	 Muser user=opuser.get();
 			    	 institution=user.getInstitutionName();
+			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+			   	    	if(!adminIsactive) {
+			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			   	    	}
 			     }else {
 			    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -345,6 +357,10 @@ public class Testcontroller {
 			     if(opuser.isPresent()) {
 			    	 Muser user=opuser.get();
 			    	 institution=user.getInstitutionName();
+			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+			   	    	if(!adminIsactive) {
+			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			   	    	}
 			     }else {
 			    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -405,6 +421,10 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
 		     if(opuser.isPresent()) {
 		    	 Muser user=opuser.get();
 		    	 institution=user.getInstitutionName();
+		    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+		   	    	if(!adminIsactive) {
+		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		   	    	}
 		     }else {
 		    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }

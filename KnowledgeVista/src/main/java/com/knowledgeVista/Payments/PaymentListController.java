@@ -43,6 +43,10 @@ public class PaymentListController {
 		    	Optional< Muser> opuser = muserRepository.findByEmail(email);
 		    			if(opuser.isPresent()) {
 		    				Muser user=opuser.get();
+		    				 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", user.getInstitutionName());
+		 		   	    	if(!adminIsactive) {
+		 		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		 		   	    	}
 		    				Long userId=user.getUserId();
 		              	   List<Orderuser>orderuser =ordertablerepo.findAllByUserId(userId);
 		              	   if(orderuser.size()>0) {
@@ -79,6 +83,10 @@ public class PaymentListController {
 	   	     if(opreq.isPresent()) {
 	   	    	 Muser requser=opreq.get();
 	   	    	institution=requser.getInstitutionName();
+	   	     boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+	   	    	if(!adminIsactive) {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	   	    	}
 	   	     }else {
 	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
 	   	     }
@@ -128,6 +136,10 @@ public ResponseEntity<?> viewTransactionHistory(String token) {
   	     if(opreq.isPresent()) {
   	    	 Muser requser=opreq.get();
   	    	institution=requser.getInstitutionName();
+  	    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+	   	    	if(!adminIsactive) {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	   	    	}
   	     }else {
   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
   	     }
@@ -168,6 +180,10 @@ public ResponseEntity<?>ViewMypaymentHistrytrainer(String token){
 	    			if(opuser.isPresent()) {
 	    				Muser user=opuser.get();
 	    				String institutionName=user.getInstitutionName();
+	    				 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institutionName);
+	 		   	    	if(!adminIsactive) {
+	 		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	 		   	    	}
 	    				List<CourseDetail> courses =user.getAllotedCourses();
 	    				   
 		              	 List<Object> courseOrderMap = new ArrayList<>();

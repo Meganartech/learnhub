@@ -49,55 +49,81 @@ const ViewTrainerList = () => {
         fetchData();
       }, []);
 
-      const handleDeactivate =async (userId,username,email)=>{
+      const handleDeactivate = async (userId, username, email) => {
         const formData = new FormData();
         formData.append('email', email);
+      
         MySwal.fire({
           title: "De Activate ?",
-          text: `Are you sure you want to DeActivate trainer ${username}`,
+          text: `Are you sure you want to DeActivate Trainer ${username}`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#d33",
           confirmButtonText: "De Activate",
           cancelButtonText: "Cancel",
+          input: 'text',
+          inputAttributes: {
+            autocapitalize: 'off',
+            placeholder: 'Enter reason for deactivation (required)',
+            required: true
+          },
+          preConfirm: (reason) => { // Handle user input before confirmation
+            return new Promise((resolve, reject) => {
+              if (reason === "") {
+                Swal.showInputError('Please enter a reason for deactivation.');
+                reject(); // Reject confirmation if reason is empty
+              } else {
+                formData.append('reason', reason);
+                resolve(); // Allow confirmation if reason is provided
+              }
+            });
+          }
         }).then(async (result) => {
           if (result.isConfirmed) {
             try {
               if (userId != null) {
-                const response = await axios.delete(`${baseUrl}/admin/deactivate/trainer`,{
-                 data:formData,
+                const response = await axios.delete(`${baseUrl}/admin/deactivate/trainer`, {
+                  data: formData,
                   headers: {
                     'Authorization': token
                   }
                 });
-                if (response.status===200) {
+      
+                if (response.status === 200) {
                   MySwal.fire({
                     title: "De Activated",
                     text: `Trainer ${username} De Activated successfully`,
                     icon: "success",
-                    confirmButtonText: "OK",
-                }).then(() => {
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonButtonText: "OK"
+                  }).then(() => {
                     window.location.reload();
-                });
+                  });
+                } else {
+                  // Handle other backend errors (e.g., 400 Bad Request)
+                  MySwal.fire('Error', `Deactivation failed with status ${response.status}`, 'error');
+                }
+              } else {
+                // Handle case where userId is null (if applicable)
+                MySwal.fire('Error', 'Invalid user ID', 'error');
               }
-            }
-              
             } catch (error) {
-              if(error.response && error.response.status===404){
+              if (error.response && error.response.status === 404) {
                 MySwal.fire({
                   icon: 'error',
                   title: '404',
-                  text: 'Trainer not found'
-              });
-              }else{
-              MySwal.fire({
-                icon: 'error',
-                title: 'ERROR',
-                text: 'Error De Activated Trainer'
-            });
+                  text: 'Traier not found'
+                });
+              } else {
+                MySwal.fire({
+                  icon: 'error',
+                  title: 'ERROR',
+                  text: 'Error Deactivating trainer'
+                });
+                console.error('Error during deactivation:', error); // Log detailed error for debugging
+              }
             }
           }
-          } 
         });
       };
 

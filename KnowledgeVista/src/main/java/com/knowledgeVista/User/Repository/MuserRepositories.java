@@ -38,6 +38,9 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 
 	    @Query("SELECT COUNT(u) FROM Muser u WHERE u.role.roleName = :rolename")
 	    Long countByRoleName(@Param("rolename") String roleName);
+	    
+	    @Query("SELECT isActive FROM Muser u WHERE u.role.roleName = :rolename  AND u.institutionName = :institutionname")
+	    Boolean getactiveResultByInstitutionName(@Param("rolename") String roleName, @Param("institutionname") String institutionName);
 }
 
 

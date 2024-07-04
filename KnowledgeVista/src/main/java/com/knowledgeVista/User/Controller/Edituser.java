@@ -254,15 +254,19 @@ public class Edituser {
 			Muser user=opuser.get();
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("name", user.getUsername());
-            // Add profile image if needed
+           if(user.getProfile()!=null) {
             byte[] images = ImageUtils.decompressImage(user.getProfile());
+           
             responseBody.put("profileImage", images);
+           }else {
+        	   responseBody.put("profileImage", null);
+           }
 
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseBody);
 			
 		}
 		return ResponseEntity.notFound().build();
 	 }
-
+//need to work in inactive institution
 	
 }

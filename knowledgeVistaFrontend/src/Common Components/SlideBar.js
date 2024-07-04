@@ -68,7 +68,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
         navigate(link);
     } 
   } 
-  else if(userRole==="USER")
+  else if(userRole==="USER" || userRole==="SYSADMIN")
   {
     handleSetActiveLink(link);
     navigate(link);
@@ -129,7 +129,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
     </a>
   </li>
   <div  style={{width:"100%"}} id="collapseTwo" 
-   className={`collapse ml-3 newnav ${activeLink.includes("/course")  ? "show" : ""}`} 
+   className={`collapse  newnav ${activeLink.includes("/course")  ? "show" : ""}`} 
    aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 
     <div style={{width:"100%"}} className="text-light collapse-inner">
@@ -140,7 +140,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
           handleClick("/course/admin/edit");
           setActiveLink("/course/admin/edit");
         }}>
-        <i className= "p-1 fa-solid fa-edit text-light"></i>
+        <i className= " fa-solid fa-edit text-light pl-4"></i>
         <span>Edit Courses</span>
       </a>
 
@@ -150,7 +150,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
           handleClick("/course/addcourse");
           setActiveLink("/course/addcourse");
         }} >
-        <i className= "pl-1 fa-solid fa-plus text-light"></i>
+        <i className= " fa-solid fa-plus text-light pl-4"></i>
         <span> Create course</span>
       </a>
 
@@ -160,7 +160,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
           handleClick("/dashboard/course");
           setActiveLink("/dashboard/course");
         }}>
-        <i className=" pl-1 fa-solid fa-eye text-light"></i>
+        <i className="  fa-solid fa-eye text-light pl-4"></i>
         <span> View Course</span>
       </a>
     </div>
@@ -314,7 +314,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
            </a>
          </li>
          <div  style={{width:"100%"}} id="collapsepay" 
-          className={`collapse ml-3 newnav ${activeLink.includes("/pay")  ? "show" : ""}`} 
+          className={`collapse  newnav ${activeLink.includes("/pay")  ? "show" : ""}`} 
           aria-labelledby="headingTwo" data-parent="#accordionSidebar">
        
            <div style={{width:"100%"}} className="text-light collapse-inner">
@@ -325,7 +325,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
                  handleClick("/settings/payment");
                  setActiveLink("/settings/payment");
                }}>
-               <i className= "p-1 fa-solid fa-gear text-light"></i>
+               <i className= " pr-1 fa-solid fa-gear text-light pl-4"></i>
                <span>Payment Settings</span>
              </a>
        
@@ -335,7 +335,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
                  handleClick("/payment/transactionHitory");
                  setActiveLink("/payment/transactionHitory");
                }} >
-               <i className= "pl-1 fa-solid fa-clock-rotate-left text-light"></i>
+               <i className= " fa-solid fa-clock-rotate-left text-light pl-4"></i>
                <span> Transaction History</span>
              </a>
       
@@ -381,7 +381,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
     </a>
   </li>
   <div  style={{width:"100%"}} id="collapseTw" 
-   className={`collapse ml-3 newnav ${activeLink.includes("Stu")  ? "show" : ""}`} 
+   className={`collapse  newnav ${activeLink.includes("Stu")  ? "show" : ""}`} 
    aria-labelledby="headingTw" data-parent="#accordionSidebar">
 
     <div style={{width:"100%"}} className="text-light collapse-inner">
@@ -393,7 +393,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
           handleClick("/view/Students");
           setActiveLink("/view/Students");
         }} >
-        <i className= "pl-1 fa-solid fa-users text-light"></i>
+        <i className= " fa-solid fa-users text-light pl-4"></i>
         <span> All Students</span>
       </a>
       <a className={`collapse-item text-light nav-link ${activeLink === "/myStudents" ? "SubActiveLink " : ""}`}
@@ -402,14 +402,50 @@ const SlideBar = ({activeLink,setActiveLink}) => {
           handleClick("/myStudents");
           setActiveLink("/myStudents");
         }}>
-        <i className=" pl-1 fa-solid fa-users-between-lines text-light"></i>
+        <i className="  fa-solid fa-users-between-lines text-light pl-4"></i>
         <span> My Students</span>
       </a>
     </div>
   </div>
 </div> 
         )} 
-
+{/* for SysAdmin */}
+{userRole === "SYSADMIN" && (
+      <li className="nav-item mt-2">
+        <a
+          className={activeLink === "/viewAll/Admins" ? "ActiveLink nav-link" : "nav-link text-muted"}
+          href="#"
+          onClick={() => handleClick("/viewAll/Admins")}
+        >
+          <i className={activeLink === "/viewAll/Admins" ? "fa-solid fa-user-tie text-light" : "fa-solid fa-user-tie text-muted"}></i>
+          <span>Admins</span>
+        </a>
+      </li>
+      )}
+      {userRole === "SYSADMIN" && (
+      <li className="nav-item mt-2">
+        <a
+          className={activeLink === "/viewAll/Trainers" ? "ActiveLink nav-link" : "nav-link text-muted"}
+          href="#"
+          onClick={() => handleClick("/viewAll/Trainers")}
+        >
+          <i className={activeLink === "/viewAll/Trainers" ? "fa-solid fa-chalkboard-user text-light" : "fa-solid fa-chalkboard-user text-muted"}></i>
+          <span>Trainers</span>
+        </a>
+      </li>
+      )}
+      {userRole === "SYSADMIN" && (
+      <li className="nav-item mt-2">
+        <a
+          className={activeLink === "/viewAll/Students" ? "ActiveLink nav-link" : "nav-link text-muted"}
+          href="#"
+          onClick={() => handleClick("/viewAll/Students")}
+        >
+          <i className={activeLink === "/viewAll/Students" ? "fa-solid fa-users text-light" : "fa-solid fa-users text-muted"}></i>
+          <span>Students</span>
+        </a>
+      </li>
+      )}
 
       <hr className="sidebar-divider d-none d-md-block" />
       

@@ -149,7 +149,7 @@ useEffect(() => {
                   </div>
                   
                   <h5 className='font-weight-bold mt-5 ml-5'>Popular Courses</h5>
-                  <div className='counts ' style={{marginTop:"0px"}}>
+                  <div className='counts mb-4 ' style={{marginTop:"0px"}}>
                     {Courses.map((course, index) => (
                           <div key={index} className='countchild' style={{padding:"5px"}}>
                             <img

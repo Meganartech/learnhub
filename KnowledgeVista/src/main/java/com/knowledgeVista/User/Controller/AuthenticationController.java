@@ -64,36 +64,58 @@ public class AuthenticationController {
 	    public ResponseEntity<?> login( Map<String, String> loginRequest) {
 	        String username = loginRequest.get("username");
 	        String password = loginRequest.get("password");
-
 	        Optional<Muser> userOptional = muserRepositories.findByEmail(username);
-       
 	        if (userOptional.isPresent()) {
 	            Muser user = userOptional.get();
-	            
+	          String institution= user.getInstitutionName();
 	            if (user.getPsw().equals(password)) {
 	            	if(user.getIsActive().equals(true)) {
-	                // Correct username and password
-	                // Generate JWT token
-	            	String Role=user.getRole().getRoleName();
-	                String jwtToken = jwtUtil.generateToken(username,Role);
-
-	                // Prepare response body as JSON
-	                Map<String, Object> responseBody = new HashMap<>();
-	                responseBody.put("token", jwtToken);
-	                responseBody.put("message", "Login successful");
-	                responseBody.put("role", user.getRole().getRoleName());
-	                responseBody.put("email", user.getEmail());
-	                responseBody.put("userid",user.getUserId());
-
-	                // Return response with JSON body
-	                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseBody);
+	            		if(user.getRole().getRoleName().equals("USER")||user.getRole().getRoleName().equals("TRAINER")) {
+			                Boolean isActiveAdmin=muserRepositories.getactiveResultByInstitutionName("ADMIN", institution);            
+			                if(isActiveAdmin.equals(true)) {
+				            	String Role=user.getRole().getRoleName();
+				                String jwtToken = jwtUtil.generateToken(username,Role);
+			
+				                // Prepare response body as JSON
+				                Map<String, Object> responseBody = new HashMap<>();
+				                responseBody.put("token", jwtToken);
+				                responseBody.put("message", "Login successful");
+				                responseBody.put("role", user.getRole().getRoleName());
+				                responseBody.put("email", user.getEmail());
+				                responseBody.put("userid",user.getUserId());
+			
+				                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseBody);
+				                
+			                }else {
+	                	  Map<String, Object> responseBody = new HashMap<>();
+	                	  responseBody.put("message", "In Active");
+	                	  responseBody.put("Description","Your Institution was In Active");
+	                	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+	                }
+	            		}else {
+	            			String Role=user.getRole().getRoleName();
+			                String jwtToken = jwtUtil.generateToken(username,Role);
+		
+			                // Prepare response body as JSON
+			                Map<String, Object> responseBody = new HashMap<>();
+			                responseBody.put("token", jwtToken);
+			                responseBody.put("message", "Login successful");
+			                responseBody.put("role", user.getRole().getRoleName());
+			                responseBody.put("email", user.getEmail());
+			                responseBody.put("userid",user.getUserId());
+		
+			                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseBody);
+	            		}
 	            	}else {
-
-		                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"InActive user\"}");
+	            		 Map<String, Object> responseBody = new HashMap<>();
+	                	  responseBody.put("message", "In Active");
+	                	  responseBody.put("Description",user.getInactiveDescription());
+	                	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
 	            	}
 	            } else {
-	                // Incorrect password
-	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Incorrect password\"}");
+	           	 Map<String, Object> responseBody = new HashMap<>();
+           	  responseBody.put("message", "Incorrect password");
+           	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
 	            }
 	        } else {
 	            // User with the provided username doesn't exist

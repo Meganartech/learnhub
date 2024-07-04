@@ -112,8 +112,8 @@ const About_Us = () => {
 
 
   return (
-    <div className="contentbackground">
-      <div className="contentinner" >
+    <div className="contentbackground" style={{height:"90vh"}}>
+      <div className="contentinner"  >
 
         <div className='innerFrame ' style={{ gridTemplateColumns: "none", gridTemplateRows: "none" }}>
           <div className='mainform' style={{ gridTemplateColumns: "none", gridTemplateRows: "none" }}>

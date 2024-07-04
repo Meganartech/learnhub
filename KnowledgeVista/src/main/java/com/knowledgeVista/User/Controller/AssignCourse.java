@@ -52,6 +52,11 @@ public class AssignCourse {
 	     if(opuser.isPresent()) {
 	    	 Muser userad=opuser.get();
 	    	 username=userad.getUsername();
+	    	 String intitution=userad.getInstitutionName();
+	    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", intitution);
+	   	    	if(!adminIsactive) {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	   	    	}
 	     }else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	     }
@@ -190,6 +195,11 @@ public class AssignCourse {
 	     if(opuser.isPresent()) {
 	    	 Muser userad=opuser.get();
 	    	 username=userad.getUsername();
+	    	 String institution=userad.getInstitutionName();
+	    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+	   	    	if(!adminIsactive) {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	   	    	}
 	     }else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	     }
@@ -282,7 +292,11 @@ public class AssignCourse {
 	    Optional<Muser> optionalUser = muserRepository.findByEmail(email);
 	    if (optionalUser.isPresent()) {
 	        Muser user = optionalUser.get();
-	        
+	        String institution=user.getInstitutionName();
+	        boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+   	    	if(!adminIsactive) {
+   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+   	    	}
 	        List<CourseDetail> courses = user.getCourses();
 	        
 	        // Set courseLessons to null for each course
@@ -317,7 +331,11 @@ public class AssignCourse {
 	    Optional<Muser> optionalUser = muserRepository.findByEmail(email);
 	    if (optionalUser.isPresent()) {
 	        Muser user = optionalUser.get();
-	        
+	        String institution=user.getInstitutionName();
+	        boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+   	    	if(!adminIsactive) {
+   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+   	    	}
 	        List<CourseDetail> courses = user.getAllotedCourses();
 	        
 	        // Set courseLessons to null for each course

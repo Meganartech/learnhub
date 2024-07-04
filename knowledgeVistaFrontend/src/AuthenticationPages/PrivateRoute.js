@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
-const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,onlyuser, onlytrainer,children ,licence}) => {
+const PrivateRoute = ({sysadmin, authenticationRequired, authorizationRequired,onlyadmin,onlyuser, onlytrainer,children ,licence}) => {
     
   const token=sessionStorage.getItem("token")
   const [isvalid, setIsvalid] = useState();
@@ -47,7 +47,9 @@ const PrivateRoute = ({ authenticationRequired, authorizationRequired,onlyadmin,
             
     return <Navigate to="/unauthorized" />;
     }   
-    
+    if(sysadmin && (userRole ==="TRAINER" || userRole==="USER"|| userRole==="ADMIN")){
+      return <Navigate to="/unauthorized" />;
+      } 
 
     if(onlytrainer && (userRole ==="ADMIN" || userRole==="USER") ){
          

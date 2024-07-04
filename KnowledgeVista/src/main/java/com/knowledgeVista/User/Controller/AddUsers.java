@@ -67,6 +67,10 @@ public class AddUsers {
 	                  Muser trainer = new Muser();
 	                  Optional<Muser>addingadmin=muserrepositories.findByEmail(adminemail);
 	                  if(addingadmin.isPresent()) {
+	                	  boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", addingadmin.get().getInstitutionName());
+	      	   	    	if(!adminIsactive) {
+	      	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	      	   	    	}
 	                    trainer.setInstitutionName(addingadmin.get().getInstitutionName());
 	                  }else {
 
@@ -132,6 +136,10 @@ public class AddUsers {
             	  usernameofadding=addinguser.getUsername();
             	  emailofadding=addinguser.getEmail();
             	   instituiton=addinguser.getInstitutionName();
+            	   boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", instituiton);
+     	   	    	if(!adminIsactive) {
+     	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+     	   	    	}
               }else {
                  System.out.println("usernot present");
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -195,7 +203,7 @@ public class AddUsers {
 	  }
 
 	  
-	  public ResponseEntity<?> DeactivateTrainer( String email,String token) {
+	  public ResponseEntity<?> DeactivateTrainer(String reason,String email,String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -206,12 +214,13 @@ public class AddUsers {
 	          String role = jwtUtil.getRoleFromToken(token);
 
 	          // Perform authentication based on role
-	          if ("ADMIN".equals(role)) {
+	          if ("ADMIN".equals(role) || "SYSADMIN".equals(role)) {
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	              if (existingUser.isPresent()) {
 	                  Muser user = existingUser.get();
 	                  if ("TRAINER".equals(user.getRole().getRoleName())) {
 	                     user.setIsActive(false);
+	                     user.setInactiveDescription(reason);
 	                     muserrepositories.save(user);
 	                      return ResponseEntity.ok().body("{\"message\": \"DeActivated Successfully\"}");
 	                  } 
@@ -235,19 +244,19 @@ public class AddUsers {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
-	              // If the token is not valid, return unauthorized status
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	          }
 
 	          String role = jwtUtil.getRoleFromToken(token);
 
 	          // Perform authentication based on role
-	          if ("ADMIN".equals(role)) {
+	          if ("ADMIN".equals(role)||"SYSADMIN".equals(role)) {
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	              if (existingUser.isPresent()) {
 	                  Muser user = existingUser.get();
 	                  if ("TRAINER".equals(user.getRole().getRoleName())) {
 	                     user.setIsActive(true);
+	                     user.setInactiveDescription("");
 	                     muserrepositories.save(user);
 	                      return ResponseEntity.ok().body("{\"message\": \"DeActivated Successfully\"}");
 	                  } 
@@ -257,6 +266,7 @@ public class AddUsers {
 	                  return ResponseEntity.notFound().build();
 	              }
 	          } else {
+	        	  
 	              // Return unauthorized status if the role is neither ADMIN nor TRAINER
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	          }
@@ -269,7 +279,7 @@ public class AddUsers {
 	  }
 	  
 	   
-	  public ResponseEntity<?> DeactivateStudent(String email, String token) {
+	  public ResponseEntity<?> DeactivateStudent(String reason,String email, String token) {
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -280,12 +290,13 @@ public class AddUsers {
 	          String role = jwtUtil.getRoleFromToken(token);
 
 	          // Perform authentication based on role
-	          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+	          if ("ADMIN".equals(role) || "TRAINER".equals(role) ||"SYSADMIN".equals(role)) {
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	              if (existingUser.isPresent()) {
 	                  Muser user = existingUser.get();
 	                  if ("USER".equals(user.getRole().getRoleName())) {
 	                     user.setIsActive(false);
+	                     user.setInactiveDescription(reason);
 	                     muserrepositories.save(user);
 	                      return ResponseEntity.ok().body("{\"message\": \"Deactivated Successfully\"}");
 	                  } 
@@ -321,12 +332,13 @@ public class AddUsers {
 	          String role = jwtUtil.getRoleFromToken(token);
 
 	          // Perform authentication based on role
-	          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+	          if ("ADMIN".equals(role) || "TRAINER".equals(role) || "SYSADMIN".equals(role)) {
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	              if (existingUser.isPresent()) {
 	                  Muser user = existingUser.get();
 	                  if ("USER".equals(user.getRole().getRoleName())) {
 	                     user.setIsActive(true);
+	                     user.setInactiveDescription("");
 	                     muserrepositories.save(user);
 	                      return ResponseEntity.ok().body("{\"message\": \"Deactivated Successfully\"}");
 	                  } 

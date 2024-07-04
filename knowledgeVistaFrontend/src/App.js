@@ -54,6 +54,9 @@ import TransactionHistoryTrainer from "./Trainer/TransactionHistoryTrainer.js";
 import Mystudents from "./Trainer/Mystudents.js";
 import AdminRegister from "./Student/AdminRegister.js";
 import LicenceExpired from "./AuthenticationPages/LicenceExpired.js";
+import ViewAdmin from "./SysAdmin/ViewAdmin.js";
+import ViewTrainers from "./SysAdmin/ViewTrainers.js";
+import ViewStudents from "./SysAdmin/ViewStudents.js";
 
 
 function App() {
@@ -149,8 +152,11 @@ function App() {
                       <Route path="/payment/trainer/transactionHitory" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} authorizationRequired={true} ><TransactionHistoryTrainer/></PrivateRoute>}/>
                       <Route path="/course/update/paymentSettings/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><UpdatePartialPaymentSettings/></PrivateRoute>}/>
                       
-                       
-                       
+                       {/* SysAdminRoutes */}
+                       <Route path="/viewAll/Admins" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewAdmin/></PrivateRoute>}/>
+                       <Route path="/viewAll/Trainers" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewTrainers/></PrivateRoute>}/>
+                       <Route path="/viewAll/Students" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewStudents/></PrivateRoute>}/>
+                          {/* SysAdminRoutes */}
                         </Route> 
            
           <Route path="/" element={<Login/>}/>

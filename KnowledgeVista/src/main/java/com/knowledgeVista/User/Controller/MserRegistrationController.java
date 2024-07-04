@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,9 +48,10 @@ public class MserRegistrationController {
 	            	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("INSTITUTE");
 	            }
 	            
-	            Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName(role);
+	            Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName("ADMIN");
 	            if(oproleUser.isPresent()) {
 	            	MuserRoles roleuser=oproleUser.get();
+	            	  
 	            Muser user = new Muser();
 	            user.setUsername(username);
 	            user.setEmail(email);
@@ -106,7 +106,7 @@ public class MserRegistrationController {
 	           
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	            }else {
-	            	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
+	            	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error getting role\"}");
 	   	            
 	            }
 	    } catch (Exception e) {
@@ -128,6 +128,10 @@ public class MserRegistrationController {
 		     if(opuser.isPresent()) {
 		    	 Muser user=opuser.get();
 		    	 institution=user.getInstitutionName();
+		    	 boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", institution);
+	       	    	if(!adminIsactive) {
+	       	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	       	    	}
 		     }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }
@@ -178,6 +182,10 @@ public class MserRegistrationController {
 			     if(opuser.isPresent()) {
 			    	 Muser user=opuser.get();
 			    	 institution=user.getInstitutionName();
+			    	 boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", institution);
+		       	    	if(!adminIsactive) {
+		       	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		       	    	}
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -231,6 +239,10 @@ public class MserRegistrationController {
 			     if(opuser.isPresent()) {
 			    	 Muser user=opuser.get();
 			    	 institution=user.getInstitutionName();
+			    	 boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", institution);
+		       	    	if(!adminIsactive) {
+		       	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		       	    	}
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }

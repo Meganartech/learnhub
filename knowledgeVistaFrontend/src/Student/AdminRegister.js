@@ -270,8 +270,8 @@ const AdminRegister = () => {
 
   return (
    
-    <div className='contentbackground'style={{height:"100vh"}} >
-       <div className='contentinner' >
+    <div className='contentbackgroundforfull' >
+       <div className='contentinnerforfull' >
       <div className='innerFrame'>
       
       <h2  style={{textDecoration:"underline"}}>Join with us</h2>
@@ -309,7 +309,7 @@ const AdminRegister = () => {
           </div>
              
    
-   
+  
  
           <div className='formgroup'>
           
@@ -323,7 +323,7 @@ const AdminRegister = () => {
                 onChange={handleChange}
                 name="username"
                 
-                className={`form-control form-control-lg mt-1 ${errors.username && 'is-invalid'}`}
+                className={`form-control form-control-lg  mt-1 ${errors.username && 'is-invalid'}`}
                 placeholder="Full Name"
                 autoFocus
                 required
@@ -501,15 +501,17 @@ const AdminRegister = () => {
         
       </div>
       </div>
-        <div className='btngrp'>
+        <div className='btngrp' style={{display:"inline"}}>
+          <div className="w-100 alignright">
         <button className={`btn btn-primary `} onClick={handleSubmit}>Register</button>
-
         </div>
-        <div style={{textAlign:"right"}} className="w-100">
+        <div className="w-100 alignright">
           <a className="small" href="/login">
             Already have an account? Login!
           </a>
         </div>
+        </div>
+        
         </div>
       </div>
       </div>

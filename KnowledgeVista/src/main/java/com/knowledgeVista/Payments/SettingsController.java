@@ -52,6 +52,10 @@ public class SettingsController {
   	     if(opreq.isPresent()) {
   	    	 Muser requser=opreq.get();
   	    	institution=requser.getInstitutionName();
+  	    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+	   	    	if(!adminIsactive) {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	   	    	}
   	     }else {
   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
   	     }
@@ -84,6 +88,10 @@ public class SettingsController {
 	   	     if(opreq.isPresent()) {
 	   	    	 Muser requser=opreq.get();
 	   	    	institution=requser.getInstitutionName();
+	   	     boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+	   	    	if(!adminIsactive) {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	   	    	}
 	   	     }else {
 	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
 	   	     }
@@ -125,6 +133,10 @@ public class SettingsController {
    	     if(opreq.isPresent()) {
    	    	 Muser requser=opreq.get();
    	    	institution=requser.getInstitutionName();
+   	     boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+	    	if(!adminIsactive) {
+	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    	}
    	     }else {
    	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
    	     }

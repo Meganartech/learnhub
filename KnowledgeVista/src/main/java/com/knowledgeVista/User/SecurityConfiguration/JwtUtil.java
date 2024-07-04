@@ -6,6 +6,8 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
+import com.knowledgeVista.User.Muser;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -41,6 +43,7 @@ public class JwtUtil {
 	            if (tokenBlacklist.isTokenBlacklisted(token)) {
 	                return false; // Token is blacklisted, so consider it invalid
 	            }
+	           
 	            
 	            Claims claims = Jwts.parser()
 	                .setSigningKey(jwtConfig.getSecretKey())

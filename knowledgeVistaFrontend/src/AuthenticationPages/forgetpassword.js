@@ -137,7 +137,7 @@ const ForgetPassword = () => {
   const isForgetButtonDisabled = !forgetPasswordFormData.email || emailError;
 
   const resetPasswordForm = (
-    <form className="user" onSubmit={handleResetPasswordSubmit}>
+    <form  onSubmit={handleResetPasswordSubmit}>
       <h3 className="h4 text-gray-900 mb-4">Change Password</h3>
       <div className="form-outline mb-4">
         <input
@@ -188,7 +188,7 @@ const ForgetPassword = () => {
   );
 
   const forgetPasswordForm = (
-    <form className="user" onSubmit={handleForgetPasswordSubmit}>
+    <form  onSubmit={handleForgetPasswordSubmit}>
       <h3 className="h4 text-gray-900 mb-4">Student Verification</h3>
       <div className="form-outline mb-4">
         <input
@@ -216,15 +216,15 @@ const ForgetPassword = () => {
   );
 
   return (
-    <div className="d-flex flex-row justify-content-center align-items-center ">
-      <div className="card-body  text-center pt-5">
+    <div className="login-container d-flex flex-wrap justify-content-center align-items-center"> 
+      <div className=" image-section card-body  text-center ">
         <img 
-          style={{width:"700px",height:"700px"}}
+          style={{ width: "100%", height: "100%" }}
           src={login} 
           alt='boy-pic'
         />
       </div>
-      <div className="card-body p-5 text-center ">
+      <div className="form-section card-body text-center ">
         {isResetPassword ? resetPasswordForm : forgetPasswordForm}
         {!isResetPassword && (
           <div className="text-center">

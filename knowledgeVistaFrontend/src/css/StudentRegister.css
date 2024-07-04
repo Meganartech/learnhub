@@ -9665,7 +9665,7 @@ a:focus {
     
   }
   .newnav{
-    padding:1rem;
+    /* padding:1rem; */
     padding-top: 0px;
   }
   .sidebar .nav-item .nav-link[data-toggle="collapse"]::after {

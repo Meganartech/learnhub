@@ -47,6 +47,10 @@ public class Listview {
    	     if(opreq.isPresent()) {
    	    	 Muser requser=opreq.get();
    	    	institution=requser.getInstitutionName();
+   	    	boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", institution);
+   	    	if(!adminIsactive) {
+   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+   	    	}
    	     }else {
    	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
    	     }
@@ -82,6 +86,11 @@ public class Listview {
            Optional<Muser> opusers = muserrepositories.findByEmail(email);
             if(opusers.isPresent()) {
             	Muser trainer=opusers.get();
+            	String institution=trainer.getInstitutionName();
+            	boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", institution);
+       	    	if(!adminIsactive) {
+       	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+       	    	}
             	List<CourseDetail> courses =trainer.getAllotedCourses();
             	for(CourseDetail course : courses) {
             		students.addAll(course.getUsers());
@@ -122,6 +131,10 @@ public class Listview {
 	   	     if(opreq.isPresent()) {
 	   	    	 Muser requser=opreq.get();
 	   	    	institution=requser.getInstitutionName();
+	   	    	boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", institution);
+       	    	if(!adminIsactive) {
+       	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+       	    	}
 	   	     }else {
 	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
 	   	     }
@@ -164,6 +177,10 @@ public ResponseEntity<List<Muser>> getTrainerByRoleName( String token) {
    	     if(opreq.isPresent()) {
    	    	 Muser requser=opreq.get();
    	    	institution=requser.getInstitutionName();
+   	    	boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", institution);
+   	    	if(!adminIsactive) {
+   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+   	    	}
    	     }else {
    	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
    	     }

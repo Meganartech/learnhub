@@ -56,6 +56,10 @@ public class QuestionController {
 		     if(opuser.isPresent()) {
 		    	 Muser user=opuser.get();
 		    	 institution=user.getInstitutionName();
+		    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+		   	    	if(!adminIsactive) {
+		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		   	    	}
 		     }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }
@@ -136,6 +140,10 @@ public class QuestionController {
 				     if(opuser.isPresent()) {
 				    	 Muser user=opuser.get();
 				    	 institution=user.getInstitutionName();
+				    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+				   	    	if(!adminIsactive) {
+				   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				   	    	}
 				     }else {
 			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 				     }
@@ -178,6 +186,10 @@ public class QuestionController {
 			     if(opuser.isPresent()) {
 			    	 Muser user=opuser.get();
 			    	 institution=user.getInstitutionName();
+			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+			   	    	if(!adminIsactive) {
+			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			   	    	}
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -227,6 +239,10 @@ public class QuestionController {
 			     if(opuser.isPresent()) {
 			    	 Muser user=opuser.get();
 			    	 institution=user.getInstitutionName();
+			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+			   	    	if(!adminIsactive) {
+			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			   	    	}
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -275,6 +291,10 @@ public class QuestionController {
 			     if(opuser.isPresent()) {
 			    	 Muser user=opuser.get();
 			    	 institution=user.getInstitutionName();
+			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+			   	    	if(!adminIsactive) {
+			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			   	    	}
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }

@@ -1,5 +1,6 @@
 package com.knowledgeVista.License;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -363,7 +364,7 @@ public class LicenseController {
 //		 
 //			-------------------------------------------licensefile--------------------------------------------
 		
-		    public ResponseEntity<License> upload( MultipartFile File,String lastModifiedDate,String token)
+		    public ResponseEntity<?> upload( MultipartFile File,String lastModifiedDate,String token)
 		      {
 		    	if (!jwtUtil.validateToken(token)) {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -380,19 +381,16 @@ public class LicenseController {
 		            	   Muser user= opuser.get();
 		            	   String institution=user.getInstitutionName();
 		            	   Madmin_Licence madmin= madminrepo.findByInstitutionName(institution);
-		            	   if(madmin.getLicenceType().equals("FREE")) {
-		            			licenceUploadDirectory = licenceUploadDirectory ;
-		            			  //in future can be changed as licenceUploadDirectory
-//						final String licenseSubdirectory = "Free";
-//						licenceUploadDirectory = licenceUploadDirectory + "/" + licenseSubdirectory + "/";
-		            		  
-		            	   }
+		            	  
 		        	
-		            	   
-		        	License savedAudio = this.saveFile(File);
+		            // without saving we are getting the document bytes	   
+		        	//License savedAudio = this.saveFile(File); 
+		            	   byte[] licenseBytes = File.getBytes();
 		        	
-		            DocumentBuilder builder = factory.newDocumentBuilder();
-		            
+		           DocumentBuilder builder = factory.newDocumentBuilder();
+		            	
+		            	
+		           this.file=File.getOriginalFilename();
 		         // Define the date-time formatter for the custom format
 		            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 		           // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:mm:ss a");
@@ -407,16 +405,16 @@ public class LicenseController {
 		            }
 
 		            // Convert LocalDateTime to Instant
-		            Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+		        //    Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
 
 		            // Create a FileTime from the Instant
-		            FileTime newModifiedTime = FileTime.from(instant);
+		        //    FileTime newModifiedTime = FileTime.from(instant);
 		            
-		            Path filePath = Paths.get(licenceUploadDirectory + File.getOriginalFilename());
-		            Files.setLastModifiedTime(filePath, newModifiedTime);
+		          //  Path filePath = Paths.get(licenceUploadDirectory + File.getOriginalFilename());
+		          //  Files.setLastModifiedTime(filePath, newModifiedTime);
 
-		            Document document = builder.parse(new File(licenceUploadDirectory  + File.getOriginalFilename()));
-		            
+		         //   Document document = builder.parse(new File(licenceUploadDirectory  + File.getOriginalFilename()));
+		            Document document = builder.parse(new ByteArrayInputStream(licenseBytes));
 		            Element rootElement = document.getDocumentElement();
 		            NodeList personList = rootElement.getElementsByTagName("data");
 		            for (int i = 0; i < personList.getLength(); i++) {
@@ -443,6 +441,8 @@ public class LicenseController {
 		                String trainercount=trainer.getTextContent();
 		                String studentcount=student.getTextContent();
 		                String validity = validityDate.getTextContent();
+		                madmin.setLicenceType(type);
+		                madminrepo.save(madmin);
 		               
 		                this.licensedetails(productName, companyName,storage, key, validity,course,trainercount,studentcount,type,file,institution);
 //---------------------------------------CustomerLeads call-----------------------
@@ -507,7 +507,7 @@ public class LicenseController {
 //----------------------------------------CustomerLeads---------------------------
  } 
 		            licenceUploadDirectory=olddir;
-		            return ResponseEntity.ok().body(savedAudio);
+		            return ResponseEntity.ok().build();
 		            }else {
 		            	   return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		               }

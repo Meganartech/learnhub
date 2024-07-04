@@ -58,4 +58,5 @@ public class Muser {
 	    private List<CourseDetail> courses;
 
 	    private Boolean isActive;
+	    private String inactiveDescription;
 }

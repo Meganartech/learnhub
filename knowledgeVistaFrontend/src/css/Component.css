@@ -1,10 +1,13 @@
 .ActiveLink{
     background-color:#2F3CED;
+    font-size: 1.2rem;
+   
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 .SubActiveLink{
   background-color:#F42020;
+  font-size: 1.2rem;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     
@@ -13,7 +16,6 @@
   color: black;
 }
 .logoicon img{
-  margin-top: 10px;
   width: 75px;
   height: 80px;
 }
@@ -27,7 +29,7 @@
   }
   .gridnav{
     display: grid;
-    grid-template-columns: 6fr  1fr 1fr;
+    grid-template-columns:  6fr  1fr 1fr;
     margin-bottom: 10px;
     justify-items: end;
     align-items: baseline;
@@ -270,3 +272,28 @@
 .scrolldiv::-webkit-scrollbar-thumb:hover {
   background-color:#999 /* Hover color for the scrollbar thumb */
 }
+.displayblock{
+  display: block;
+}
+.barhide{
+  display:none;
+}
+
+@media screen and (max-width: 480px) {
+  .ActiveLink{
+    font-size: 0.65rem;
+  }
+  .SubActiveLink{
+    font-size: 0.65rem;
+  }
+  .displayblock{
+    display: none;
+  }
+  .hide{
+    display: none;
+  }
+  .barhide{
+    display: block;
+  }
+}
+

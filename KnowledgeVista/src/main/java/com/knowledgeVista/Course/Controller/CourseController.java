@@ -78,6 +78,10 @@ public class CourseController {
 	   	     if(opreq.isPresent()) {
 	   	    	 Muser requser=opreq.get();
 	   	    	institution=requser.getInstitutionName();
+	   	    	boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+	   	    	if(!adminIsactive) {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	   	    	}
 	   	     }else {
 	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
 	   	     }
@@ -127,6 +131,10 @@ public class CourseController {
 			    	 Muser user=opuser.get();
 			    	 username=user.getUsername();
 			    	 institution=user.getInstitutionName();
+			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+			   	    	if(!adminIsactive) {
+			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			   	    	}
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -223,6 +231,10 @@ public class CourseController {
 	    		Muser trainer =optrainer.get();
 	    		 username=trainer.getUsername();
 	    		 String institution= trainer.getInstitutionName();
+	    		 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+		   	    	if(!adminIsactive) {
+		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		   	    	}
 	    		 if(! "TRAINER".equals(trainer.getRole().getRoleName())) {
 	                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    		 }
@@ -299,6 +311,10 @@ public class CourseController {
 		    	 Muser user=opuser.get();
 		    	 username=user.getUsername();
 		    	 institution=user.getInstitutionName();
+		    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+		   	    	if(!adminIsactive) {
+		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		   	    	}
 		     }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }
@@ -378,6 +394,10 @@ public class CourseController {
 	     if(opuser.isPresent()) {
 	    	 Muser user=opuser.get();
 	    	 institution=user.getInstitutionName();
+	    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+	   	    	if(!adminIsactive) {
+	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	   	    	}
 	     }else {
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	     }
@@ -412,6 +432,10 @@ public class CourseController {
 		     if(opuser.isPresent()) {
 		    	 Muser user=opuser.get();
 		    	 institution=user.getInstitutionName();
+		    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+		   	    	if(!adminIsactive) {
+		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		   	    	}
 		     }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }
@@ -445,6 +469,10 @@ public class CourseController {
 			     if(opaddinguser.isPresent()) {
 			    	 Muser addinguser=opaddinguser.get();
 			    	 institution=addinguser.getInstitutionName();
+			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+			   	    	if(!adminIsactive) {
+			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			   	    	}
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -493,6 +521,10 @@ public class CourseController {
 			     if(opaddinguser.isPresent()) {
 			    	 Muser addinguser=opaddinguser.get();
 			    	 institution=addinguser.getInstitutionName();
+			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+			   	    	if(!adminIsactive) {
+			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			   	    	}
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -550,6 +582,10 @@ public class CourseController {
 				     if(opaddinguser.isPresent()) {
 				    	 Muser addinguser=opaddinguser.get();
 				    	 institution=addinguser.getInstitutionName();
+				    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+				   	    	if(!adminIsactive) {
+				   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+				   	    	}
 				     }else {
 			             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 				     }
@@ -620,6 +656,10 @@ public class CourseController {
 			     if(opaddinguser.isPresent()) {
 			    	 Muser addinguser=opaddinguser.get();
 			    	 institution=addinguser.getInstitutionName();
+			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+			   	    	if(!adminIsactive) {
+			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			   	    	}
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
@@ -698,6 +738,10 @@ public class CourseController {
 					     if(opreqsUser.isPresent()) {
 					    	 Muser requestuser=opreqsUser.get();
 					    	 institution=requestuser.getInstitutionName();
+					    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+					   	    	if(!adminIsactive) {
+					   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+					   	    	}
 					     }else {
 				             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 					     }

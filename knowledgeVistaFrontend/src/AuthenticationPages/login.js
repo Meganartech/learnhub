@@ -77,17 +77,17 @@ const Login = () => {
           username: "User not found"
         }));
       } else if (error.response && error.response.status === 401){
-        const { message } = error.response.data ? error.response.data : "error occured";
-        console.log(message)
+        const data = error.response.data ? error.response.data : "error occured";
+       const message=data.message;
         if (message === 'Incorrect password') {
           setErrors((prevErrors) => ({
             ...prevErrors,
             password: 'Incorrect password',
           }));
-        } else if (message === 'InActive user') {
+        } else if (message === 'In Active') {
           MySwal.fire({
             title: 'In Active User!',
-            text: 'Your account was Deactivated contact your Admin or Trainer.',
+            text: `reason : ${data.Description}`,
             icon: 'error',
           });
         }
@@ -105,16 +105,16 @@ const Login = () => {
 
 
   return (
-    <form className="user" onSubmit={handleSubmit}>
-    <div className="d-flex flex-row justify-content-center align-items-center ">
-    <div className="card-body  text-center pt-5">
+    <form  onSubmit={handleSubmit}>
+    <div className="login-container d-flex flex-wrap justify-content-center align-items-center"> {/* New class */}
+      <div className="image-section card-body text-center ">
     <img 
-          style={{width:"700px",height:"700px"}}
-          src={login} 
+          style={{ width: "90%", height: "95%" }}
+          src={login}
           alt='boy-pic'
         />
         </div>
-      <div className="card-body p-5 m-5 text-center">
+        <div className="form-section card-body  text-center"> {/* New class */}
 
         <h3 className="h4 text-gray-900 mb-4">Sign in</h3>
   
