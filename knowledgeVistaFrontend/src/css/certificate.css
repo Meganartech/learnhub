@@ -334,7 +334,8 @@ grid-template-columns: 6fr 1fr 12fr;
   }
  
  .contentinner{
-  height: 250vh;
+ height: 150vh;
+ overflow: auto;
  }
  .innerFrame{
   grid-template-rows: 1fr 15fr 1fr;

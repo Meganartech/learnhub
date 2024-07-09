@@ -250,6 +250,13 @@ const handlenextclick =(e)=>{
                         navigate(-1)
                     }
                 })
+            } else if(error.response && error.response.status===400){
+                MySwal.fire({
+                    title: "Limit Reached !",
+                    text: error.response.data,
+                    icon: "waring",
+                    confirmButtonText: "OK",
+                });
             }else{
             MySwal.fire({
                 title: "Error!",

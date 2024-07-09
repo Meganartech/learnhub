@@ -189,6 +189,7 @@ const ProfileView = () => {
           }).then((result) => {
               if (result.isConfirmed) {
                 setIsEditing(false)
+                window.location.href="/login"
               }
             });
           }

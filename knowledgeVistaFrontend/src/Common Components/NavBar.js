@@ -18,7 +18,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,hand
   const [isopen,setisopen]=useState(false);
   const[count,setcount]=useState(0);
   const token =sessionStorage.getItem("token");
- 
+ const role=sessionStorage.getItem("role");
 
   useEffect(() => {
     
@@ -132,18 +132,12 @@ const handlemarkallasRead =async (notificationIds)=>{
   
     
       <div className="gridnav">
-      {/* <a href="#" className="sidebar-brand">
-        <div className='logoicon'>
-          <img src={logo} alt='logo'/> 
-        <div className="sidebar-brand-text  ">Learn HUB</div>
-        </div>
-        
-      </a> */}
+  
       
-      <div className="barhide"  onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
+      <div className="barhide mt-4" onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
 
     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
-      <div className="searchbar">
+      <div className="searchbar mt-2" style={{gridColumn:"2"}}>
     <i className="fa fa-search pt-1 pl-1 " aria-hidden="true"></i>
     
         <input
@@ -163,7 +157,7 @@ const handlemarkallasRead =async (notificationIds)=>{
     </div>
     )}
    
-<div className="navbar-nav ml-auto " style={{gridColumn:"2"}}>
+<div className="navbar-nav ml-auto mt-3  " style={{gridColumn:"3"}}>
   <div className="nav-item dropdown no-arrow">
     <a
     onClick={()=>{setisopen(! isopen)}}
@@ -187,21 +181,20 @@ const handlemarkallasRead =async (notificationIds)=>{
     </div>
 </div>
  
-      <ul className="navbar-nav ml-auto " style={{gridColumn:"3"}} >
+      <ul className="navbar-nav ml-auto " style={{gridColumn:"4"}} >
         <li className="nav-item dropdown no-arrow ">
           
-      
           <a
             className="nav-link dropdown-toggle profile"
             href="#"
-            id="userDropdown"
+            id="userDropdown "
             role="button"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <span></span>
-            <h5 className="username">{data.name.length > 20 ? data.name.substring(0, 20) : data.name}</h5>
+            <span id="spanid" ></span>
+            <h5 id="profilename" className="username">{data.name.length > 20 ? data.name.substring(0, 20) : data.name}</h5>
 
             <img
               className="img-profile rounded-circle  borderimg "
@@ -218,13 +211,13 @@ const handlemarkallasRead =async (notificationIds)=>{
             className="dropdown-menu dropdown-menu-left shadow animated--grow-in"
             aria-labelledby="userDropdown"
           >
-            <a className="dropdown-item" href="/course/dashboard/profile">
+          {role!=="SYSADMIN" &&<> <a className="dropdown-item" href="/course/dashboard/profile">
               <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
               Profile
             </a>
             
             
-            <div className="dropdown-divider"></div>
+            <div className="dropdown-divider"></div></> }
             <button
               className="dropdown-item"
               onClick={handleLogout}
@@ -239,14 +232,15 @@ const handlemarkallasRead =async (notificationIds)=>{
           </li>
           </ul>
           </div>
+          <div className="gridnav">
           <div></div>
           <div></div>
           <div></div>
-          {isopen && <div >
+          {isopen && <div>
         <Notification setisopen={setisopen} isopen={isopen} setcount={setcount} handlemarkallasRead={handlemarkallasRead}/>
       
     </div>}
-  
+    </div>
     </nav>
   );
 };

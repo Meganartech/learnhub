@@ -2,6 +2,7 @@ package com.knowledgeVista.User.Controller;
 import com.knowledgeVista.DownloadManagement.CustomerLeads;
 import com.knowledgeVista.DownloadManagement.Customer_downloads;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.Madmin_Licence;
 import com.knowledgeVista.License.mAdminLicenceRepo;
 import com.knowledgeVista.User.Muser;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,15 +32,28 @@ public class MserRegistrationController {
 	 private JwtUtil jwtUtil;
 	@Autowired
 	private MuserRoleRepository muserrolerepository;
+	
+	@Autowired
+	private LicenseController licencecontrol;
 	@Autowired
 	private Environment env;
 	@Autowired
 	private mAdminLicenceRepo madminrepo;
 	
+	  @Value("${spring.environment}")
+	    private String environment;
+	  
+	 @Value("${spring.profiles.active}")
+	    private String activeProfile;
+	
 
 	public ResponseEntity<?> registerAdmin( String username, String psw, String email, String institutionName, LocalDate dob,String role,
 	                                         String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode) {
 	    try {
+	    	Long count=muserrepositories.count();
+	    	if(environment.equals("VPS") &&  count>1) {
+	    		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ADMIN");
+	    	}
 	        Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	        Optional<Muser>existingInstitute =muserrepositories.findByInstitutionName(institutionName);
 	            if (existingUser.isPresent()) {
@@ -72,11 +87,7 @@ public class MserRegistrationController {
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 	            }
 	          Muser savedadmin=  muserrepositories.save(user);
-	            Madmin_Licence madmin= new Madmin_Licence();
-	            madmin.setAdminId(savedadmin.getUserId());
-	            madmin.setInstitution(institutionName);
-	            madmin.setLicenceType("FREE");
-	            madminrepo.save(madmin);
+	          
 	            RestTemplate restTemplate = new RestTemplate();
 
 	            String baseUrl = env.getRequiredProperty("base.url");
@@ -102,7 +113,14 @@ public class MserRegistrationController {
 	            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, custDown, String.class);
 
 	            ResponseEntity<String> response2 = restTemplate.postForEntity(apiUrl2, custlead, String.class);
-
+	     	   if(environment.equals("SAS")) {
+	     		  Madmin_Licence madmin= new Madmin_Licence();
+		            madmin.setAdminId(savedadmin.getUserId());
+		            madmin.setInstitution(institutionName);
+		            madmin.setLicenceType("FREE");
+		            madminrepo.save(madmin);
+	     		   licencecontrol.uploadSAS(madmin, savedadmin);
+	     	   }
 	           
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	            }else {

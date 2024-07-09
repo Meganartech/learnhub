@@ -186,8 +186,6 @@ const ViewTrainerList = () => {
     <div className='contentinner'>
       <div style={{ display: 'grid', gridTemplateColumns: '25fr 10fr 6fr 6fr' }} className='mb-4'>
         <h1>Trainers Details</h1>
-      
-      
         <input
         className="form-control"
         style={{ marginTop: "10px" }}

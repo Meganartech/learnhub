@@ -12,6 +12,7 @@ import java.util.stream.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +32,7 @@ import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.Payments.Course_PartPayment_Structure;
 import com.knowledgeVista.Payments.InstallmentDetails;
@@ -62,6 +64,9 @@ public class CourseController {
 	 
 	 @Autowired
 	private NotificationService notiservice;
+	 
+	 @Autowired
+	 private licenseRepository licencerepo;
 	
 	
 //`````````````````````````WORKING``````````````````````````````````
@@ -131,6 +136,11 @@ public class CourseController {
 			    	 Muser user=opuser.get();
 			    	 username=user.getUsername();
 			    	 institution=user.getInstitutionName();
+			    	 Long coursecount=coursedetailrepository.countCourseByInstitutionName(institution);
+			    	 Long MaxCount=licencerepo.FindCourseCountByinstitution(institution);
+			    	 if(coursecount+1 >MaxCount) {
+			    		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Course Limit Reached Add More Course By Upgrading Your Licence");
+			    	 }
 			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
 			   	    	if(!adminIsactive) {
 			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -231,6 +241,11 @@ public class CourseController {
 	    		Muser trainer =optrainer.get();
 	    		 username=trainer.getUsername();
 	    		 String institution= trainer.getInstitutionName();
+	    		 Long coursecount=coursedetailrepository.countCourseByInstitutionName(institution);
+		    	 Long MaxCount=licencerepo.FindCourseCountByinstitution(institution);
+		    	 if(coursecount+1 >MaxCount) {
+		    		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Course Limit Reached Add More Course By Upgrading Your Licence");
+		    	 }
 	    		 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
 		   	    	if(!adminIsactive) {
 		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

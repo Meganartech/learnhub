@@ -30,6 +30,7 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	
 	   @Query("SELECT u FROM Muser u WHERE u.role.roleName = :rolename")
 	    List<Muser> findByRoleName(@Param("rolename") String roleName);
+	   
 	   @Query("SELECT u FROM Muser u WHERE u.role.roleName = :rolename AND u.institutionName = :institutionname")
 		List<Muser> findByRoleNameAndInstitutionName(@Param("rolename") String roleName, @Param("institutionname") String institutionName);
     

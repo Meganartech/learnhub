@@ -90,7 +90,7 @@ public class DataLoaderService {
                 String skills = userElement.getElementsByTagName("skills").item(0).getTextContent();
                 String countryCode = userElement.getElementsByTagName("countryCode").item(0).getTextContent();
                 String roleName = userElement.getElementsByTagName("role").item(0).getTextContent();
-
+                String institutionName=userElement.getElementsByTagName("institutionName").item(0).getTextContent();
                 // Check if user with the same email already exists
                 if (muserrepositories.findByEmail(email).isEmpty()) {
                     // Find or create the role
@@ -106,6 +106,7 @@ public class DataLoaderService {
                     newUser.setPhone(phone);
                     newUser.setSkills(skills);
                     newUser.setCountryCode(countryCode);
+                    newUser.setInstitutionName(institutionName);
                     newUser.setRole(role); // Set the role instance
                     newUser.setIsActive(true); // Assuming default active status
 

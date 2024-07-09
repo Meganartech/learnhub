@@ -209,11 +209,13 @@ const CustomViewvideo = () => {
       <div className='contentinner'>
         {AllLessons.length > 0 ? (
           <div className='vdoplusbtn'>
-            <div style={{ display: "grid", gridTemplateColumns: "9fr 1fr" }}>
-              <h1 style={{ textAlign: 'center' }}>{courseName}</h1>
-              <Link to={`/test/start/${courseName}/${courseId}`} className='btn btn-primary' style={{ height: "40px" }}>
+            <div className="headingbtn">
+              <h1 style={{ textAlign: 'center',flex:"3" }}>{courseName}</h1>
+              <>
+              <Link to={`/test/start/${courseName}/${courseId}`} className='btn btn-primary' style={{ maxWidth:"100px",flex:"1"}}>
                 Start Test
               </Link>
+              </>
             </div>
             <div>
               <div className="main">
@@ -221,7 +223,7 @@ const CustomViewvideo = () => {
                   {videoType === 'local' ? (
                     <ReactPlayer
                       url={videoSource}
-                      width="90%"
+                      width="100%"
                       height="80%"
                       controls
                       onProgress={handleOnProgress}

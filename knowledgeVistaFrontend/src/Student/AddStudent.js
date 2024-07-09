@@ -218,11 +218,20 @@ const AddStudent = () => {
         }catch (error) {
           const errorData = error.response; 
           if (errorData) {
-            if (errorData.status === 400) {
-              setErrors(prevErrors => ({
-                ...prevErrors,
-                email: "This email is already registered."
-              }));
+            if(error.response.status===400){
+                if(error.response.data==="EMAIL"){
+                setErrors(prevErrors => ({
+                  ...prevErrors,
+                  email: "This email is already registered."
+                }));
+              }else if(error.response.data==="LIMIT"){
+                MySwal.fire({
+                  title: "Limit Reached!",
+                  text: "Trainer Limit Reached To Add More Trainers Upgrade your Licence",
+                  icon: "warning",
+                  confirmButtonText: "OK",
+                });
+              }
             } else if (errorData.status === 500) {
               MySwal.fire({
                 title: "Server Error!",

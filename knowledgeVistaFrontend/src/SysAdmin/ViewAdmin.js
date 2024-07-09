@@ -48,55 +48,55 @@ const ViewAdmin = () => {
     
         fetchData();
       }, []);
-      const handleDelete=async(username,email)=>{
-        MySwal.fire({
-            title: "Delete ADMIN ?",
-            text: `Are you sure you want to Delete ADMIN ${username}`,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            confirmButtonText: "Delete",
-            cancelButtonText: "Cancel",
-          }).then(async (result) => {
-            if (result.isConfirmed) {
-              try {
-                if (email != null) {
-                  const response = await axios.delete(`${baseUrl}/secret/Delete/Admin/${email}`,{
+      // const handleDelete=async(username,email)=>{
+      //   MySwal.fire({
+      //       title: "Delete ADMIN ?",
+      //       text: `Are you sure you want to Delete ADMIN ${username}`,
+      //       icon: "warning",
+      //       showCancelButton: true,
+      //       confirmButtonColor: "#d33",
+      //       confirmButtonText: "Delete",
+      //       cancelButtonText: "Cancel",
+      //     }).then(async (result) => {
+      //       if (result.isConfirmed) {
+      //         try {
+      //           if (email != null) {
+      //             const response = await axios.delete(`${baseUrl}/secret/Delete/Admin/${email}`,{
                   
-                    headers: {
-                      'Authorization': token
-                    }
-                  });
-                  if (response.status===200) {
-                    MySwal.fire({
-                      title: "Deleted",
-                      text: `ADMIN ${username} Deleted successfully`,
-                      icon: "success",
-                      confirmButtonText: "OK",
-                  }).then(() => {
-                      window.location.reload();
-                  });
-                }
-              }
+      //               headers: {
+      //                 'Authorization': token
+      //               }
+      //             });
+      //             if (response.status===200) {
+      //               MySwal.fire({
+      //                 title: "Deleted",
+      //                 text: `ADMIN ${username} Deleted successfully`,
+      //                 icon: "success",
+      //                 confirmButtonText: "OK",
+      //             }).then(() => {
+      //                 window.location.reload();
+      //             });
+      //           }
+      //         }
                 
-              } catch (error) {
-                if(error.response && error.response.status===404){
-                  MySwal.fire({
-                    icon: 'error',
-                    title: '404',
-                    text: 'ADMIN not found'
-                });
-                }else{
-                MySwal.fire({
-                  icon: 'error',
-                  title: 'ERROR',
-                  text: 'Error Deleting ADMIN'
-              });
-              }
-            }
-            } 
-          });
-      };
+      //         } catch (error) {
+      //           if(error.response && error.response.status===404){
+      //             MySwal.fire({
+      //               icon: 'error',
+      //               title: '404',
+      //               text: 'ADMIN not found'
+      //           });
+      //           }else{
+      //           MySwal.fire({
+      //             icon: 'error',
+      //             title: 'ERROR',
+      //             text: 'Error Deleting ADMIN'
+      //         });
+      //         }
+      //       }
+      //       } 
+      //     });
+      // };
 
       const handleDeactivate = async (userId, username, email) => {
         const formData = new FormData();
@@ -274,7 +274,7 @@ const ViewAdmin = () => {
               <th scope="col"> Skills</th>
               <th scope="col">Status</th>
 
-              <th colSpan="3" scope="col">Action</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -288,12 +288,12 @@ const ViewAdmin = () => {
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.skills}</td>
                 <td className='py-2' >{user.isActive===true? <div className='Activeuser'><i className="fa-solid fa-circle pr-3"></i>Active</div>:<div className='InActiveuser' ><i className="fa-solid fa-circle pr-3"></i>In Active</div>}</td>
-                <td className='text-center'>
-                {/* <button to={`/trainer/edit/${user.email}`} className='hidebtn' >
+                {/* <td className='text-center'>
+              <button to={`/trainer/edit/${user.email}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>
-                    </button> */}
-                     <button className='hidebtn icontrash' onClick={()=>handleDelete(user.username,user.email)}><i className="fas fa-trash"></i></button>
-                </td>
+                    </button> 
+                     <button className='hidebtn icontrash' onClick={()=>handleDelete(user.username,user.email)}><i className="fas fa-trash"></i></button> 
+                </td> */}
                
                 <td  className='text-center'>
                 {user.isActive===true?

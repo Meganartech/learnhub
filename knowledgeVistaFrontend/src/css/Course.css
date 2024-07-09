@@ -251,6 +251,14 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+@media screen and (max-width: 480px) {
+.main{
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 2fr;
+  padding: 10px;
+}
 
+
+}
 
 

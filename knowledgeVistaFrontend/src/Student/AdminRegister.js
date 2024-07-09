@@ -234,6 +234,13 @@ const AdminRegister = () => {
           ...prevErrors,
           institution: "This institution is already registered."
         }));
+      }else if (data==="ADMIN"){
+        MySwal.fire({
+          title: "Error!",
+          text: "Admin Already Registered.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
       } else {
         MySwal.fire({
@@ -251,7 +258,10 @@ const AdminRegister = () => {
       nameRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     } else if (errors.email) {
       emailRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-    } else if (errors.dob) {
+    } else if (errors.institution) {
+      institutionRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    }
+    else if (errors.dob) {
       dobRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     } else if (errors.psw || errors.confirm_password) {
       pswRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });

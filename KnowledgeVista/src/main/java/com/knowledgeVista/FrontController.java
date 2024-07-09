@@ -56,7 +56,8 @@ import jakarta.transaction.Transactional;
 public class FrontController {
 	  @Value("${spring.profiles.active}")
 	    private String activeProfile;
-	  
+	  @Value("${spring.environment}")
+	    private String environment;
 	@Autowired
     private CourseController courseController;
 	
@@ -114,8 +115,14 @@ public class FrontController {
 	
 	@Autowired
 	private SysadminController sysadmin;
+	
+//-------------------ACTIVE PROFILE------------------
+	@GetMapping("/Active/Environment")
+	public String getActiEnvironment() {
+		return environment;
+	}
 //----------------------------COURSECONTROLLER----------------------------
-    
+   
 	 @GetMapping("/course/countcourse")
 	 public ResponseEntity<?> countCoursefront(@RequestHeader("Authorization") String token) {
 		 return courseController.countCourse(token);
@@ -421,8 +428,17 @@ public class FrontController {
                
 //-------------------------LicenseController-----------------------
                @GetMapping("/api/v2/GetAllUser")
-       		public ResponseEntity<?> getAllUser(  @RequestHeader("Authorization") String token) {
-            	   return licence.getAllUser(token);
+       		public ResponseEntity<?> getAllUserforLicencecheck(  @RequestHeader("Authorization") String token) {
+            	   if(environment.equals("SAS")) {
+            		   return licence.getAllUserSAS(token);
+           	   }
+            	   else if(environment.equals("VPS")) {
+            		   return licence.getAllUser();
+            	   }
+            	   else {
+            		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Licence get functionality disabled");
+                        
+            	   }
                }
            	@GetMapping("/api/v2/count")
     		public ResponseEntity<Integer> count(@RequestHeader("Authorization") String token) {
@@ -431,7 +447,21 @@ public class FrontController {
            		
            		@PostMapping("/api/v2/uploadfile")
     		    public ResponseEntity<?> upload(@RequestParam("audioFile") MultipartFile File,@RequestParam("lastModifiedDate") String lastModifiedDate,@RequestHeader("Authorization") String token){
-           			return licence.upload(File,lastModifiedDate,token);
+           		   if(environment.equals("VPS")) {
+           			   return licence.upload(File,lastModifiedDate,token);
+           		   }else{
+           			   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Licence upload functionality disabled");
+                   	
+           		   }
+           		   }
+           		@PostMapping("/api/Sysadmin/uploadLicence")
+    		    public ResponseEntity<?> uploadLicence(@RequestParam("audioFile") MultipartFile File,@RequestHeader("Authorization") String token){
+           		   if(environment.equals("SAS")) {
+           			   return licence.uploadBysysAdmin(File,token);
+           		   }else{
+           			   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Licence Cannot Be uploaded By SysAdmin");
+                   	
+           		   }
            		}
            	
  //------------------------SettingsController------------------------

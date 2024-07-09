@@ -33,6 +33,7 @@ public class NotificationService {
 	
 	
   //Create Notification with Multipart
+	
     public Long  createNotification(String type,String username, String description, String createdBy,String heading,String link ,Optional<MultipartFile> file) {
     	NotificationType notificationType = notitypeRepo.findByType(type)
                 .orElseGet(() -> {
@@ -60,6 +61,7 @@ public class NotificationService {
         NotificationDetails savedNotiDetails= notidetailRepo.save(notiDetails);
         return (savedNotiDetails.getNotifyId());
     }
+    
     //Create Notification with byte image
     public Long  createNotification(String type,String username, String description, String createdBy,String heading,String link ,byte[] file) {
     	NotificationType notificationType = notitypeRepo.findByType(type)

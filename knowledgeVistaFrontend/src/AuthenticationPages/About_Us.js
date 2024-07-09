@@ -8,6 +8,7 @@ const About_Us = () => {
   
   const MySwal = withReactContent(Swal);
   const [audioFile, setAudioFile] = useState(null);
+  const [Activeprofile,setActiverofile]=useState();
   const [errors, setErrors] = useState({});
   const [isDataList, setIsDataList] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -15,6 +16,11 @@ const About_Us = () => {
 
   const token=sessionStorage.getItem("token")
   useEffect(() => {
+    const fetchactive=async()=>{
+      const active=await axios.get(`${baseUrl}/Active/Environment`)
+      
+      setActiverofile(active.data);
+    }
     const fetchData = async () => {
       try {
         const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`,{
@@ -35,6 +41,7 @@ const About_Us = () => {
     };
   
     fetchData();
+    fetchactive();
   
   }, []); 
 
@@ -200,9 +207,11 @@ const About_Us = () => {
 
                 </div>
                 <br></br>
+                {Activeprofile!=="SAS" &&(
                 <form className='form-container' onSubmit={handleSubmit}>
                   <div className='row'>
                     <div className='col-6'>
+                     
                       <div className='inputgrp'>
                         <label className='labl' >Add New License File </label>
                         <span>:</span>
@@ -243,7 +252,7 @@ const About_Us = () => {
                     />
                   </div>
                 </form>
-
+)}
 
               </div>
 

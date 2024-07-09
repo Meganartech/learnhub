@@ -213,10 +213,19 @@ const AddTrainer = () => {
         } catch (error) {
       if(error.response){
         if(error.response.status===400){
+          if(error.response.data==="EMAIL"){
           setErrors(prevErrors => ({
             ...prevErrors,
             email: "This email is already registered."
           }));
+        }else if(error.response.data==="LIMIT"){
+          MySwal.fire({
+            title: "Limit Reached!",
+            text: "Trainer Limit Reached To Add More Trainers Upgrade your Licence",
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+        }
         }else if(error.response.status===401){
           MySwal.fire({
             title: "Un Authorized!",

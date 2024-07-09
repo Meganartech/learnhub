@@ -175,6 +175,13 @@ const CreateCourseTrainer = () => {
                     icon: "error",
                     confirmButtonText: "OK",
                 }); 
+            }else if(error.response && error.response.status===400){
+                MySwal.fire({
+                    title: "Error!",
+                    text: error.response.data,
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
             }else{
                 MySwal.fire({
                     title: "Error!",

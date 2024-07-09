@@ -216,7 +216,7 @@ const handleOnSeek = (progress) => {
         <ReactPlayer
           ref={playerRef}
           url={videoSource}
-          width="90%"
+          width="100%"
           height="80%"
           controls
           onProgress={handleOnProgress}

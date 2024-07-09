@@ -67,8 +67,11 @@ const Login = () => {
         sessionStorage.setItem('role', role);
         sessionStorage.setItem('userid', userId);
         sessionStorage.setItem('email', email);
-    
+    if(role==="SYSADMIN"){
+      window.location.href = "/viewAll/Admins";
+    }else{
        window.location.href = "/dashboard/course";
+    }
       } 
     } catch (error) {
       if (error.response && error.response.status === 404 ){

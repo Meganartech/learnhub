@@ -83,7 +83,7 @@ const ViewStudentList = () => {
           if (result.isConfirmed) {
             try {
               if (userId != null) {
-                const response = await axios.delete(`${baseUrl}/admin/deactivate/student`, {
+                const response = await axios.delete(`${baseUrl}/admin/deactivate/Student`, {
                   data: formData,
                   headers: {
                     'Authorization': token

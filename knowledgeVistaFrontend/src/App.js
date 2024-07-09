@@ -57,6 +57,7 @@ import LicenceExpired from "./AuthenticationPages/LicenceExpired.js";
 import ViewAdmin from "./SysAdmin/ViewAdmin.js";
 import ViewTrainers from "./SysAdmin/ViewTrainers.js";
 import ViewStudents from "./SysAdmin/ViewStudents.js";
+import SysadminLicenceupload from "./AuthenticationPages/SysadminLicenceupload.js";
 
 
 function App() {
@@ -88,6 +89,8 @@ function App() {
     const fetchItems = async () => {
       try {
         const token=sessionStorage.getItem("token");
+        const role= sessionStorage.getItem("role");
+        if(role!=="SYSADMIN"){
         const response = await axios.get(`${baseUrl}/course/viewAll`,{
           headers: {
             'Authorization': token
@@ -95,13 +98,15 @@ function App() {
         });
         const data = response.data;
         setCourse(data);
-   
+      }
       } catch (error) {
        console.error(error);
       }
     };
   if(isAuthenticated){
-    fetchItems();}
+    fetchItems();
+
+  }
   }, []);
 
   return (
@@ -156,6 +161,9 @@ function App() {
                        <Route path="/viewAll/Admins" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewAdmin/></PrivateRoute>}/>
                        <Route path="/viewAll/Trainers" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewTrainers/></PrivateRoute>}/>
                        <Route path="/viewAll/Students" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewStudents/></PrivateRoute>}/>
+                        {/* Secert way to upload licence */}
+                         <Route path="/licenceupload" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><SysadminLicenceupload/></PrivateRoute>}/>
+                         {/* Secert to upload licence */}
                           {/* SysAdminRoutes */}
                         </Route> 
            

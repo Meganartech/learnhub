@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserRoles;
@@ -42,6 +44,9 @@ public class AddUsers {
 	
 	 @Autowired
 	private NotificationService notiservice;
+	 
+	 @Autowired
+	 private licenseRepository licencerepo;
 //===========================================ADMIN ADDING TRAINER==========================================	
 	
 	  public ResponseEntity<?> addTrainer( String username, String psw,String email,
@@ -61,7 +66,7 @@ public class AddUsers {
 	          if ("ADMIN".equals(role)) {
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	              if (existingUser.isPresent()) {
-	                  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"EMAIL ALREADY EXISTS\"}");
+	                  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
 	              } else {
 	                  MuserRoles roletrainer = muserrolerepository.findByroleName("TRAINER");
 	                  Muser trainer = new Muser();
@@ -71,11 +76,14 @@ public class AddUsers {
 	      	   	    	if(!adminIsactive) {
 	      	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	      	   	    	}
-	                    trainer.setInstitutionName(addingadmin.get().getInstitutionName());
-	                  }else {
-
-	    	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	                  }
+	      	   	    	Muser adding=addingadmin.get();
+	      	   	    	Long count=muserrepositories.countByRoleNameandInstitutionName("TRAINER", adding.getInstitutionName());
+	      	   	    	Long MaxCount=licencerepo.FindTrainerCountByinstitution(adding.getInstitutionName());
+	      	   	    	if(count+1 >MaxCount) {
+	      	   	    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("LIMIT");	
+	      	   	    	}
+	                    trainer.setInstitutionName(adding.getInstitutionName());
+	                 
 	                  trainer.setUsername(username);
 	                  trainer.setEmail(email);
 	                  trainer.setIsActive(isActive);
@@ -95,6 +103,10 @@ public class AddUsers {
 
 
 	                  return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
+	                  }else {
+
+	    	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	                  }
 	              }
 	          } else {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -136,6 +148,12 @@ public class AddUsers {
             	  usernameofadding=addinguser.getUsername();
             	  emailofadding=addinguser.getEmail();
             	   instituiton=addinguser.getInstitutionName();
+            	   Long Count=muserrepositories.countByRoleNameandInstitutionName("USER", instituiton);
+            	   Long MaxCount=licencerepo.FindStudentCountByinstitution(instituiton);
+            	   if(Count+1 >MaxCount) {
+            		     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("LIMIT");
+        	             
+            	   }
             	   boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", instituiton);
      	   	    	if(!adminIsactive) {
      	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -149,7 +167,7 @@ public class AddUsers {
 	          if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	              if (existingUser.isPresent()) {
-	                  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"EMAIL ALREADY EXISTS\"}");
+	                  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
 	              } else {
 	                  MuserRoles roletrainer = muserrolerepository.findByroleName("USER");
 	                  Muser user = new Muser();
