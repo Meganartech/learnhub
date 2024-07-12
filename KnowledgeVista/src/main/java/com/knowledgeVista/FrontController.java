@@ -30,6 +30,7 @@ import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.controller.QuestionController;
 import com.knowledgeVista.Course.Test.controller.Testcontroller;
 import com.knowledgeVista.Course.certificate.certificateController;
+import com.knowledgeVista.License.LicenceControllerSecond;
 import com.knowledgeVista.License.License;
 import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.UserListWithStatus;
@@ -37,7 +38,7 @@ import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Payments.PaymentIntegration;
 import com.knowledgeVista.Payments.PaymentListController;
 import com.knowledgeVista.Payments.Paymentsettings;
-import com.knowledgeVista.Payments.SettingsController;
+import com.knowledgeVista.Payments.PaymentSettingsController;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.SysAdminPackage.SysadminController;
 import com.knowledgeVista.User.Muser;
@@ -86,7 +87,10 @@ public class FrontController {
 	private LicenseController licence;
 	
 	@Autowired
-	private SettingsController settings;
+	private LicenceControllerSecond licencesec;
+	
+	@Autowired
+	private PaymentSettingsController settings;
 	
 	@Autowired
 	private AddUsers adduser;
@@ -462,6 +466,12 @@ public class FrontController {
            			   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Licence Cannot Be uploaded By SysAdmin");
                    	
            		   }
+           		}
+           		
+  //----------------------------LICENCE CONTROLLER SECOND---------------------------
+           		@GetMapping("/licence/getinfo")
+           		public ResponseEntity<?>GetLicenceDetails(@RequestHeader("Authorization") String token){
+           			return licencesec.GetLicenseDetails(token);
            		}
            	
  //------------------------SettingsController------------------------

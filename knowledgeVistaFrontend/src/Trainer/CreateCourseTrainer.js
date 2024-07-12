@@ -204,12 +204,12 @@ const CreateCourseTrainer = () => {
 
   return (
     <div className='contentbackground'>
-            <div className='contentinner'>
+            <div className='contentinner p-3'>
                 <div className='divider ml-2'>
                     <h1 style={{ textDecoration: "underline" }}>Setting up a Course</h1>
-                    <form onSubmit={handleSubmit}>
+                    <form >
                         {/* Form fields */}
-                        <div className='formgroup mt-2'>
+                        <div className='formgroup mt-2 maxheight '>
                             {/* Course Title */}
                             <div className='inputgrp'>
                                 <label htmlFor='courseName'>Course Title <span className="text-danger">*</span></label>
@@ -280,12 +280,13 @@ const CreateCourseTrainer = () => {
                             
                             {/* Course Image */}
                             <div className='inputgrp'>
-                                <label htmlFor='courseImage'>Course Image <span className="text-danger">*</span></label>
+                                <label htmlFor='courseImage'className='displaynone'>Course Image <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
                                     <label
-                                        htmlFor='courseImage'
-                                        style={{ width: "400px" }}
+                                        htmlFor='courseImage'                              
+                                         id='must'
+                                         style={{width:"200px"}}
                                         className={`file-upload-btn ${errors.courseImage && `is-invalid`}`}
                                     >
                                         Upload Image
@@ -295,8 +296,9 @@ const CreateCourseTrainer = () => {
                                     </div>
                                     <input
                                         type="file"
+                                        style={{display:"none"}}
                                         onChange={handleFileChange}
-                                        style={{ width: "400px" }}
+                                        
                                         id='courseImage'
                                         name="courseImage"
                                         accept='image/*'
@@ -328,7 +330,7 @@ const CreateCourseTrainer = () => {
                                 <div>
                                     <input
                                         type="number"
-                                      
+                                        placeholder='Duration'
                                         id='Duration'
                                         name="Duration"
                                         value={formData.Duration}
@@ -349,7 +351,7 @@ const CreateCourseTrainer = () => {
                                 <div>
                                     <input
                                         type="number"
-                                       
+                                       placeholder='No of Seats'
                                         id='Noofseats'
                                         name="Noofseats"
                                         className={`form-control form-control-lg mt-1 ${errors.Noofseats && 'is-invalid'}`}
@@ -370,6 +372,7 @@ const CreateCourseTrainer = () => {
                                 <div>
                                     <input
                                         type="number"
+                                        placeholder='Amount'
                                         style={{  marginBottom: "4px" }}
                                         id='courseAmount'
                                         name="courseAmount"
@@ -386,10 +389,13 @@ const CreateCourseTrainer = () => {
                         </div>
 
                         {/* Submit and Cancel Buttons */}
-                        <div className='cornerbtn'>
+                        
+                    </form>
+                    <div className='cornerbtn'>
                             <button
                                 className='btn btn-primary'
                                 type="submit"
+                                onClick={handleSubmit}
                                 disabled={!canSubmit()}
                             >
                                 Save
@@ -404,7 +410,6 @@ const CreateCourseTrainer = () => {
                                 Cancel
                             </button>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>

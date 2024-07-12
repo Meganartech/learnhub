@@ -174,6 +174,7 @@ if(amount===0){
     <div className="contentbackground">
       <div className="contentinner">
     <div className={styles.supercontainer} >
+    <div></div>
       {filteredCourses.length > 0 ? (
         <ul className={styles.maincontainer}>
           {filteredCourses

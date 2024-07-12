@@ -198,3 +198,8 @@ ul {
     grid-template-rows: 1fr 1fr 1fr;
   }
 }
+@media screen and (max-width: 480px) {
+  .maincontainer{
+    height: 150vh;
+  }
+}

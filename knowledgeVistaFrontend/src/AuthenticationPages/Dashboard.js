@@ -122,7 +122,7 @@ useEffect(() => {
       </div>
     </div>)}
         <div className='contentinner'>
-          <div style={{display:"flex"}}>
+          <div className='dash'>
             <div style={{flex:"3"}}>
                     <div className='counts '>
                       <div className='countchild '>

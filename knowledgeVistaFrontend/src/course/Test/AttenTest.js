@@ -142,28 +142,34 @@ const AttenTest = () => {
     return (
         <div className='contentbackground'>
           {attemplimit?(<div className='contentinner'>
+            <div className='centerflex'>
             <div className='enroll ' > 
         <h2 className='mt-2'>Your Attempt Limit Exceeded for this test </h2>
         <p>Contact your Trainer</p>
         <button className='btn btn-primary' onClick={()=>{navigate(-1)}}>Go Back</button>
         </div>
+            </div>
             </div>):(  
                 <>
               {notFound ? (  
 
         (role === "ADMIN" || role === "TRAINER") ? (
             <div className='contentinner'>
+                <div className='centerflex'>
         <div className='enroll'>
             <h2>No test found for this course.</h2>
             <a href={`/course/AddTest/${courseId}`} className='btn btn-primary'>Add Test</a>
-        </div></div>
+        </div></div></div>
+        
       ) : (
         <div className='contentinner'>
+            <div className='centerflex'>
         <div className='enroll'> 
         <h2>No test found for this course.</h2>
         
       <Link to="javascript:window.history.back()" className='btn btn-primary'>Go Back</Link>
         </div></div>
+        </div>
       )
           
        ) : (<>

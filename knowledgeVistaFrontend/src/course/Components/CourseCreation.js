@@ -279,7 +279,7 @@ const handlenextclick =(e)=>{
 
     return (
         <div className='contentbackground'>
-            <div className='contentinner'>
+            <div className='contentinner p-3'>
                 {nextclick?(<Partialpaymentsetting enablechecked={enablechecked} setenablechecked={setenablechecked} handleSubmit={handleSubmit}
                 setnextclick={setnextclick} courseamount={formData.courseAmount} setDurations={setDurations} durations={durations}
                  installmentData={installmentData} setInstallmentData={setInstallmentData}/>):(
@@ -287,15 +287,15 @@ const handlenextclick =(e)=>{
                     <h1 style={{ textDecoration: "underline" }}>Setting up a Course</h1>
                     <form >
                         {/* Form fields */}
-                        <div className='formgroup mt-1' >
+                        <div className='formgroup mt-1 maxheight' >
                             {/* Course Title */}
                             <div className='inputgrp' ref={courseName}>
-                                <label htmlFor='courseName'>Course Title <span className="text-danger">*</span></label>
+                                <label htmlFor='courseName' >Course Title <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
                                     <input
                                         type="text"
-                                        style={{ width: "400px" }}
+                                        
                                         id='courseName'
                                         name="courseName"
                                         value={formData.courseName}
@@ -319,7 +319,7 @@ const handlenextclick =(e)=>{
                                     <textarea
                                         type="text"
                                         rows={3}
-                                        style={{ width: "400px" }}
+                                      
                                         id='courseDescription'
                                         name="courseDescription"
                                         value={formData.courseDescription}
@@ -341,7 +341,7 @@ const handlenextclick =(e)=>{
                                 <div>
                                     <input
                                         type="text"
-                                        style={{ width: "400px" }}
+                                       
                                         id='courseCategory'
                                         name="courseCategory"
                                         onChange={handleChange}
@@ -355,16 +355,16 @@ const handlenextclick =(e)=>{
                                     </div>
                                 </div>
                             </div>
-                            
-                            {/* Course Image */}
+                           
                             <div className='inputgrp' ref={courseImage}>
-                                <label htmlFor='courseImage'>Course Image <span className="text-danger">*</span></label>
+                                <label htmlFor='courseImage' className='displaynone' >Course Image <span className="text-danger">*</span></label>
                                 <span>:</span>
                                 <div>
                                 <label
                                         htmlFor='courseImage'
-                                        style={{ width: "400px" }}
-                                        className={`file-upload-btn ${errors.courseImage && `is-invalid`}`}
+                                         style={{width:"200px"}}
+                                         id='must'
+                                        className={`file-upload-btn  ${errors.courseImage && `is-invalid`}`}
                                     >
                                         Upload Image
                                     </label>
@@ -374,7 +374,7 @@ const handlenextclick =(e)=>{
                                     <input
                                         type="file"
                                         onChange={handleFileChange}
-                                        style={{ width: "100px",  height:"100px"}}
+                                       style={{display:"none"}}
                                         id='courseImage'
                                         name="courseImage"
                                         accept='image/*'
@@ -383,7 +383,6 @@ const handlenextclick =(e)=>{
                                   
                                 </div>
                             </div>
-                            {/* Displaying Selected Image */}
                             {formData.base64Image && (
                                 <div className='inputgrp'>
                                     <div></div>
@@ -403,7 +402,7 @@ const handlenextclick =(e)=>{
                                 <div>
                                     <input
                                         type="number"
-                                        style={{ width: "400px" }}
+                                        placeholder='Duration'
                                         id='Duration'
                                         name="Duration"
                                         value={formData.Duration}
@@ -424,7 +423,7 @@ const handlenextclick =(e)=>{
                                 <div>
                                     <input
                                         type="number"
-                                        style={{ width: "400px" }}
+                                        placeholder='No Of Seats'
                                         id='Noofseats'
                                         name="Noofseats"
                                         className={`form-control form-control-lg mt-1 ${errors.Noofseats && 'is-invalid'}`}
@@ -445,7 +444,8 @@ const handlenextclick =(e)=>{
                                 <div>
                                     <input
                                         type="number"
-                                        style={{ width: "400px", marginBottom: "4px" }}
+                                        placeholder='Amount'
+                                        style={{ marginBottom: "4px" }}
                                         id='courseAmount'
                                         name="courseAmount"
                                         value={formData.courseAmount}

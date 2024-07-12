@@ -179,7 +179,7 @@ const About_Us = () => {
                   </div>
                 </div>
                 <br></br>
-                <div className='row'>
+                {/* <div className='row'>
                   <div className='col-6'>
                     <div className='inputgrp'>
                       <label className='labl' >Start Date </label>
@@ -194,8 +194,8 @@ const About_Us = () => {
                       <label >{isDataList && isDataList.length > 0?(isDataList[0].EndDate===""?"NA":isDataList[0].EndDate):""}</label>
                     </div>
                   </div>
-                </div>
-                <br></br>
+                </div> */}
+                {/* <br></br>
                 <div className='row'>
                   <div className='col-6'>
                     <div className='inputgrp '>
@@ -205,7 +205,7 @@ const About_Us = () => {
                     </div>
                   </div>
 
-                </div>
+                </div> */}
                 <br></br>
                 {Activeprofile!=="SAS" &&(
                 <form className='form-container' onSubmit={handleSubmit}>

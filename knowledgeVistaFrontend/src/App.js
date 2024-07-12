@@ -58,6 +58,7 @@ import ViewAdmin from "./SysAdmin/ViewAdmin.js";
 import ViewTrainers from "./SysAdmin/ViewTrainers.js";
 import ViewStudents from "./SysAdmin/ViewStudents.js";
 import SysadminLicenceupload from "./AuthenticationPages/SysadminLicenceupload.js";
+import LicenceDetails from "./AuthenticationPages/LicenceDetails.js";
 
 
 function App() {
@@ -156,7 +157,7 @@ function App() {
                       <Route path="/payment/transactionHitory" element={<PrivateRoute authenticationRequired={true} onlyadmin={true} authorizationRequired={true}><Paymenttransactions/></PrivateRoute>}/>
                       <Route path="/payment/trainer/transactionHitory" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} authorizationRequired={true} ><TransactionHistoryTrainer/></PrivateRoute>}/>
                       <Route path="/course/update/paymentSettings/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><UpdatePartialPaymentSettings/></PrivateRoute>}/>
-                      
+                      <Route path="/licenceDetails" element={<PrivateRoute authenticationRequired={true} onlyadmin={true}><LicenceDetails/></PrivateRoute>}/>
                        {/* SysAdminRoutes */}
                        <Route path="/viewAll/Admins" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewAdmin/></PrivateRoute>}/>
                        <Route path="/viewAll/Trainers" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewTrainers/></PrivateRoute>}/>

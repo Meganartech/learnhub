@@ -50,7 +50,8 @@ public class NotificationController {
 	        	 List<Long> ids=notiuserRepo.findNotificationIdsByUserId(user.getUserId(),today);
 
               	 List<Object> notimap = new ArrayList<>();
-	        	 for(Long id:ids) {
+	        
+              	 for(Long id:ids) {
 	        		 
 	        		Optional<NotificationDetails> opnotidetails=notidetailRepo.findById(id);
 	        		 if (opnotidetails.isPresent()) {

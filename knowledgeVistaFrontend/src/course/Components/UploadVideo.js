@@ -248,9 +248,12 @@ const token=sessionStorage.getItem("token")
               </div>
               </div>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 0fr 1fr",gap:"10px",padding:"20px"}}>
-                <label>Thumbnail <span className="text-danger">*</span></label>
-                    <label htmlFor='fileInput' style={{width:"100px", height:"40px"}} className='file-upload-btn'>
+            <div className='thumb'>
+                <label id='must'>Thumbnail<span className="text-danger">*</span></label>
+                    <label htmlFor='fileInput'
+                    id='must'
+                     style={{width:"100px", height:"40px"}} 
+                     className='file-upload-btn'>
                     Upload
                     </label>
                     <input

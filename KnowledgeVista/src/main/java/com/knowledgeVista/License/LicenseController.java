@@ -508,7 +508,7 @@ public class LicenseController {
 		    	          
 		    	        }
 		    	        	else if((val.isEmpty()) && (valu.equals(valu1))) {
-		    	        		
+		    	        		 System.out.println("362"+valid);
 			    	        		valid=true;
 			    	        		System.out.println("else if "+valid);
 				    	        	logger.info("License is valid");
@@ -518,13 +518,18 @@ public class LicenseController {
 			    	        	}
 		    	        else
 		    	        {
-		    	        	
+		    	        	 System.out.println("363"+valid);
 		    	        		if((license.getEnd_date().equals(timestamp))&&  !(val.isEmpty())) {
 		    	        		valid=false;
+		    	        		 System.out.println("364"+valid);
 			    	        	logger.info("License is Expired");
 		    	        	
-		    	        	}
+		    	        	}else {
 		    	        		valid=true;
+		    	        		 System.out.println("365"+valid);
+		    	        	
+		    	        	}
+		    	        	
 		    	        }
 		    	    
 

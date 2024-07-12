@@ -279,9 +279,11 @@ const EditStudent = () => {
     <div className='contentbackground'>
     <div className='contentinner'>
     {notFound ? (
+      <div className='centerflex'>
           <div className='enroll'>
             <h2>No  Student Found in this email.</h2>
             <button className='btn btn-primary' onClick={()=>{navigate(-1);}}>Go Back</button>
+          </div>
           </div>
         ) : (
   <div className='innerFrame'>

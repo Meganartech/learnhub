@@ -342,6 +342,21 @@ const SlideBar = ({activeLink,setActiveLink}) => {
          </div>
        </div>
         )} 
+        {userRole === "ADMIN"  && (
+        <li className="nav-item mt-2">
+          <a
+            className={activeLink === "/licenceDetails" ? "ActiveLink nav-link" : "nav-link text-muted"}
+            href="#"
+           
+            onClick={() => handleClick("/licenceDetails")}
+          >
+            <i className={activeLink === "/licenceDetails" ? "fa-solid fa-circle-info text-light" : "fa-solid fa-circle-info text-muted"}></i>
+            <span>Licence </span>
+          </a>
+     
+        </li>
+      )}
+        
        {userRole === "ADMIN"  && (
         <li className="nav-item mt-2">
           <a

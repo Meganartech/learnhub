@@ -44,6 +44,7 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 import io.jsonwebtoken.io.DecodingException;
 import jakarta.transaction.Transactional;
+import kotlin.jvm.internal.BooleanCompanionObject;
 
 @RestController
 public class CourseController {

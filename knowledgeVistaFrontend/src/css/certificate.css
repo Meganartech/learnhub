@@ -299,6 +299,9 @@ grid-template-columns: 6fr 1fr 12fr;
   width: 100%;
   display: flex;
 }
+#must{
+  display: block !important;
+}
 /* Media Queries */
 
 
@@ -311,6 +314,9 @@ grid-template-columns: 6fr 1fr 12fr;
   }
  .formgroup{
   gap: 10px;
+ }
+ .maxheight{
+  height: 500px !important;
  }
   .image-section,
   .form-section { 
@@ -359,9 +365,9 @@ grid-template-columns: 6fr 1fr 12fr;
   .inputgrp{
     display: block;
   }
-  .inputgrp label{
-    display: none;
-  }
+ .inputgrp label{
+  display: none;
+ }
   .inputgrp span {
     display: none;
   }

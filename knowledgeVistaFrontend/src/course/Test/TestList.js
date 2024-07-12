@@ -187,10 +187,11 @@ const TestList = () => {
     <div className='contentbackground'>
       <div className='contentinner'>
         {notFound ? (
+          <div className='centerflex'>
           <div className='enroll'>
             <h2>No test found for the  course {courseName}</h2>
             <a href={`/course/AddTest/${courseName}/${courseId}`} className='btn btn-primary'>Add Test</a>
-          </div>
+          </div></div>
         ) : (
           test && (
             <div>

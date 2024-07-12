@@ -27,7 +27,7 @@ import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
-public class SettingsController {
+public class PaymentSettingsController {
 	
 	 @Autowired
 	 private JwtUtil jwtUtil;

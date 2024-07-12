@@ -61,7 +61,9 @@
   width: 17rem;
 }
 
-
+.dash{
+  display: flex;
+}
 .hidebtn{
   border: none;
   outline: none;
@@ -294,7 +296,6 @@
   width: 800px;
   height: 200px;
   margin-top: 50px;
-  
   margin-left: 40px;
   border-radius: 10px;
   background-color: #B3B6E1;
@@ -344,4 +345,18 @@
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 10px;
+}
+
+
+
+@media screen and (max-width: 480px) {
+  .counts{
+    grid-template-columns: 1fr;
+    width: 300px ;
+    height: auto;
+  }
+  .dash{
+    display: flex;
+    flex-direction: column;
+  }
 }
