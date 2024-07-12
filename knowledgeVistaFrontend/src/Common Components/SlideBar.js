@@ -350,7 +350,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
            
             onClick={() => handleClick("/licenceDetails")}
           >
-            <i className={activeLink === "/licenceDetails" ? "fa-solid fa-circle-info text-light" : "fa-solid fa-circle-info text-muted"}></i>
+            <i className={activeLink === "/licenceDetails" ? "fa-solid fa-file-code text-light" : "fa-solid fa-file-code text-muted"}></i>
             <span>Licence </span>
           </a>
      
@@ -457,6 +457,19 @@ const SlideBar = ({activeLink,setActiveLink}) => {
         >
           <i className={activeLink === "/viewAll/Students" ? "fa-solid fa-users text-light" : "fa-solid fa-users text-muted"}></i>
           <span>Students</span>
+        </a>
+      </li>
+      )}
+
+{userRole === "SYSADMIN" && (
+      <li className="nav-item mt-2">
+        <a
+          className={activeLink === "/licenceupload" ? "ActiveLink nav-link" : "nav-link text-muted"}
+          href="#"
+          onClick={() => handleClick("/licenceupload")}
+        >
+          <i className={activeLink === "/licenceupload" ? "fa-solid fa-file-code text-light" : "fa-solid fa-file-code text-muted"}></i>
+          <span>Licence</span>
         </a>
       </li>
       )}

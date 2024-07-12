@@ -71,7 +71,7 @@ const PrivateRoute = ({sysadmin, authenticationRequired, authorizationRequired,o
             if (licence) {
             return <>{children}</>; // Allow access with valid license
             } else {
-            return <Navigate to="/about" />;
+            return <Navigate to="/licenceDetails" />;
             }
     }
       } else if (userRole === "TRAINER") {

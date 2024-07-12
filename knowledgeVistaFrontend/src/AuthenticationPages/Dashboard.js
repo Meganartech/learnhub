@@ -116,7 +116,7 @@ useEffect(() => {
       <div className="marquee-container">
       <div className="marquee-content">
         <a
-         href="/about" style={{color:"darkred"}}>
+         href="/licenceDetails" style={{color:"darkred"}}>
           License has been expired Need to uploard new License or contact "111111111111"
         </a>
       </div>
@@ -153,7 +153,7 @@ useEffect(() => {
                     {Courses.map((course, index) => (
                           <div key={index} className='countchild' style={{padding:"5px"}}>
                             <img
-                            style={{width:"140px",height:"100px", marginBottom:"10px", borderRadius:"5px"}}
+                            style={{width:"100%",height:"100px", marginBottom:"10px", borderRadius:"5px",objectFit:"cover"}}
                             src={`data:image/jpeg;base64,${course.courseImage}`}
                             alt="Course"
                           />

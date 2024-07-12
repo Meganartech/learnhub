@@ -1,11 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Assuming axios is installed
+import React, { useState, useEffect } from 'react';
 import baseUrl from '../api/utils';
+import axios from 'axios';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const LicenceDetails = () => {
+  const MySwal = withReactContent(Swal);
+  const [audioFile, setAudioFile] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [isDataList, setIsDataList] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [lastModifiedDate, setLastModifiedDate] = useState(null);
   const [licenceDetails, setLicenceDetails] = useState({}); // State for licence details
 const token=sessionStorage.getItem("token");
+const [Activeprofile,setActiverofile]=useState();
   useEffect(() => {
+    const fetchactive=async()=>{
+      const active=await axios.get(`${baseUrl}/Active/Environment`)
+      
+      setActiverofile(active.data);
+    }
     const fetchData = async () => {
       try {
         const response = await axios.get(`${baseUrl}/licence/getinfo`, {
@@ -36,8 +50,83 @@ const token=sessionStorage.getItem("token");
       }
     };
 
+  
+    fetchactive();
     fetchData();
   }, []);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+   // setLastModifiedDate(file ? new Date(file.lastModified).toLocaleString() : null);
+   setLastModifiedDate(file ? new Date(file.lastModified).toISOString().replace('Z', '') : null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const formData = new FormData();
+      const audioData = {
+        audioFile: audioFile,
+        lastModifiedDate: lastModifiedDate,
+      };
+      for (const key in audioData) {
+        formData.append(key, audioData[key]);
+      }
+  
+        const token=sessionStorage.getItem("token");
+    
+      const response=await axios.post(`${baseUrl}/api/v2/uploadfile`,formData, {
+       headers: {
+           Authorization: token
+          }
+   });
+  
+      if (response.status === 200) {
+        MySwal.fire({
+          title: "Licence Updated!",
+          text: "Licence Have been updated successfully!",
+          icon: "success",
+          confirmButtonText: "Go to Login",
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = "/login";
+          }
+        });
+      }
+   
+    } catch (error) {
+      if(error.response && error.response.status===401){
+        MySwal.fire({
+          title: "Error!",
+          text: "you are unAuthorized to access this page",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }else{
+        MySwal.fire({
+          title: "Error!",
+         text: "Some unexpected error occured try again later",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+     
+    
+    }
+  
+   // setAudioFile(null);
+  };
+
+
+  const validateForm = () => {
+    let isValid = true;
+    const errors = {};
+    setErrors(errors);
+    return isValid;
+  };
+
+
   return (
     <div className="contentbackground" style={{ height: "90vh" }}>
       <div className="contentinner">
@@ -124,16 +213,54 @@ const token=sessionStorage.getItem("token");
                     </div>
                   </div>
                 </div>
+                <div className='row'>
+                  
+                <div className='col-6'>
+                {Activeprofile!=="SAS" &&(
+                <form className='form-container' onSubmit={handleSubmit}>
+                 
+                     
+                      <div className='inputgrp mt-3'>
+                        <label className='labl ' >Add New License </label>
+                        <span>:</span>
+                 
+                        <input
+                          type='file'
+                          className=''
+                          placeholder='Choose  File'
+                          accept=".xml"
+                          name='audioFile'
+                          onChange=
+                          {(e) => {
+                            setAudioFile(e.target.files[0]);
+                            handleFileChange(e);
+                          }}
+                          style={{ padding: "0px", width: "20rem" }}
+                        />  
+                  </div>
+               
+                    <input
+                      type='submit'
+                      value='Upload'
+                      className='btn btn-primary'
+                    />
+                </form>
+)}
+</div>
+                </div>
               </div>
             </div>
           </div>
+         
+
           <div className='modal-footer'>
           <input
             onClick={() => window.open('https://www.youtube.com/', '_blank')}
-            value='Upgrade'
-            className='btn btn-primary'
+            value='Upgrade Licence here'
+            className='btn btn-warning'
           />
         </div>
+  
         </div>
       </div>
     </div>

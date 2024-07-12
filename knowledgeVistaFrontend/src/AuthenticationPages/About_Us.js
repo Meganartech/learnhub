@@ -45,79 +45,7 @@ const About_Us = () => {
   
   }, []); 
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-   // setLastModifiedDate(file ? new Date(file.lastModified).toLocaleString() : null);
-   setLastModifiedDate(file ? new Date(file.lastModified).toISOString().replace('Z', '') : null);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    try {
-      const formData = new FormData();
-      const audioData = {
-        audioFile: audioFile,
-        lastModifiedDate: lastModifiedDate,
-      };
-      for (const key in audioData) {
-        formData.append(key, audioData[key]);
-      }
-  
-        const token=sessionStorage.getItem("token");
-    
-      const response=await axios.post(`${baseUrl}/api/v2/uploadfile`,formData, {
-       headers: {
-           Authorization: token
-          }
-   });
-  
-      if (response.status === 200) {
-        MySwal.fire({
-          title: "Licence Updated!",
-          text: "Licence Have been updated successfully!",
-          icon: "success",
-          confirmButtonText: "Go to Login",
-      }).then((result) => {
-          if (result.isConfirmed) {
-              window.location.href = "/login";
-          }
-        });
-      }
-   
-    } catch (error) {
-      if(error.response && error.response.status===401){
-        MySwal.fire({
-          title: "Error!",
-          text: "you are unAuthorized to access this page",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }else{
-        MySwal.fire({
-          title: "Error!",
-         text: "Some unexpected error occured try again later",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-     
-    
-    }
-  
-   // setAudioFile(null);
-  };
-
-
-  const validateForm = () => {
-    let isValid = true;
-    const errors = {};
-    setErrors(errors);
-    return isValid;
-  };
-
-
+ 
   return (
     <div className="contentbackground" style={{height:"90vh"}}>
       <div className="contentinner"  >
@@ -179,59 +107,12 @@ const About_Us = () => {
                   </div>
                 </div>
                 <br></br>
-                {/* <div className='row'>
-                  <div className='col-6'>
-                    <div className='inputgrp'>
-                      <label className='labl' >Start Date </label>
-                      <span>:</span>
-                      <label >{isDataList && isDataList.length > 0?(isDataList[0].StartDate===""?"NA":isDataList[0].StartDate):""}</label>
-                    </div>
-                  </div>
-                  <div className='col-6'>
-                    <div className='inputgrp'>
-                      <label className='lab'>End Date </label>
-                      <span>:</span>
-                      <label >{isDataList && isDataList.length > 0?(isDataList[0].EndDate===""?"NA":isDataList[0].EndDate):""}</label>
-                    </div>
-                  </div>
-                </div> */}
-                {/* <br></br>
-                <div className='row'>
-                  <div className='col-6'>
-                    <div className='inputgrp '>
-                      <label className='labl' >Version</label>
-                      <span>:</span>
-                      <label  >{isDataList && isDataList.length > 0?isDataList[0].Type:""}</label>
-                    </div>
-                  </div>
-
-                </div> */}
+             
                 <br></br>
-                {Activeprofile!=="SAS" &&(
-                <form className='form-container' onSubmit={handleSubmit}>
-                  <div className='row'>
-                    <div className='col-6'>
-                     
-                      <div className='inputgrp'>
-                        <label className='labl' >Add New License File </label>
-                        <span>:</span>
-                 
-                        <input
-                          type='file'
-                          className=''
-                          placeholder='Choose  File'
-                          accept=".xml"
-                          name='audioFile'
-                          onChange=
-                          {(e) => {
-                            setAudioFile(e.target.files[0]);
-                            handleFileChange(e);
-                          }}
-                          style={{ padding: "0px", width: "20rem" }}
-                        />
-                      </div>
-                    </div>
-                    <div className='col-6'>
+                
+                <form className='form-container'>
+                <div className='row'>
+                <div className='col-6'>
                       <div className='inputgrp'>
                         <label className='lab' > Feedback</label>
                         <span>:</span>
@@ -242,17 +123,17 @@ const About_Us = () => {
                           value=" " />
                       </div>
                     </div>
-                  </div>
+                    </div>
                  
                   <div className='modal-footer'>
                     <input
                       type='submit'
-                      value='Upload'
+                      value='Send'
                       className='btn btn-primary'
                     />
                   </div>
                 </form>
-)}
+
 
               </div>
 
