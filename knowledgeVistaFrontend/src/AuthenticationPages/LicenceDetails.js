@@ -255,7 +255,7 @@ const [Activeprofile,setActiverofile]=useState();
 
           <div className='modal-footer'>
           <input
-            onClick={() => window.open('https://www.youtube.com/', '_blank')}
+            onClick={() => window.open('https://learnhub.vsmartengine.com/', '_blank')}
             value='Upgrade Licence here'
             className='btn btn-warning'
           />
