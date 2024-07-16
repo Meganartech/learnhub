@@ -9028,7 +9028,6 @@ a:focus {
   outline: 0;
 }
 #wrapper {
-  
   display: flex;
 }
 #wrapper #content-wrapper {
@@ -9463,7 +9462,6 @@ a:focus {
 }
 .sidebar {
   width: 6.5rem;
-
 }
 .sidebar  {
   position: relative;

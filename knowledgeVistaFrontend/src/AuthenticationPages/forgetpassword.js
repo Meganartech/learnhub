@@ -206,7 +206,7 @@ const ForgetPassword = () => {
         {emailError && <div className="invalid-feedback">{emailError}</div>}
       </div>
       <button className="btn btn-primary btn-lg btn-block" type="submit" disabled={isForgetButtonDisabled}>
-        Login
+        Verify 
       </button>
       <button className="btn btn-warning btn-lg btn-block" onClick={()=>{navigate("/login")}}>
         Cancel

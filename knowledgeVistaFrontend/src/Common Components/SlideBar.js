@@ -5,7 +5,7 @@ import logo from "../images/logo.png"
 import baseUrl from '../api/utils';
 import axios from 'axios';
 
-const SlideBar = ({activeLink,setActiveLink}) => {
+const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
   const [isvalid, setIsvalid] = useState();
   const [isEmpty, setIsEmpty] = useState();
   const userRole = sessionStorage.getItem("role");
@@ -53,22 +53,26 @@ const SlideBar = ({activeLink,setActiveLink}) => {
     {
     if((link==="/about" || link==="/admin/dashboard")&& isEmpty)
     {
+      handleSidebarToggle();
       handleSetActiveLink(link);
       navigate(link);
     }
     else if ((link==="/about" || link==="/admin/dashboard")&& !isEmpty && !isvalid) 
     {
+      handleSidebarToggle();
       handleSetActiveLink(link);
         navigate(link);
     } 
     else if (!isEmpty && isvalid)
      {
+      handleSidebarToggle();
       handleSetActiveLink(link);
         navigate(link);
     } 
   } 
   else if(userRole==="USER" || userRole==="SYSADMIN")
   {
+    handleSidebarToggle();
     handleSetActiveLink(link);
     navigate(link);
   }
@@ -81,14 +85,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
           
       id="accordionSidebar"
     >
-      <a href="#" className="sidebar-brand d-flex align-items-center justify-content-center mt-4">
-        <div className='logoicon'>
-          <img src={logo} alt='logo'/> 
-        <div className="sidebar-brand-text  ">Learn HUB</div>
-          {/* <i className="fa-solid fa-book-open-reader text-dark"></i> */}
-        </div>
-        {/* <div className="sidebar-brand-text mx-3 text-dark ">Learn HUB</div> */}
-      </a>
+     
 
       <hr className="sidebar-divider " />
      
@@ -140,7 +137,7 @@ const SlideBar = ({activeLink,setActiveLink}) => {
           setActiveLink("/course/admin/edit");
         }}>
         <i className= " fa-solid fa-edit text-light pl-4"></i>
-        <span>Edit Courses</span>
+        <span> Edit Courses</span>
       </a>
 
       <a className={`collapse-item mb-2 text-light nav-link ${activeLink === "/course/addcourse" ? "SubActiveLink " : " "}`}

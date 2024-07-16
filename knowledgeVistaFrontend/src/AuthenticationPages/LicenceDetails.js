@@ -5,9 +5,10 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const LicenceDetails = () => {
+ 
   const MySwal = withReactContent(Swal);
   const [audioFile, setAudioFile] = useState(null);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({audioFile:""});
   const [isDataList, setIsDataList] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [lastModifiedDate, setLastModifiedDate] = useState(null);
@@ -55,16 +56,39 @@ const [Activeprofile,setActiverofile]=useState();
     fetchData();
   }, []);
   const handleFileChange = (event) => {
+    const { name, value } = event.target;
+    let error = '';
     const file = event.target.files[0];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    if (fileExtension !== 'xml') {
+      error="please select .xml file"
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: error
+      }));
+      setSelectedFile(null);
+    }else{
+    setAudioFile(file);
     setSelectedFile(file);
+
    // setLastModifiedDate(file ? new Date(file.lastModified).toLocaleString() : null);
    setLastModifiedDate(file ? new Date(file.lastModified).toISOString().replace('Z', '') : null);
-  };
+   setErrors({ audioFile: "" });  
+  }
+   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     try {
+
+    if (!audioFile) {
+      setErrors({ audioFile: "Please select a file ." }); // Handle missing file
+      return;
+    }
+    if(errors.audioFile){
+      return;
+    }
       const formData = new FormData();
       const audioData = {
         audioFile: audioFile,
@@ -129,114 +153,99 @@ const [Activeprofile,setActiverofile]=useState();
 
   return (
     <div className="contentbackground" style={{ height: "90vh" }}>
-      <div className="contentinner">
-        <div className="innerFrame" style={{ gridTemplateColumns: "none", gridTemplateRows: "none" }}>
-          <div className="mainform" style={{ gridTemplateColumns: "none", gridTemplateRows: "none" }}>
-            <div className="formgroup" style={{ overflow: "unset" }}>
+      <div className="contentinner p-4 pb-4">
+       
               <h2 style={{ textDecoration: "underline", textAlign: "center" }}>Licence Info</h2>
   
-              <div style={{ paddingLeft: "3rem", paddingRight: "3rem" }}>
-                <div className="row">
-                  <div className="col-6">
-                    <div className="inputgrp">
-                      <label className="labl">Product name </label>
+              <div className='twosplit' style={{marginBottom:"10px" ,gap:"20px"}}>
+                    <div className="inputgrp2">
+                      <label >Product name </label>
                       <span>:</span>
                       <label>{licenceDetails.ProductName || 'NA'}</label>
                     </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="inputgrp">
-                      <label className="lab">Company Name </label>
+                 
+                    {/* <div className="inputgrp2">
+                      <label >Company Name </label>
                       <span>:</span>
                       <label>{licenceDetails.CompanyName || 'NA'}</label>
                     </div>
-                  </div>
-                </div>
-                <br />
-                <div className="row">
-                  <div className="col-6">
-                    <div className="inputgrp">
-                      <label className="labl">Trainers </label>
+                  */}
+              
+                    <div className="inputgrp2">
+                      <label >Trainers </label>
                       <span>:</span>
                       <label>{licenceDetails.trainer || 'NA'}</label>
                     </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="inputgrp">
-                      <label className="lab">Students </label>
+                 
+                    <div className="inputgrp2">
+                      <label >Students </label>
                       <span>:</span>
                       <label>{licenceDetails.student || 'NA'}</label>
                     </div>
-                  </div>
-                </div>
-                <br />
-                <div className="row">
-                  <div className="col-6">
-                    <div className="inputgrp">
-                      <label className="labl">Course </label>
+                  
+               
+                    <div className="inputgrp2">
+                      <label >Course </label>
                       <span>:</span>
                       <label>{licenceDetails.course || 'NA'}</label>
                     </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="inputgrp">
-                      <label className="lab">Type </label>
+                
+                    <div className="inputgrp2">
+                      <label >Type </label>
                       <span>:</span>
                       <label>{licenceDetails.Type || 'NA'}</label>
                     </div>
-                  </div>
-                </div>
-                <br />
-                <div className="row">
-                  <div className="col-6">
-                    <div className="inputgrp">
-                      <label className="labl">Start Date </label>
+                 
+                
+                    <div className="inputgrp2">
+                      <label >Start Date </label>
                       <span>:</span>
                       <label>{licenceDetails.StartDate}</label>
                     </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="inputgrp">
-                      <label className="lab">End Date </label>
+                  
+                    <div className="inputgrp2">
+                      <label >End Date </label>
                       <span>:</span>
                       <label>{licenceDetails.EndDate}</label>
                     </div>
-                  </div>
-                </div>
-                <br />
-                <div className="row">
-                  <div className="col-6">
-                    <div className="inputgrp">
-                      <label className="labl">Storage Size </label>
+              
+                    <div className="inputgrp2">
+                      <label >Storage Size </label>
                       <span>:</span>
                       <label>{licenceDetails.StorageSize}</label>
                     </div>
-                  </div>
-                </div>
-                <div className='row'>
-                  
-                <div className='col-6'>
+
+                 
+             
+               
                 {Activeprofile!=="SAS" &&(
-                <form className='form-container' onSubmit={handleSubmit}>
-                 
-                     
-                      <div className='inputgrp mt-3'>
-                        <label className='labl ' >Add New License </label>
+                <form onSubmit={handleSubmit}>
+                      <div className='inputgrp2' style={{height:"80px",alignItems:"flex-start"}} >
+                        <label >Add New License </label>
                         <span>:</span>
-                 
+                  <div>         
+                  <div>
+                   <label htmlFor='audioFile' 
+                   style={{width:"200px"}} 
+                   className='file-upload-btn'>  upload file</label>
+                    {selectedFile && (
+                <p style={{fontSize:"smaller"}}>{selectedFile.name}</p> )}
+            <div className="text-danger" >
+            {errors.audioFile}
+          </div>
+             </div>
                         <input
                           type='file'
-                          className=''
-                          placeholder='Choose  File'
+                          className={`file-upload ${errors.audioFile && 'is-invalid'}`}
+                          id="audioFile"
                           accept=".xml"
                           name='audioFile'
                           onChange=
-                          {(e) => {
-                            setAudioFile(e.target.files[0]);
-                            handleFileChange(e);
-                          }}
-                          style={{ padding: "0px", width: "20rem" }}
-                        />  
+                          {handleFileChange}
+                        /> 
+                      
+                         
+                        </div>
                   </div>
                
                     <input
@@ -247,23 +256,17 @@ const [Activeprofile,setActiverofile]=useState();
                 </form>
 )}
 </div>
-                </div>
-              </div>
-            </div>
-          </div>
-         
 
           <div className='modal-footer'>
           <input
             onClick={() => window.open('https://learnhub.vsmartengine.com/', '_blank')}
             value='Upgrade Licence here'
             className='btn btn-warning'
+            readOnly
           />
         </div>
-  
-        </div>
-      </div>
-    </div>
+  </div>
+  </div>     
   );
   
 }

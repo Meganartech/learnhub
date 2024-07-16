@@ -86,9 +86,9 @@ const Partialpaymentsetting = ({enablechecked ,setenablechecked,handleSubmit,set
 
         
         <div>
-        <h2>
+        <h1>
           <span style={{ textDecoration: 'underline' }}>Partial Payment Settings</span>
-        </h2>
+        </h1>
         <h5>
           <input type="checkbox" className="m-4" name='check' checked={enablechecked} onChange={()=>{setenablechecked(!enablechecked)}}/>
           <p htmlFor='check' style={{ display: "inline" }}>

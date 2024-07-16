@@ -132,12 +132,19 @@ const handlemarkallasRead =async (notificationIds)=>{
   
     
       <div className="gridnav">
-  
+      <a href="#" className="logodesign logodisphide ">
+        <div className='logoicon'>
+          <img src={logo} alt='logo'/> 
+        <div className="">Learn HUB</div>
+         
+        </div>
+     
+      </a>
       
       <div className="barhide mt-4" onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
 
     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
-      <div className="searchbar mt-2" style={{gridColumn:"2"}}>
+      <div className="searchbar mt-2" style={{gridColumn:"3"}}>
     <i className="fa fa-search pt-1 pl-1 " aria-hidden="true"></i>
     
         <input
@@ -157,7 +164,7 @@ const handlemarkallasRead =async (notificationIds)=>{
     </div>
     )}
    
-<div className="navbar-nav ml-auto mt-3  " style={{gridColumn:"3"}}>
+<div className="navbar-nav ml-auto mt-3  " style={{gridColumn:"4"}}>
   <div className="nav-item dropdown no-arrow">
     <a
     onClick={()=>{setisopen(! isopen)}}
@@ -181,7 +188,7 @@ const handlemarkallasRead =async (notificationIds)=>{
     </div>
 </div>
  
-      <ul className="navbar-nav ml-auto " style={{gridColumn:"4"}} >
+      <ul className="navbar-nav ml-auto " style={{gridColumn:"5"}} >
         <li className="nav-item dropdown no-arrow ">
           
           <a
@@ -233,6 +240,7 @@ const handlemarkallasRead =async (notificationIds)=>{
           </ul>
           </div>
           <div className="gridnav">
+            <div></div>
           <div></div>
           <div></div>
           <div></div>

@@ -284,10 +284,10 @@ const handlenextclick =(e)=>{
                 setnextclick={setnextclick} courseamount={formData.courseAmount} setDurations={setDurations} durations={durations}
                  installmentData={installmentData} setInstallmentData={setInstallmentData}/>):(
                 <div className='divider ml-2'>
-                    <h1 style={{ textDecoration: "underline" }}>Setting up a Course</h1>
+                    <h2 style={{ textDecoration: "underline" }}>Setting up a Course</h2>
                     <form >
                         {/* Form fields */}
-                        <div className='formgroup mt-1 maxheight' >
+                        <div className='formgroup pt-1 maxheight' >
                             {/* Course Title */}
                             <div className='inputgrp' ref={courseName}>
                                 <label htmlFor='courseName' >Course Title <span className="text-danger">*</span></label>
@@ -299,7 +299,7 @@ const handlenextclick =(e)=>{
                                         id='courseName'
                                         name="courseName"
                                         value={formData.courseName}
-                                        className={`form-control form-control-lg mt-2 ${errors.courseName && 'is-invalid'}`}
+                                        className={`form-control form-control-lg  ${errors.courseName && 'is-invalid'}`}
                                         placeholder="Course Title"
                                         onChange={handleChange}
                                         autoFocus
@@ -345,7 +345,7 @@ const handlenextclick =(e)=>{
                                         id='courseCategory'
                                         name="courseCategory"
                                         onChange={handleChange}
-                                        className={`form-control form-control-lg mt-1 ${errors.courseCategory && 'is-invalid'}`}
+                                        className={`form-control form-control-lg  ${errors.courseCategory && 'is-invalid'}`}
                                         placeholder="Course Category"
                                         value={formData.courseCategory}
                                         required
@@ -407,7 +407,7 @@ const handlenextclick =(e)=>{
                                         name="Duration"
                                         value={formData.Duration}
                                         onChange={handleChange}
-                                        className={`form-control form-control-lg mt-1 ${errors.Duration && 'is-invalid'}`}
+                                        className={`form-control form-control-lg  ${errors.Duration && 'is-invalid'}`}
                                         required
                                     />
                                     <div className="invalid-feedback">
@@ -426,7 +426,7 @@ const handlenextclick =(e)=>{
                                         placeholder='No Of Seats'
                                         id='Noofseats'
                                         name="Noofseats"
-                                        className={`form-control form-control-lg mt-1 ${errors.Noofseats && 'is-invalid'}`}
+                                        className={`form-control form-control-lg  ${errors.Noofseats && 'is-invalid'}`}
                                         value={formData.Noofseats}
                                         onChange={handleChange}
                                         required
@@ -449,7 +449,7 @@ const handlenextclick =(e)=>{
                                         id='courseAmount'
                                         name="courseAmount"
                                         value={formData.courseAmount}
-                                        className={`form-control form-control-lg mt-1 ${errors.courseAmount && 'is-invalid'}`}
+                                        className={`form-control form-control-lg  ${errors.courseAmount && 'is-invalid'}`}
                                         onChange={handleChange}
                                         required
                                     />

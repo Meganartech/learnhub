@@ -1,6 +1,18 @@
 /* Reset all margins, padding, and borders */
-
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 /* Set default font family and size */
+body {
+  font-family: Arial, sans-serif; /* Example font family */
+  font-size: 1.125rem;
+  color: rgb(0, 0, 0); /* Example font size */
+}
+input::placeholder {
+  font-size: 1.125rem; /* e.g., 14px, 1rem */
+}
 .centerflex{
 display: flex;
 height: 100%;
@@ -15,11 +27,7 @@ align-items: center;
   border-radius: 10px;
   text-align: center;
 }
-body {
-  font-family: Arial, sans-serif; /* Example font family */
-  font-size: 16px;
-  color: black; /* Example font size */
-}
+
 .lesson{
     padding: 30px;
     padding-bottom: 0px;
@@ -255,12 +263,21 @@ body {
 }
 
 @media screen and (max-width: 480px) {
+
+body {
+  font-family: Arial, sans-serif; /* Example font family */
+  font-size: 0.9rem;
+  color: rgb(0, 0, 0); /* Example font size */
+}
+textarea::placeholder,
+input::placeholder {
+  font-size: 0.9rem; /* e.g., 14px, 1rem */
+}
 .main{
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 2fr;
   padding: 10px;
 }
-
 
 }
 

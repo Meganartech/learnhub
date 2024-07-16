@@ -225,7 +225,6 @@ const token=sessionStorage.getItem("token")
                  onChange={handleChange}
                  disabled={isSubmitting}
                  className={`form-control form-control-lg mt-1 ${errors.Lessontitle && 'is-invalid'}`}
-                
                  required/>
                   <div className="invalid-feedback">
                 {errors.Lessontitle}

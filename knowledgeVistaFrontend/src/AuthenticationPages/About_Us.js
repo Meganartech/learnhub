@@ -48,101 +48,76 @@ const About_Us = () => {
  
   return (
     <div className="contentbackground" style={{height:"90vh"}}>
-      <div className="contentinner"  >
+      <div className="contentinner p-4"  >
 
-        <div className='innerFrame ' style={{ gridTemplateColumns: "none", gridTemplateRows: "none" }}>
-          <div className='mainform' style={{ gridTemplateColumns: "none", gridTemplateRows: "none" }}>
-            <div className='formgroup' style={{ overflow: "unset" }}>
               <h2 style={{ textDecoration: "underline", textAlign: "center" }}>Product Info</h2>
 
-              <div style={{ paddingLeft: "3rem", paddingRight: "3rem" }}>
-                <div className='row'>
-                  <div className='col-6'>
-                    <div className='inputgrp'>
-                      <label className='labl' >Product name </label>
+           <div className='twosplit'>
+              
+                    <div className='inputgrp2'>
+                      <label >Product name </label>
                       <span>:</span>
                       <label >{isDataList && isDataList.length > 0?isDataList[0].ProductName:""}</label>
                     </div>
-                  </div>
-                  <div className='col-6'>
-                    <div className='inputgrp'>
-                      <label className='lab'  >HotFix Installed (if any) </label>
+                 
+                    <div className='inputgrp2'>
+                      <label   >HotFix Installed (if any) </label>
                       <span>:</span>
                       <label  >NO </label>
                     </div>
-                  </div>
-                </div>
-                <br></br>
-                <div className='row'>
-                  <div className='col-6'>
-                    <div className='inputgrp'>
-                      <label className='labl' >Company Name </label>
+                
+                    <div className='inputgrp2'>
+                      <label  >Company Name </label>
                       <span>:</span>
                       <label  >{isDataList && isDataList.length > 0?isDataList[0].CompanyName:""}</label>
                     </div>
-                  </div>
-                  <div className='col-6'>
-                    <div className='inputgrp'>
-                      <label className='lab' >Contact Support No </label>
+               
+                    <div className='inputgrp2'>
+                      <label  >Contact Support No </label>
                       <span>:</span>
                       <label >{isDataList && isDataList.length> 0?isDataList[0].Contact:""} </label>
                     </div>
-                  </div>
-                </div>
-                <br></br>
-                <div className='row'>
-                  <div className='col-6'>
-                    <div className='inputgrp'>
-                      <label className='labl'  >Product Version </label>
+                 
+                
+                    <div className='inputgrp2'>
+                      <label   >Product Version </label>
                       <span>:</span>
                       <label >{isDataList && isDataList.length> 0?isDataList[0].version:""} </label>
                     </div>
-                  </div>
-                  <div className='col-6'>
-                    <div className='inputgrp'>
-                      <label className='lab' >Contact E-Mail </label>
+                 
+                    <div className='inputgrp2'>
+                      <label  >Contact E-Mail </label>
                       <span>:</span>
                       <label >{isDataList && isDataList.length > 0?isDataList[0].Email:""}</label>
                     </div>
-                  </div>
-                </div>
-                <br></br>
-             
-                <br></br>
                 
-                <form className='form-container'>
-                <div className='row'>
-                <div className='col-6'>
-                      <div className='inputgrp'>
-                        <label className='lab' > Feedback</label>
+                         
+               
+               
+                      <div className='inputgrp2'>
+                        <label  > Feedback</label>
                         <span>:</span>
-                       
                         <input
+                        style={{width:"100%"}}
                           className='disabledbox'
                           readOnly
                           value=" " />
                       </div>
-                    </div>
-                    </div>
+                  
                  
-                  <div className='modal-footer'>
-                    <input
-                      type='submit'
-                      value='Send'
+                 
+                
+                </div> 
+                <div className='modal-footer mt-5'>
+                    <button
                       className='btn btn-primary'
-                    />
+                    > Send</button>
                   </div>
-                </form>
-
-
               </div>
 
-
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
+  
+     
   )
 }
 

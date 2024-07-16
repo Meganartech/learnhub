@@ -12,7 +12,18 @@
     border-bottom-right-radius: 10px;
     
 }
+.logodesign{
+  height: 4.375rem;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  z-index: 1;
+}
 .logoicon{
+  display:flex ;
   color: black;
 }
 .logoicon img{
@@ -24,10 +35,12 @@
 }
 .navgrid{
     height: 80px;
+    background-color: #f8f9fc;
+    
   }
   .gridnav{
     display: grid;
-    grid-template-columns: 1fr  6fr  1fr 1fr;
+    grid-template-columns:1fr 1fr  6fr  1fr 1fr;
     width: 100%;
     gap: 10px;
     margin-bottom: 10px;
@@ -156,7 +169,7 @@
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     justify-items: center;
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     
   }
   .boderleftright{
@@ -295,6 +308,9 @@
 .barhide{
   display:none;
 }
+.logodisphide{
+  display: block;
+}
 
 @media screen and (max-width: 480px) {
   .ActiveLink{
@@ -311,6 +327,9 @@
   }
   .barhide{
     display: block;
+  }
+  .logodisphide{
+    display: none;
   }
   .boderleftright{
     padding: 5px;
