@@ -147,10 +147,10 @@ useEffect(() => {
                         <p>{countdetails.trainercount} Trainers</p>
                         </div>
                   </div>
-                  {Courses.map((course, index) => ( <>
+                  
                   <h5 className='font-weight-bold mt-5 ml-5'>Popular Courses</h5>
                   <div className='counts mb-4 ' style={{marginTop:"0px"}}>
-                   
+                  {Courses.map((course, index) => (
                           <div key={index} className='countchild' style={{padding:"5px"}}>
                             <img
                             style={{width:"100%",height:"100px", marginBottom:"10px", borderRadius:"5px",objectFit:"cover"}}
@@ -164,10 +164,10 @@ useEffect(() => {
                       
                 
                     
-
+                    ))}
 
                     </div>
-                    </>))}
+                    
               </div>
            
                     
