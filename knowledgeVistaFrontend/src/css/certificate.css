@@ -159,6 +159,8 @@ grid-template-columns: 6fr 1fr 12fr;
   
   border-radius: 5px;
 }
+.atgrid input,
+.form-group input,
 .inputgrp input{
     border: 1px solid black;
     width: 100%;
@@ -170,6 +172,8 @@ grid-template-columns: 6fr 1fr 12fr;
 .inputgrp .disabledbox{
   border:0px;
 }
+.form-group textarea,
+.inputgrp2 textarea,
 .inputgrp textarea{
   border: 1px solid black;
 }
@@ -188,7 +192,7 @@ grid-template-columns: 6fr 1fr 12fr;
 .disabledbox{
   background-color: var(--input-bg);
   width: 100%;
-  border:0px;
+  border:0px !important;
   outline: none;
   border-radius: 5px;
   padding: 15px;
@@ -370,7 +374,7 @@ grid-template-columns: 6fr 1fr 12fr;
 } 
 /*style for outlet*/
  .maxheight{
-  height: 400px !important;
+  height: 500px !important;
  }
   .image-section,
   .form-section { 
@@ -415,7 +419,7 @@ grid-template-columns: 6fr 1fr 12fr;
  
   .formgroup {
      
-   gap: 40px;
+   gap: 10px;
     max-height: none;
     
 
@@ -437,11 +441,15 @@ grid-template-columns: 6fr 1fr 12fr;
  margin-top: auto;
  margin-left: 2px;
 }
+.form-group textarea,
 .inputgrp2 textarea,
 .inputgrp textarea{
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
 }
+.atgrid input,
+.form-group input,
+.disabledbox,
 .inputgrp2 input,
 .inputgrp  select,
 .inputgrp input{

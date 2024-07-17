@@ -146,7 +146,6 @@ public class Listview {
             byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
             user.setProfile(decompressedImage);
             user.setCourses(null);
-
         	user.setAllotedCourses(null);
             return ResponseEntity.ok(user);
          }else {

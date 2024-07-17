@@ -188,15 +188,17 @@ const EditQuestion = () => {
   return (
     <div className='contentbackground'>
       <div className='contentinner'>
-        <div className='atdiv'  style={{padding:"30px"}}>
-          <div className='atgrid' style={{height:"400px"}}>
-            <input 
+        <div className='atdiv'  >
+          <div className='atgrid' >
+            <div>            <input 
               className={`form-control form-control-lg ${errors.questionText && 'is-invalid'}`}
               autoFocus
               value={questionText}
               onChange={handleQuestionTextChange}
             />
             {errors.questionText && <div className="invalid-feedback">{errors.questionText}</div>}
+            </div>
+
             <ul className='listgroup'>
               {Object.keys(options).map((optionKey, index) => (
                 <li className='choice' key={index}>

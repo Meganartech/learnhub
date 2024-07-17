@@ -55,7 +55,12 @@ public class MserRegistrationController {
 	    		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ADMIN");
 	    	}
 	        Optional<Muser> existingUser = muserrepositories.findByEmail(email);
+	       
 	        Optional<Muser>existingInstitute =muserrepositories.findByInstitutionName(institutionName);
+	        Optional<Muser> existingusername=muserrepositories.findByname(username);
+	        if(existingusername.isPresent()) {
+	        	 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NAME");
+	        }
 	            if (existingUser.isPresent()) {
 	                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
 	            } 

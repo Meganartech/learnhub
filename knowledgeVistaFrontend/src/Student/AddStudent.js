@@ -224,6 +224,11 @@ const AddStudent = () => {
                   ...prevErrors,
                   email: "This email is already registered."
                 }));
+              }else if (error.response.data==="NAME"){
+                setErrors(prevErrors => ({
+                  ...prevErrors,
+                  username: "This UserName is already Taken."
+                }));
               }else if(error.response.data==="LIMIT"){
                 MySwal.fire({
                   title: "Limit Reached!",

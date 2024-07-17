@@ -73,7 +73,7 @@ const SysadminLicenceupload = () => {
                   <div className='row'>
                     <div className='col-6'>
                      
-                      <div className='inputgrp'>
+                      <div className='inputgrp2'>
                         <label className='labl' >Add New License File </label>
                         <span>:</span>
                  

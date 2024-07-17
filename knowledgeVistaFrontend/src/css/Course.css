@@ -13,6 +13,11 @@ body {
 input::placeholder {
   font-size: 1.125rem; /* e.g., 14px, 1rem */
 }
+.assignlist{
+  background-color: #F2E1F5;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
 .mybtn{
   
   min-width: 100px;
@@ -282,6 +287,9 @@ body {
 textarea::placeholder,
 input::placeholder {
   font-size: 0.9rem; /* e.g., 14px, 1rem */
+}
+.assignlist{
+  grid-template-columns: 1fr 1fr;
 }
 .mybtn{
   margin-top: 4px;

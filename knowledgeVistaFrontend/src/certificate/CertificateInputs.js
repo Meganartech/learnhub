@@ -218,6 +218,8 @@ const certificateInputs=(
   <div className='image-group'>
   <img
             src={getSign || signature}
+              width="200px"
+              height="200px"
             alt='Signature'
             className='profile-image'
           />
@@ -330,7 +332,10 @@ const certificateView=(
         <div className='mainform'>
           <div className='profile-picture'>
           <div className='image-group'>
-              <img src={sign} alt='signature' />
+              <img src={sign} 
+              width="200px"
+              height="200px"
+              alt='signature' />
             </div>
           
           </div>

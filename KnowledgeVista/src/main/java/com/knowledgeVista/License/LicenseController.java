@@ -965,7 +965,7 @@ public class LicenseController {
 			        // Replace with XPath or element access logic based on your XML structure
 			        String licenseType = document.getElementsByTagName("type").item(0).getTextContent();
 
-		            if (licenseType == null) {
+		            if (licenseType.equals(null)) {
 		                // Handle invalid XML or missing type information (e.g., return bad request or log error)
 		                return ResponseEntity.badRequest().body("Invalid XML format or missing license type");
 		            }

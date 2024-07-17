@@ -86,7 +86,7 @@ const CourseDetails = () => {
                   type="text"
                   id="courseName"
                   value={courseName}
-                  className=' disabledbox '
+                  className='disabledbox '
         
                   
                 />
@@ -122,7 +122,7 @@ const CourseDetails = () => {
                 />
               </div>
             </div>
-            <div></div>
+           
             <div className="second">
               <h2>Course Image</h2>
               {courseImage && (

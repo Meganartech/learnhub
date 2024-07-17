@@ -323,6 +323,10 @@
 }
 
 @media screen and (max-width: 480px) {
+  .listbackinner{
+    grid-template-columns: 1fr 10fr 1fr 1fr ;
+    gap:5px;
+  }
   .notification-count{
     right:-10px;
   }
@@ -346,6 +350,7 @@
   height: 100px;
  }
   .notificationPanel{
+    min-width: 300px;
     width: auto;
   }
 

@@ -182,10 +182,10 @@ const[initialsave,setinitialsave]=useState(false);
   const getsettings=( 
   <div className="contentinner">
   <div className='innerFrameforset '>
-  <h2>Razorpay Settings</h2>
+  <h2 className='mb-5'>Razorpay Settings</h2>
     <div >
-      <div className='formgroup pt-4' style={{height:'400px '}}>
-        <div style={{ paddingLeft:"5rem", paddingRight:"10rem"}}>
+      <div className='formgroup pt-4' >
+        <div >
           <div className='inputgrp'>
             <label htmlFor='Razorpay_Key'>Razorpay Key <span className="text-danger">*</span></label>
             <span>:</span>
@@ -243,11 +243,11 @@ const[initialsave,setinitialsave]=useState(false);
 
 const oldSettings =(<div className="contentinner">
 <div className='innerFrameforset '>
-<h2>Razorpay Settings</h2>
+<h2 className='mb-5'>Razorpay Settings</h2>
   <div >
     <div className='formgroup'>
    
-      <div style={{ paddingLeft:"5rem", paddingRight:"10rem"}}>
+      <div >
         <div className='inputgrp'>
           <label htmlFor='Razorpay_Key'>Razorpay Key </label>
           <span>:</span>

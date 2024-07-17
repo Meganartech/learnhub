@@ -67,9 +67,7 @@ const TestList = () => {
     try {
       // Check if9 there are errors
 
-      console.log("hiii")
-      console.log(name)
-      console.log(value)
+     
       if (!errors[name] && value !== null) {
         const formData = new FormData();
         formData.append(name, value);
@@ -248,7 +246,7 @@ const TestList = () => {
                   )}
                 </span>
                 <span className='edititems'>
-                  <b>Number Of Attempt:</b>
+                  <b>No Of Attempt:</b>
                   {editingField === 'noofattempt' ? (
                     <>
                       <div>

@@ -72,41 +72,41 @@ const TrainerProfile = () => {
       </div>
 
       <div className='formgroup' style={{backgroundColor:"#F2E1F5",padding:"10px",paddingLeft:"20px",borderRadius:"20px" }} >
-        <div className='inputgrp' >
+        <div className='inputgrp2' >
           <label htmlFor='Name'> Name</label>
           <span>:</span>
           <label>
            {userData.username}</label>
         </div>
-        <div className='inputgrp'>
+        <div className='inputgrp2'>
           <label htmlFor='email'> Email</label>
           <span>:</span>
           <label>
          {userData.email}</label>
         </div>
 
-        <div className='inputgrp'>
+        <div className='inputgrp2'>
           <label htmlFor='dob'>Date of Birth</label>
           <span>:</span>
           <label>{userData.dob}</label>
         </div>
-        <div className='inputgrp'>
+        <div className='inputgrp2'>
           <label htmlFor='skills'>Skills</label>
           <span>:</span>
           <label>{userData.skills}</label>
         </div>
-        <div className='inputgrp'>
+        <div className='inputgrp2'>
           <label htmlFor='countrycode'> country code</label>
           <span>:</span>
           <label>{userData.countryCode}</label>
         </div>
-        <div className='inputgrp'>
+        <div className='inputgrp2'>
           <label htmlFor='Phone'> Phone</label>
           <span>:</span>
           <label>{userData.phone}</label>
         </div>
         
-        <div className='inputgrp'>
+        <div className='inputgrp2'>
           <label htmlFor='role'>RoleName</label>
           <span>:</span>
         {userData.role ? <label>{userData.role.roleName}</label> : null}

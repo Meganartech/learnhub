@@ -115,13 +115,13 @@ const handleAssignCourse = async () => {
                 <img id="preview" src={img} alt='profile' />
               </div>
               <div className=" mt-2 p-3 rounded" style={{ backgroundColor: "#F2E1F5", height: "100px" }}>
-                <div className='inputgrp '>
+                <div className='inputgrp2'>
                   <label htmlFor='Name'> Name</label>
                   <span>:</span>
                   <label>
                     {userData.username}</label>
                 </div>
-                <div className='inputgrp'>
+                <div className='inputgrp2'>
                   <label htmlFor='Name'> Email</label>
                   <span>:</span>
                   <label>
@@ -131,10 +131,10 @@ const handleAssignCourse = async () => {
             </div>
   {courses.length <= 0 ? (
   <div className='formgroup rounded p-5 ' style={{ backgroundColor: '#F2E1F5' }}>
-  <h1 className='text-center' style={{marginTop:"130px"}}>No courses found  to assign</h1>
+  <h1 className='text-center' style={{margin:"auto"}}>No courses found  to assign</h1>
   </div>
 ) : (
-  <div className='formgroup rounded p-5' style={{ backgroundColor: '#F2E1F5', display: 'grid', gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
+  <div className='formgroup rounded p-5 assignlist' >
     {courses.map(course => (
       <div key={course.courseId} className='checkboxes' >
         <input type="checkbox" checked={course.selected} onChange={() => handleToggleCourse(course.courseId)} />

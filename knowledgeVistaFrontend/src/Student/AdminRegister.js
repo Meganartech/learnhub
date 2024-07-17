@@ -229,6 +229,11 @@ const AdminRegister = () => {
           ...prevErrors,
           email: "This email is already registered."
         }));
+      }else if (data==="NAME"){
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          username: "This UserName is already Taken."
+        }));
       }else if (data==="INSTITUTE"){
         setErrors(prevErrors => ({
           ...prevErrors,

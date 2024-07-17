@@ -278,13 +278,13 @@ const handleOptionChange = (e, index) => {
           <h1>Test Criteria</h1>
           <p className="text-danger"><span>*</span> By default, each question carries one mark</p>
           
-          <div className="inputgrp mt-3">
+          <div className="inputgrp2 mt-3">
             <label>Number of Questions</label>
             <span>:</span>
             <input value={savedQuestions.length} readOnly />
           </div>
           
-          <div className="inputgrp mt-5">
+          <div className="inputgrp2 mt-5">
             <label>Number of Attempt</label>
             <span>:</span>
             <div>
@@ -300,7 +300,7 @@ const handleOptionChange = (e, index) => {
             )}</div>
           </div>
           
-          <div className="inputgrp mt-5">
+          <div className="inputgrp2 mt-5">
             <label>Pass Percentage</label>
             <span>:</span>
             <div>

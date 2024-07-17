@@ -152,7 +152,7 @@ public class QuestionController {
 			        	Question existingQuestion = questionRepository.findById(questionId)
 				                .orElse(null);
 				     String questioninstitution=existingQuestion.getTest().getCourseDetail().getInstitutionName();
-				        if ((questioninstitution != institution) || (existingQuestion==null)) {
+				        if ((!questioninstitution.equals(institution)) || (existingQuestion.equals(null))) {
 				            return ResponseEntity.notFound().build();
 				        }else {
 				        	existingQuestion.setTest(null);
@@ -199,7 +199,7 @@ public class QuestionController {
 		            Question question = questionRepository.findById(questionId).orElse(null);
 		            String questioninstitution=question.getTest().getCourseDetail().getInstitutionName();
 		            
-			        if ((questioninstitution != institution) || (question==null)) {
+			        if ((questioninstitution.equals(institution)) || (!question.equals(null))) {
 		            	Long noofques=question.getTest().getNoOfQuestions()-1;
 		            	question.getTest().setNoOfQuestions(noofques);
 		            	questionRepository.save(question);
@@ -251,7 +251,7 @@ public class QuestionController {
 		            Question existingQuestion = questionRepository.findById(questionId)
 		                    .orElse(null);
 		            String questioninstitution=existingQuestion.getTest().getCourseDetail().getInstitutionName();
-			        if ((questioninstitution != institution) || (existingQuestion==null)) {
+			        if ((!questioninstitution.equals(institution)) || (existingQuestion.equals(null))) {
 		                return ResponseEntity.notFound().build();
 		            }
 		            existingQuestion.setQuestionText(questionText);
@@ -303,7 +303,7 @@ public class QuestionController {
 		            CourseTest test = testrepo.findById(testId)
 		                    .orElse(null);
 		         String testinstitution= test.getCourseDetail().getInstitutionName();
-		            if ((testinstitution!= institution)||(test == null)) {
+		            if ((!testinstitution.equals(institution))||(test.equals(null))) {
 		                return ResponseEntity.notFound().build();
 		            }
 		            test.setNoOfQuestions(test.getNoOfQuestions() +1);
