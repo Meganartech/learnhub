@@ -410,7 +410,6 @@ public class Testcontroller {
 
 public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttempt, Double passPercentage, String token) {
     try {
-    	System.out.println(passPercentage);
     	 if (!jwtUtil.validateToken(token)) {
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                      .body("{\"error\": \"Invalid Token\"}");
@@ -423,11 +422,10 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
 		    	 institution=user.getInstitutionName();
 		    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
 		   	    	if(!adminIsactive) {
+		   	    		System.out.println("first");
 		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		   	    	}
-		     }else {
-		    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		     }
+		    
 
          // Retrieve role and email from token
          String role = jwtUtil.getRoleFromToken(token);
@@ -436,7 +434,8 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
         if (optest.isPresent()) {
             CourseTest test = optest.get();
             String instituionoftest=test.getCourseDetail().getInstitutionName();
-            if(instituionoftest==institution) {
+          
+            if(instituionoftest.equals(institution)) {
             if (testName != null) {
                 test.setTestName(testName);
             }
@@ -449,12 +448,17 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
             testRepository.saveAndFlush(test);
             return ResponseEntity.ok().body("{\"message\": \"Test updated successfully\"}");
             }else {
+            	System.out.println("third");
             	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
         } else {
             return ResponseEntity.notFound().build();
-        }}else {
-
+        }
+         }else {
+	    	 System.out.println("sec");
+	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	     }}else {
+        	System.out.println("fourt");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("{\"error\": \"Invalid Token\"}");
         }

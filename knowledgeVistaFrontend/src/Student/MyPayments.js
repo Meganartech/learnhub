@@ -63,10 +63,11 @@ const MyPayments = () => {
       }, []);
   return (
     <div className='contentbackground'>
-    <div className='contentinner'> <div style={{ display: 'grid', gridTemplateColumns: '10fr 10fr 6fr' }} className='mb-4'>
-        <h1>Payment History</h1>
-        {/* <i className="fa-solid fa-magnifying-glass barhide" htmlFor="searchbtn"></i> */}
-        <input
+    <div className='contentinner'> 
+    <div className="tableheader mb-4">
+      <h1>Payment History</h1>
+      <div style={{display:'grid',gridTemplateColumns:"10fr 6fr "}}>
+      <input
         className="form-control tabinp "  
         type="search"
         id="searchbtn"
@@ -88,8 +89,8 @@ const MyPayments = () => {
                     <option className='bg-light text-dark' value="attempted">Attempted</option>
                     <option className='bg-light text-dark' value="paid">Paid</option>
                   </select>
-        {/* <a href="/addStudent" className='btn btn-primary'><i className="fa-solid fa-plus"></i> Add Student</a> */}
-      </div>
+       </div>
+       </div>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">
           <thead className='thead-dark'>

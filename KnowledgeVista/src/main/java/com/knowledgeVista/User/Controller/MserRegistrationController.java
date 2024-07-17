@@ -87,15 +87,22 @@ public class MserRegistrationController {
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 	            }
 	          Muser savedadmin=  muserrepositories.save(user);
+	          if(environment.equals("SAS")) {
+	     		  Madmin_Licence madmin= new Madmin_Licence();
+		            madmin.setAdminId(savedadmin.getUserId());
+		            madmin.setInstitution(institutionName);
+		            madmin.setLicenceType("FREE");
+		            madminrepo.save(madmin);
+	     		   licencecontrol.uploadSAS(madmin, savedadmin);
+	     	   }
 	          
 	            RestTemplate restTemplate = new RestTemplate();
 
 	            String baseUrl = env.getRequiredProperty("base.url");
-	            int port = Integer.parseInt(env.getRequiredProperty("server.port"));
-	            String contextPath = env.getProperty("api.context-path", ""); 
+
 	            
-	            String apiUrl = baseUrl + port + contextPath+"/Developer/CustomerDownloads";
-	            String apiUrl2 = baseUrl + port +contextPath+ "/Developer/CustomerLeads";
+	            String apiUrl = baseUrl +"/Developer/CustomerDownloads";
+	            String apiUrl2 = baseUrl + "/Developer/CustomerLeads";
 
                 
 	            Customer_downloads custDown = new Customer_downloads();
@@ -113,14 +120,7 @@ public class MserRegistrationController {
 	            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, custDown, String.class);
 
 	            ResponseEntity<String> response2 = restTemplate.postForEntity(apiUrl2, custlead, String.class);
-	     	   if(environment.equals("SAS")) {
-	     		  Madmin_Licence madmin= new Madmin_Licence();
-		            madmin.setAdminId(savedadmin.getUserId());
-		            madmin.setInstitution(institutionName);
-		            madmin.setLicenceType("FREE");
-		            madminrepo.save(madmin);
-	     		   licencecontrol.uploadSAS(madmin, savedadmin);
-	     	   }
+	     	  
 	           
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	            }else {

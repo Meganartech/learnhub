@@ -323,6 +323,12 @@
 }
 
 @media screen and (max-width: 480px) {
+  .notification-count{
+    right:-10px;
+  }
+  .borderimg{
+    margin-right: 0px;
+  }
   .selectstyle{
     width: 100px;
     height:40px;

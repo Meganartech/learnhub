@@ -204,7 +204,7 @@ const handleOnSeek = (progress) => {
       <div className='vdoplusbtn'>
         <div style={{display:"grid",gridTemplateColumns:"9fr 1fr"}}>
         <h1 style={{ textAlign: 'center' }}>{courseName}</h1>
-        <Link to={`/test/start/${courseName}/${courseId}`} className='btn btn-primary'  style={{height:"40px",minWidth:"100px"}}> 
+        <Link to={`/test/start/${courseName}/${courseId}`} className='btn btn-primary mybtn '>  
                 Start Test</Link>
         </div>
         <div>
@@ -303,7 +303,7 @@ const handleOnSeek = (progress) => {
         <div>
           <div style={{display:"grid",gridTemplateColumns:"9fr 1fr"}}>
         <h1 style={{ textAlign: 'center' }}>{courseName}</h1>
-        <Link to={`/test/start/${courseName}/${courseId}`} className='btn btn-primary' style={{height:"40px",minWidth:"100px"}}> 
+        <Link to={`/test/start/${courseName}/${courseId}`} className='btn btn-primary mybtn' > 
                 Start Test</Link>
         </div>
         <div>

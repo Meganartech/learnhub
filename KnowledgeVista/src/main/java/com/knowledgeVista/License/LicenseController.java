@@ -624,9 +624,7 @@ public class LicenseController {
 	                Integer validitydays=Integer.parseInt(validity);
 	                LocalDate startdate= LocalDate.now();
                    LocalDate endDate = startdate.plusDays(validitydays);
-                   String baseUrl = env.getRequiredProperty("base.url");
-   	            int port = Integer.parseInt(env.getRequiredProperty("server.port"));
-   	            String contextPath = env.getProperty("api.context-path", ""); 
+                   String baseUrl = env.getRequiredProperty("base.url"); 
                    
                    
 	                RestTemplate restTemplate = new RestTemplate();
@@ -641,7 +639,7 @@ public class LicenseController {
     	 		        	  notiservice.LicenceExpitedNotification(NotifyId, notificationDate,institution);
     	 		        	}
     	 		        }
-		                String apiurl3 = baseUrl + port +contextPath+"/Developer/CustomerLeads/" + email;
+		                String apiurl3 = baseUrl+"/Developer/CustomerLeads/" + email;
 	                CustomerLeads updateData = new CustomerLeads();
 	                updateData.setEmail(user.getEmail());
 	                updateData.setCountryCode(user.getCountryCode());
@@ -661,7 +659,7 @@ public class LicenseController {
 	                
 	                
 
-	                String apiurl4 = baseUrl + port +contextPath+"/Developer/CustomerDownload/" + email;
+	                String apiurl4 = baseUrl+"/Developer/CustomerDownload/" + email;
 	                Customer_downloads custdown=new Customer_downloads();
 	                custdown.setCountryCode(user.getCountryCode());
 	                custdown.setName(user.getUsername());
@@ -751,10 +749,7 @@ public class LicenseController {
                         LocalDate endDate = startdate.plusDays(validitydays);
  		               //------------for licence Expired Notificatio-------------
                         String baseUrl = env.getRequiredProperty("base.url");
-        	            int port = Integer.parseInt(env.getRequiredProperty("server.port"));
-        	            String contextPath = env.getProperty("api.context-path", ""); 
-                        
-                        
+        	            
 		                RestTemplate restTemplate = new RestTemplate();
 		               
 		               
@@ -768,7 +763,7 @@ public class LicenseController {
 	     	 		        	  notiservice.LicenceExpitedNotification(NotifyId, notificationDate,user.getInstitutionName());
 	     	 		        	}
 	     	 		        }
-			                String apiurl3 = baseUrl + port +contextPath+"/Developer/CustomerLeads/" + user.getEmail();
+			                String apiurl3 = baseUrl +"/Developer/CustomerLeads/" + user.getEmail();
 		                CustomerLeads updateData = new CustomerLeads();
 		                updateData.setEmail(user.getEmail());
 		                updateData.setCountryCode(user.getCountryCode());
@@ -788,7 +783,7 @@ public class LicenseController {
 		                
 		                
 
-		                String apiurl4 = baseUrl + port +contextPath+"/Developer/CustomerDownload/" + user.getEmail();
+		                String apiurl4 = baseUrl+"/Developer/CustomerDownload/" + user.getEmail();
 		                Customer_downloads custdown=new Customer_downloads();
 		                custdown.setCountryCode(user.getCountryCode());
 		                custdown.setName(user.getUsername());

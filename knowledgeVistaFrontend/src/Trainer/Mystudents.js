@@ -160,11 +160,11 @@ const Mystudents = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
-      <div style={{ display: 'grid', gridTemplateColumns: '25fr 10fr 6fr 6fr' }} className='mb-4'>
-        <h1>Students Details</h1>
+    <div className="tableheader mb-4"><h1>Students Details</h1>
+        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr 9fr"}}>
+        
         <input
-        className="form-control"
-        style={{ marginTop: "10px" }}
+        className="form-control tabinp"
         type="search"
         placeholder="Search by Email"
         aria-label="Search"
@@ -174,7 +174,7 @@ const Mystudents = () => {
           setFilterOption("search");
         }}/>
                    <select
-                    className="form-select btn btn-success mr-5 ml-5 text-left p-2 "
+                    className="selectstyle btn btn-success  text-left "
                    
                     value={filterOption}
                     onChange={(e) => setFilterOption(e.target.value)}
@@ -183,7 +183,8 @@ const Mystudents = () => {
                     <option className='bg-light text-dark' value="Active">Active</option>
                     <option className='bg-light text-dark' value="Inactive">Inactive</option>
                   </select>
-        <a href="/addStudent" className='btn btn-primary'><i className="fa-solid fa-plus"></i> Add Student</a>
+        <a href="/addStudent" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add Student</a>
+     </div>
       </div>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">

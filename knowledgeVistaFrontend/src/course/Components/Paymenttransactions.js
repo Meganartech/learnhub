@@ -63,10 +63,12 @@ const Paymenttransactions = () => {
       }, []);
   return (
     <div className='contentbackground'>
-    <div className='contentinner'> <div style={{ display: 'grid', gridTemplateColumns: '25fr 10fr 6fr 6fr' }} className='mb-4'>
-        <h1>Payment History</h1>
-        <input
-        className="form-control"
+    <div className='contentinner'> 
+    <div className="tableheader mb-4">
+       <h1>Payment History</h1>
+       <div style={{display:'grid',gridTemplateColumns:"10fr 6fr"}}>
+       <input
+        className="form-control tabinp"
         style={{ marginTop: "10px" }}
         type="search"
         placeholder="Search by Course Name"
@@ -77,7 +79,7 @@ const Paymenttransactions = () => {
           setFilterOption("search");
         }}/>
                    <select
-                    className="form-select btn btn-success mr-5 ml-5 text-left p-2 "
+                    className="selectstyle btn btn-success mr-5 ml-5 text-left p-2 "
                    
                     value={filterOption}
                     onChange={(e) => setFilterOption(e.target.value)}
@@ -88,6 +90,7 @@ const Paymenttransactions = () => {
                     <option className='bg-light text-dark' value="paid">Paid</option>
                   </select>
         {/* <a href="/addStudent" className='btn btn-primary'><i className="fa-solid fa-plus"></i> Add Student</a> */}
+      </div>
       </div>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">

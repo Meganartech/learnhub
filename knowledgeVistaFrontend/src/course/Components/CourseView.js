@@ -244,7 +244,7 @@ if(amount===0){
         </ul>
     
       ) : (
-        <div className="maincontainer" style={{borderRadius:"10px",display:"flex",justifyContent:"center",alignItems:"center"}}>
+        <div className="maincontainernew" style={{borderRadius:"10px",display:"flex",justifyContent:"center",alignItems:"center"}}>
              <h1>No Course Found </h1>
         </div>
       )}

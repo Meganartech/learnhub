@@ -13,6 +13,15 @@ body {
 input::placeholder {
   font-size: 1.125rem; /* e.g., 14px, 1rem */
 }
+.mybtn{
+  
+  min-width: 100px;
+  height: 40px;
+}
+.tableheader{
+  display: grid;
+  grid-template-columns: 25fr 24fr;
+}
 .centerflex{
 display: flex;
 justify-content: center;
@@ -273,6 +282,13 @@ body {
 textarea::placeholder,
 input::placeholder {
   font-size: 0.9rem; /* e.g., 14px, 1rem */
+}
+.mybtn{
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+.tableheader{
+grid-template-columns: 1fr;
 }
 .main{
   grid-template-columns: 1fr;

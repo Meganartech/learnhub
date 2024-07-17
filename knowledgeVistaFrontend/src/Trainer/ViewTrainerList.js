@@ -184,11 +184,11 @@ const ViewTrainerList = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
-      <div style={{ display: 'grid', gridTemplateColumns: '25fr 10fr 6fr 6fr' }} className='mb-4'>
+      <div className="tableheader mb-4">
         <h1>Trainers Details</h1>
+        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr 9fr"}}>
         <input
-        className="form-control"
-        style={{ marginTop: "10px" }}
+        className="form-control tabinp"
         type="search"
         placeholder="Search by Email"
         aria-label="Search"
@@ -199,7 +199,7 @@ const ViewTrainerList = () => {
         }}      
       />
         <select
-                    className="form-select btn btn-success ml-5 mr-5 text-left p-2 "
+                    className="selectstyle btn btn-success  text-left  "
                    
                     value={filterOption}
                     onChange={(e) => setFilterOption(e.target.value)}
@@ -208,7 +208,8 @@ const ViewTrainerList = () => {
                     <option className='bg-light text-dark' value="Active">Active</option>
                     <option className='bg-light text-dark' value="Inactive">Inactive</option>
                   </select>
-        <a href="/addTrainer" className='btn btn-primary'><i className="fa-solid fa-plus"></i> Add Trainer</a>
+        <a href="/addTrainer" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add Trainer</a>
+        </div>
       </div>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">

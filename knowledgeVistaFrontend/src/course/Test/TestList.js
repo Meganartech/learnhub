@@ -65,7 +65,11 @@ const TestList = () => {
 
   const handleSaveTest = async (name, value) => {
     try {
-      // Check if there are errors
+      // Check if9 there are errors
+
+      console.log("hiii")
+      console.log(name)
+      console.log(value)
       if (!errors[name] && value !== null) {
         const formData = new FormData();
         formData.append(name, value);
