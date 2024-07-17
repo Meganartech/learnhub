@@ -1,7 +1,7 @@
 
 //import styles from "../course/css/CourseView.module.css";
 import React, { useState, useEffect } from 'react';
-import styles from "../css/CourseView.module.css";
+//import styles from "../css/CourseView.module.css";
 import { Link } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
@@ -36,30 +36,30 @@ const Mycourse = () => {
     return (
         <div className='contentbackground'>
         <div className='contentinner'>
-<div className={styles.supercontainer}>
-    <div className={styles.createbtn}></div>
-
-    <ul className={styles.maincontainer}>
         {courses.length === 0 ? (
-            <li>
+         
                 <div className='centerflex'>
                  <div className='enroll'  >
                 <h3 className='mt-4'>No courses Enrolled </h3>
                 <Link to="/dashboard/course" className='btn btn-primary'>Enroll Now</Link></div>
                 </div>
-            </li>
+           
         ) : (
             <>
+<div className="">
+
+    <ul className="maincontainernew" >
+        
                 {courses.map((item) => (
                     <li key={item.courseId}>
-                        <div className={styles.containers}>
-                            <div className={styles.imagediv}>
+                        <div className="containersnew">
+                            <div className="imagedivnew">
                                 <img
                                     src={`data:image/jpeg;base64,${item.courseImage}`}
                                     alt="Course"
                                 />
                             </div>
-                            <div className={styles.content}>
+                            <div className="contentnew">
                                 <h4>
                                     <a href={item.courseUrl}>
                                         {item.courseName.length > 15
@@ -77,11 +77,13 @@ const Mycourse = () => {
                         </div>
                     </li>
                 ))}
-            </>
-        )}
+            
     </ul>
 </div>
+</>
+        )}
 </div>
+
 </div>
     
     );

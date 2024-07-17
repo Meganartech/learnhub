@@ -51,6 +51,7 @@
   border-radius: 10px;
   width: 100%;
   height: auto;
+  min-height: 80vh;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 .innerFrameforset{
@@ -61,9 +62,12 @@
 }
 .innerFrame{
     padding: 5px;
-    height:90%;
+    height:auto;
+    display : flex;
+    flex-direction: column;
+    /* height:90%;
     display: grid;
-    grid-template-rows: 1fr 4fr 1fr;
+    grid-template-rows: 1fr 4fr 1fr; */
 }
 .mainform2{
   display: grid;
@@ -98,20 +102,24 @@
     overflow:auto;
     padding-right: 20px;
 }
+.notificationElement::-webkit-scrollbar,
 .mainform2::-webkit-scrollbar,
 .formgroup::-webkit-scrollbar {
   width: 3px; /* Width of the scrollbar */
 
 }
+.notificationElement::-webkit-scrollbar-track,
 .mainform2::-webkit-scrollbar-track,
 .formgroup::-webkit-scrollbar-track {
   background-color: #f4f4f4; /* Track color */
 }
+.notificationElement::-webkit-scrollbar-thumb,
 .mainform2::-webkit-scrollbar-thumb ,
 .formgroup::-webkit-scrollbar-thumb {
   background-color: #ccc; /* Scrollbar thumb color */
   border-radius: 2px; /* Border radius for the scrollbar thumb */
 }
+.notificationElement::-webkit-scrollbar-thumb:hover,
 .mainform2::-webkit-scrollbar-thumb:hover,
 .formgroup::-webkit-scrollbar-thumb:hover {
   background-color: #999; /* Hover color for the scrollbar thumb */
@@ -387,6 +395,7 @@ grid-template-columns: 6fr 1fr 12fr;
  
  .contentinner{
  overflow: auto;
+ min-height: 87vh;
  }
  .innerFrame{
   grid-template-rows: 1fr 15fr 1fr;
@@ -450,7 +459,11 @@ height: calc(1.5em + 0.5rem + 2px);
 #must{
   font-size: 0.9rem;
 }
-
+.absoluteleft{
+  position: absolute !important;
+  max-width: 250px;
+  left:200px;
+}
   .inputgrp{
     display: block;
   }

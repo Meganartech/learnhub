@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import styles from "../../css/CourseView.module.css";
+//import styles from "../../css/CourseView.module.css";
+import "../../css/CourseView.css"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import axios from "axios";
-import logo from "../../images/logo.png"
 const CourseView = ({ filteredCourses }) => {
   const MySwal = withReactContent(Swal);
   const role = sessionStorage.getItem("role");
@@ -173,24 +173,24 @@ if(amount===0){
   return (
     <div className="contentbackground">
       <div className="contentinner">
-    <div className={styles.supercontainer} >
+    <div className="supercontainernew" >
     <div></div>
       {filteredCourses.length > 0 ? (
-        <ul className={styles.maincontainer}>
+        <ul className="maincontainernew">
           {filteredCourses
             .slice()
             .reverse()
             .map((item) => (
               <li key={item.courseId}>
-                <div className={styles.containers}>
-                  <div className={styles.imagediv}>
+                <div className="containersnew">
+                  <div className="imagedivnew">
                     <img
                       src={`data:image/jpeg;base64,${item.courseImage}`}
                       alt="Course"
                     />
                   </div>
-                 {/* href={item.courseUrl} */}
-                  <div className={styles.content}>
+                 
+                  <div className="contentnew">
                     <h4>
                    
                       <button className="anchorlike" onClick={(e)=>{handleClick(e,item.courseId,item.amount,item.courseUrl)}}>
@@ -216,8 +216,9 @@ if(amount===0){
                       ) : (
                         <div
                           style={{
+                          
                             display: "grid",
-                            gridTemplateColumns: "1fr 1fr"
+                            gridTemplateColumns: "1fr 2fr"
                           }}
                         >
                           <div>
@@ -228,6 +229,7 @@ if(amount===0){
                           </div>
                           <a
                             className="btn btn-outline-primary"
+                            style={{maxHeight:"50px" ,padding:"5px"}}
                             onClick={() => handlepaytype(item.courseId, userId,item.paytype)}
                           >
                             Enroll Now
@@ -242,7 +244,7 @@ if(amount===0){
         </ul>
     
       ) : (
-        <div className={styles.maincontainer} style={{borderRadius:"10px",display:"flex",justifyContent:"center",alignItems:"center"}}>
+        <div className="maincontainer" style={{borderRadius:"10px",display:"flex",justifyContent:"center",alignItems:"center"}}>
              <h1>No Course Found </h1>
         </div>
       )}

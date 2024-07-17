@@ -215,7 +215,8 @@ const handlemarkallasRead =async (notificationIds)=>{
       
           {/* <!-- Dropdown - User Information --> */}
           <div
-            className="dropdown-menu dropdown-menu-left shadow animated--grow-in"
+          
+            className="dropdown-menu  shadow animated--grow-in absoluteleft"
             aria-labelledby="userDropdown"
           >
           {role!=="SYSADMIN" &&<> <a className="dropdown-item" href="/course/dashboard/profile">

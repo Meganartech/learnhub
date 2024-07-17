@@ -92,8 +92,8 @@ const MyAssignedcourses = () => {
     
     <div className='contentbackground'>
     <div className='contentinner'>
-<div className={styles.supercontainer}>
-<div className={styles.createbtn}>  
+<div className="supercontainernew">
+<div className="createbtn">  
 {(role === "ADMIN" || role==="TRAINER") && (    
      <a href="/course/Trainer/addcourse">
        <button type="button" className="btn btn-primary mt-4">
@@ -102,7 +102,7 @@ const MyAssignedcourses = () => {
      </a> 
    )}</div>
 
-<ul className={styles.maincontainer}>
+<ul className="maincontainernew">
     {courses.length === 0 ? (
         <li>
           <div className='centerflex'>
@@ -115,15 +115,15 @@ const MyAssignedcourses = () => {
         <>
             {courses.map((item) => (
                <li key={item.courseId}>
-               <div className={styles.containers}>
-                 <div className={styles.imagediv}>
+               <div className="containersnew">
+                 <div className="imagedivnew">
                    <img
                      src={`data:image/jpeg;base64,${item.courseImage}`}
                      alt="Course"
                    />
                  </div>
-                 <div className={styles.content}>
-                   <div className={styles.editicons}>
+                 <div className="contentnew">
+                   <div className="editicons">
                      {" "}
                      <h4>
                        <a href={item.courseUrl}>{item.courseName.length > 10 ? item.courseName.slice(0, 10) + "..." : item.courseName}</a>{" "}

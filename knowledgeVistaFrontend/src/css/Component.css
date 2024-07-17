@@ -92,6 +92,11 @@
     padding: 3px;
     border: 2px solid rgb(196, 196, 230);
     border-radius: 5px;
+    overflow: auto;
+  }
+  .notificationElement img{
+    width: 100px;
+    height: 120px;
   }
   .notificationcontent{
     white-space: pre-wrap;
@@ -99,7 +104,7 @@
     white-space: -pre-wrap;
     white-space: -o-pre-wrap;
     word-wrap: break-word;
-   
+    overflow: auto;
   }
   .scrollclass{
     height: 95%;
@@ -120,8 +125,7 @@
     padding: 10px;
     border-radius: 10px;
     background-color: white;
-    height: 88vh;
-    z-index: 99 !important; 
+    height: 80vh;
   }
   .borderimg{
    border: 2px solid rgb(255, 255, 255);
@@ -311,8 +315,34 @@
 .logodisphide{
   display: block;
 }
+.selectstyle{
+  margin: auto;
+}
+.tabinp{
+  margin-top: 10px;
+}
 
 @media screen and (max-width: 480px) {
+  .selectstyle{
+    width: 100px;
+    height:40px;
+    margin:5px;
+  }
+  .tabinp{
+    margin-top: 5px;
+  }
+ .notificationElement{
+  width: auto;
+  max-height:150px;
+ }
+ .notificationElement img{
+  width: 100px;
+  height: 100px;
+ }
+  .notificationPanel{
+    width: auto;
+  }
+
   .ActiveLink{
     font-size: 0.65rem;
   }

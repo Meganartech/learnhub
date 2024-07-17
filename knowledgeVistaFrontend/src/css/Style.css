@@ -1,3 +1,4 @@
+
 .anchorlike{
   border:none;
   outline: none;
@@ -7,9 +8,6 @@
 .anchorlike:hover{
   text-decoration: underline;
 }
-
-
-
 .bg {
   width: 100%;
   background-color: #EAEAEA;

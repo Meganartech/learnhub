@@ -85,33 +85,33 @@ const EditCourse = ({filteredCourses}) => {
   return (
     <div className="contentbackground">
       <div className="contentinner">
-    <div className={styles.supercontainer}>
-      <div className={styles.createbtn}>
+    <div className="supercontainernew">
+      <div className="createbtn">
       {(role === "ADMIN" || role==="TRAINER") && (    
      
         <a href="#" onClick={(e) => createCourse()}>
-          <button type="button" className="btn btn-primary mt-4">
+          <button type="button" className="btn btn-primary ">
           <i className="fa-solid fa-plus"></i>  Create Course
           </button>
         </a> 
       )}
       </div>
       {filteredCourses.length > 0 ? (
-        <ul className={styles.maincontainer} style={{height:"65vh"}}>
+        <ul className="maincontainernew" style={{height:"65vh"}}>
           {filteredCourses
             .slice()
             .reverse()
             .map((item) => (
               <li key={item.courseId}>
-                <div className={styles.containers}>
-                  <div className={styles.imagediv}>
+                <div className="containersnew">
+                  <div className="imagedivnew">
                     <img
                       src={`data:image/jpeg;base64,${item.courseImage}`}
                       alt="Course"
                     />
                   </div>
-                  <div className={styles.content}>
-                    <div className={styles.editicons}>
+                  <div className="contentnew">
+                    <div className="editicons">
                       {" "}
                       <h4>
                         <a href={item.courseUrl}>{item.courseName.length > 10 ? item.courseName.slice(0, 10) + "..." : item.courseName}</a>{" "}
@@ -180,7 +180,7 @@ const EditCourse = ({filteredCourses}) => {
             ))}
         </ul>
       ) : (
-        <div className={styles.maincontainer} style={{borderBottomLeftRadius:"10px",borderBottomRightRadius:"10px", height:"70vh",display:"flex",justifyContent:"center",alignItems:"center"}}>
+        <div className="maincontainernew" style={{borderBottomLeftRadius:"10px",borderBottomRightRadius:"10px", height:"70vh",display:"flex",justifyContent:"center",alignItems:"center"}}>
              <h1>No Course Found </h1>
         </div>
       )}

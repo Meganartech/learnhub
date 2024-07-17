@@ -125,8 +125,7 @@ const Notification = ({ setisopen ,isopen,setcount ,handlemarkallasRead}) => {
                  <img
                       src={`${notification.notimage ? `data:image/jpeg;base64,${notification.notimage}` : message}`}
                       alt="pic"
-                      width="100px"
-                      height="120px"
+             
                     />
                     <div className='p-1' >
                     <p><b>{notification.heading}</b></p>

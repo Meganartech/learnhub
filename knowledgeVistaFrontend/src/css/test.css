@@ -203,3 +203,21 @@ input[type="radio"] {
     width: 50%;
     padding: 30px;
   }
+
+/* Media Queries */
+
+
+/* Mobile Mode (adjust breakpoints as needed) */
+@media screen and (max-width: 480px) {
+  /* Styles for larger screens (laptop and up) */
+
+  .instruction li{
+    margin-left: 40px;
+  }
+  .atdiv{
+    padding: 10px; 
+  }
+  .display-1{
+    font-size: 3rem;
+  }
+}

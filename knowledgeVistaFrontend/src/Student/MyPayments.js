@@ -63,12 +63,13 @@ const MyPayments = () => {
       }, []);
   return (
     <div className='contentbackground'>
-    <div className='contentinner'> <div style={{ display: 'grid', gridTemplateColumns: '25fr 10fr 6fr 6fr' }} className='mb-4'>
+    <div className='contentinner'> <div style={{ display: 'grid', gridTemplateColumns: '10fr 10fr 6fr' }} className='mb-4'>
         <h1>Payment History</h1>
+        {/* <i className="fa-solid fa-magnifying-glass barhide" htmlFor="searchbtn"></i> */}
         <input
-        className="form-control"
-        style={{ marginTop: "10px" }}
+        className="form-control tabinp "  
         type="search"
+        id="searchbtn"
         placeholder="Search by Course Name"
         aria-label="Search"
         value={searchQuery}
@@ -77,8 +78,8 @@ const MyPayments = () => {
           setFilterOption("search");
         }}/>
                    <select
-                    className="form-select btn btn-success mr-5 ml-5 text-left p-2 "
-                   
+                    className=" btn btn-success  text-left  selectstyle"
+                  
                     value={filterOption}
                     onChange={(e) => setFilterOption(e.target.value)}
                   >
