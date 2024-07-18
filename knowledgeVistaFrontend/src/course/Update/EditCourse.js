@@ -162,8 +162,8 @@ const EditCourse = ({filteredCourses}) => {
                       </h5>
                     </div>
 
-                    <p> {item.courseDescription.length > 20
-                        ? item.courseDescription.slice(0, 20) + "..."
+                    <p> {item.courseDescription.length > 40
+                        ? item.courseDescription.slice(0, 40) + "..."
                         : item.courseDescription}</p>
               
                     <h6>{item.amount === 0 ? <a href={item.courseUrl} className=" btn btn-outline-success w-100"> Free</a> : 

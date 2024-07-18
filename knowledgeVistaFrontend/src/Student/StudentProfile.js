@@ -1,9 +1,11 @@
 
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
 const StudentProfile = () => {
+  
+  const navigate=useNavigate();
     const token=sessionStorage.getItem("token");
   const role=sessionStorage.getItem("role");
   const [notfound,setnotfound]=useState(false);
@@ -57,6 +59,11 @@ const StudentProfile = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
+    <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/view/Students")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
         {notfound ? (
         <h1 style={{textAlign:"center",marginTop:"250px"}}>No Student found with the email</h1>) : (
             <div className='innerFrame '>

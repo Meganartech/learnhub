@@ -3,6 +3,7 @@ import baseUrl from '../api/utils';
 import axios from 'axios';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { useNavigate } from 'react-router-dom';
 
 const LicenceDetails = () => {
  
@@ -15,6 +16,7 @@ const LicenceDetails = () => {
   const [licenceDetails, setLicenceDetails] = useState({}); // State for licence details
 const token=sessionStorage.getItem("token");
 const [Activeprofile,setActiverofile]=useState();
+const navigate=useNavigate();
   useEffect(() => {
     const fetchactive=async()=>{
       const active=await axios.get(`${baseUrl}/Active/Environment`)
@@ -154,7 +156,11 @@ const [Activeprofile,setActiverofile]=useState();
   return (
     <div className="contentbackground" style={{ height: "90vh" }}>
       <div className="contentinner p-4 pb-4">
-       
+      <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
               <h2 style={{ textDecoration: "underline", textAlign: "center" }}>Licence Info</h2>
   
               <div className='twosplit' style={{marginBottom:"10px" ,gap:"20px"}}>

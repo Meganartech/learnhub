@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const MyCertificateList = () => {
     const [myCertificates, setMyCertificates] = useState([]);
-
+    const navigate=useNavigate();
     useEffect(() => {
         const fetchCertificates = async () => {
             try {
@@ -28,6 +29,11 @@ const MyCertificateList = () => {
     return (
         <div className='contentbackground'>
             <div className='contentinner'>
+            <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
         <div className="mt-4">
             <h2>My Certificates</h2>
             <table className="table table-hover table-bordered table-sm ">

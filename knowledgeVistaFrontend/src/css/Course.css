@@ -19,8 +19,8 @@ input::placeholder {
   grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 .mybtn{
-  
-  min-width: 100px;
+  min-width:100px;
+  max-width: 125px;
   height: 40px;
 }
 .tableheader{

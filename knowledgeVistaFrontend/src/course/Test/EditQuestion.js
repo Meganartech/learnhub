@@ -188,6 +188,11 @@ const EditQuestion = () => {
   return (
     <div className='contentbackground'>
       <div className='contentinner'>
+      <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
         <div className='atdiv'  >
           <div className='atgrid' >
             <div>            <input 

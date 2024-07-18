@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import baseUrl from '../../api/utils';
 import axios from 'axios';
 
 const AddMoreQuestion = () => {
     const MySwal = withReactContent(Swal);
-    const { testId } = useParams();
+    const { courseName,testId } = useParams();
     const token = sessionStorage.getItem("token");
     const location = useLocation();
-
+     const navigate=useNavigate();
     // State for question and options
     const [questionData, setQuestionData] = useState({
         questionText: '',
@@ -192,9 +192,16 @@ const AddMoreQuestion = () => {
     return (
         <div className='contentbackground'>
             <div className='contentinner'>
+            <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
                 <div className='atdiv'>
                     <div className='atgrid' >
-                        <div><input
+                        <div>
+                            <h6>Add Question to {courseName}</h6>
+                            <input
                             className={`form-control form-control-lg ${errors.questionText && 'is-invalid'}`}
                             autoFocus
                             placeholder='Enter Question'

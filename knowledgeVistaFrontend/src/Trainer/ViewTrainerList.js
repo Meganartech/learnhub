@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
@@ -11,7 +11,7 @@ const ViewTrainerList = () => {
     const [users, setUsers] = useState([]);
     const token=sessionStorage.getItem("token");
     const userRole = sessionStorage.getItem('role');
-
+     const navigate=useNavigate();
     const [filterOption, setFilterOption] = useState("All");
     const [searchQuery, setSearchQuery] = useState('');
    
@@ -184,9 +184,14 @@ const ViewTrainerList = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
+    <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
       <div className="tableheader mb-4">
         <h1>Trainers Details</h1>
-        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr 9fr"}}>
+        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr 6fr"}}>
         <input
         className="form-control tabinp"
         type="search"

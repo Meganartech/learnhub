@@ -4,11 +4,12 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
 import "../css/certificate.css";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
 
 const Template = () => {
+    const navigate=useNavigate();
   const  {activityId}=useParams();
 const [userdata,setuserdata]=useState("");
     const [isnotFound,setisnotFound]=useState();
@@ -87,6 +88,11 @@ const[sign,setsign]=useState();
     return (
         <div className='contentbackground'>
             <div className='contentinner'>
+            <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/MyCertificateList")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
             {isnotFound ?(
              <div className='notfound'>
              <h2>Some Error occured please try again later</h2>

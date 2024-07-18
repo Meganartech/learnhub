@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import React from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import baseUrl from "../../api/utils";
 import axios from "axios";
 
 const CreateTest = () => {
+  const navigate=useNavigate();
   const { courseName,courseId} = useParams();
   const MySwal = withReactContent(Swal);
   const [testName, setTestName] = useState("");
@@ -275,7 +276,12 @@ const handleOptionChange = (e, index) => {
     <div className="contentbackground">
       {showCriteria ? (
         <div className="contentinner p-5">
-          <h1>Test Criteria</h1>
+          <div className='navigateheaders'>
+      <div onClick={()=>{setShowCriteria(false)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
+          <h1  style={{textDecoration:"underline"}}>Test Criteria</h1>
           <p className="text-danger"><span>*</span> By default, each question carries one mark</p>
           
           <div className="inputgrp2 mt-3">
@@ -336,9 +342,14 @@ const handleOptionChange = (e, index) => {
         </div>
       ) : (
         <div className="contentinner">
-         <div className="atdiv" style={{ padding: "30px" }}>
+          <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
+         <div className="atdiv" >
               
-              <div className='atgrid ' style={{height:"400px"}}>
+              <div className='atgrid ' >
              <div>
              <h4 style={{textDecoration:"underline"}}> Create Test For {courseName}</h4>   {errors.selectedOption && (
               <div className="text-danger">{errors.selectedOption}</div>
@@ -358,7 +369,7 @@ const handleOptionChange = (e, index) => {
                 style={{ float: "right" ,fontSize:"20px",padding:"10px"}}
                         onClick={() => handleDelete(selectedQuestionIndex)}
                       ></i>)}
-        <div>
+     
               <input 
               className={`form-control form-control-lg ${errors.questionText && 'is-invalid'}`}       
               type="text"  
@@ -369,7 +380,8 @@ const handleOptionChange = (e, index) => {
                 required
               />
                {errors.questionText && <div className="invalid-feedback">{errors.questionText}</div>}
-              
+          </div>    
+      <div>        
 <ul className='listgroup' >                
 
 {options.map((option, index) => (
@@ -403,7 +415,8 @@ const handleOptionChange = (e, index) => {
 
                     </div>
 
-
+               
+                    </div>            
 <div className="atbtndiv">
               <button
                 onClick={addQuestion}
@@ -445,11 +458,12 @@ const handleOptionChange = (e, index) => {
                             </button>
                         )} 
                         </div>
-                      </div>   
-                   </div>     
+      </div>  
+     
+                      </div> 
+                    
             </div>
-          </div>
-        </div>
+      
       )}
     </div>
   );

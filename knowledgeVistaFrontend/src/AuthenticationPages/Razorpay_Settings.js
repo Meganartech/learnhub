@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Razorpay_Settings = () => {
   const MySwal = withReactContent(Swal);
@@ -17,6 +18,7 @@ const[initialsave,setinitialsave]=useState(false);
     razorpay_key:"",
     razorpay_secret_key:""
   })
+  const navigate=useNavigate();
   useEffect(() => {
     // data === "false" ? setValid(true) : setValid(false);
   
@@ -181,6 +183,11 @@ const[initialsave,setinitialsave]=useState(false);
 
   const getsettings=( 
   <div className="contentinner">
+    <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
   <div className='innerFrameforset '>
   <h2 className='mb-5'>Razorpay Settings</h2>
     <div >
@@ -242,6 +249,11 @@ const[initialsave,setinitialsave]=useState(false);
 
 
 const oldSettings =(<div className="contentinner">
+  <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
 <div className='innerFrameforset '>
 <h2 className='mb-5'>Razorpay Settings</h2>
   <div >

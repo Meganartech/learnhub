@@ -96,7 +96,7 @@ const MyAssignedcourses = () => {
 <div className="createbtn">  
 {(role === "ADMIN" || role==="TRAINER") && (    
      <a href="/course/Trainer/addcourse">
-       <button type="button" className="btn btn-primary mt-4">
+       <button type="button" className="btn btn-primary">
        <i className="fa-solid fa-plus"></i>  Create Course
        </button>
      </a> 
@@ -149,7 +149,7 @@ const MyAssignedcourses = () => {
                     Lessons
                    </Link>
                    <div className="dropdown-divider"></div>
-                   <Link to={`/course/testlist/${item.courseId}`}
+                   <Link to={`/course/testlist/${item.courseName}/${item.courseId}`}
                      className="dropdown-item"
                      data-toggle="modal"
                      data-target="#logoutModal"   

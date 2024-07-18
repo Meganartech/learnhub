@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 const CertificateInputs = () => {
@@ -20,7 +21,7 @@ const CertificateInputs = () => {
   
   });
 
-  
+  const navigate=useNavigate();
 
   const [certificate, setCertificate] = useState({
     institutionName: '',
@@ -211,6 +212,11 @@ setisnotFound(true);
 const certificateInputs=(
 
   <div className='contentinner'>
+     <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
     <div className='innerFrame'>
 <h1>Certificate Form</h1>
 <div className='mainform'>
@@ -327,6 +333,11 @@ const certificateInputs=(
 
 const certificateView=(
   <div className='contentinner'>
+     <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
   <div className='innerFrame'>
         <h3>Certificate Templates</h3>
         <div className='mainform'>

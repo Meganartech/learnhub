@@ -4,9 +4,10 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileView = () => {
-  
+  const navigate=useNavigate();
   const token=sessionStorage.getItem("token")
   const MySwal = withReactContent(Swal);
   const [img, setImg] = useState();
@@ -448,6 +449,11 @@ const ProfileView = () => {
   return (
     <div className='contentbackground'>
       <div className='contentinner'>
+      <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{setIsEditing(false)}}>{isEditing ?<i className="fa-solid fa-xmark"></i>:""}</div>
+      </div>
         {/* Render either profile view or edit profile view based on the state */}
         {isEditing ? editProfileView : profileView}
       </div>

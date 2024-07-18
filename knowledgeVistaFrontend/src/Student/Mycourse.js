@@ -2,14 +2,14 @@
 //import styles from "../course/css/CourseView.module.css";
 import React, { useState, useEffect } from 'react';
 //import styles from "../css/CourseView.module.css";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
 
 const Mycourse = () => {
     const token = sessionStorage.getItem("token");
     const [courses, setCourses] = useState([]);
-
+    const navigate=useNavigate();
     useEffect(() => {
         const fetchItems = async () => {
             try {
@@ -36,6 +36,11 @@ const Mycourse = () => {
     return (
         <div className='contentbackground'>
         <div className='contentinner'>
+        <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
         {courses.length === 0 ? (
          
                 <div className='centerflex'>

@@ -14,7 +14,7 @@ import EditCourse from "./course/Update/EditCourse";
 import CourseView from "./course/Components/CourseView";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import CourseDetails from "./course/Update/CourseDetails.js";
+import EditCourseForm from "./course/Update/EditCourseForm.js";
 import Layout from "./Common Components/Layout.js";
 import CreateTest from "./course/Test/CreateTest";
 import TestList from "./course/Test/TestList";
@@ -135,8 +135,8 @@ function App() {
                       <Route path="/course/AddTest/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CreateTest /></PrivateRoute>} />
                       <Route path="/test/start/:courseName/:courseId" element={<PrivateRoute onlyuser={true} authenticationRequired={true}><AttenTest/></PrivateRoute>}/>
                       <Route path="/test/Edit/:questionId" element={<PrivateRoute authorizationRequired={true} authenticationRequired={true}><EditQuestion/></PrivateRoute>}/>
-                      <Route path="/test/AddMore/:testId" element={<PrivateRoute authorizationRequired={true} authenticationRequired={true}><AddMoreQuestion/></PrivateRoute>}/>
-                      <Route path="/course/edit/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><CourseDetails/></PrivateRoute>}/>
+                      <Route path="/test/AddMore/:courseName/:testId" element={<PrivateRoute authorizationRequired={true} authenticationRequired={true}><AddMoreQuestion/></PrivateRoute>}/>
+                      <Route path="/course/edit/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><EditCourseForm/></PrivateRoute>}/>
                       <Route path="/course/testlist/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><TestList /></PrivateRoute>} />
                       <Route path="/course/dashboard/profile" element={<PrivateRoute authenticationRequired={true}><ProfileView/></PrivateRoute>}/>
                       <Route path="/MyCertificateList" element={<PrivateRoute authenticationRequired={true}><MyCertificateList /></PrivateRoute>}/>

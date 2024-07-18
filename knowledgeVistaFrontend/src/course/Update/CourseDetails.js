@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils"
 import EditCourseForm from "./EditCourseForm";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 const CourseDetails = () => {
   const [img, setimg] = useState();
@@ -13,7 +13,7 @@ const CourseDetails = () => {
   const [editMode, setEditMode] = useState(false);
   const [courseEdit, setCourseEdit] = useState([]);
   const {courseId}=useParams();
-
+  const navigate=useNavigate();
   const toggleEditMode = () => {
     setEditMode(!editMode);
   };
@@ -65,6 +65,11 @@ const CourseDetails = () => {
   return (
     <div className="contentbackground">
           <div className="contentinner">
+          <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
       {editMode ? (
         <EditCourseForm id={courseId} toggleEditMode={toggleEditMode} />
       ) : (

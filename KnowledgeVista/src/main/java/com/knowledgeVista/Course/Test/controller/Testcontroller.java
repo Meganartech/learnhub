@@ -169,7 +169,7 @@ public class Testcontroller {
 		          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 			        	 
 	            // Find the course by its ID
-	            CourseDetail courseDetail = courseDetailRepo.findByCourseIdAndInstitutionName(courseId, institution)
+	            CourseDetail courseDetail = courseDetailRepo.findByCourseIdAndInstitutionName(courseId,institution)
 	                    .orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found with the specified ID: " + courseId));
 	            if("TRAINER".equals(role)) {
 	        		Optional< Muser> trainerop= muserRepo.findByEmail(email);
@@ -213,6 +213,7 @@ public class Testcontroller {
 	                
 	                return ResponseEntity.ok(testMap);
 	            }else {
+	            	
 	            	   return ResponseEntity.notFound().build();
 	            }
 	            }else {

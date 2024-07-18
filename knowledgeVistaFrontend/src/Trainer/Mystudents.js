@@ -1,13 +1,14 @@
 import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
 //style.css
 const Mystudents = () => {
+  const navigate=useNavigate();
   const MySwal = withReactContent(Swal);
   const token=sessionStorage.getItem("token");
   const userRole = sessionStorage.getItem('role');
@@ -160,8 +161,13 @@ const Mystudents = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
+    <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
     <div className="tableheader mb-4"><h1>Students Details</h1>
-        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr 9fr"}}>
+        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr 6fr"}}>
         
         <input
         className="form-control tabinp"

@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
 
 const TrainerProfile = () => {
-  
+  const navigate=useNavigate();
   const token=sessionStorage.getItem("token");
   const role=sessionStorage.getItem("role");
   const [notfound,setnotfound]=useState();
@@ -59,7 +59,13 @@ const TrainerProfile = () => {
     
   return (
     <div className='contentbackground'>
-    <div className='contentinner'>{notfound ? (<h1 style={{textAlign:"center",marginTop:"250px"}}>No Trainer found with the email</h1>) : (
+    <div className='contentinner'>
+      <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/view/Trainer")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
+      {notfound ? (<h1 style={{textAlign:"center",marginTop:"250px"}}>No Trainer found with the email</h1>) : (
 
   <div className='innerFrame '>
     <h2 style={{textDecoration:"underline"}}> Trainer Profile</h2>

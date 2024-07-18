@@ -317,7 +317,7 @@ const CreateCourseTrainer = () => {
                                         <img
                                             src={formData.base64Image}
                                             alt="Selected"
-                                            style={{ width: "200px", height: "200px" }}
+                                            style={{ width: "100px", height: "100px" }}
                                         />
                                     </div>
                                 </div>

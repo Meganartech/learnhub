@@ -86,6 +86,11 @@ const Partialpaymentsetting = ({enablechecked ,setenablechecked,handleSubmit,set
 
         
         <div>
+           <div className='navigateheaders'>
+      <div onClick={()=>{setnextclick(false)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
         <h1>
           <span style={{ textDecoration: 'underline' }}>Partial Payment Settings</span>
         </h1>

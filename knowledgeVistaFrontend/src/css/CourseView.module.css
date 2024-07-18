@@ -144,19 +144,7 @@
     padding-left: 10px;
   }
   
-  /* @media (max-width: 475px) {
-    .maincontainer {
-      width: 100%;
-      justify-items: center;
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr 1fr 1fr;
-    }
-    .searchbar {
-      margin-top: 20px;
-      width: 100%;
-      height: 10%;
-    }
-  } */
+  
    @media (max-width:480px) {
     .containers{
       width: 200px;

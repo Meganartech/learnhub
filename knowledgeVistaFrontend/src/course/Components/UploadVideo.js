@@ -208,6 +208,11 @@ const token=sessionStorage.getItem("token")
   return (
     <div className='contentbackground'>
         <div className='contentinner'>
+        <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
         <form onSubmit={handleSubmit}>
         {isSubmitting && (
         <div className="loading-spinner"></div>

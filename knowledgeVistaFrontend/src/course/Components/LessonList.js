@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
 import axios from 'axios';
 
 const LessonList = () => {
-  
+  const navigate=useNavigate();
   const MySwal = withReactContent(Swal);
     const{courseName,courseId}=useParams();
     const [lessons,setlessons]=useState([]);
@@ -114,6 +114,11 @@ const LessonList = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
+    <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
         {lessons.length>0 ?(
         <div className='twodiv'>
          <div style={{display:"grid",gridTemplateColumns:"9fr 1fr"}}>

@@ -200,6 +200,11 @@ const handleOnSeek = (progress) => {
   return (
     <div className='contentbackground'>
   <div className='contentinner '>
+  <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
     {AllLessons.length > 0 ? (
       <div className='vdoplusbtn'>
         <div style={{display:"grid",gridTemplateColumns:"9fr 1fr"}}>
@@ -236,7 +241,7 @@ const handleOnSeek = (progress) => {
       
     ) : videoType === 'youtube' ? (
       <ReactPlayer
-        width="90%"
+        width="100%"
         height="80%"
         controls
         url={videoSource ? videoSource : null}

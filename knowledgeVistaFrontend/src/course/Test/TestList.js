@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "../../css/test.css"
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../../api/utils';
 import axios from 'axios';
 
 const TestList = () => {
   const {courseName, courseId } = useParams();
+  const navigate=useNavigate();
   const MySwal = withReactContent(Swal);
   const [test, setTest] = useState(null); // Change to single test instead of array
   const [notFound, setNotFound] = useState(false); // State to track if test is not found
@@ -188,6 +189,11 @@ const TestList = () => {
   return (
     <div className='contentbackground'>
       <div className='contentinner'>
+      <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
         {notFound ? (
           <div className='centerflex'>
           <div className='enroll'>
@@ -280,7 +286,7 @@ const TestList = () => {
                 </span>
                 <div></div>
                 <div>
-                <Link to={`/test/AddMore/${test.testId}`} className='btn btn-primary mr-2' style={{width:"150px"}}><i className='fa fa-plus'></i> Add more </Link>
+                <Link to={`/test/AddMore/${courseName}/${test.testId}`} className='btn btn-primary mr-2' style={{width:"150px"}}><i className='fa fa-plus'></i> Add more </Link>
                 </div>
                 </span>
               {test.questions && (

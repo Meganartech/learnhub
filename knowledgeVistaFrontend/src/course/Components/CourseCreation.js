@@ -280,10 +280,18 @@ const handlenextclick =(e)=>{
     return (
         <div className='contentbackground'>
             <div className='contentinner p-3'>
-                {nextclick?(<Partialpaymentsetting enablechecked={enablechecked} setenablechecked={setenablechecked} handleSubmit={handleSubmit}
+           
+                {nextclick?(
+                    <Partialpaymentsetting enablechecked={enablechecked} setenablechecked={setenablechecked} handleSubmit={handleSubmit}
                 setnextclick={setnextclick} courseamount={formData.courseAmount} setDurations={setDurations} durations={durations}
-                 installmentData={installmentData} setInstallmentData={setInstallmentData}/>):(
+                 installmentData={installmentData} setInstallmentData={setInstallmentData}/>
+                ):(
                 <div className='divider ml-2'>
+                     <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
                     <h2 style={{ textDecoration: "underline" }}>Setting up a Course</h2>
                     <form >
                         {/* Form fields */}
@@ -391,7 +399,7 @@ const handlenextclick =(e)=>{
                                         <img
                                             src={formData.base64Image}
                                             alt="Selected"
-                                            style={{ width: "200px", height: "200px" }}
+                                            style={{ width: "100px", height: "100px" }}
                                         />
                                     </div>
                                 </div>

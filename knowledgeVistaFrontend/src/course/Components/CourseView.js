@@ -201,8 +201,8 @@ if(amount===0){
                       </button>
                     </h4>
                     <p>
-                      {item.courseDescription.length > 20
-                        ? item.courseDescription.slice(0, 20) + "..."
+                      {item.courseDescription.length > 40
+                        ? item.courseDescription.slice(0, 40) + "..."
                         : item.courseDescription}
                     </p>
                     <h6>

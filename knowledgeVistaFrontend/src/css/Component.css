@@ -213,16 +213,21 @@
     grid-template-columns: 6fr 4fr;
   }
   .textinputs{
-    font-size: larger;
+   
     display: flex;
     flex-direction: column;
   }
   .dropzone{
+    max-height: 300px;
     border: 1px solid black;
     border-radius: 5px;
     padding: 10px;
+    overflow: auto;
     text-align: center;
     align-items: center;
+  }
+  .dropzone p{
+    margin-bottom: 5px;
   }
   .videoinputs{
     padding: 20px;
@@ -237,7 +242,7 @@
     display: grid;
     grid-template-columns: 1fr 4fr;
     gap: 10px;
-    padding: 20px;
+    padding: 10px;
   }
   .videoinputs label,
   .grp label{
@@ -327,13 +332,19 @@
   display: block;
 }
 .selectstyle{
+  height: 35px;
   margin: auto;
 }
 .tabinp{
   margin-top: 10px;
+  min-width: 100px;
 }
 
 @media screen and (max-width: 480px) {
+  .searchbar{
+    height: 40px;
+    width: 80px;
+  }
   .notification-container{
    margin-top: 3px;
   }
@@ -355,9 +366,9 @@
     gap:5px;
   }
   .notification-count{
-    font-size: 0.9rem;
-    width: 20px;
-    height: 20px;
+    font-size: 0.6rem;
+    width: 15px;
+    height: 15px;
     right:-10px;
   }
   .borderimg{
@@ -419,6 +430,9 @@
   }
   .innerdivider{
     grid-template-columns: 1fr;
+  }
+  .thumb{
+    grid-template-columns: 1fr 1fr 0fr;
   }
   .thumb label {
 display: none;

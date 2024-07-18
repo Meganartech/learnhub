@@ -4,14 +4,15 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import axios from "axios";
-const EditCourseForm = ({ id, toggleEditMode }) => {
+import"../../css/Style.css";
+import { useNavigate, useParams } from "react-router-dom";
+const EditCourseForm = ({ }) => {
   const MySwal = withReactContent(Swal);
-  const  courseId=id
+ 
   const token =sessionStorage.getItem("token")
-  const [courseEdit, setCourseEdit] = useState([
-
-  ]);
-
+  const [courseEdit, setCourseEdit] = useState([]);
+  const {courseId}=useParams();
+  const navigate=useNavigate();
   const [errors, setErrors] = useState({
     courseName: "",
     courseDescription: "",
@@ -25,7 +26,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
     const fetchcourse = async () => {
       try {
         const response = await axios.get(
-          `${baseUrl}/course/get/${id}`,
+          `${baseUrl}/course/get/${courseId}`,
           {
             headers: {
               Authorization: token
@@ -169,19 +170,20 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
     }
   };
   return (
-   
+    <div className="contentbackground">
+          <div className="contentinner">
+          <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
     <form onSubmit={handleSubmit}>
      
-      <div className="outer " >
-        <div className="first">
-          <div className="head">
+      <div className="outer" >
+        <div className="First">
+         
             <h2 className="heading ">Update Course</h2>
-            <h6>
-              <a onClick={toggleEditMode} className="btn btn-primary">
-                <i className="fa fa-times" aria-hidden="true"></i>{" "}
-              </a>
-            </h6>
-          </div>
+        
           <div className="form-group">
             <label htmlFor="courseName" >
               Course Name <span className="text-danger">*</span>
@@ -268,7 +270,7 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
             </label>
             <label
                                         htmlFor='courseImage'
-                                        style={{ width: "400px" }}
+                                        style={{ width: "200px" }}
                                         className={`file-upload-btn ${errors.courseImage && `is-invalid`}`}
                                     >
                                         Upload Image
@@ -341,7 +343,8 @@ const EditCourseForm = ({ id, toggleEditMode }) => {
       </div>
       
     </form>
-
+</div>
+</div>
   );
 };
 

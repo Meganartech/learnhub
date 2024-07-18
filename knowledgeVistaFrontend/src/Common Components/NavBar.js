@@ -144,7 +144,7 @@ const handlemarkallasRead =async (notificationIds)=>{
       <div className="barhide " onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
 
     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
-      <div className="searchbar mt-2" style={{gridColumn:"3"}}>
+      <div className="searchbar " style={{gridColumn:"3"}}>
     <i className="fa fa-search pt-1 pl-1 " aria-hidden="true"></i>
     
         <input
@@ -212,8 +212,6 @@ const handlemarkallasRead =async (notificationIds)=>{
             />
           </a>
         
-      
-          {/* <!-- Dropdown - User Information --> */}
           <div
           
             className="dropdown-menu  shadow animated--grow-in absoluteleft"

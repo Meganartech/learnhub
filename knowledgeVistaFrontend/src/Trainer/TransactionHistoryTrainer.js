@@ -3,8 +3,10 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from 'axios';
 import baseUrl from '../api/utils';
+import { useNavigate } from 'react-router-dom';
 const TransactionHistoryTrainer = () => {
     const token=sessionStorage.getItem("token")
+    const navigate=useNavigate();
     const MySwal = withReactContent(Swal);
     const[paymenthistory,setpaymenthistory]=useState([{
        id:"",
@@ -63,6 +65,11 @@ const TransactionHistoryTrainer = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'> 
+    <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
     <div className="tableheader mb-4">
       <h1>Payment History</h1>
       <div style={{display:'grid',gridTemplateColumns:"10fr 6fr "}}>

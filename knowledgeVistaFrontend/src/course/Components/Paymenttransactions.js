@@ -4,8 +4,10 @@ import withReactContent from "sweetalert2-react-content";
 
 import axios from 'axios';
 import baseUrl from '../../api/utils';
+import { useNavigate } from 'react-router-dom';
 const Paymenttransactions = () => {
     const token=sessionStorage.getItem("token")
+    const navigate=useNavigate();
     const MySwal = withReactContent(Swal);
     const[paymenthistory,setpaymenthistory]=useState([{
        id:"",
@@ -64,12 +66,16 @@ const Paymenttransactions = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'> 
+    <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
     <div className="tableheader mb-4">
        <h1>Payment History</h1>
        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr"}}>
        <input
         className="form-control tabinp"
-        style={{ marginTop: "10px" }}
         type="search"
         placeholder="Search by Course Name"
         aria-label="Search"
@@ -79,7 +85,7 @@ const Paymenttransactions = () => {
           setFilterOption("search");
         }}/>
                    <select
-                    className="selectstyle btn btn-success mr-5 ml-5 text-left p-2 "
+                    className="selectstyle btn btn-success  text-left  "
                    
                     value={filterOption}
                     onChange={(e) => setFilterOption(e.target.value)}

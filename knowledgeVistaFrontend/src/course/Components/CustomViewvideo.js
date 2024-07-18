@@ -7,6 +7,7 @@ import baseUrl from '../../api/utils';
 import axios from 'axios';
 
 const CustomViewvideo = () => {
+
   const playerRef = useRef(null);
   const lessonListRef = useRef(null);// Ref for the container of lesson notes
   const MySwal = withReactContent(Swal);
@@ -207,6 +208,11 @@ const CustomViewvideo = () => {
   return (
     <div className='contentbackground' >
       <div className='contentinner'>
+      <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
         {AllLessons.length > 0 ? (
           <div className='vdoplusbtn'>
             <div className="headingbtn">
@@ -242,7 +248,7 @@ const CustomViewvideo = () => {
                     />
                   ) : videoType === 'youtube' ? (
                     <ReactPlayer
-                      width="90%"
+                      width="100%"
                       height="80%"
                       controls
                       url={videoSource ? videoSource : null}

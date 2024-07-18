@@ -141,7 +141,13 @@ const AttenTest = () => {
 };
     return (
         <div className='contentbackground'>
-          {attemplimit?(<div className='contentinner'>
+          {attemplimit?(
+            <div className='contentinner'>
+                <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
             <div className='centerflex'>
             <div className='enroll ' > 
         <h2 className='mt-2'>Your Attempt Limit Exceeded for this test </h2>
@@ -153,24 +159,16 @@ const AttenTest = () => {
                 <>
               {notFound ? (  
 
-        (role === "ADMIN" || role === "TRAINER") ? (
-            <div className='contentinner'>
-                <div className='centerflex'>
-        <div className='enroll'>
-            <h2>No test found for this course.</h2>
-            <a href={`/course/AddTest/${courseId}`} className='btn btn-primary'>Add Test</a>
-        </div></div></div>
-        
-      ) : (
+       
         <div className='contentinner'>
             <div className='centerflex'>
         <div className='enroll'> 
         <h2>No test found for this course.</h2>
         
-      <Link to="javascript:window.history.back()" className='btn btn-primary'>Go Back</Link>
+      <button onClick={()=>{navigate(-1)}} className='btn btn-primary'>Go Back</button>
         </div></div>
         </div>
-      )
+      
           
        ) : (<>
             {!proceedClicked && (
