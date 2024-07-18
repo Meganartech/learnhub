@@ -73,7 +73,6 @@
 }
 .table-container::-webkit-scrollbar {
   width: 3px; /* Width of the scrollbar */
-
 }
 
 .table-container::-webkit-scrollbar-track {
@@ -346,6 +345,7 @@
 
 
 @media screen and (max-width: 480px) {
+ 
   .counts{
  margin: auto;
  width: 300px;

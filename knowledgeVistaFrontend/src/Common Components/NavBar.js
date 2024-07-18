@@ -141,7 +141,7 @@ const handlemarkallasRead =async (notificationIds)=>{
      
       </a>
       
-      <div className="barhide mt-4" onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
+      <div className="barhide " onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
 
     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
       <div className="searchbar mt-2" style={{gridColumn:"3"}}>
@@ -164,21 +164,22 @@ const handlemarkallasRead =async (notificationIds)=>{
     </div>
     )}
    
-<div className="navbar-nav ml-auto mt-3  " style={{gridColumn:"4"}}>
-  <div className="nav-item dropdown no-arrow">
+<div className="navbar-nav  " style={{gridColumn:"4"}}>
+  <div className="nav-item nav-link dropdown no-arrow">
     <a
     onClick={()=>{setisopen(! isopen)}}
       href="#"
       
     >
-      <span className="w-100"></span>
-      <span className="notification-container">
-        <div> <img
+      {/* <span className="w-100"></span> */}
+      <span className=" notification-container">
+        <div > 
+          <img
             className="img-profile rounded-circle borderimg"
             src={bell}
+            id="noti"
             alt="User Profile"
-            width="40px"
-            height="40px"
+            
           />
         {count > 0 ?<span className="notification-count">{count}</span>:<></>}
         </div>
@@ -188,7 +189,7 @@ const handlemarkallasRead =async (notificationIds)=>{
     </div>
 </div>
  
-      <ul className="navbar-nav ml-auto " style={{gridColumn:"5"}} >
+      <ul className="navbar-nav " style={{gridColumn:"5"}} >
         <li className="nav-item dropdown no-arrow ">
           
           <a
@@ -206,9 +207,8 @@ const handlemarkallasRead =async (notificationIds)=>{
             <img
               className="img-profile rounded-circle  borderimg "
               src={imageSource}
+              id="profi"
               alt="User Profile"
-              width="100px"
-              height="100px"
             />
           </a>
         

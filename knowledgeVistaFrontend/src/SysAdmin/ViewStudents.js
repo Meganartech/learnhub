@@ -236,12 +236,11 @@ const ViewStudents = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
-      <div style={{ display: 'grid', gridTemplateColumns: '15fr 10fr 10fr 6fr ' }} className='mb-4'>
-        <h1>Student Details</h1>
+    <div className="tableheader mb-4"><h1>Student Details</h1>
       
-        <input
-        className="form-control "
-        style={{ marginTop: "10px"}}
+    <div style={{display:'grid', gap:"5px",gridTemplateColumns:"20fr 20fr 1fr"}}>
+    <input
+        className="form-control tabinp "
         type="search"
         placeholder="Search by Institution Name"
         aria-label="Search"
@@ -252,8 +251,7 @@ const ViewStudents = () => {
         }}      
       />
         <input
-        className="form-control ml-4"
-        style={{ marginTop: "10px" }}
+        className="form-control tabinp"
         type="search"
         placeholder="Search by Email"
         aria-label="Search"
@@ -264,7 +262,7 @@ const ViewStudents = () => {
         }}      
       />
         <select
-                    className="form-select btn btn-success ml-5 mr-5 text-left p-2 "
+                    className="selectstyle btn btn-success text-left "
                    
                     value={filterOption}
                     onChange={(e) => setFilterOption(e.target.value)}
@@ -274,6 +272,7 @@ const ViewStudents = () => {
                     <option className='bg-light text-dark' value="Inactive">Inactive</option>
                   </select>
         
+      </div>
       </div>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">

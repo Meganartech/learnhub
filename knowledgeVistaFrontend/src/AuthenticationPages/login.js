@@ -156,7 +156,7 @@ const Login = () => {
           </div>
         </div>
   
-        <div className="mb-4 text-center">
+        <div className="mb-4">
           <Link
             className="user text-decoration-none mr-3"
             to="/forgot-password"

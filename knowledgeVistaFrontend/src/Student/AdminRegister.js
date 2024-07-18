@@ -154,7 +154,7 @@ const AdminRegister = () => {
 
   // Check if any required fields are empty or have errors
   let hasErrors = false;
-  const requiredFields = ['username', 'skills', 'email', 'dob', 'psw', 'confirm_password', 'phone'];
+  const requiredFields = ['username', 'skills','institution', 'email', 'dob', 'psw', 'confirm_password', 'phone'];
 
   requiredFields.forEach(field => {
     if (!formData[field] || formData[field].length === 0 || errors[field]) {
@@ -298,13 +298,12 @@ const AdminRegister = () => {
                       <img
                         src={formData.base64Image}
                         alt="Selected Image"
-                        className="profile-picture"
                       />
                     ) : (
                       <img
                         src={profile}
                         alt="Default Profile Picture"
-                        className="prof"
+                        
                       />
                     )}
             </div>

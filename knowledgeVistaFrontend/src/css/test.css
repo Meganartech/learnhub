@@ -18,10 +18,7 @@
     padding-left: 30px;
     padding-top: 20px;
 }
-.table-container {
-  max-height: 480px; /* Adjust the height as needed */
-  overflow-y: auto;
-}
+
 
 
 

@@ -32,6 +32,7 @@
   padding: 20px;
   border-radius: 10px;
   width: 100%;
+  overflow: auto;
   height: 90vh;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -50,6 +51,7 @@
   padding: 20px;
   border-radius: 10px;
   width: 100%;
+  overflow: auto;
   height: auto;
   min-height: 80vh;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
@@ -211,7 +213,7 @@ grid-template-columns: 6fr 1fr 12fr;
   }
   
   .image-group {
-    width: 300px; /* Adjust the width and height as needed */
+   width: 300px; /* Adjust the width and height as needed */
     height: 300px;
     border-radius: 50%;
     overflow: hidden;
@@ -352,6 +354,10 @@ grid-template-columns: 6fr 1fr 12fr;
     flex-direction: column;  
   
   }
+  .image-group {
+   width: 200px;
+  height: 200px;
+  }
 /* style for outlet*/
 #wrappercenter {
   display: block;
@@ -386,10 +392,12 @@ grid-template-columns: 6fr 1fr 12fr;
   .contentbackgroundforfull{
     width: 100%;
     padding: 10px;
-    height:180vh;
+    height: auto;
+    
   }
   .contentinnerforfull{
-    height: 176vh;
+    height: auto;
+    
   }
   .contentbackground{
     width: 100%;
@@ -424,9 +432,8 @@ grid-template-columns: 6fr 1fr 12fr;
     
 
   }
-  .profile-picture {
-    
-    height: 400px;
+  .profile-picture {   
+    height: auto;
   }
   .twosplit{
     margin-top: 10px;

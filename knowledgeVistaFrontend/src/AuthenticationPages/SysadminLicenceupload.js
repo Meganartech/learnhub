@@ -70,11 +70,11 @@ const SysadminLicenceupload = () => {
     <div className='contentbackground'>
         <div className='contentinner'>
              <form className='form-container' onSubmit={handleSubmit}>
-                  <div className='row'>
-                    <div className='col-6'>
+                 
+                  
                      
-                      <div className='inputgrp2'>
-                        <label className='labl' >Add New License File </label>
+                      <div className='inputgrp' >
+                        <label style={{ display:"block"}} >Add New License File </label>
                         <span>:</span>
                  
                         <input
@@ -91,9 +91,7 @@ const SysadminLicenceupload = () => {
                           style={{ padding: "0px", width: "20rem" }}
                         />
                       </div>
-                    </div>
-                   
-                  </div>
+                 
                  
                   <div className='modal-footer'>
                     <input

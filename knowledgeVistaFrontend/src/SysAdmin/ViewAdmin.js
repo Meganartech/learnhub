@@ -234,15 +234,13 @@ const ViewAdmin = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
-      <div style={{ display: 'grid', gridTemplateColumns: '25fr 10fr 6fr ' }} className='mb-4'>
-        <h1>Admin Details</h1>
-      
-      
+    <div className="tableheader mb-4">
+      <h1>Admin Details</h1>
+      <div style={{display:'grid',gridTemplateColumns:"10fr 6fr "}}>  
         <input
-        className="form-control"
-        style={{ marginTop: "10px" }}
+        className="form-control tabinp"
         type="search"
-        placeholder="Search by Email"
+        placeholder="search by Email"
         aria-label="Search"
         value={searchQuery}
         onChange={(e) => {
@@ -251,15 +249,15 @@ const ViewAdmin = () => {
         }}      
       />
         <select
-                    className="form-select btn btn-success ml-5 mr-5 text-left p-2 "
-                   
-                    value={filterOption}
-                    onChange={(e) => setFilterOption(e.target.value)}
-                  >
-                    <option  className='bg-light text-dark ' value="All">All</option>
-                    <option className='bg-light text-dark' value="Active">Active</option>
-                    <option className='bg-light text-dark' value="Inactive">Inactive</option>
-                  </select>
+            className="selectstyle btn btn-success text-left "
+            value={filterOption}
+            onChange={(e) => setFilterOption(e.target.value)}
+         >
+           <option  className='bg-light text-dark ' value="All">All</option>
+           <option className='bg-light text-dark' value="Active">Active</option>
+           <option className='bg-light text-dark' value="Inactive">Inactive</option>
+         </select>
+        </div>
         </div>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">
