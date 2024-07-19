@@ -11,6 +11,7 @@ import bell from "../images/bell.png"
 import Notification from "./Notification";
 
 const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,handleSidebarToggle,showSidebar}) => {
+  
   const [data,setdata]=useState({
     name:"",
     profileImage:null

@@ -288,7 +288,7 @@ const AddStudent = () => {
                       />
                     )}
             </div>
-            <label htmlFor='fileInput' className='file-upload-btn'>
+            <div>            <label htmlFor='fileInput' className='file-upload-btn'>
               Upload
             </label>
             <div className='text-danger'> {errors.profile}</div>
@@ -296,11 +296,13 @@ const AddStudent = () => {
                   type='file'
                   name="fileInput"
                   id='fileInput'
+                  style={{display:"none"}}
                   className={`file-upload ${errors.fileInput && 'is-invalid'}`}
                   accept='image/*'
                   onChange={handleFileChange}
                 />
-    
+    </div>
+
           </div>
 
           <div className='formgroup'>

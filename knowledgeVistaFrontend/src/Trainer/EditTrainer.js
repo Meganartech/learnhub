@@ -312,6 +312,7 @@ const EditTrainer = () => {
                     />
                   )}
           </div>
+          <div>
           <label htmlFor='fileInput' className='file-upload-btn'>
             Upload
           </label>
@@ -320,12 +321,13 @@ const EditTrainer = () => {
           <input
                 type='file'
                 name="fileInput"
+                style={{display:"none"}}
                 id='fileInput'
                 className={`file-upload ${errors.fileInput && 'is-invalid'}`}
                 accept='image/*'
                 onChange={handleFileChange}
               />
-  
+  </div>
         </div>
 
         <div className='formgroup'>

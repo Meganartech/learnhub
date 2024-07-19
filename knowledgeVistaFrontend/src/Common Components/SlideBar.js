@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import {  useNavigate} from "react-router-dom";
 import "../css/Component.css"
-import logo from "../images/logo.png"
 import baseUrl from '../api/utils';
 import axios from 'axios';
 
 const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
+ 
   const [isvalid, setIsvalid] = useState();
   const [isEmpty, setIsEmpty] = useState();
   const userRole = sessionStorage.getItem("role");
@@ -43,10 +43,7 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
   
 
 
-  const handleSetActiveLink = (linkName) => {
-    setActiveLink(linkName);
-    localStorage.setItem("activeLink",linkName)
-  };
+  
   const handleClick = (link) => {
     
     if(userRole==="ADMIN" || userRole === "TRAINER")
@@ -54,26 +51,22 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
     if((link==="/about" || link==="/admin/dashboard")&& isEmpty)
     {
       handleSidebarToggle();
-      handleSetActiveLink(link);
       navigate(link);
     }
     else if ((link==="/about" || link==="/admin/dashboard")&& !isEmpty && !isvalid) 
     {
       handleSidebarToggle();
-      handleSetActiveLink(link);
         navigate(link);
     } 
     else if (!isEmpty && isvalid)
      {
       handleSidebarToggle();
-      handleSetActiveLink(link);
         navigate(link);
     } 
   } 
   else if(userRole==="USER" || userRole==="SYSADMIN")
   {
     handleSidebarToggle();
-    handleSetActiveLink(link);
     navigate(link);
   }
   };

@@ -232,17 +232,20 @@ const certificateInputs=(
       
     
     </div>
+    <div>
     <label htmlFor='fileInput' className='file-upload-btn'>
       Upload
     </label>
     <div className="text-danger">{errors.authorizedSign}</div>
     <input
       type='file'
+      style={{display:"none"}}
       id='fileInput'
       className='file-upload'
       accept='image/*'
       onChange={handleFileChange}
     />
+    </div>
   </div>
 
 

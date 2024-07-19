@@ -310,17 +310,20 @@ const ProfileView = () => {
                     />
                   )}
           </div>
+          <div>
           <label htmlFor='fileInput' className='file-upload-btn'>
             Upload
           </label>
           <input
                 type='file'
                 name="fileInput"
+                style={{display:"none"}}
                 id='fileInput'
                 className={`file-upload ${errors.fileInput && 'is-invalid'}`}
                 accept='image/*'
                 onChange={handleFileChange}
               />
+              </div>
         </div>
         <div className='formgroup'>
           <div className='inputgrp'>

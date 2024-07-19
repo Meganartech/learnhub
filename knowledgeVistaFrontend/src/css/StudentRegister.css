@@ -9463,6 +9463,8 @@ a:focus {
 }
 .sidebar {
   width: 6.5rem;
+  height: auto;
+  padding-bottom: 10px;
 }
 .sidebar  {
   position: relative;

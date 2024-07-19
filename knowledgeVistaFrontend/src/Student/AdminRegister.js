@@ -307,6 +307,7 @@ const AdminRegister = () => {
                       />
                     )}
             </div>
+            <div>
             <label htmlFor='fileInput' className='file-upload-btn'>
               Upload
             </label>
@@ -315,11 +316,12 @@ const AdminRegister = () => {
                   type='file'
                   name="fileInput"
                   id='fileInput'
+                  style={{display:"none"}}
                   className={`file-upload ${errors.fileInput && 'is-invalid'}`}
                   accept='image/*'
                   onChange={handleFileChange}
                 />
-    
+    </div>
           </div>
              
    

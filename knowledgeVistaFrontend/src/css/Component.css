@@ -173,7 +173,7 @@
     justify-content: center;
     align-items: center;
   }
-  .footermain{  
+  .footermain{ 
     height: 15vh;
     display: grid;
     grid-template-rows: 3fr 1fr;
