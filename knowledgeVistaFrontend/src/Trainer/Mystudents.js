@@ -166,7 +166,7 @@ const Mystudents = () => {
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-    <div className="tableheader mb-4"><h1>Students Details</h1>
+    <div className="tableheader "><h1>Students Details</h1>
 
         
         <input

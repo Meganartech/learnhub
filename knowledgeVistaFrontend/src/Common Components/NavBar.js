@@ -10,7 +10,7 @@ import axios from "axios";
 import bell from "../images/bell.png"
 import Notification from "./Notification";
 
-const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,handleSidebarToggle,showSidebar}) => {
+const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,handleSidebarToggle,showSidebar,navbarref}) => {
   
   const [data,setdata]=useState({
     name:"",
@@ -142,9 +142,9 @@ const handlemarkallasRead =async (notificationIds)=>{
      
       </a>
       
-      <div className="barhide " onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
-
-    {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
+      <div className="barhide " ref={navbarref} onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
+      
+     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
       <div className="searchbar " style={{gridColumn:"3"}}>
     <i className="fa fa-search pt-1 pl-1 " aria-hidden="true"></i>
     

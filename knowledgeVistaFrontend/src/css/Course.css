@@ -299,6 +299,7 @@ input::placeholder {
   grid-template-columns: 1fr 1fr;
 }
 .mybtn{
+  height: 35px;
   margin-top: 4px;
   margin-bottom: 2px;
 }

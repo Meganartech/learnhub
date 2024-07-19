@@ -84,7 +84,7 @@
   }
   #notipanel{
     position: relative;
-    z-index: 99 !important;
+    z-index: 100 !important;
     
   }
   .notificationElement{
@@ -332,7 +332,7 @@
   display: block;
 }
 .selectstyle{
-  height: 35px;
+  height: 40px;
   margin: auto;
 }
 .tabinp{
@@ -378,7 +378,7 @@
   .selectstyle{
     justify-self: flex-start;
     width: 100px;
-    height:40px;
+    height:35px;
     margin:5px;
   }
   .tabinp{
