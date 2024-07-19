@@ -42,7 +42,7 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
 
   
 
-
+ 
   
   const handleClick = (link) => {
     
@@ -51,22 +51,26 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
     if((link==="/about" || link==="/admin/dashboard")&& isEmpty)
     {
       handleSidebarToggle();
+      setActiveLink(link);
       navigate(link);
     }
     else if ((link==="/about" || link==="/admin/dashboard")&& !isEmpty && !isvalid) 
     {
       handleSidebarToggle();
+      setActiveLink(link);
         navigate(link);
     } 
     else if (!isEmpty && isvalid)
      {
       handleSidebarToggle();
+      setActiveLink(link);
         navigate(link);
     } 
   } 
   else if(userRole==="USER" || userRole==="SYSADMIN")
   {
     handleSidebarToggle();
+    setActiveLink(link);
     navigate(link);
   }
   };
@@ -224,7 +228,7 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
           onClick={() => handleClick("/AssignedCourses")}
         >
           <i className={activeLink === "/AssignedCourses" ? "fa-solid fa-book text-light" : "fa-solid fa-book text-muted"}></i>
-          <span>Assigned Courses</span>
+          <span>My Courses</span>
         </a>
       </li>
       )}
@@ -253,18 +257,7 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
         </a>
       </li>
         )}
-        {userRole === "TRAINER" && (
-      <li className="nav-item mt-2">
-        <a
-          className={activeLink === "/payment/trainer/transactionHitory" ? "ActiveLink nav-link" : "nav-link text-muted"}
-          href="#"
-          onClick={() => handleClick("/payment/trainer/transactionHitory")}
-        >
-          <i className={activeLink === "/payment/trainer/transactionHitory" ? "fa-solid fa-clock-rotate-left text-light" : "fa-solid fa-clock-rotate-left  text-muted"}></i>
-          <span>Transaction History</span>
-        </a>
-      </li>
-      )}
+        
 
      {userRole === "ADMIN" && (
       <li className="nav-item mt-2">
@@ -413,6 +406,18 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
   </div>
 </div> 
         )} 
+        {userRole === "TRAINER" && (
+      <li className="nav-item mt-2">
+        <a
+          className={activeLink === "/payment/trainer/transactionHitory" ? "ActiveLink nav-link" : "nav-link text-muted"}
+          href="#"
+          onClick={() => handleClick("/payment/trainer/transactionHitory")}
+        >
+          <i className={activeLink === "/payment/trainer/transactionHitory" ? "fa-solid fa-clock-rotate-left text-light" : "fa-solid fa-clock-rotate-left  text-muted"}></i>
+          <span>Transactions </span>
+        </a>
+      </li>
+      )}
 {/* for SysAdmin */}
 {userRole === "SYSADMIN" && (
       <li className="nav-item mt-2">

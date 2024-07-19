@@ -116,8 +116,8 @@ const[sign,setsign]=useState();
                        
                     </div>
                     <div className='certibtn '>
-                          <button onClick={handlePrint} className='btn-primary btn'><i className="fa-solid fa-print"></i> Print</button>
-                          <button onClick={handleDownloadPdf} className='btn-primary btn'> <i className="fa-solid fa-download"></i> Download PDF</button>
+                          <button onClick={handlePrint}id="printbtn" className='btn-primary btn'><i className="fa-solid fa-print"></i> Print</button>
+                          <button onClick={handleDownloadPdf}id="printbtn" className='btn-primary btn'> <i className="fa-solid fa-download"></i> Download PDF</button>
                     </div>
                     </div>
                 </div>)}

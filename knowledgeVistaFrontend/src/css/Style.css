@@ -57,7 +57,16 @@
 .lab{
   width: 17rem;
 }
-
+.selectandadd{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: end;
+}
+.twosearch{
+  display: grid;
+  grid-template-columns: 20fr 20fr 1fr;
+  gap: 5px;
+}
 .dash{
   display: flex;
 }
@@ -69,8 +78,9 @@
 }
 .table-container {
   overflow-y:auto;
+  overflow-x:auto;
   max-height: 500px;
-  height: auto; 
+  min-height: 300px; 
   padding-right: 10px;
 }
 .table-container::-webkit-scrollbar {
@@ -347,7 +357,9 @@
 
 
 @media screen and (max-width: 480px) {
- 
+ .twosearch{
+  grid-template-columns: 1fr ;
+ }
   .counts{
  margin: auto;
  width: 300px;

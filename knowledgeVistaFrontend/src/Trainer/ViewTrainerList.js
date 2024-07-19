@@ -189,9 +189,9 @@ const ViewTrainerList = () => {
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-      <div className="tableheader mb-4">
+      <div className="tableheader ">
         <h1>Trainers Details</h1>
-        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr 6fr"}}>
+       
         <input
         className="form-control tabinp"
         type="search"
@@ -203,6 +203,7 @@ const ViewTrainerList = () => {
           setFilterOption("search");
         }}      
       />
+      <div className='selectandadd'>
         <select
                     className="selectstyle btn btn-success  text-left  "
                    

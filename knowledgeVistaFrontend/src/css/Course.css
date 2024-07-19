@@ -25,8 +25,15 @@ input::placeholder {
 }
 .tableheader{
   display: grid;
-  grid-template-columns: 25fr 24fr;
+  grid-template-columns: 25fr 12fr 12fr;
+  margin-bottom: 0.9rem;
 }
+.tableheader2{
+  display: grid;
+  grid-template-columns: 25fr 24fr;
+  margin-bottom: 0.9rem;
+}
+
 .centerflex{
 display: flex;
 justify-content: center;
@@ -295,6 +302,7 @@ input::placeholder {
   margin-top: 4px;
   margin-bottom: 2px;
 }
+.tableheader2,
 .tableheader{
 grid-template-columns: 1fr;
 }

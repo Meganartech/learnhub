@@ -234,9 +234,9 @@ const ViewTrainers = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
-    <div className="tableheader mb-4">
+    <div className="tableheader2">
        <h1>Trainers Details</h1>
-       <div style={{display:'grid', gap:"5px",gridTemplateColumns:"20fr 20fr 1fr"}}>
+       <div className="twosearch" >
         <input
         className="form-control tabinp"
        

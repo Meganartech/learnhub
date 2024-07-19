@@ -70,7 +70,7 @@ const TransactionHistoryTrainer = () => {
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-    <div className="tableheader mb-4">
+    <div className="tableheader2 ">
       <h1>Payment History</h1>
       <div style={{display:'grid',gridTemplateColumns:"10fr 6fr "}}>
       <input
@@ -84,7 +84,7 @@ const TransactionHistoryTrainer = () => {
           setFilterOption("search");
         }}/>
                    <select
-                    className="selectstyle btn btn-success mr-5 ml-5 text-left p-2 "
+                    className="selectstyle btn btn-success text-left "
                    
                     value={filterOption}
                     onChange={(e) => setFilterOption(e.target.value)}

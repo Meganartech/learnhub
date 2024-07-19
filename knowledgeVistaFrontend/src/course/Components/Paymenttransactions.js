@@ -71,7 +71,7 @@ const Paymenttransactions = () => {
       <div></div>
       <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-    <div className="tableheader mb-4">
+    <div className="tableheader2 ">
        <h1>Payment History</h1>
        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr"}}>
        <input

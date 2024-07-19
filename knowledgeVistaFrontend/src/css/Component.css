@@ -342,6 +342,7 @@
 
 @media screen and (max-width: 480px) {
   .searchbar{
+    gap: 5px;
     height: 40px;
     width: 80px;
   }
@@ -375,6 +376,7 @@
     margin-right: 0px;
   }
   .selectstyle{
+    justify-self: flex-start;
     width: 100px;
     height:40px;
     margin:5px;

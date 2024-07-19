@@ -234,7 +234,7 @@ const ViewAdmin = () => {
   return (
     <div className='contentbackground'>
     <div className='contentinner'>
-    <div className="tableheader mb-4">
+    <div className="tableheader2">
       <h1>Admin Details</h1>
       <div style={{display:'grid',gridTemplateColumns:"10fr 6fr "}}>  
         <input
