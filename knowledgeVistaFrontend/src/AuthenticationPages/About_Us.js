@@ -48,7 +48,7 @@ const About_Us = () => {
 
  
   return (
-    <div className="contentbackground" style={{height:"90vh"}}>
+    <div className="contentbackground" >
       <div className="contentinner p-4"  >
       <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>

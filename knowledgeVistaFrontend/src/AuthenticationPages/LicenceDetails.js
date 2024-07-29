@@ -10,7 +10,6 @@ const LicenceDetails = () => {
   const MySwal = withReactContent(Swal);
   const [audioFile, setAudioFile] = useState(null);
   const [errors, setErrors] = useState({audioFile:""});
-  const [isDataList, setIsDataList] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [lastModifiedDate, setLastModifiedDate] = useState(null);
   const [licenceDetails, setLicenceDetails] = useState({}); // State for licence details
@@ -154,7 +153,7 @@ const navigate=useNavigate();
 
 
   return (
-    <div className="contentbackground" style={{ height: "90vh" }}>
+    <div className="contentbackground" >
       <div className="contentinner p-4 pb-4">
       <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
