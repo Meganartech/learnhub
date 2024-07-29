@@ -48,13 +48,13 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
     
     if(userRole==="ADMIN" || userRole === "TRAINER")
     {
-    if((link==="/about" || link==="/admin/dashboard")&& isEmpty)
+    if((link==="/about" || link==="/admin/dashboard"||link==="/licenceDetails")&& isEmpty)
     {
       handleSidebarToggle();
       setActiveLink(link);
       navigate(link);
     }
-    else if ((link==="/about" || link==="/admin/dashboard")&& !isEmpty && !isvalid) 
+    else if ((link==="/about" || link==="/admin/dashboard" || link==="/licenceDetails")&& !isEmpty && !isvalid) 
     {
       handleSidebarToggle();
       setActiveLink(link);
