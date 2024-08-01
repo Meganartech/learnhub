@@ -8,20 +8,21 @@ const PrivateRoute = ({sysadmin, authenticationRequired, authorizationRequired,o
   const [isvalid, setIsvalid] = useState();
     useEffect(() => {
         const fetchData = async () => {
-          try {
+          try {  
+            if(token) {
             const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`,{
               headers:{
                 "Authorization":token,
                 }
               });
-            
+          
             const data = response.data;
             setIsvalid(data.valid);
           
-
+            }
         } catch (error) {
           if (error.response && error.response.status !== 200) {
-            throw new Error('');
+            console.error('Error fetching data:', error);
           }
           console.error('Error fetching data:', error);
         }

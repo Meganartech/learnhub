@@ -474,7 +474,7 @@ const handlenextclick =(e)=>{
                     <div className='cornerbtn'>
                            
                            <button
-                               className='btn btn-primary'
+                               className='btn btn-warning'
                                type="button"
                                onClick={() => {
                                   navigate(-1) 

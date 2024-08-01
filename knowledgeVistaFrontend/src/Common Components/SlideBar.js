@@ -10,11 +10,12 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
   const [isEmpty, setIsEmpty] = useState();
   const userRole = sessionStorage.getItem("role");
   const navigate = useNavigate();
+  const token=sessionStorage.getItem("token")
   useEffect(() => {
     const fetchData = async () => {
       try {
         
-  const token=sessionStorage.getItem("token")
+ if(token){
         const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`,{
           headers:{
             "Authorization" :token,
@@ -29,6 +30,7 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
        
         const type = data.type;
       sessionStorage.setItem('type',type);
+        }
     } catch (error) {
       if (error.response && error.response.status !== 200) {
         setIsEmpty(error.response.data.empty);
@@ -272,7 +274,20 @@ const SlideBar = ({handleSidebarToggle,activeLink,setActiveLink}) => {
       </li>
         )}
         
-
+        {userRole === "ADMIN"  && (
+        <li className="nav-item mt-2">
+          <a
+            className={activeLink === "/zoom" ? "ActiveLink nav-link" : "nav-link text-muted"}
+            href="#"
+           
+            onClick={() => handleClick("/zoom")}
+          >
+            <i className={activeLink === "/zoom" ? "fa-solid fa-video text-light" : "fa-solid fa-video text-muted"}></i>
+            <span> Meeting </span>
+          </a>
+     
+        </li>
+      )}
        
        {(userRole === "ADMIN" ) && (
        

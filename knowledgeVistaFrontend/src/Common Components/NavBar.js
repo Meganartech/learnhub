@@ -25,6 +25,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,hand
     
     const fetchItems = async () => {
         try {
+          if(token) {
             const response = await axios.get(`${baseUrl}/Edit/profiledetails`, {
                 headers: {
                     Authorization : token,
@@ -35,6 +36,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,hand
                 const data =  response.data;
                 setdata(data);
             } 
+          }
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -44,6 +46,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,hand
 }, [token]);  
 const fetchUnreadCount = async () => {
   try {
+    if(token) {
     const response = await axios.get(`${baseUrl}/unreadCount`, {
       headers: {
         Authorization: token,
@@ -54,6 +57,7 @@ const fetchUnreadCount = async () => {
       const data = response.data;
       setcount(data);
     }
+  }
   } catch (error) {
     console.error("Error fetching unread count:", error);
   }
@@ -155,7 +159,6 @@ const handlemarkallasRead =async (notificationIds)=>{
           id="search"
           value={searchQuery}
           onChange={handleSearchChange}
-          autoFocus
           placeholder="Search Course...."
         />
       
