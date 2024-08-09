@@ -44,6 +44,11 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	    
 	    @Query("SELECT isActive FROM Muser u WHERE u.role.roleName = :rolename  AND u.institutionName = :institutionname")
 	    Boolean getactiveResultByInstitutionName(@Param("rolename") String roleName, @Param("institutionname") String institutionName);
+
+	    @Query("SELECT u.email FROM Muser u WHERE u.institutionName = :institutionname AND LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%'))")
+	    List<String> findEmailsByEmailContainingIgnoreCase(@Param("email") String email,@Param("institutionname") String institution);
+
+
 }
 
 

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,8 +59,7 @@ public class Listview {
             List<Muser> users = muserrepositories.findByRoleNameAndInstitutionName(roleu, institution);
            
             users.forEach(user -> {
-                byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
-                user.setProfile(decompressedImage);
+                user.setProfile(null);
                 user.setCourses(null);
             });
             return ResponseEntity.ok(users);
@@ -99,8 +99,7 @@ public class Listview {
             }
             List<Muser> Uniquestudents = students.stream().distinct().collect( Collectors.toList());
             Uniquestudents.forEach(user -> {
-                byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
-                user.setProfile(decompressedImage);
+                user.setProfile(null);
                 user.setCourses(null);
             });
             return ResponseEntity.ok(Uniquestudents);
@@ -188,8 +187,7 @@ public ResponseEntity<List<Muser>> getTrainerByRoleName( String token) {
        
         users.forEach(user -> {
         	user.setAllotedCourses(null);
-            byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
-            user.setProfile(decompressedImage);
+            user.setProfile(null);
             user.setCourses(null);
         });
         return ResponseEntity.ok(users);
@@ -199,6 +197,36 @@ public ResponseEntity<List<Muser>> getTrainerByRoleName( String token) {
 	     }
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+}
+public ResponseEntity< List<String>> SearchEmail(String token,String Query){
+	try {
+		if (!jwtUtil.validateToken(token)) {
+	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
+	     }
+		 String email=jwtUtil.getUsernameFromToken(token);
+   	     Optional<Muser>opreq=muserrepositories.findByEmail(email);
+   	     
+   	     if(opreq.isPresent()) {
+   	    	 Muser requser=opreq.get();
+   	    	String institutionname=requser.getInstitutionName();
+   	    	List<String> listu= muserrepositories.findEmailsByEmailContainingIgnoreCase(Query, institutionname);
+   	    	return ResponseEntity.ok(listu);
+   	     }else {
+   	    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
+   	     }
+		
+	}catch(Exception e) {
+		e.printStackTrace();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+	}
+}
+public List<String> MuserEmailSearch(String institution, String email) {
+    try {
+        return muserrepositories.findEmailsByEmailContainingIgnoreCase(email, institution);
+    } catch (Exception e) {
+        e.printStackTrace(); // Log the exception
+        return new ArrayList<>();  // Return an empty list or handle as needed
     }
 }
 }

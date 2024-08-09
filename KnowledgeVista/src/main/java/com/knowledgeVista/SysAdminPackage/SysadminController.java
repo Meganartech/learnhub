@@ -33,8 +33,7 @@ public class SysadminController {
 	   	     if(role.equals("SYSADMIN")) {
 	   	    List<Muser> admins=	muserrepositories.findByRoleName("ADMIN");
 	   	 admins.forEach(admin -> {
-             byte[] decompressedImage = ImageUtils.decompressImage(admin.getProfile());
-             admin.setProfile(decompressedImage);
+             admin.setProfile(null);
              admin.setCourses(null);
              admin.setPsw(null);
          });
@@ -59,8 +58,7 @@ public class SysadminController {
 	   	     if(role.equals("SYSADMIN")) {
 	   	    List<Muser> trainers=	muserrepositories.findByRoleName("TRAINER");
 	   	 trainers.forEach(trainer -> {
-           byte[] decompressedImage = ImageUtils.decompressImage(trainer.getProfile());
-           trainer.setProfile(decompressedImage);
+           trainer.setProfile(null);
            trainer.setAllotedCourses(null);
            trainer.setPsw(null);
        });
@@ -84,8 +82,7 @@ public class SysadminController {
 	   	     if(role.equals("SYSADMIN")) {
 	   	    List<Muser> students=	muserrepositories.findByRoleName("USER");
 	   	 students.forEach(student -> {
-         byte[] decompressedImage = ImageUtils.decompressImage(student.getProfile());
-         student.setProfile(decompressedImage);
+         student.setProfile(null);
          student.setCourses(null);
          student.setPsw(null);
      });

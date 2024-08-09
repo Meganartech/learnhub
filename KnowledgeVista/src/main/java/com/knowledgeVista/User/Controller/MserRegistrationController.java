@@ -35,8 +35,7 @@ public class MserRegistrationController {
 	
 	@Autowired
 	private LicenseController licencecontrol;
-	@Autowired
-	private Environment env;
+
 	@Autowired
 	private mAdminLicenceRepo madminrepo;
 	
@@ -45,6 +44,8 @@ public class MserRegistrationController {
 	  
 	 @Value("${spring.profiles.active}")
 	    private String activeProfile;
+	 @Value("${base.url}")
+	    private String baseUrl;
 	
 
 	public ResponseEntity<?> registerAdmin( String username, String psw, String email, String institutionName, LocalDate dob,String role,
@@ -103,7 +104,6 @@ public class MserRegistrationController {
 	          
 	            RestTemplate restTemplate = new RestTemplate();
 
-	            String baseUrl = env.getRequiredProperty("base.url");
 
 	            
 	            String apiUrl = baseUrl +"/Developer/CustomerDownloads";
