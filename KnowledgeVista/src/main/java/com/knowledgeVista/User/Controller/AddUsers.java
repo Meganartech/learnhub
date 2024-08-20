@@ -81,11 +81,7 @@ public class AddUsers {
 	      	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	      	   	    	}
 	      	   	    	Muser adding=addingadmin.get();
-	      	   	    	Long count=muserrepositories.countByRoleNameandInstitutionName("TRAINER", adding.getInstitutionName());
-	      	   	    	Long MaxCount=licencerepo.FindTrainerCountByinstitution(adding.getInstitutionName());
-	      	   	    	if(count+1 >MaxCount) {
-	      	   	    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("LIMIT");	
-	      	   	    	}
+	      	   	    	
 	                    trainer.setInstitutionName(adding.getInstitutionName());
 	                 
 	                  trainer.setUsername(username);
@@ -97,10 +93,12 @@ public class AddUsers {
 	                  trainer.setSkills(skills);
 	                  trainer.setRole(roletrainer);
 	                  trainer.setCountryCode(countryCode);
+	                  if (profile != null && !profile.isEmpty()) { 
 	                  try {
 	                      trainer.setProfile(ImageUtils.compressImage(profile.getBytes()));
 	                  } catch (IOException e) {
 	                      e.printStackTrace();
+	                  }
 	                  }
 	                Muser savedtrainer=  muserrepositories.save(trainer);
 	                  
@@ -152,12 +150,7 @@ public class AddUsers {
             	  usernameofadding=addinguser.getUsername();
             	  emailofadding=addinguser.getEmail();
             	   instituiton=addinguser.getInstitutionName();
-            	   Long Count=muserrepositories.countByRoleNameandInstitutionName("USER", instituiton);
-            	   Long MaxCount=licencerepo.FindStudentCountByinstitution(instituiton);
-            	   if(Count+1 >MaxCount) {
-            		     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("LIMIT");
-        	             
-            	   }
+            	   
             	   boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", instituiton);
      	   	    	if(!adminIsactive) {
      	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -188,10 +181,12 @@ public class AddUsers {
 	                  user.setInstitutionName(instituiton);
 	                  user.setSkills(skills);	
 	                  user.setCountryCode(countryCode);
+	                  if (profile != null && !profile.isEmpty()) { 
 	                  try {
 	                     user.setProfile(ImageUtils.compressImage(profile.getBytes()));
 	                  } catch (IOException e) {
 	                      e.printStackTrace();
+	                  }
 	                  }
 	                 Muser saveduser= muserrepositories.save(user);
 		       	       String heading="New Student Added !";

@@ -113,7 +113,17 @@ const AddTrainer = () => {
     };
     const handleFileChange = (e) => {
       const file = e.target.files[0];
-      
+     if (file.size > 50 * 1024) {
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    profile: 'Image size must be 50 KB or smaller',
+  }));
+  return;
+}
+setErrors((prevErrors) => ({
+  ...prevErrors,
+  profile: '',
+}));
       // Convert the file to base64
       convertImageToBase64(file)
         .then((base64Data) => {
@@ -169,13 +179,7 @@ const AddTrainer = () => {
       }));
     }
   });
-  if(!formData.profile){
-    hasErrors = true;
-    setErrors(prevErrors => ({
-      ...prevErrors,
-      profile: 'Image is Required'
-    }));
-  }
+ 
 
   if (hasErrors) {
     scrollToError(); // Scroll to the first error field
@@ -223,13 +227,6 @@ const AddTrainer = () => {
             ...prevErrors,
             username: "This UserName is already Taken."
           }));
-        }else if(error.response.data==="LIMIT"){
-          MySwal.fire({
-            title: "Limit Reached!",
-            text: "Trainer Limit Reached To Add More Trainers Upgrade your Licence",
-            icon: "warning",
-            confirmButtonText: "OK",
-          });
         }
         }else if(error.response.status===401){
           MySwal.fire({
@@ -282,7 +279,7 @@ const AddTrainer = () => {
                       />
                     )}
             </div>
-            <div>
+            <div style={{textAlign:'center'}}>
             <label htmlFor='fileInput' className='file-upload-btn'>
               Upload
             </label>

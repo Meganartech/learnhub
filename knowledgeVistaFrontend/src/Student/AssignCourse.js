@@ -1,7 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
+import undraw_profile from "../images/profile.png"
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
@@ -14,7 +15,7 @@ const AssignCourse = () => {
   const [courses, setCourses] = useState([]);
   const MySwal = withReactContent(Swal);
   const token=sessionStorage.getItem("token");
-
+  const navigate=useNavigate();
   useEffect(() => {
     const fetchData = async () => {
         try {
@@ -27,12 +28,14 @@ const AssignCourse = () => {
             if (!response.status===200) {
                 throw new Error('Failed to fetch user data');
             }
+            if(userData.profile!==null){
             setImg(`data:image/jpeg;base64,${userData.profile}`);
+          }
             setUserData(userData);
 
             const response1 = await axios.get(`${baseUrl}/course/assignList?email=${userData.email}`, {
                 headers: {
-                    'Authorization': token
+                    Authorization: token
                 }
             });
             const data = response1.data;
@@ -108,11 +111,16 @@ const handleAssignCourse = async () => {
     <div>
       <div className='contentbackground'>
         <div className='contentinner'>
-          <h3>Assign Course</h3>
+        <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
+          <h3>Assign Courseeee</h3>
           <div className='mainform'>
             <div className='profile-picture'>
               <div className='image-group'>
-                <img id="preview" src={img} alt='profile' />
+                <img id="preview" src={img ? img :undraw_profile} alt='profile' />
               </div>
               <div className=" mt-2 p-3 rounded" style={{ backgroundColor: "#F2E1F5", height: "100px" }}>
                 <div className='inputgrp2'>

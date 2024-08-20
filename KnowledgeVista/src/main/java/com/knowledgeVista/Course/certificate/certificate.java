@@ -1,6 +1,5 @@
 package com.knowledgeVista.Course.certificate;
 
-import com.knowledgeVista.Course.Test.CourseTest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

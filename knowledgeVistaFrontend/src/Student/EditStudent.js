@@ -79,10 +79,12 @@ const EditStudent = () => {
         if(response.status===200){
   
           setFormData(userData);
+          if(userData.profile !== null){
           setFormData((prevFormData) => ({
             ...prevFormData, 
             base64Image: `data:image/jpeg;base64,${userData.profile}` 
         }));
+      }
     }
       } catch (error) { 
         if(error.response && error.response.status===404){
@@ -159,7 +161,17 @@ const EditStudent = () => {
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    
+   if (file.size > 50 * 1024) {
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    profile: 'Image size must be 50 KB or smaller',
+  }));
+  return;
+}
+setErrors((prevErrors) => ({
+  ...prevErrors,
+  profile: '',
+}));
     // Convert the file to base64
     convertImageToBase64(file)
       .then((base64Data) => {
@@ -183,7 +195,7 @@ const EditStudent = () => {
   const handleSubmit = async (e) => {
       e.preventDefault();
       let hasErrors = false;
-      const requiredFields = ['username', 'skills', 'email', 'dob', 'phone', 'countryCode','profile'];
+      const requiredFields = ['username', 'skills', 'email', 'dob', 'phone', 'countryCode'];
     
       requiredFields.forEach(field => {
         if (!formData[field] || formData[field].length === 0 || errors[field]) {
@@ -195,13 +207,7 @@ const EditStudent = () => {
         }
       });
       
-      if (!formData.profile) {
-        hasErrors = true;
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          profile: 'Image is required'
-        }));
-      }
+     
       if (hasErrors) {
         scrollToError(); // Scroll to the first error field
         return;
@@ -310,7 +316,7 @@ const EditStudent = () => {
                     />
                   )}
           </div>
-          <div>
+          <div style={{textAlign:'center'}}>
           <label htmlFor='fileInput' className='file-upload-btn'>
             Upload
           </label>

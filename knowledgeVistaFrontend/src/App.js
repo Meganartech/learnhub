@@ -59,6 +59,13 @@ import ViewTrainers from "./SysAdmin/ViewTrainers.js";
 import ViewStudents from "./SysAdmin/ViewStudents.js";
 import SysadminLicenceupload from "./AuthenticationPages/SysadminLicenceupload.js";
 import LicenceDetails from "./AuthenticationPages/LicenceDetails.js";
+import SheduleZoomMeet from "./Meetings/SheduleZoomMeet.js";
+import ZoomAccountkeys from "./Meetings/ZoomAccountkeys.js";
+import ZoomKeys from "./SysAdmin/ZoomKeys.js";
+import DayView from "./Meetings/CalenderView.js";
+import CalenderView from "./Meetings/CalenderView.js";
+import StudentCalenderView from "./Meetings/StudentCalenderView.js";
+import EditMeeting from "./Meetings/EditMeeting.js";
 
 
 function App() {
@@ -99,6 +106,7 @@ function App() {
         });
         const data = response.data;
         setCourse(data);
+       
       }
       } catch (error) {
        console.error(error);
@@ -158,16 +166,20 @@ function App() {
                       <Route path="/payment/trainer/transactionHitory" element={<PrivateRoute onlytrainer={true} authenticationRequired={true} authorizationRequired={true} ><TransactionHistoryTrainer/></PrivateRoute>}/>
                       <Route path="/course/update/paymentSettings/:courseName/:courseId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><UpdatePartialPaymentSettings/></PrivateRoute>}/>
                       <Route path="/licenceDetails" element={<PrivateRoute authenticationRequired={true} onlyadmin={true} authorizationRequired={true} licence={true}><LicenceDetails/></PrivateRoute>}/>
+                      <Route path="/meeting/Shedule" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} ><SheduleZoomMeet/></PrivateRoute>}/>
+                      <Route path="/meeting/settings" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} onlyadmin={true}><ZoomAccountkeys/></PrivateRoute>}/>
+                      <Route path="/meeting/calender" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} ><CalenderView/></PrivateRoute>}/>
+                      <Route path="/meet/edit/:meetingId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} ><EditMeeting/></PrivateRoute>}/>
+                      <Route path="/user/meeting/calender"element={<PrivateRoute authenticationRequired={true} onlyuser={true}><StudentCalenderView/></PrivateRoute>}/>
                        {/* SysAdminRoutes */}
                        <Route path="/viewAll/Admins" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewAdmin/></PrivateRoute>}/>
                        <Route path="/viewAll/Trainers" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewTrainers/></PrivateRoute>}/>
                        <Route path="/viewAll/Students" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewStudents/></PrivateRoute>}/>
-                       
-                         <Route path="/licenceupload" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><SysadminLicenceupload/></PrivateRoute>}/>
-                      
+                       <Route path="/licenceupload" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><SysadminLicenceupload/></PrivateRoute>}/>
+                       <Route path="/Zoomkeyupload" element={<PrivateRoute authenticationRequired={true} sysadmin={true} ><ZoomKeys/></PrivateRoute>}/>
                           {/* SysAdminRoutes */}
                         </Route> 
-           
+         
           <Route path="/" element={<Login/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/refresh" element={<PrivateRoute authenticationRequired={true}><RefreshToken/></PrivateRoute>}/>

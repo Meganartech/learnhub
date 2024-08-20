@@ -73,8 +73,8 @@ public class LicenseController {
 	
 	 @Autowired
 		private NotificationService notiservice;
-	 @Autowired
-		private Environment env;
+	 @Value("${base.url}")
+	    private String baseUrl;
 	 @Autowired
 		private mAdminLicenceRepo madminrepo;
 
@@ -114,18 +114,19 @@ public class LicenseController {
          	   String institution=user.getInstitutionName();
          	   Madmin_Licence madmin= madminrepo.findByInstitutionName(institution);
          	
-	
-         	  Boolean isEmpty=false;
+	          String Productversion=madmin.getLicenceType();
+	          Boolean isEmpty=false;
          	  Boolean valid=true;
               Boolean type=false;
   
          	  Optional<License> oplicence=licenseRepository.findByinstitution(institution);
          	    if(oplicence.isEmpty()) {
+         	    	Productversion="NotFound";
          	    	 isEmpty = true;
         			 valid =false;
         	    	 type=true;
         	    	 List<Map<String, Object>> dataList = new ArrayList<>();
-        	    	  UserListWithStatus userListWithStatusss = new UserListWithStatus(isEmpty, valid,type, dataList);
+        	    	  UserListWithStatus userListWithStatusss = new UserListWithStatus(isEmpty, valid,type, dataList,Productversion);
         	    	
         			    return new ResponseEntity<>(userListWithStatusss,HttpStatus.OK);
          	    }else {
@@ -191,7 +192,7 @@ public class LicenseController {
 	    			
 	    		valid=this.getallSAS(institution, madmin ,license);
 	    		
-		    UserListWithStatus userListWithStatus = new UserListWithStatus(isEmpty, valid,type, dataList);
+		    UserListWithStatus userListWithStatus = new UserListWithStatus(isEmpty, valid,type, dataList,Productversion);
          	    
 		    return new ResponseEntity<>(userListWithStatus,HttpStatus.OK);
          	    }
@@ -209,7 +210,7 @@ public class LicenseController {
 	    	List<License> licenseList = StreamSupport.stream(licenseIterable.spliterator(), false)
 	    	                                         .collect(Collectors.toList());
 	    	
-	    	
+	    	  String Productversion="";
 	    	  boolean isEmpty = licenseList.isEmpty();
 			boolean valid = !(licenseList.isEmpty())?this.getall():false;
 	    	boolean type=true;
@@ -248,7 +249,7 @@ public class LicenseController {
 		  				
 		            	  ProductName=license.getProduct_name();
 		            	  CompanyName=license.getCompany_name();
-//		            	  
+		            	  Productversion=license.getType();
 		            	  Type=license.getType();
 		            	  StartDate=dateFormat.format(license.getStart_date());
 		            	  EndDate=dateFormat.format(license.getEnd_date());
@@ -280,7 +281,7 @@ public class LicenseController {
 		                 e.printStackTrace();
 		             }
 	    			
-		    UserListWithStatus userListWithStatus = new UserListWithStatus(isEmpty, valid,type, dataList);
+		    UserListWithStatus userListWithStatus = new UserListWithStatus(isEmpty, valid,type, dataList,Productversion);
 		   
 		    return new ResponseEntity<>(userListWithStatus,HttpStatus.OK);
 		}
@@ -624,7 +625,7 @@ public class LicenseController {
 	                Integer validitydays=Integer.parseInt(validity);
 	                LocalDate startdate= LocalDate.now();
                    LocalDate endDate = startdate.plusDays(validitydays);
-                   String baseUrl = env.getRequiredProperty("base.url"); 
+                  
                    
                    
 	                RestTemplate restTemplate = new RestTemplate();
@@ -748,8 +749,7 @@ public class LicenseController {
 		                LocalDate startdate= LocalDate.now();
                         LocalDate endDate = startdate.plusDays(validitydays);
  		               //------------for licence Expired Notificatio-------------
-                        String baseUrl = env.getRequiredProperty("base.url");
-        	            
+                      
 		                RestTemplate restTemplate = new RestTemplate();
 		               
 		               

@@ -10,17 +10,30 @@ public class UserListWithStatus {
     private boolean valid;
     private boolean type;
     private List<Map<String, Object>> dataList;
-
-    public UserListWithStatus(boolean isEmpty, boolean valid, boolean type, List<Map<String, Object>> dataList) {
+    private String Productversion;
+    public UserListWithStatus(boolean isEmpty, boolean valid, boolean type, List<Map<String, Object>> dataList,String Productversion) {
         this.isEmpty = isEmpty;
         this.valid = valid;
         this.type = type;
         this.dataList = dataList;
+        this.Productversion=Productversion;
     }
 
 	
 
-    public boolean getType() {
+    public String getProductversion() {
+		return Productversion;
+	}
+
+
+
+	public void setProductversion(String productversion) {
+		Productversion = productversion;
+	}
+
+
+
+	public boolean getType() {
 		return type;
 	}
     

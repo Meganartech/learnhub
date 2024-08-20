@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -42,6 +43,7 @@ import com.knowledgeVista.Payments.PaymentSettingsController;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.SysAdminPackage.SysadminController;
 import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Controller.AddUsers;
 import com.knowledgeVista.User.Controller.AssignCourse;
 import com.knowledgeVista.User.Controller.AuthenticationController;
@@ -232,7 +234,7 @@ public class FrontController {
 //----------------------------videolessonController-------------------------------
 		 @PostMapping("/lessons/save/{courseId}")
 		  public ResponseEntity<?> savenote(
-				  									@RequestParam("thumbnail") MultipartFile file,
+				  									@RequestParam(value="thumbnail",required=false) MultipartFile file,
 				  								  @RequestParam("Lessontitle") String Lessontitle,
 		                                          @RequestParam("LessonDescription") String LessonDescription,
 		                                          @RequestParam(value = "videoFile", required = false) MultipartFile videoFile,
@@ -522,7 +524,7 @@ public class FrontController {
        	          @RequestParam("dob") LocalDate dob,
        	          @RequestParam("phone") String phone,
        	          @RequestParam("skills") String skills,
-       	          @RequestParam("profile") MultipartFile profile,
+       	       @RequestParam(value="profile", required=false) MultipartFile profile,
        	          @RequestParam("isActive") Boolean isActive,
                   @RequestParam("countryCode")String countryCode,
        	          @RequestHeader("Authorization") String token) {
@@ -537,7 +539,7 @@ public class FrontController {
       	          @RequestParam("dob") LocalDate dob,
       	          @RequestParam("phone") String phone,
       	          @RequestParam("skills") String skills,
-      	          @RequestParam("profile") MultipartFile profile,
+      	        @RequestParam(value="profile", required=false) MultipartFile profile,
       	          @RequestParam("isActive") Boolean isActive,
                   @RequestParam("countryCode")String countryCode,
       	          @RequestHeader("Authorization") String token) {
@@ -688,21 +690,35 @@ public class FrontController {
  //----------------------------ListView------------------------
 
     		    @GetMapping("/view/users")
-    		    public ResponseEntity<List<Muser>> getUsersByRoleName(@RequestHeader("Authorization") String token) {
-    		    	return listview.getUsersByRoleName(token);
+    		    public ResponseEntity<?> getUsersByRoleName(@RequestHeader("Authorization") String token,
+    		    		 @RequestParam(defaultValue = "0") int pageNumber, 
+                         @RequestParam(defaultValue = "10") int pageSize) {
+    		    	return listview.getUsersByRoleName(token,pageNumber, pageSize);
     		    }
     		    @GetMapping("/view/users/{userId}")
     		    public ResponseEntity<?> getUserById(@PathVariable Long userId,@RequestHeader("Authorization") String token) {
     		    	return listview.getUserById(userId,token);
     		    }
     		    @GetMapping("/view/Trainer")
-    		    public ResponseEntity<List<Muser>> getTrainerByRoleName(@RequestHeader("Authorization") String token) {
-    		    	return listview.getTrainerByRoleName(token);
+    		    public ResponseEntity<?> getTrainerByRoleName(@RequestHeader("Authorization") String token,
+    		    		 @RequestParam(defaultValue = "0") int pageNumber, 
+                         @RequestParam(defaultValue = "10") int pageSize) {
+    		    	return listview.getTrainerByRoleName(token ,pageNumber, pageSize);
     		    }
     		    
     		    @GetMapping("/view/Mystudent")
-    		    public ResponseEntity<List<Muser>> GetStudentsOfTrainer(@RequestHeader("Authorization") String token){
-    		    	return listview.GetStudentsOfTrainer(token);
+    		    public ResponseEntity<Page<MuserDto>> GetStudentsOfTrainer(@RequestHeader("Authorization") String token,
+    		    		 @RequestParam(defaultValue = "0") int pageNumber, 
+                         @RequestParam(defaultValue = "10") int pageSize){
+    		    	return listview.GetStudentsOfTrainer(token,pageNumber, pageSize);
+    		    }
+    		    @GetMapping("/search/users")
+    		    public  ResponseEntity<List<String>> getusersSearch(@RequestHeader("Authorization") String token, @RequestParam("query") String query){
+    		   return listview.SearchEmail(token, query);
+    		    }
+    		    @GetMapping("/search/usersbyTrainer")
+    		    public  ResponseEntity<List<String>> getusersSearchbytrainer(@RequestHeader("Authorization") String token, @RequestParam("query") String query){
+    		   return listview.SearchEmailTrainer(token, query);
     		    }
 //------------------------MuserRegistrationController------------------------------
 
@@ -715,7 +731,7 @@ public class FrontController {
     			                                          @RequestParam("role")String role,
     			                                          @RequestParam("phone") String phone,
     			                                          @RequestParam("skills") String skills,
-    			                                          @RequestParam("profile") MultipartFile profile,
+    			                                          @RequestParam(name="profile" ,required=false) MultipartFile profile,
     			                                          @RequestParam("isActive") Boolean isActive,
     			                                          @RequestParam("countryCode")String countryCode) {
     				return muserreg.registerAdmin(username, psw, email, institutionName, dob,role, phone, skills, profile, isActive,countryCode);
@@ -811,16 +827,25 @@ public class FrontController {
  //------------------------------------------SYSADMIN CONTROl------------------------------              
                
                @GetMapping("/ViewAll/Admins")
-               public ResponseEntity<?>ViewAllAdmins(@RequestHeader("Authorization") String token){
-            	   return sysadmin.viewAdmins(token);
+               public ResponseEntity<?> ViewAllAdmins(
+                       @RequestHeader("Authorization") String token,
+                      @RequestParam(defaultValue = "0") int pageNumber, 
+                    @RequestParam(defaultValue = "10") int pageSize  ){
+            	   
+                 return sysadmin.viewAdmins(token, pageNumber, pageSize);
                }
+
                @GetMapping("/ViewAll/Trainers")
-               public ResponseEntity<?>ViewAllTrainers(@RequestHeader("Authorization") String token){
-            	   return sysadmin.viewTrainers(token);
+               public ResponseEntity<?>ViewAllTrainers(@RequestHeader("Authorization") String token,
+            		   @RequestParam(defaultValue = "0") int pageNumber, 
+                       @RequestParam(defaultValue = "10") int pageSize){
+            	   return sysadmin.viewTrainers(token, pageNumber, pageSize);
                }
                @GetMapping("/ViewAll/Students")
-               public ResponseEntity<?>ViewAllStudents(@RequestHeader("Authorization") String token){
-            	   return sysadmin.viewStudents(token);
+               public ResponseEntity<?>ViewAllStudents(@RequestHeader("Authorization") String token,
+            		   @RequestParam(defaultValue = "0") int pageNumber, 
+                       @RequestParam(defaultValue = "10") int pageSize){
+            	   return sysadmin.viewStudents(token, pageNumber, pageSize);
                }
                @DeleteMapping("/activate/admin")
                public ResponseEntity<?>ActiveteAdmin(@RequestParam("email") String email, 

@@ -102,17 +102,17 @@ const MyAssignedcourses = () => {
      </a> 
    )}</div>
 
-<ul className="maincontainernew">
+
     {courses.length === 0 ? (
-        <li>
+      
           <div className='centerflex'>
              <div className='enroll pb-5 pt-4' >
             <h3 className='mt-5'>No courses Found </h3>
            </div>
            </div>
-            </li>
+            
     ) : (
-        <>
+      <ul className="maincontainernew" style={{ listStyleType: 'none' }}>
             {courses.map((item) => (
                <li key={item.courseId}>
                <div className="containersnew">
@@ -190,9 +190,9 @@ const MyAssignedcourses = () => {
                </div>
              </li>
             ))}
-        </>
+        </ul>
     )}
-</ul>
+
 </div>
 </div>
 </div>

@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Swal from "sweetalert2";
+import undraw_profile from "../images/profile.png"
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
@@ -58,7 +59,9 @@ const ProfileView = () => {
           },
         });
         const userData = response.data;
+        if(userData.profile !==null){
         setImg(`data:image/jpeg;base64,${userData.profile}`);
+      }
         setUserData(userData);
       } catch (error) {
         if(error.response && error.response.status===401)
@@ -230,7 +233,7 @@ const ProfileView = () => {
       <div className='mainform'>
         <div className='profile-picture'>
           <div className='image-group'>
-            <img id="preview" src={img} alt='profile' />
+            <img id="preview" src={img ? img : undraw_profile} alt='profile' />
           </div>
         </div>
         <div className='formgroup'>
@@ -298,13 +301,13 @@ const ProfileView = () => {
           <div className='image-group'>  
           {userData.base64Image ? (
                     <img
-                      src={userData.base64Image}
+                      src={userData.base64Image }
                       alt="Selected Image"
                       className="profile-picture"
                     />
                   ) : (
                     <img
-                      src={img}
+                      src={undraw_profile}
                       alt="Default Profile Picture"
                       className="prof"
                     />

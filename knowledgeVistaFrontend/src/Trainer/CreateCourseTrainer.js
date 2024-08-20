@@ -101,10 +101,10 @@ const CreateCourseTrainer = () => {
     }
 
     // Check file size (should be 1 MB or less)
-    if (file.size > 1 * 1024 * 1024) {
+    if (file.size > 50 * 1024) {
         setErrors((prevErrors) => ({
             ...prevErrors,
-            courseImage: 'Image size must be 1 MB or smaller',
+            courseImage: 'Image size must be 50kb or smaller',
         }));
         return;
     }
@@ -392,14 +392,7 @@ const CreateCourseTrainer = () => {
                         
                     </form>
                     <div className='cornerbtn'>
-                            <button
-                                className='btn btn-primary'
-                                type="submit"
-                                onClick={handleSubmit}
-                                disabled={!canSubmit()}
-                            >
-                                Save
-                            </button>
+                          
                             <button
                                 className='btn btn-primary'
                                 type="button"
@@ -408,6 +401,14 @@ const CreateCourseTrainer = () => {
                                 }}
                             >
                                 Cancel
+                            </button>
+                            <button
+                                className='btn btn-primary'
+                                type="submit"
+                                onClick={handleSubmit}
+                                disabled={!canSubmit()}
+                            >
+                                Save
                             </button>
                         </div>
                 </div>

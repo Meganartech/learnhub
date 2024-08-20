@@ -1,4 +1,4 @@
-
+import profile from "../images/profile.png"
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
@@ -38,7 +38,9 @@ const TrainerProfile = () => {
             });
             if (response.status === 200) {
               const userData = response.data;
+              if(userData.profile!==null){
               setimg(`data:image/jpeg;base64,${userData.profile}`);
+            }
               setUserData(userData);
           } 
           } catch (error) {
@@ -72,7 +74,7 @@ const TrainerProfile = () => {
     <div className='mainform'>
       <div className='profile-picture'>
         <div className='image-group' >
-          <img id="preview"  src={img} alt='profile' />
+          <img id="preview"  src={img ? img : profile} alt='profile' />
         </div>
         
       </div>

@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.knowledgeVista.Notification.NotificationUser;
@@ -26,4 +28,9 @@ public interface NotificationUserRepo extends JpaRepository<NotificationUser, Lo
 
 	 @Query("SELECT nu.id FROM NotificationUser nu WHERE nu.userid = :userId ")
 	  List<Long> findprimaryIdsByUserId(Long userId);
+	 
+	  @Modifying
+	    @Query("DELETE FROM NotificationUser nu WHERE nu.notificationId = :notificationId")
+	    void deleteByNotificationId(@Param("notificationId") Long notificationId);
+	 
 }

@@ -95,7 +95,7 @@ const Notification = ({ setisopen ,isopen,setcount ,handlemarkallasRead}) => {
 
   return (
     <div
-      id="notipanel"
+      id="notipanel" 
       className="notificationPanel dropdown-menu-left shadow animated--grow-in"
     >
       <div className="headcontrols">

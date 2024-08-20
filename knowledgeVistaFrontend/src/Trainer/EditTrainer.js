@@ -68,10 +68,12 @@ const EditTrainer = () => {
           const userData = response.data;
         if(response.status===200){
           setFormData(userData);
+          if(userData.profile !== null){
           setFormData((prevFormData) => ({
             ...prevFormData, 
             base64Image: `data:image/jpeg;base64,${userData.profile}` 
         }));
+      }
     }
         } catch (error) {
           if(error.response && error.response.status===404){
@@ -151,7 +153,17 @@ const EditTrainer = () => {
     };
     const handleFileChange = (e) => {
       const file = e.target.files[0];
-      
+     if (file.size > 50 * 1024) {
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    profile: 'Image size must be 50 KB or smaller',
+  }));
+  return;
+}
+setErrors((prevErrors) => ({
+  ...prevErrors,
+  profile: '',
+}));
       // Convert the file to base64
       convertImageToBase64(file)
         .then((base64Data) => {
@@ -312,7 +324,7 @@ const EditTrainer = () => {
                     />
                   )}
           </div>
-          <div>
+          <div style={{textAlign:'center'}}>
           <label htmlFor='fileInput' className='file-upload-btn'>
             Upload
           </label>

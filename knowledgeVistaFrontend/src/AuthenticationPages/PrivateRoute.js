@@ -9,7 +9,7 @@ const PrivateRoute = ({sysadmin, authenticationRequired, authorizationRequired,o
     useEffect(() => {
         const fetchData = async () => {
           try {  
-            if(token) {
+            if(userRole!=="SYSADMIN" && token) {
             const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`,{
               headers:{
                 "Authorization":token,

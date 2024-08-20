@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
@@ -13,7 +13,7 @@ const AssignCourseTRAINER = () => {
   const [courses, setCourses] = useState([]);
   const MySwal = withReactContent(Swal);
   const token=sessionStorage.getItem("token");
-
+const navigate=useNavigate();
   useEffect(() => {
     const fetchData = async () => {
         try {
@@ -111,6 +111,11 @@ const handleAssignCourse = async () => {
     <div>
       <div className='contentbackground'>
         <div className='contentinner'>
+        <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
           <h3>Assign Course</h3>
           <div className='mainform'>
             <div className='profile-picture'>

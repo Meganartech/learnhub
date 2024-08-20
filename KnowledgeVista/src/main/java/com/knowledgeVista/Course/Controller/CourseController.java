@@ -730,9 +730,10 @@ public class CourseController {
 	               video.setCourseDetail(null);
 	               video.setVideoFile(null);
 	               video.setVideofilename(null);
-
+                    if(video.getThumbnail()!= null) {
 	               byte[] images = ImageUtils.decompressImage(video.getThumbnail());
 	               video.setThumbnail(images);
+                    }
 	           }
 	           return ResponseEntity.ok(videolessonlist);
 	       }

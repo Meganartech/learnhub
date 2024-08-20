@@ -1,4 +1,9 @@
-
+.boxtype{
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgb(99, 93, 93);
+  background-color: #a39c9c;
+}
 .anchorlike{
   border:none;
   outline: none;
@@ -81,7 +86,7 @@
   overflow-y:auto;
   overflow-x:auto;
   max-height: 500px;
-  min-height: 300px; 
+  min-height: 400px; 
   padding-right: 10px;
 }
 .table-container::-webkit-scrollbar {

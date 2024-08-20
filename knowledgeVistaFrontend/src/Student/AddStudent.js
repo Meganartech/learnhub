@@ -113,7 +113,17 @@ const AddStudent = () => {
     };
     const handleFileChange = (e) => {
       const file = e.target.files[0];
-      
+     if (file.size > 50 * 1024) {
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    profile: 'Image size must be 50 KB or smaller',
+  }));
+  return;
+}
+setErrors((prevErrors) => ({
+  ...prevErrors,
+  profile: '',
+}));
       // Convert the file to base64
       convertImageToBase64(file)
         .then((base64Data) => {
@@ -159,7 +169,7 @@ const AddStudent = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         let hasErrors = false;
-        const requiredFields = ['username', 'skills', 'email', 'dob', 'psw', 'confirm_password', 'phone', 'countryCode','profile'];
+        const requiredFields = ['username', 'skills', 'email', 'dob', 'psw', 'confirm_password', 'phone', 'countryCode'];
       
         requiredFields.forEach(field => {
           if (!formData[field] || formData[field].length === 0 || errors[field]) {
@@ -170,13 +180,7 @@ const AddStudent = () => {
             }));
           }
         });
-        if (!formData.profile) {
-          hasErrors = true;
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            profile: 'Image is required'
-          }));
-        }
+       
       
         if (hasErrors) {
           scrollToError(); // Scroll to the first error field
@@ -229,13 +233,6 @@ const AddStudent = () => {
                   ...prevErrors,
                   username: "This UserName is already Taken."
                 }));
-              }else if(error.response.data==="LIMIT"){
-                MySwal.fire({
-                  title: "Limit Reached!",
-                  text: "Trainer Limit Reached To Add More Trainers Upgrade your Licence",
-                  icon: "warning",
-                  confirmButtonText: "OK",
-                });
               }
             } else if (errorData.status === 500) {
               MySwal.fire({
@@ -287,8 +284,9 @@ const AddStudent = () => {
                         className="prof"
                       />
                     )}
-            </div>
-            <div>            <label htmlFor='fileInput' className='file-upload-btn'>
+            </div >
+            <div style={{textAlign:'center'}}>            
+              <label htmlFor='fileInput' className='file-upload-btn'>
               Upload
             </label>
             <div className='text-danger'> {errors.profile}</div>

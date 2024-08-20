@@ -1,4 +1,4 @@
-
+import undraw_profile from "../images/profile.png"
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
@@ -35,7 +35,9 @@ const StudentProfile = () => {
             });
             if (response.status === 200) {
                 const userData = response.data;
+                if(userData.profile!==null){
                 setimg(`data:image/jpeg;base64,${userData.profile}`);
+            }
                 setUserData(userData);
             } } catch (error) {
               if(error.response){
@@ -71,7 +73,7 @@ const StudentProfile = () => {
               <div className='mainform'>
                 <div className='profile-picture'>
                   <div className='image-group' >
-                    <img id="preview"  src={img} alt='profile' />
+                    <img id="preview"  src={img ? img : undraw_profile} alt='profile' />
                   </div>
                 </div>
 

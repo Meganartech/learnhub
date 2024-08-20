@@ -1,6 +1,7 @@
 package com.knowledgeVista.Notification.Service;
 
 import java.io.IOException;
+import java.lang.StackWalker.Option;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -115,6 +116,24 @@ public class NotificationService {
 			 notificationUser.setIs_read(false);
 			 notificationUser.setIs_Active(true);
 			 notiuserRepo.save(notificationUser);
+    	}
+    	return(true);
+    }
+    
+    public Boolean SpecificCreateNotificationusingEmail(Long notificationId, List<String> userlist) {
+    	for(String singleuser :userlist) {
+    		 Optional<Muser> opuser =muserrepositories.findByEmail(singleuser);
+    		 if(opuser.isPresent()) {
+    			 Muser user=opuser.get();
+    		 NotificationUser notificationUser = new NotificationUser();
+			 notificationUser.setUserid(user.getUserId());
+			 notificationUser.setNotificationId(notificationId);
+			 notificationUser.setIs_read(false);
+			 notificationUser.setIs_Active(true);
+			 notiuserRepo.save(notificationUser);
+    		 }else {
+    			 System.out.println("usernot found");
+    		 }
     	}
     	return(true);
     }

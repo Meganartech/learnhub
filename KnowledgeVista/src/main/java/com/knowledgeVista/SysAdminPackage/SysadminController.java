@@ -4,14 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.MuserDto;
+import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
@@ -22,21 +24,22 @@ public class SysadminController {
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	 
+	 @Autowired 
+	 private MuserRepoPageable muserPageRepo;
+	 
 	
-	public ResponseEntity<List<Muser>>viewAdmins(String token){
+	public ResponseEntity<Page<MuserDto>>viewAdmins(String token ,int pageNumber,int pageSize ){
 		  try {
+			
 	        	if (!jwtUtil.validateToken(token)) {
 	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	   	     }
 
 	   	     String role = jwtUtil.getRoleFromToken(token);
 	   	     if(role.equals("SYSADMIN")) {
-	   	    List<Muser> admins=	muserrepositories.findByRoleName("ADMIN");
-	   	 admins.forEach(admin -> {
-             admin.setProfile(null);
-             admin.setCourses(null);
-             admin.setPsw(null);
-         });
+	   	    	Pageable pageable = PageRequest.of(pageNumber, pageSize);
+	            Page<MuserDto> admins = muserPageRepo.findByRoleName("ADMIN", pageable);
+	   	
          return ResponseEntity.ok(admins);
 	   	     }else {
 	   	      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -48,7 +51,7 @@ public class SysadminController {
 	    }
 	
 	
-	public ResponseEntity<List<Muser>>viewTrainers(String token){
+	public ResponseEntity<Page<MuserDto>>viewTrainers(String token ,int pageNumber,int pageSize ){
 		  try {
 	        	if (!jwtUtil.validateToken(token)) {
 	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -56,12 +59,9 @@ public class SysadminController {
 
 	   	     String role = jwtUtil.getRoleFromToken(token);
 	   	     if(role.equals("SYSADMIN")) {
-	   	    List<Muser> trainers=	muserrepositories.findByRoleName("TRAINER");
-	   	 trainers.forEach(trainer -> {
-           trainer.setProfile(null);
-           trainer.setAllotedCourses(null);
-           trainer.setPsw(null);
-       });
+	   	    	Pageable pageable = PageRequest.of(pageNumber, pageSize);
+	            Page<MuserDto> trainers = muserPageRepo.findByRoleName("TRAINER", pageable);
+	   	
        return ResponseEntity.ok(trainers);
 	   	     }else {
 	   	      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -72,7 +72,7 @@ public class SysadminController {
 	        }
 	    }
 	
-	public ResponseEntity<List<Muser>>viewStudents(String token){
+	public ResponseEntity<Page<MuserDto>>viewStudents(String token,int pageNumber,int pageSize){
 		  try {
 	        	if (!jwtUtil.validateToken(token)) {
 	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -80,12 +80,9 @@ public class SysadminController {
 
 	   	     String role = jwtUtil.getRoleFromToken(token);
 	   	     if(role.equals("SYSADMIN")) {
-	   	    List<Muser> students=	muserrepositories.findByRoleName("USER");
-	   	 students.forEach(student -> {
-         student.setProfile(null);
-         student.setCourses(null);
-         student.setPsw(null);
-     });
+	   	    	Pageable pageable = PageRequest.of(pageNumber, pageSize);
+	            Page<MuserDto> students = muserPageRepo.findByRoleName("USER", pageable);
+	   	
      return ResponseEntity.ok(students);
 	   	     }else {
 	   	      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

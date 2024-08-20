@@ -85,12 +85,14 @@ public class MserRegistrationController {
 	            user.setCountryCode(countryCode);	   
 	            user.setRole(roleuser);     
 	           
-	                            
+	            if (profile != null && !profile.isEmpty()) {                
 	            try {
 	                user.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	                
 	            } catch (IOException e) {
 	                e.printStackTrace();
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
+	            }
 	            }
 	          Muser savedadmin=  muserrepositories.save(user);
 	          if(environment.equals("SAS")) {
@@ -163,10 +165,12 @@ public class MserRegistrationController {
 	        // If the user is found, process the user data
 	        if (userOptional.isPresent()) {
 	            Muser user = userOptional.get();
-
+	          
 	            // Decompress the profile image and set it in the user object
-	            byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
-	            user.setProfile(profileImage);
+	            if (user.getProfile() != null) {
+	                byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
+	                user.setProfile(profileImage);
+	            }
                user.setAllotedCourses(null);
 	            user.setCourses(null);
 	            user.setPsw(null);
@@ -218,8 +222,10 @@ public class MserRegistrationController {
 	                if (userOptional.isPresent()) {
 	                    Muser user = userOptional.get();
 	                    if("TRAINER".equals(user.getRole().getRoleName())) {
-	                    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
-	                    user.setProfile(profileImage);
+	                    	if (user.getProfile() != null) {
+	                    	    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
+	                    	    user.setProfile(profileImage);
+	                    	}
 	                    user.setAllotedCourses(null);
 	                    user.setCourses(null);
 
@@ -275,8 +281,10 @@ public class MserRegistrationController {
 	                if (userOptional.isPresent()) {
 	                    Muser user = userOptional.get();
 	                    if("USER".equals(user.getRole().getRoleName())) {
-	                    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
-	                    user.setProfile(profileImage);
+	                    	if (user.getProfile() != null) {
+	                    	    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
+	                    	    user.setProfile(profileImage);
+	                    	}
 	                    user.setCourses(null);
 	                    user.setAllotedCourses(null);
 

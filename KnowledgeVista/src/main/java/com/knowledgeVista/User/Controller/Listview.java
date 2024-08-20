@@ -8,6 +8,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.MuserDto;
+import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -30,11 +35,13 @@ public class Listview {
 	private MuserRepositories muserrepositories;
 	 @Autowired
 	 private JwtUtil jwtUtil;
+	 @Autowired 
+	 private MuserRepoPageable muserPageRepo;
 	
 	
 //```````````````WORKING````````````````````````````````````
 
-    public ResponseEntity<List<Muser>> getUsersByRoleName(String token) {
+    public ResponseEntity<Page<MuserDto>> getUsersByRoleName(String token ,int pageNumber,int pageSize) {
         try {
         	if (!jwtUtil.validateToken(token)) {
    	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -56,12 +63,10 @@ public class Listview {
    	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
    	     }
    	     if("ADMIN".equals(role)||"TRAINER".equals(role)){
-            List<Muser> users = muserrepositories.findByRoleNameAndInstitutionName(roleu, institution);
+   	    	Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            Page<MuserDto> users = muserPageRepo.findByRoleNameAndInstitutionName(roleu, institution,pageable);
            
-            users.forEach(user -> {
-                user.setProfile(null);
-                user.setCourses(null);
-            });
+          
             return ResponseEntity.ok(users);
    	     }else {
 
@@ -73,7 +78,7 @@ public class Listview {
     }
     
     
-    public ResponseEntity<List<Muser>> GetStudentsOfTrainer(String token) {
+    public ResponseEntity<Page<MuserDto>> GetStudentsOfTrainer(String token,int page, int size) {
         try {
         	if (!jwtUtil.validateToken(token)) {
    	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -81,7 +86,6 @@ public class Listview {
 
    	     String role = jwtUtil.getRoleFromToken(token);
    	     String email=jwtUtil.getUsernameFromToken(token);
-   	  ArrayList<Muser> students= new ArrayList<Muser>();
    	     if("TRAINER".equals(role)){
            Optional<Muser> opusers = muserrepositories.findByEmail(email);
             if(opusers.isPresent()) {
@@ -91,22 +95,17 @@ public class Listview {
        	    	if(!adminIsactive) {
        	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
        	    	}
-            	List<CourseDetail> courses =trainer.getAllotedCourses();
-            	for(CourseDetail course : courses) {
-            		students.addAll(course.getUsers());
-            		
-            	}
-            }
-            List<Muser> Uniquestudents = students.stream().distinct().collect( Collectors.toList());
-            Uniquestudents.forEach(user -> {
-                user.setProfile(null);
-                user.setCourses(null);
-            });
+       	        Pageable pageable = PageRequest.of(page, size);
+       	    	Page<MuserDto> Uniquestudents=muserPageRepo.findStudentsOfTrainer(email, pageable);
             return ResponseEntity.ok(Uniquestudents);
    	     }else {
 
    	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
    	     }
+   	     }else {
+
+      	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+      	     }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -141,13 +140,15 @@ public class Listview {
            Optional<Muser> opuser = muserrepositories.findByuserIdandInstitutionName(userId, institution);
          if(opuser.isPresent()) {
         	 Muser user=opuser.get();
-         
+         if(user.getProfile()!=null) {
             byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
             user.setProfile(decompressedImage);
+         }
             user.setCourses(null);
         	user.setAllotedCourses(null);
             return ResponseEntity.ok(user);
          }else {
+        	 System.out.println("usernot");
         	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
          }
       	   }else {
@@ -155,12 +156,13 @@ public class Listview {
      	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
      	     }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        	e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
 //```````````````WORKING````````````````````````````````````
-public ResponseEntity<List<Muser>> getTrainerByRoleName( String token) {
+public ResponseEntity<Page<MuserDto>> getTrainerByRoleName( String token ,int pageNumber,int pageSize) {
 	
     try {
     	if (!jwtUtil.validateToken(token)) {
@@ -183,13 +185,10 @@ public ResponseEntity<List<Muser>> getTrainerByRoleName( String token) {
    	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
    	     }
 	     if("ADMIN".equals(role)){
-	    		 List<Muser> users = muserrepositories.findByRoleNameAndInstitutionName(roleu, institution);
+	    	 Pageable pageable = PageRequest.of(pageNumber, pageSize);
+	    		 Page<MuserDto> users = muserPageRepo.findByRoleNameAndInstitutionName(roleu, institution,pageable);
        
-        users.forEach(user -> {
-        	user.setAllotedCourses(null);
-            user.setProfile(null);
-            user.setCourses(null);
-        });
+       
         return ResponseEntity.ok(users);
         
 	     }else {
@@ -221,12 +220,39 @@ public ResponseEntity< List<String>> SearchEmail(String token,String Query){
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
 	}
 }
-public List<String> MuserEmailSearch(String institution, String email) {
-    try {
-        return muserrepositories.findEmailsByEmailContainingIgnoreCase(email, institution);
-    } catch (Exception e) {
-        e.printStackTrace(); // Log the exception
-        return new ArrayList<>();  // Return an empty list or handle as needed
-    }
+
+public ResponseEntity< List<String>> SearchEmailTrainer(String token,String query){
+	try {
+		if (!jwtUtil.validateToken(token)) {
+	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
+	     }
+		 String email=jwtUtil.getUsernameFromToken(token);
+   	     Optional<Muser>opreq=muserrepositories.findByEmail(email);
+   	     
+   	     if(opreq.isPresent()) {
+   	    	 Muser requser=opreq.get();
+   	    	String institutionname=requser.getInstitutionName();
+   	    	if(requser.getRole().getRoleName().equals("TRAINER")) {
+   	    	List<String> listu= muserrepositories.findEmailsInAllotedCoursesByUserEmail(email, query);
+   	    	return ResponseEntity.ok(listu);
+   	    	}else {
+   	    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
+   	    	}
+   	     }else {
+   	    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
+   	     }
+		
+	}catch(Exception e) {
+		e.printStackTrace();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+	}
 }
+//public List<String> MuserEmailSearch(String institution, String email) {
+//    try {
+//        return muserrepositories.findEmailsByEmailContainingIgnoreCase(email, institution);
+//    } catch (Exception e) {
+//        e.printStackTrace(); // Log the exception
+//        return new ArrayList<>();  // Return an empty list or handle as needed
+//    }
+//}
 }

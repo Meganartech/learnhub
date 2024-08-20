@@ -63,8 +63,7 @@ const token=sessionStorage.getItem("token")
     const isVideoTitleValid = videodata.Lessontitle.trim().length > 0;
     const isVideoDescriptionValid = videodata.LessonDescription.trim().length > 0;
 
-    // Check if image is selected and converted to base64
-    const isThumbnailValid = videodata.base64Image !== null;
+   
 
     // Check if either video file is selected or URL is present and valid
     let isVideoValid = false;
@@ -75,7 +74,7 @@ const token=sessionStorage.getItem("token")
     }
 
     // Enable save button only if all conditions are met
-    return !(isVideoTitleValid && isVideoDescriptionValid && isThumbnailValid && isVideoValid);
+    return !(isVideoTitleValid && isVideoDescriptionValid && isVideoValid);
 };
   const convertImageToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -253,7 +252,7 @@ const token=sessionStorage.getItem("token")
               </div>
             </div>
             <div className='thumb'>
-                <label id='must'>Thumbnail<span className="text-danger">*</span></label>
+                <label id='must'>Thumbnail</label>
                     <label htmlFor='fileInput'
                     id='must'
                      style={{width:"100px", height:"40px"}} 
@@ -352,8 +351,9 @@ const token=sessionStorage.getItem("token")
             </div>
         
             <div className='cornerbtn '>           
-                 <button className='btn btn-primary'  disabled={isSaveDisabled()} type='submit'>Save</button> 
+             
                  <button className='btn btn-primary' onClick={()=>{    navigate(-1);}}>Cancel</button>
+                 <button className='btn btn-primary'  disabled={isSaveDisabled()} type='submit'>Save</button> 
             </div>
        </div>
        

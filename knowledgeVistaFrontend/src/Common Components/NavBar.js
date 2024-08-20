@@ -9,9 +9,11 @@ import baseUrl from "../api/utils";
 import axios from "axios";
 import bell from "../images/bell.png"
 import Notification from "./Notification";
+import { useLocation } from "react-router-dom";
 
-const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,handleSidebarToggle,showSidebar,navbarref}) => {
+const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,handleSidebarToggle,showSidebar,navbarref}) => {
   
+  const location = useLocation();
   const [data,setdata]=useState({
     name:"",
     profileImage:null
@@ -43,10 +45,10 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,activeLink,hand
     };
 
     fetchItems();
-}, [token]);  
+}, []);  
 const fetchUnreadCount = async () => {
   try {
-    if(token) {
+    if(role!=="SYSADMIN" &&token) {
     const response = await axios.get(`${baseUrl}/unreadCount`, {
       headers: {
         Authorization: token,
@@ -63,7 +65,6 @@ const fetchUnreadCount = async () => {
   }
 };
 useEffect(() => {
-
 
 
   // Fetch initially
@@ -148,7 +149,7 @@ const handlemarkallasRead =async (notificationIds)=>{
       
       <div className="barhide " ref={navbarref} onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
       
-     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(activeLink) && (
+     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(location.pathname) && (
       <div className="searchbar " style={{gridColumn:"3"}}>
     <i className="fa fa-search pt-1 pl-1 " aria-hidden="true"></i>
     
@@ -242,16 +243,13 @@ const handlemarkallasRead =async (notificationIds)=>{
           </li>
           </ul>
           </div>
-          <div className="gridnav">
-            <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          {isopen && <div>
-        <Notification setisopen={setisopen} isopen={isopen} setcount={setcount} handlemarkallasRead={handlemarkallasRead}/>
       
-    </div>}
-    </div>
+          
+          {isopen && 
+          <div style={{width:"100%" , display:"flex",justifyContent:"flex-end"}}>
+        <Notification setisopen={setisopen} isopen={isopen} setcount={setcount} handlemarkallasRead={handlemarkallasRead}/>
+        </div> }
+ 
     </nav>
   );
 };

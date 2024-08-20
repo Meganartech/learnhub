@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
 import axios from 'axios';
+import book from "../../images/book.jpeg"
 
 const ViewVideo = () => {
   
@@ -226,8 +227,7 @@ const handleOnSeek = (progress) => {
           controls
           onProgress={handleOnProgress}
           onSeek={handleOnSeek}
-          light={currentLesson ? `data:image/jpeg;base64,${currentLesson.thumbnail}` : null}
-          playing 
+          light={currentLesson.thumbnail ? `data:image/jpeg;base64,${currentLesson.thumbnail}` :false} 
           onEnded={handleVideoEnd}
           progressInterval={1000}
           config={{
@@ -245,8 +245,7 @@ const handleOnSeek = (progress) => {
         height="80%"
         controls
         url={videoSource ? videoSource : null}
-        light={currentLesson ? `data:image/jpeg;base64,${currentLesson.thumbnail}` : null}
-       playing
+        light={currentLesson.thumbnail ? `data:image/jpeg;base64,${currentLesson.thumbnail}` :false} 
         onEnded={handleVideoEnd}
       />
     ) : null}
@@ -270,7 +269,7 @@ const handleOnSeek = (progress) => {
                         >
                         <div className="child">
                             <img
-                            src={`data:image/jpeg;base64,${lesson.thumbnail}`}
+                            src={lesson.thumbnail ?`data:image/jpeg;base64,${lesson.thumbnail}`:book}
                             style={{ width: "100%", height: "100%" }}
                             alt="thumbnail"
                             />

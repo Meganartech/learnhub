@@ -87,7 +87,13 @@ const EditCourseForm = ({ }) => {
   const handleFileChange = (e) => {
     // Update formData with the new file
     const file = e.target.files[0];
-
+    if (file.size > 50 * 1024) {
+      setErrors((prevErrors) => ({
+          ...prevErrors,
+          courseImage: 'Image size must be 50kb or smaller',
+      }));
+      return;
+  }
     // Convert the file to base64
 
     // Update formData with the new file

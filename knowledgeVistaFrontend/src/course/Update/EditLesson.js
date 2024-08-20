@@ -140,8 +140,6 @@ useEffect(() => {
     const isVideoTitleValid = videodata.lessontitle.trim().length > 0;
     const isVideoDescriptionValid = videodata.lessonDescription.trim().length > 0;
 
-    // Check if image is selected and converted to base64
-    const isThumbnailValid = videodata.base64Image !== null;
 
     // Check if either video file is selected or URL is present and valid
     let isVideoValid = false;
@@ -152,7 +150,7 @@ useEffect(() => {
     }
 
     // Enable save button only if all conditions are met
-    return !(isVideoTitleValid && isVideoDescriptionValid && isThumbnailValid && isVideoValid);
+    return !(isVideoTitleValid && isVideoDescriptionValid  && isVideoValid);
 };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -422,8 +420,10 @@ useEffect(() => {
             </div>
         
             <div className='cornerbtn '>           
-                 <button className='btn btn-primary' disabled={isSaveDisabled()} type='submit'>Save</button> 
+                
                  <button className='btn btn-primary' onClick={()=>{    navigate(-1);} }>Cancel</button>
+
+                 <button className='btn btn-primary' disabled={isSaveDisabled()} type='submit'>Save</button> 
             </div>
        </div>
       

@@ -11,10 +11,12 @@ const ViewTrainerList = () => {
     const [users, setUsers] = useState([]);
     const token=sessionStorage.getItem("token");
     const userRole = sessionStorage.getItem('role');
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
      const navigate=useNavigate();
     const [filterOption, setFilterOption] = useState("All");
     const [searchQuery, setSearchQuery] = useState('');
-   
+    const itemsperpage=10;
   const filterData = () => {
     if (filterOption === "All") {
       return users;
@@ -37,7 +39,8 @@ const ViewTrainerList = () => {
               }
             });
             const data = response.data;
-            setUsers(data);
+            setUsers(data.content); 
+            setTotalPages(data.totalPages);
           } catch (error) {
             if(error.response && error.response.status===401){
               window.location.href="/unauthorized"
@@ -48,7 +51,49 @@ const ViewTrainerList = () => {
     
         fetchData();
       }, []);
-
+      const fetchData = async (page = 0) => {
+        try {
+          const response = await axios.get(`${baseUrl}/view/Trainer`, {
+            headers: { Authorization: token },
+           params: { pageNumber: page, pageSize: itemsperpage } 
+        });
+        
+          const data = response.data;
+          setUsers(data.content); // Update users with content from pageable
+          setTotalPages(data.totalPages); // Update total pages
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            window.location.href = "/unauthorized";
+          }
+          console.error('Error fetching data:', error);
+        }
+      };
+    
+      useEffect(() => {
+        fetchData(currentPage); // Fetch data when the page or other dependencies change
+      }, [currentPage, filterOption, searchQuery]);
+    
+      const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+      };
+    
+      const renderPaginationButtons = () => {
+        const buttons = [];
+        for (let i = 0; i < totalPages; i++) {
+          buttons.push(
+            <button
+           
+              key={i}
+              onClick={() => handlePageChange(i)}
+              disabled={i === currentPage}
+              className={i === currentPage ? 'active btn btn-primary' : 'btn btn-primary'}
+            >
+              {i + 1}
+            </button>
+          );
+        }
+        return buttons;
+      };
       const handleDeactivate = async (userId, username, email) => {
         const formData = new FormData();
         formData.append('email', email);
@@ -235,7 +280,7 @@ const ViewTrainerList = () => {
           <tbody>
           {filterData().map((user, index) => (
               <tr key={user.userId}>
-                <th scope="row">{index + 1}</th>
+                <th scope="row">{(currentPage * itemsperpage) + (index + 1)}</th>
                 <td className='py-2'><Link to={`/view/Trainer/profile/${user.email}`}>{user.username}</Link></td>
                 <td className='py-2'>{user.email}</td>
                 <td className='py-2'>{user.dob}</td>
@@ -267,8 +312,19 @@ const ViewTrainerList = () => {
             ))}
           </tbody>
         </table>
-        
+       
       </div>
+      <div className='cornerbtn'>
+        <div className="pagination">
+            <button className='btn btn-primary' onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
+              Previous
+            </button>
+            {renderPaginationButtons()}
+            <button className='btn btn-primary' onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage + 1 >= totalPages}>
+              Next
+            </button>
+          </div>
+          </div>
     </div>
   </div>
   

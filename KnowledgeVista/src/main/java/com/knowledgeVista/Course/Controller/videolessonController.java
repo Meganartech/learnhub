@@ -123,8 +123,9 @@ public class videolessonController {
                    lesson.setLessontitle(Lessontitle);
                    lesson.setCourseDetail(courseDetail);
                    lesson.setInstitutionName(courseDetail.getInstitutionName());
+                   if(file != null) {
                    lesson.setThumbnail(ImageUtils.compressImage(file.getBytes()));
-		         
+                   }
 		          if (videoFile != null) {
 		        	  long totalExistingFileSize = lessonrepo.findAllByInstitutionName(courseDetail.getInstitutionName()).stream()
                               .mapToLong(lessonsing -> lessonsing.getSize()) // Use lambda expression
@@ -551,9 +552,10 @@ public class videolessonController {
 		        		  videoLessons video=oplesson.get();
 		        		  video.setCourseDetail(null);
 						  video.setVideoFile(null);
-						  
+						  if(video.getThumbnail() != null) {
 						  byte[] images =ImageUtils.decompressImage(video.getThumbnail());
 						  video.setThumbnail(images);
+						  }
 		        		  return ResponseEntity.ok(video);		        	  
 		        		  }
 		        	  return ResponseEntity.notFound().build();
