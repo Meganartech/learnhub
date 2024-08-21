@@ -131,18 +131,18 @@ const ViewStudents = () => {
         const buttons = [];
         for (let i = 0; i < totalPages; i++) {
           buttons.push(
-            <button
-           
+            <a
+              href='#'
               key={i}
+              style={{paddingTop:"15px"}}
               onClick={() => handlePageChange(i)}
               disabled={i === currentPage}
-              className={i === currentPage ? 'active btn btn-primary' : 'btn btn-primary'}
+              className={i === currentPage ? 'active ' : ''}
             >
               {i + 1}
-            </button>
+            </a>
           );
         }
-        
         return buttons;
       };
       const handleDeactivate = async (userId, username, email) => {

@@ -87,15 +87,16 @@ const ViewStudentList = () => {
         const buttons = [];
         for (let i = 0; i < totalPages; i++) {
           buttons.push(
-            <button
-           
+            <a
+              href='#'
               key={i}
+              style={{paddingTop:"15px"}}
               onClick={() => handlePageChange(i)}
               disabled={i === currentPage}
-              className={i === currentPage ? 'active btn btn-primary' : 'btn btn-primary'}
+              className={i === currentPage ? 'active ' : ''}
             >
               {i + 1}
-            </button>
+            </a>
           );
         }
         return buttons;
@@ -325,6 +326,7 @@ const ViewStudentList = () => {
               Previous
             </button>
             {renderPaginationButtons()}
+            
             <button className='btn btn-primary' onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage + 1 >= totalPages}>
               Next
             </button>

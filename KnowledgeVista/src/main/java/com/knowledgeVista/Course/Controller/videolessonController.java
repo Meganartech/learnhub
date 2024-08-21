@@ -128,8 +128,9 @@ public class videolessonController {
                    }
 		          if (videoFile != null) {
 		        	  long totalExistingFileSize = lessonrepo.findAllByInstitutionName(courseDetail.getInstitutionName()).stream()
-                              .mapToLong(lessonsing -> lessonsing.getSize()) // Use lambda expression
-                              .sum();
+		        			    .mapToLong(lessonsing -> Optional.ofNullable(lessonsing.getSize()).orElse(0L)) // Handle null size
+		        			    .sum();
+
                          Long num = licencerepo.FindstoragesizeByinstitution(courseDetail.getInstitutionName());
 		        	    // Determine maximum allowed video size (1 GB)
 		        	    Long maxVideoFileSize = num*(1024*1024*1024) ;
@@ -216,8 +217,9 @@ public class videolessonController {
 		                 }
 		                 if (videoFile != null) {
 		                	 long totalExistingFileSize = lessonrepo.findAllByInstitutionName(institution).stream()
-		                              .mapToLong(lessonsing -> lessonsing.getSize()) // Use lambda expression
-		                              .sum();
+		                			    .mapToLong(lessonsing -> Optional.ofNullable(lessonsing.getSize()).orElse(0L)) // Handle null size
+		                			    .sum();
+
 		                         Long num = licencerepo.FindstoragesizeByinstitution(institution);
 				        	    // Determine maximum allowed video size (1 GB)
 				        	    Long maxVideoFileSize = num*(1024*1024*1024) ;
@@ -242,6 +244,7 @@ public class videolessonController {
 		                	  if (videoFileDeleted) {
 		                		  video.setVideofilename(null);
 		                		  video.setFileUrl(fileUrl);  
+//		                		  video.setSize((long) 0);
 		                	  }
 		                	  }else {
 		                		  video.setFileUrl(fileUrl);
@@ -394,13 +397,39 @@ public class videolessonController {
 		    		                headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline");
 
 		    		                // Define the initial chunk size (5 MB)
-		    		                final long INITIAL_CHUNK_SIZE = 5 * 1024 * 1024; // 5 MB
+		    		                final long INITIAL_CHUNK_SIZE = 2 * 1024 * 1024; // 2 MB
 		    		                long fileSize = Files.size(filePath);
 
 		    		                // Get the Range header from the request
 		    		                String rangeHeader = request.getHeader(HttpHeaders.RANGE);
 
-		    		                if (rangeHeader != null) {
+		    		                if (rangeHeader.startsWith("bytes=0-")){
+		    		                    
+		    		                    long rangeStart = 0;
+		    		                    long rangeEnd = Math.min(INITIAL_CHUNK_SIZE - 1, fileSize - 1);
+		    		                    long contentLength = rangeEnd - rangeStart + 1;
+	    		                    System.out.println("Range Start initial: " + rangeStart + ", Range End: " + rangeEnd + ", Content Length: " + contentLength);
+
+		    		                    // Create a RandomAccessFile to read the specified range
+		    		                    try (RandomAccessFile file = new RandomAccessFile(filePath.toFile(), "r")) {
+		    		                        file.seek(rangeStart);
+		    		                        byte[] buffer = new byte[(int) contentLength];
+		    		                        file.readFully(buffer);
+
+		    		                        // Create a ByteArrayResource to hold the requested range of bytes
+		    		                        ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
+
+		    		                        // Set the Content-Range header
+		    		                        headers.add(HttpHeaders.CONTENT_RANGE, String.format("bytes %d-%d/%d", rangeStart, rangeEnd, fileSize));
+
+		    		                        // Return a 206 Partial Content response
+		    		                        return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+		    		                                .headers(headers)
+		    		                                .contentLength(contentLength)
+		    		                                .body(byteArrayResource);
+		    		                    }
+		    		                }else {
+		    		                	
 		    		                    // Handle range request from the client
 		    		                    String[] ranges = rangeHeader.replace("bytes=", "").split("-");
 		    		                    long rangeStart = Long.parseLong(ranges[0]);
@@ -422,31 +451,6 @@ public class videolessonController {
 		    		                        // Set the Content-Range header
 		    		                        headers.add(HttpHeaders.CONTENT_RANGE, String.format("bytes %d-%d/%d", rangeStart, rangeEnd, fileSize));
 		    		                        System.out.println("Range Start : " + rangeStart + ", Range End: " + rangeEnd + ", Content Length: " + contentLength);
-
-		    		                        // Return a 206 Partial Content response
-		    		                        return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
-		    		                                .headers(headers)
-		    		                                .contentLength(contentLength)
-		    		                                .body(byteArrayResource);
-		    		                    }
-		    		                } else {
-		    		                    // No range header, send the initial 5 MB chunk
-		    		                    long rangeStart = 0;
-		    		                    long rangeEnd = Math.min(INITIAL_CHUNK_SIZE - 1, fileSize - 1);
-		    		                    long contentLength = rangeEnd - rangeStart + 1;
-	    		                    System.out.println("Range Start initial: " + rangeStart + ", Range End: " + rangeEnd + ", Content Length: " + contentLength);
-
-		    		                    // Create a RandomAccessFile to read the specified range
-		    		                    try (RandomAccessFile file = new RandomAccessFile(filePath.toFile(), "r")) {
-		    		                        file.seek(rangeStart);
-		    		                        byte[] buffer = new byte[(int) contentLength];
-		    		                        file.readFully(buffer);
-
-		    		                        // Create a ByteArrayResource to hold the requested range of bytes
-		    		                        ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
-
-		    		                        // Set the Content-Range header
-		    		                        headers.add(HttpHeaders.CONTENT_RANGE, String.format("bytes %d-%d/%d", rangeStart, rangeEnd, fileSize));
 
 		    		                        // Return a 206 Partial Content response
 		    		                        return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
