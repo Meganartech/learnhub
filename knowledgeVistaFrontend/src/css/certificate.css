@@ -19,7 +19,11 @@
   display: grid;
   grid-template-columns: 1fr 40fr 1fr;
 }
-
+.logoText{
+  font-family: Rockwell;
+font-weight: bold;
+font-size: 48px;
+}
 .background{
     background-color: var(--back-color);
     padding: 40px;
@@ -49,7 +53,7 @@
   padding: 30px;
   min-height: 90vh;
   height: auto;
-  width: 100%;
+  width: auto;
 }
 .contentinner{
   background-color: white;
@@ -98,7 +102,12 @@
   /* font-size: larger; */
   padding-left: 10px;
 }
-
+input[type=search] {
+outline: none;
+padding: 2px 5px;
+border: 1px solid rgb(75, 74, 74);
+border-radius: 5px;
+}
 
 .formgroup{
     display: grid;
@@ -430,7 +439,7 @@ grid-template-columns: 6fr 1fr 12fr;
     margin: 0px;
   }
   .image-section{
-    padding-bottom: 5px;
+    display: none;
   }
   .form-section{
     padding-top: 5px;

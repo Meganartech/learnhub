@@ -141,7 +141,7 @@ const handlemarkallasRead =async (notificationIds)=>{
       <a href="#" className="logodesign logodisphide ">
         <div className='logoicon'>
           <img src={logo} alt='logo'/> 
-        <div className="">Learn HUB</div>
+        <div className="logoText">LearnHub</div>
          
         </div>
      

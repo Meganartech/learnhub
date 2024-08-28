@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -719,6 +720,90 @@ public class FrontController {
     		    @GetMapping("/search/usersbyTrainer")
     		    public  ResponseEntity<List<String>> getusersSearchbytrainer(@RequestHeader("Authorization") String token, @RequestParam("query") String query){
     		   return listview.SearchEmailTrainer(token, query);
+    		    }
+    		    @GetMapping("/admin/search")
+    		    public ResponseEntity<Page<MuserDto>> searchAdmin(
+    		            @RequestParam(value = "username", required = false) String username,
+    		            @RequestParam(value = "email", required = false) String email,
+    		            @RequestParam(value = "phone", required = false) String phone,
+    		            @RequestParam(value = "dob", required = false)   @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dob,
+    		            @RequestParam("institutionName") String institutionName,
+    		            @RequestParam(value = "skills", required = false) String skills,
+    		            @RequestParam(value = "page", defaultValue = "0") int page,
+    		            @RequestParam(value = "size", defaultValue = "10") int size,
+    		            @RequestHeader("Authorization") String token
+    		            ) {
+    		    	return listview.searchAdmin(username, email, phone, dob, institutionName, skills, page, size,token);
+    		    }
+    		    
+    		    @GetMapping("/trainer/search")
+    		    public ResponseEntity<Page<MuserDto>> searchTrainer(
+    		            @RequestParam(value = "username", required = false) String username,
+    		            @RequestParam(value = "email", required = false) String email,
+    		            @RequestParam(value = "phone", required = false) String phone,
+    		            @RequestParam(value = "dob", required = false)   @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dob,
+    		            @RequestParam("institutionName") String institutionName,
+    		            @RequestParam(value = "skills", required = false) String skills,
+    		            @RequestParam(value = "page", defaultValue = "0") int page,
+    		            @RequestParam(value = "size", defaultValue = "10") int size,
+    	    		     @RequestHeader("Authorization") String token) {
+    		    	return listview.searchTrainer(username, email, phone, dob, institutionName, skills, page, size, token);
+    		    }
+    		    @GetMapping("/users/search")
+    		    public ResponseEntity<Page<MuserDto>> searchUsers(
+    		            @RequestParam(value = "username", required = false) String username,
+    		            @RequestParam(value = "email", required = false) String email,
+    		            @RequestParam(value = "phone", required = false) String phone,
+    		            @RequestParam(value = "dob", required = false)   @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dob,
+    		            @RequestParam("institutionName") String institutionName,
+    		            @RequestParam(value = "skills", required = false) String skills,
+    		            @RequestParam(value = "page", defaultValue = "0") int page,
+    		            @RequestParam(value = "size", defaultValue = "10") int size,
+   	    		     @RequestHeader("Authorization") String token) {
+    		    	return listview.searchUser(username, email, phone, dob, institutionName, skills, page, size, token);
+    		    }
+    		    
+    		    @GetMapping("/Institution/search/Trainer")
+    		    public ResponseEntity<Page<MuserDto>> searchTrainerByadmin(
+    		            @RequestParam(value = "username", required = false) String username,
+    		            @RequestParam(value = "email", required = false) String email,
+    		            @RequestParam(value = "phone", required = false) String phone,
+    		            @RequestParam(value = "dob", required = false)   @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dob,
+    		            
+    		            @RequestParam(value = "skills", required = false) String skills,
+    		            @RequestParam(value = "page", defaultValue = "0") int page,
+    		            @RequestParam(value = "size", defaultValue = "10") int size,
+    		            @RequestHeader("Authorization") String token
+    		            ) {
+    		    	return listview.searchTrainerByAdmin(username, email, phone, dob, skills, page, size,token);
+    		    }
+    		    @GetMapping("/Institution/search/User")
+    		    public ResponseEntity<Page<MuserDto>> searchUserByadmin(
+    		            @RequestParam(value = "username", required = false) String username,
+    		            @RequestParam(value = "email", required = false) String email,
+    		            @RequestParam(value = "phone", required = false) String phone,
+    		            @RequestParam(value = "dob", required = false)   @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dob,
+    		            
+    		            @RequestParam(value = "skills", required = false) String skills,
+    		            @RequestParam(value = "page", defaultValue = "0") int page,
+    		            @RequestParam(value = "size", defaultValue = "10") int size,
+    		            @RequestHeader("Authorization") String token
+    		            ) {
+    		    	return listview.searchUserByAdminorTrainer(username, email, phone, dob, skills, page, size,token);
+    		    }
+    		    @GetMapping("/Institution/search/Mystudent")
+    		    public ResponseEntity<Page<MuserDto>> searchMystudent(
+    		            @RequestParam(value = "username", required = false) String username,
+    		            @RequestParam(value = "email", required = false) String email,
+    		            @RequestParam(value = "phone", required = false) String phone,
+    		            @RequestParam(value = "dob", required = false)   @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dob,
+    		            
+    		            @RequestParam(value = "skills", required = false) String skills,
+    		            @RequestParam(value = "page", defaultValue = "0") int page,
+    		            @RequestParam(value = "size", defaultValue = "10") int size,
+    		            @RequestHeader("Authorization") String token
+    		            ) {
+    		    	return listview.searchStudentsOfTrainer(username, email, phone, dob, skills, page, size,token);
     		    }
 //------------------------MuserRegistrationController------------------------------
 

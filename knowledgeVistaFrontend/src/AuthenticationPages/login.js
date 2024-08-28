@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
-
+import logo from "../images/logo.png"
 const Login = () => {
   const MySwal = withReactContent(Swal);
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -109,16 +109,18 @@ const Login = () => {
 
   return (
     <form  onSubmit={handleSubmit}>
-    <div className="login-container d-flex flex-wrap justify-content-center align-items-center"> {/* New class */}
+     
+    <div className="login-container d-flex flex-wrap justify-content-center align-items-center"> 
       <div className="image-section card-body text-center ">
-    <img 
+    <img id="boyimage"
           style={{ width: "90%", height: "95%" }}
           src={login}
           alt='boy-pic'
         />
         </div>
-        <div className="form-section card-body  text-center"> {/* New class */}
 
+        <div className="form-section card-body  text-center"> 
+ <img style={{width:"200px",height:"200px"}} src={logo}/>
         <h3 className="h4 text-gray-900 mb-4">Sign in</h3>
   
         <div className="form-outline mb-4">

@@ -1,5 +1,7 @@
 package com.knowledgeVista.User.Controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.CourseDetail;
@@ -28,7 +32,7 @@ import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-
+@CrossOrigin
 @RestController
 public class Listview {
 	@Autowired
@@ -247,12 +251,176 @@ public ResponseEntity< List<String>> SearchEmailTrainer(String token,String quer
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
 	}
 }
-//public List<String> MuserEmailSearch(String institution, String email) {
-//    try {
-//        return muserrepositories.findEmailsByEmailContainingIgnoreCase(email, institution);
-//    } catch (Exception e) {
-//        e.printStackTrace(); // Log the exception
-//        return new ArrayList<>();  // Return an empty list or handle as needed
-//    }
-//}
+//===============================SYSADMIN==============================
+
+public ResponseEntity<Page<MuserDto>> searchUser( String username, String email, String phone, LocalDate dob, String institutionName,
+       String skills, int page, int size,String token
+        ) {
+	try{
+		if (!jwtUtil.validateToken(token)) {
+			  return ResponseEntity.ok(Page.empty());
+	    }
+		 String role=jwtUtil.getRoleFromToken(token);
+		 if(role.equals("SYSADMIN")) {
+	    Pageable pageable = PageRequest.of(page, size);
+	Page<MuserDto> Uniquestudents=muserPageRepo.CustomesearchUsers(username, email, phone,dob, institutionName, "USER",skills, pageable);
+	return ResponseEntity.ok(Uniquestudents);
+		 }else {
+
+			  return ResponseEntity.ok(Page.empty());
+		 }
+	}catch (Exception e) {
+	    e.printStackTrace();
+	    // Return an empty Page with a 200 OK status
+	    return ResponseEntity.ok(Page.empty());
+	}
+}
+
+public ResponseEntity<Page<MuserDto>> searchTrainer( String username, String email, String phone, LocalDate dob, String institutionName,
+       String skills, int page, int size,String token
+        ) {
+	try{
+		if (!jwtUtil.validateToken(token)) {
+			  return ResponseEntity.ok(Page.empty());
+	    }
+		 String role=jwtUtil.getRoleFromToken(token);
+		 if(role.equals("SYSADMIN")) {
+	    Pageable pageable = PageRequest.of(page, size);
+	Page<MuserDto> Uniquestudents=muserPageRepo.CustomesearchUsers(username, email, phone,dob, institutionName, "TRAINER",skills, pageable);
+	return ResponseEntity.ok(Uniquestudents);
+		 }else {
+
+			  return ResponseEntity.ok(Page.empty());
+		 }
+	}catch (Exception e) {
+	    e.printStackTrace();
+	    // Return an empty Page with a 200 OK status
+	    return ResponseEntity.ok(Page.empty());
+	}
+}
+public ResponseEntity<Page<MuserDto>> searchAdmin( String username, String email, String phone, LocalDate dob, String institutionName,
+       String skills, int page, int size,String token
+        ) {
+try{
+	if (!jwtUtil.validateToken(token)) {
+		  return ResponseEntity.ok(Page.empty());
+    }
+	 String role=jwtUtil.getRoleFromToken(token);
+	 if(role.equals("SYSADMIN")) {
+    Pageable pageable = PageRequest.of(page, size);
+Page<MuserDto> Uniquestudents=muserPageRepo.CustomesearchUsers(username, email, phone,dob, institutionName, "ADMIN",skills, pageable);
+return ResponseEntity.ok(Uniquestudents);
+	 }else {
+
+		  return ResponseEntity.ok(Page.empty());
+	 }
+}catch (Exception e) {
+    e.printStackTrace();
+    // Return an empty Page with a 200 OK status
+    return ResponseEntity.ok(Page.empty());
+}
+}
+
+//===============================SYSADMIN==============================
+
+//=================================ADMIN SEARCH============================
+
+public ResponseEntity<Page<MuserDto>> searchTrainerByAdmin( String username, String email, String phone, LocalDate dob,
+	       String skills, int page, int size,String token
+	        ) {
+		try{
+			if (!jwtUtil.validateToken(token)) {
+				  return ResponseEntity.ok(Page.empty());
+		    }
+			 String adminemail=jwtUtil.getUsernameFromToken(token);
+			 Optional<Muser>opmuser=muserrepositories.findByEmail(adminemail);
+			 if(opmuser.isPresent()) {
+				 Muser user= opmuser.get();
+				 String role=user.getRole().getRoleName();
+			 
+			 if(role.equals("ADMIN")) {
+				 String institutionName= user.getInstitutionName();
+		    Pageable pageable = PageRequest.of(page, size);
+		Page<MuserDto> Uniquestudents=muserPageRepo.CustomesearchForAdmin(username, email, phone,dob, institutionName, "TRAINER",skills, pageable);
+		return ResponseEntity.ok(Uniquestudents);
+			 }else {
+
+				  return ResponseEntity.ok(Page.empty());
+			 }
+			 }else {
+				  return ResponseEntity.ok(Page.empty());
+			 }
+		}catch (Exception e) {
+		    e.printStackTrace();
+		    // Return an empty Page with a 200 OK status
+		    return ResponseEntity.ok(Page.empty());
+		}
+	}
+
+
+public ResponseEntity<Page<MuserDto>> searchUserByAdminorTrainer( String username, String email, String phone, LocalDate dob,
+	       String skills, int page, int size,String token
+	        ) {
+		try{
+			if (!jwtUtil.validateToken(token)) {
+				  return ResponseEntity.ok(Page.empty());
+		    }
+			 String adminemail=jwtUtil.getUsernameFromToken(token);
+			 Optional<Muser>opmuser=muserrepositories.findByEmail(adminemail);
+			 if(opmuser.isPresent()) {
+				 Muser user= opmuser.get();
+				 String role=user.getRole().getRoleName();
+			 
+			 if(role.equals("ADMIN")|| role.equals("TRAINER") ) {
+				 String institutionName= user.getInstitutionName();
+		    Pageable pageable = PageRequest.of(page, size);
+		Page<MuserDto> Uniquestudents=muserPageRepo.CustomesearchForAdmin(username, email, phone,dob, institutionName, "USER",skills, pageable);
+		return ResponseEntity.ok(Uniquestudents);
+			 }else {
+
+				  return ResponseEntity.ok(Page.empty());
+			 }
+			 }else {
+				  return ResponseEntity.ok(Page.empty());
+			 }
+		}catch (Exception e) {
+		    e.printStackTrace();
+		    // Return an empty Page with a 200 OK status
+		    return ResponseEntity.ok(Page.empty());
+		}
+	}
+
+
+public ResponseEntity<Page<MuserDto>> searchStudentsOfTrainer( String username, String email, String phone, LocalDate dob,
+	       String skills, int page, int size,String token
+	        ) {
+		try{
+			if (!jwtUtil.validateToken(token)) {
+				  return ResponseEntity.ok(Page.empty());
+		    }
+			 String traineremail=jwtUtil.getUsernameFromToken(token);
+			 Optional<Muser>opmuser=muserrepositories.findByEmail(traineremail);
+			 if(opmuser.isPresent()) {
+				 Muser user= opmuser.get();
+				 String role=user.getRole().getRoleName();
+			 
+			 if( role.equals("TRAINER") ) {
+		    Pageable pageable = PageRequest.of(page, size);
+		Page<MuserDto> Uniquestudents=muserPageRepo.searchStudentsOfTrainer(traineremail,username, email, phone,dob,skills, pageable);
+		return ResponseEntity.ok(Uniquestudents);
+			 }else {
+
+				  return ResponseEntity.ok(Page.empty());
+			 }
+			 }else {
+				  return ResponseEntity.ok(Page.empty());
+			 }
+		}catch (Exception e) {
+		    e.printStackTrace();
+		    // Return an empty Page with a 200 OK status
+		    return ResponseEntity.ok(Page.empty());
+		}
+	}
+
+
 }

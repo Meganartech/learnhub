@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import SlideBar from './SlideBar';
 import NavBar from './NavBar';
-import Footer from './Footer';
 
 const Layout = ({ searchQuery, handleSearchChange, setSearchQuery }) => {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -52,7 +51,7 @@ const Layout = ({ searchQuery, handleSearchChange, setSearchQuery }) => {
           <Outlet />
         </div>
       </div>
-      <Footer />
+
     </div>
   );
 };

@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../api/utils";
 import axios from "axios";
-
+import logo from "../images/logo.png"
 const MySwal = withReactContent(Swal);
 
 const ForgetPassword = () => {
@@ -225,6 +225,7 @@ const ForgetPassword = () => {
         />
       </div>
       <div className="form-section card-body text-center ">
+      <img style={{width:"200px",height:"200px"}} src={logo}/>
         {isResetPassword ? resetPasswordForm : forgetPasswordForm}
         {!isResetPassword && (
           <div className="text-center">

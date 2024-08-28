@@ -1,5 +1,6 @@
 package com.knowledgeVista.User.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,9 @@ import com.knowledgeVista.User.MuserDto;
 
 @Repository
 public interface MuserRepositories extends JpaRepository<Muser,Long> {
+
+//	 @Query("SELECT u FROM Muser u WHERE u.dob = :dob")
+//	 List<Muser> findByDob(@Param("dob") LocalDate dob);
 
 	@Query("SELECT u FROM Muser u WHERE u.email = ?1")
   Optional<Muser> findByEmail(String email);

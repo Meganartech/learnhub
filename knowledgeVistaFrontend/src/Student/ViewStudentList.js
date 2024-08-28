@@ -18,6 +18,80 @@ const ViewStudentList = () => {
   const [filterOption, setFilterOption] = useState("All");
   const [searchQuery, setSearchQuery] = useState('');
   const itemsperpage=10;
+  const [datacounts,setdatacounts]=useState({
+    start:"",
+    end:"",
+    total:"",
+  })
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [dob, setDob] = useState('');
+  const [skills, setSkills] = useState('');
+ const [fullsearch,setfullsearch]=useState(false);
+ // Function to call the search API
+ const searchUsers = async () => {
+  try {
+    console.log(dob)
+    const response = await axios.get(`${baseUrl}/Institution/search/User`, {
+      headers:{
+        'Authorization':token
+    },
+      params: {
+        username,
+        email,
+        phone,
+        dob,
+        skills,
+        page:currentPage,
+        size:10
+      }
+    });
+
+    console.log("res",response)
+    if(response.status===200){
+    setUsers(response.data.content);
+    setTotalPages(response.data.totalPages);
+    }
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  }
+};
+
+// Function to handle changes and call search
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  if(value===""){
+    fetchData()
+  }
+  switch (name) {
+    case 'username':
+      setUsername(value);
+      break;
+      case 'dob':
+        setDob(value);
+        console.log(dob);
+        break;
+    case 'email':
+      setEmail(value);
+      break;
+    case 'phone':
+      setPhone(value);
+      break
+      
+      case 'skills':
+        setSkills(value);
+        break;
+     
+      default:
+        break;
+    }
+  };
+  useEffect(() => {
+    // Call searchUsers whenever any of the dependencies change
+    searchUsers();
+  }, [username, email, phone, dob, skills, currentPage]);
+
   const filterData = () => {
     if (filterOption === "All") {
       return users;
@@ -25,8 +99,6 @@ const ViewStudentList = () => {
       return users.filter(user => user.isActive === true);
     } else if (filterOption === "Inactive") {
       return users.filter(user => user.isActive === false);
-    }else if(filterOption==="search"){
-      return users.filter(user => user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase()));
     }
   };
     useEffect(() => {
@@ -41,7 +113,12 @@ const ViewStudentList = () => {
             });
             const data = response.data;
             setUsers(data.content); 
-          setTotalPages(data.totalPages); // Update total pages
+           setTotalPages(data.totalPages);
+            setdatacounts((prev)=>({
+               start:currentPage * itemsperpage + 1,
+               end:currentPage * itemsperpage + itemsperpage,
+               total:data.totalElements,
+             })); // Update total pages
          
           
           } catch (error) {
@@ -65,7 +142,12 @@ const ViewStudentList = () => {
         
           const data = response.data;
           setUsers(data.content); // Update users with content from pageable
-          setTotalPages(data.totalPages); // Update total pages
+           setTotalPages(data.totalPages);
+            setdatacounts((prev)=>({
+               start:currentPage * itemsperpage + 1,
+               end:currentPage * itemsperpage + itemsperpage,
+               total:data.totalElements,
+             })); // Update total pages
           console.log(data.totalPages)
         } catch (error) {
           if (error.response && error.response.status === 401) {
@@ -90,7 +172,7 @@ const ViewStudentList = () => {
             <a
               href='#'
               key={i}
-              style={{paddingTop:"15px"}}
+              
               onClick={() => handlePageChange(i)}
               disabled={i === currentPage}
               className={i === currentPage ? 'active ' : ''}
@@ -244,16 +326,7 @@ const ViewStudentList = () => {
       <div className="tableheader ">
         <h1>Students Details</h1>
         
-        <input
-        className="form-control tabinp"
-        type="search"
-        placeholder="Search by Email"
-        aria-label="Search"
-        value={searchQuery}
-        onChange={(e) => {
-          setSearchQuery(e.target.value);
-          setFilterOption("search");
-        }}/>
+        
         <div className='selectandadd'>
                    <select
                     className="selectstyle btn btn-success  text-left "
@@ -272,15 +345,59 @@ const ViewStudentList = () => {
         <table className="table table-hover table-bordered table-sm">
           <thead className='thead-dark'>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Username</th>
+            <th scope="col"><i onClick={()=>{setfullsearch(!fullsearch)}} className={fullsearch ? 'fa-solid fa-xmark' :'fa-solid fa-magnifying-glass'}></i></th>
+            <th scope="col">Username</th>
               <th scope="col">Email</th>
-              <th scope="col">Date of Birth</th>
               <th scope="col">Phone</th>
               <th scope="col"> Skills</th>
+              <th scope="col">Date of Birth</th>
               <th scope="col">Status</th>
               <th colSpan="3" scope="col">Action</th>
             </tr>
+            {fullsearch ?  
+         <tr>
+            <td></td>
+            
+            <td>
+              <input
+                type="search"
+                name="username"
+                value={username}
+                onChange={handleChange}
+                placeholder="Search Username"
+              />
+            </td>
+            <td>
+              <input
+                type="search"
+                name="email"
+                value={email}
+                onChange={handleChange}
+                placeholder="Search Email"
+              />
+            </td>
+            
+            
+            <td>
+              <input
+                type="search"
+                name="phone"
+                value={phone}
+                onChange={handleChange}
+                placeholder="Search Phone"
+              />
+            </td>
+            <td>
+              <input
+                type="search"
+                name="skills"
+                value={skills}
+                onChange={handleChange}
+                placeholder="Search Skills"
+              />
+            </td>
+           <td><div style={{width:'110px'}}></div></td>
+          </tr> :<></>}
           </thead>
           <tbody>
           {filterData().map((user, index) => (
@@ -288,9 +405,10 @@ const ViewStudentList = () => {
                 <th scope="row">{(currentPage * itemsperpage) + (index + 1)}</th>
                 <td className='py-2'> <Link to={`/view/Student/profile/${user.email}`}>{user.username}</Link></td>
                 <td className='py-2'>{user.email}</td>
-                <td className='py-2'>{user.dob}</td>
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.skills}</td>
+                
+                <td className='py-2'>{user.dob}</td>
                 <td className='py-2' >{user.isActive===true? 
                 <div className='Activeuser'><i className="fa-solid fa-circle pr-3"></i>Active</div>
                 :<div className='InActiveuser' ><i className="fa-solid fa-circle pr-3"></i>In Active</div>}</td>
@@ -322,15 +440,15 @@ const ViewStudentList = () => {
       </div>
       <div className='cornerbtn'>
         <div className="pagination">
-            <button className='btn btn-primary' onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
-              Previous
-            </button>
+           
+            <i className="fa-solid fa-chevron-left text-primary" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}></i>
+           
             {renderPaginationButtons()}
-            
-            <button className='btn btn-primary' onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage + 1 >= totalPages}>
-              Next
-            </button>
-          </div>
+            <i className="fa-solid fa-chevron-right text-primary" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage + 1 >= totalPages}>
+              
+            </i>
+          </div>  
+          <div><label className='text-primary'>( {datacounts.start}-{datacounts.end} ) of {datacounts.total}</label></div>
           </div>
     </div>
   </div>

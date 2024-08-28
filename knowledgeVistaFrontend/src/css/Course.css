@@ -25,12 +25,12 @@ input::placeholder {
 }
 .tableheader{
   display: grid;
-  grid-template-columns: 25fr 12fr 12fr;
+  grid-template-columns: 25fr 10fr;
   margin-bottom: 0.9rem;
 }
 .tableheader2{
   display: grid;
-  grid-template-columns: 25fr 24fr;
+  grid-template-columns: 25fr 3fr;
   margin-bottom: 0.9rem;
 }
 

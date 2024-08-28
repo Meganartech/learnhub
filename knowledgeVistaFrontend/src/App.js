@@ -66,6 +66,7 @@ import DayView from "./Meetings/CalenderView.js";
 import CalenderView from "./Meetings/CalenderView.js";
 import StudentCalenderView from "./Meetings/StudentCalenderView.js";
 import EditMeeting from "./Meetings/EditMeeting.js";
+import Footer from "./Common Components/Footer.js";
 
 
 function App() {
@@ -121,6 +122,7 @@ function App() {
   return (
     <Router>
       <div className="App ">
+
         <Routes>
                   <Route element={<Layout  
                   searchQuery={searchQuery}
@@ -189,7 +191,8 @@ function App() {
           <Route path="/LicenceExpired" element={<LicenceExpired/>}/>
           <Route path="*" element={<Missing/>}/>
                   </Routes>
-      </div>
+     <Footer/>
+                   </div>
     </Router>  );
 }
 
