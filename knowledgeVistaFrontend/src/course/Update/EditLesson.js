@@ -103,29 +103,51 @@ useEffect(() => {
     // Add any dependencies if needed
 }, [lessonId, token]);
 
-   const handleChange = (e) => {
-    const { name, value } = e.target;
-    let error = '';
-    switch (name) {
-      case 'lessontitle':
-        error = value.length < 1 ? 'Please enter a Video Title' : '';
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  let error = '';
+  switch (name) {
+    case 'Lessontitle':
+      error = value.length < 1 ? 'Please enter a Video Title' : '';
+      setvideodata({ ...videodata, [name]: value });
+      break;
+    case 'LessonDescription':
+        error = value.length < 1 ? 'Please enter a Video Description' : '';
+        setvideodata({ ...videodata, [name]: value });
         break;
-      case 'lessonDescription':
-          error = value.length < 1 ? 'Please enter a Video Description' : '';
-          break;
-      case 'fileUrl':
-        error = /^(https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+\??[\w-=&]*)$/.test(value) ? '' : 'Please enter the youtube Embed src url only ';
-            break;
-
-            default:
-              break;
+    case 'fileUrl':
+      setvideodata({ ...videodata, [name]: value });
+    const match = value.match(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/);
+      let extractedId
+    if (match) {
+       extractedId = match[1];
+      // ... rest of your code
+    } else {
+      error = 'Invalid YouTube URL. Please provide a valid URL.';
     }
-    setErrors(prevErrors => ({
-      ...prevErrors,
-      [name]: error
-    }));
-    setvideodata({ ...videodata, [name]: value });
-  };
+       if (!extractedId) {
+          error = 'Invalid YouTube URL. Please provide a valid URL.';
+          
+        } else {
+          const embedUrl = `https://www.youtube.com/embed/${extractedId}`;
+         
+          setvideodata({ ...videodata, fileUrl: embedUrl });
+          console.log("link=",embedUrl)
+         
+      }
+      break;
+
+          default:
+            break;
+  }
+  setErrors(prevErrors => ({
+    ...prevErrors,
+    [name]: error
+  }));
+  
+  console.log("videodata=",videodata.fileUrl)
+
+};
 
   const convertImageToBase64 = (file) => {
     return new Promise((resolve, reject) => {

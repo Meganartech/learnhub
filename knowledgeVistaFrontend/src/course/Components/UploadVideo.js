@@ -39,13 +39,33 @@ const token=sessionStorage.getItem("token")
     switch (name) {
       case 'Lessontitle':
         error = value.length < 1 ? 'Please enter a Video Title' : '';
+        setvideodata({ ...videodata, [name]: value });
         break;
       case 'LessonDescription':
           error = value.length < 1 ? 'Please enter a Video Description' : '';
+          setvideodata({ ...videodata, [name]: value });
           break;
       case 'fileUrl':
-        error = /^(https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+\??[\w-=&]*)$/.test(value) ? '' : 'Please enter the youtube Embed src url only ';
-            break;
+        setvideodata({ ...videodata, [name]: value });
+      const match = value.match(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/);
+        let extractedId
+      if (match) {
+         extractedId = match[1];
+        // ... rest of your code
+      } else {
+        error = 'Invalid YouTube URL. Please provide a valid URL.';
+      }
+         if (!extractedId) {
+            error = 'Invalid YouTube URL. Please provide a valid URL.';
+            
+          } else {
+            const embedUrl = `https://www.youtube.com/embed/${extractedId}`;
+           
+            setvideodata({ ...videodata, fileUrl: embedUrl });
+            console.log("link=",embedUrl)
+           
+        }
+        break;
 
             default:
               break;
@@ -54,7 +74,8 @@ const token=sessionStorage.getItem("token")
       ...prevErrors,
       [name]: error
     }));
-    setvideodata({ ...videodata, [name]: value });
+    
+    console.log("videodata=",videodata.fileUrl)
   
   };
 
@@ -70,8 +91,8 @@ const token=sessionStorage.getItem("token")
     if (uploadType === 'video') {
         isVideoValid = selectedFile !== null;
     } else if (uploadType === 'url') {
-        isVideoValid = /^(https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+\??[\w-=&]*)$/.test(videodata.fileUrl);
-    }
+      isVideoValid = /^(https?:\/\/(www\.)?youtube\.com\/embed\/[\w-]+\??[\w-=&]*)$/.test(videodata.fileUrl);
+     }
 
     // Enable save button only if all conditions are met
     return !(isVideoTitleValid && isVideoDescriptionValid && isVideoValid);
