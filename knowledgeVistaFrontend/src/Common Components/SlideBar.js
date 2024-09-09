@@ -769,6 +769,29 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
         <li className="nav-item mt-2">
           <a
             className={
+              activeLink === "/Affiliates"
+                ? "ActiveLink nav-link"
+                : "nav-link text-muted"
+            }
+            href="#"
+            onClick={() => handleClick("/Affiliates")}
+          >
+            <i
+              className={
+                activeLink === "/Affiliates"
+                  ? "fa-regular fa-handshake text-light"
+                  : "fa-regular fa-handshake text-muted"
+              }
+            ></i>
+            <span>Affiliates</span>
+          </a>
+        </li>
+      )}
+
+{userRole === "SYSADMIN" && (
+        <li className="nav-item mt-2">
+          <a
+            className={
               activeLink === "/Zoomkeyupload"
                 ? "ActiveLink nav-link"
                 : "nav-link text-muted"
@@ -813,6 +836,7 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
           </a>
         </li>
       )}
+
 
 
 

@@ -1,7 +1,6 @@
 
 package com.knowledgeVista.User.Controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,18 +9,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
-import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -305,8 +297,7 @@ public class AssignCourse {
 	            course.setUsers(null);
 	            course.setVideoLessons(null);
 	            course.setTrainer(null);
-	            byte[] images =ImageUtils.decompressImage(course.getCourseImage());
-	            course.setCourseImage(images);
+	          
 	           
 	        }
 	    
@@ -344,8 +335,7 @@ public class AssignCourse {
 	            course.setUsers(null);
 	            course.setVideoLessons(null);
 	        	course.setTrainer(null);
-	            byte[] images =ImageUtils.decompressImage(course.getCourseImage());
-	            course.setCourseImage(images);
+	            
 	           
 	        }
 	    

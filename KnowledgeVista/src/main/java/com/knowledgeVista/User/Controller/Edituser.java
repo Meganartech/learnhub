@@ -10,19 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
-import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
@@ -89,7 +82,7 @@ public class Edituser {
 
 	         // Compress and set profile image
 	         if (profile != null && !profile.isEmpty()) {
-	             student.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	             student.setProfile(profile.getBytes());
 	         }
 
 	         // Save the updated student
@@ -165,7 +158,7 @@ public class Edituser {
 
 	         // Compress and set profile image
 	         if (profile != null && !profile.isEmpty()) {
-	             student.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	             student.setProfile(profile.getBytes());
 	         }
 
 	         // Save the updated student
@@ -194,7 +187,7 @@ public class Edituser {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Unauthorized access\"}");
 	         }
 
-	         String role = jwtUtil.getRoleFromToken(token);
+	         jwtUtil.getRoleFromToken(token);
 	         String originalEmail=jwtUtil.getUsernameFromToken(token);
 	         Optional<Muser> opStudent = muserrepositories.findByEmail(originalEmail);
 	         if (!opStudent.isPresent()) {
@@ -226,7 +219,7 @@ public class Edituser {
 
 	         // Compress and set profile image
 	         if (profile != null && !profile.isEmpty()) {
-	             student.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	             student.setProfile(profile.getBytes());
 	         }
 
 	         // Save the updated student
@@ -254,13 +247,9 @@ public class Edituser {
 			Muser user=opuser.get();
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("name", user.getUsername());
-           if(user.getProfile()!=null) {
-            byte[] images = ImageUtils.decompressImage(user.getProfile());
            
-            responseBody.put("profileImage", images);
-           }else {
-        	   responseBody.put("profileImage", null);
-           }
+            responseBody.put("profileImage",user.getProfile());
+          
 
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseBody);
 			

@@ -9,20 +9,15 @@ import com.knowledgeVista.Course.Test.Question;
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.Course.Test.Repository.QuestionRepository;
 import com.knowledgeVista.Course.Test.Repository.TestRepository;
-import com.knowledgeVista.Course.certificate.certificate;
 import com.knowledgeVista.Course.certificate.certificateRepo;
-import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -41,8 +36,6 @@ public class QuestionController {
 		private MuserRepositories muserRepository;
 		@Autowired
 		private CourseDetailRepository coursedetailrepository;
-		@Autowired
-		private certificateRepo certificaterepo;
 		@Autowired
 		private MusertestactivityRepo muserActivityRepo;
 
@@ -260,7 +253,7 @@ public class QuestionController {
 		            existingQuestion.setOption3(option3);
 		            existingQuestion.setOption4(option4);
 		            existingQuestion.setAnswer(answer);
-		            Question savedQuestion = questionRepository.save(existingQuestion);
+		            questionRepository.save(existingQuestion);
 
 		            // Return the updated Question object in the response
 		            return ResponseEntity.ok().body("{\"message\": \"Question updated successfully\"}");
@@ -315,7 +308,7 @@ public class QuestionController {
 		            ques.setOption4(option4);
 		            ques.setAnswer(answer);
 		            ques.setTest(test);
-		            Question savedQuestion = questionRepository.save(ques);
+		            questionRepository.save(ques);
 
 		            // Return the updated Question object in the response
 		            return ResponseEntity.ok().body("{\"message\": \"Question updated successfully\"}");

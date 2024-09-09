@@ -2,9 +2,6 @@ package com.knowledgeVista.Meeting.zoomclass;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

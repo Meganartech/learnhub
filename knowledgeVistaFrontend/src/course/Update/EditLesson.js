@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
 import axios from 'axios';
-
+import errorimg from "../../images/errorimg.png"
 const EditLesson = () => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -363,6 +363,9 @@ const handleChange = (e) => {
                      {videodata.base64Image && ( 
                       <img
                         src={videodata.base64Image}
+                        onError={(e) => {
+                          e.target.src = errorimg; // Use the imported error image
+                        }}
                         alt="Selected "
                         style={{ width:"100px",height:"100px"}}
                       />
@@ -412,6 +415,10 @@ const handleChange = (e) => {
                     <div className="invalid-feedback">
                     {errors.fileUrl}
                   </div>
+
+                  {videodata.fileUrl && 
+             <iframe style={{marginTop:"10px"}} src={videodata.fileUrl}></iframe>
+                }
              </div>
             ) : (
                 <div

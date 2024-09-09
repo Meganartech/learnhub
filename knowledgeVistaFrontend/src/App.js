@@ -67,6 +67,8 @@ import CalenderView from "./Meetings/CalenderView.js";
 import StudentCalenderView from "./Meetings/StudentCalenderView.js";
 import EditMeeting from "./Meetings/EditMeeting.js";
 import Footer from "./Common Components/Footer.js";
+import Affiliates from "./SysAdmin/Affiliates.js";
+import YouTubeEmbedChecker from "./YouTubeEmbedChecker.js";
 
 
 function App() {
@@ -179,11 +181,12 @@ function App() {
                        <Route path="/viewAll/Students" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewStudents/></PrivateRoute>}/>
                        <Route path="/licenceupload" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><SysadminLicenceupload/></PrivateRoute>}/>
                        <Route path="/Zoomkeyupload" element={<PrivateRoute authenticationRequired={true} sysadmin={true} ><ZoomKeys/></PrivateRoute>}/>
+                        <Route path="/Affiliates" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><Affiliates/></PrivateRoute>}/>
                           {/* SysAdminRoutes */}
                         </Route> 
          
           <Route path="/" element={<Login/>}/>
-          <Route path="/login" element={<Login/>}/>
+         <Route path="/login" element={<Login/>}/>
           <Route path="/refresh" element={<PrivateRoute authenticationRequired={true}><RefreshToken/></PrivateRoute>}/>
           <Route path="/unauthorized" element={<Unauthorized/>}/>
           <Route path="/forgot-password" element={<ForgetPassword />} />

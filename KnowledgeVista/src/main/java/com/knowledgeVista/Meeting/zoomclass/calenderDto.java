@@ -1,11 +1,5 @@
 package com.knowledgeVista.Meeting.zoomclass;
 
-import java.time.LocalDateTime;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 
 public class calenderDto {
 	    private Long MeetingId;

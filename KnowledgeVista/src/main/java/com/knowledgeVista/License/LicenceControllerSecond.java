@@ -4,13 +4,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.knowledgeVista.Course.Repository.CourseDetailRepository;
-import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -25,10 +22,6 @@ public class LicenceControllerSecond {
 	 @Autowired
 	    private licenseRepository licenseRepository;
 	 
-	 @Autowired
-		private CourseDetailRepository coursedetailrepository;
-
-	
 	 @Autowired
 		private mAdminLicenceRepo madminrepo;
 
@@ -58,7 +51,7 @@ public class LicenceControllerSecond {
 
 	         	   Muser user= opuser.get();
 	         	   String institution=user.getInstitutionName();
-	         	   Madmin_Licence madmin= madminrepo.findByInstitutionName(institution);
+	         	   madminrepo.findByInstitutionName(institution);
 	         	  Optional<License> oplicence=licenseRepository.findByinstitution(institution);
 	         	    if(oplicence.isPresent()) {
 	         	    	License licence=oplicence.get();

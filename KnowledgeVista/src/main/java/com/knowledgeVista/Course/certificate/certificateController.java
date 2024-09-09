@@ -1,8 +1,6 @@
 package com.knowledgeVista.Course.certificate;
 
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,22 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Test.MuserTestActivity;
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
-import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -76,7 +63,7 @@ public class certificateController {
 	        
 	         }else {
 	        	  // Compress the authorized sign image
-	 	        byte[] compressedAuthorizedSign = ImageUtils.compressImage(authorizedSign.getBytes());
+	 	        byte[] compressedAuthorizedSign = authorizedSign.getBytes();
 	 	        // Create a new Certificate object with the extracted data
 	 	        certificate certificate = new certificate();
 	 	        certificate.setInstitutionName(institutionName);
@@ -142,7 +129,7 @@ public class certificateController {
 	            certificate certificate = optionalCertificate.get();
                 if(authorizedSign!=null) {
 	            // Compress the authorized sign image
-	            byte[] compressedAuthorizedSign = ImageUtils.compressImage(authorizedSign.getBytes());
+	            byte[] compressedAuthorizedSign = authorizedSign.getBytes();
 	            System.out.println("found image");
 	            certificate.setAuthorizedSign(compressedAuthorizedSign);
                 }
@@ -180,8 +167,7 @@ public class certificateController {
 		                    .body("Invalid token");
 		        }
 
-		        // Get the role from the token
-		        String role = jwtUtil.getRoleFromToken(token);
+		        jwtUtil.getRoleFromToken(token);
 		        String email=jwtUtil.getUsernameFromToken(token);
 		         String institution="";
 			     Optional<Muser> opuser =muserRepository.findByEmail(email);
@@ -199,7 +185,7 @@ public class certificateController {
 	    
 	    if (opcertificate.isPresent()) {
 	    	 certificate certi = opcertificate.get();
-	            byte[] sign = ImageUtils.decompressImage(certi.getAuthorizedSign());
+	            byte[] sign = certi.getAuthorizedSign();
 	            certi.setAuthorizedSign(sign);
 	            return ResponseEntity.ok()
 	                .contentType(MediaType.APPLICATION_JSON)

@@ -2,10 +2,6 @@ package com.knowledgeVista.Meeting;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
-import com.knowledgeVista.User.Repository.MuserRepositories;
-import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 import com.knowledgeVista.zoomJar.ZoomMethods;
 
 import org.springframework.stereotype.Service;
@@ -13,10 +9,6 @@ import org.springframework.stereotype.Service;
 public class ZoomTokenService {
 	@Autowired
 		private ZoomAccountkeyrepo zoomacrepo;
-		 @Autowired
-		 private JwtUtil jwtUtil;
-		 @Autowired
-			private MuserRepositories muserRepository;
 		 @Autowired
 		 private ZoomMethods zoomMethod;
 		 

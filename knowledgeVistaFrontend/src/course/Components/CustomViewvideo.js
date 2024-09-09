@@ -238,6 +238,7 @@ const CustomViewvideo = () => {
                       light={currentLesson.thumbnail ? `data:image/jpeg;base64,${currentLesson.thumbnail}` :false} 
                       onEnded={handleVideoEnd}
                       progressInterval={1000}
+                      playing
                       config={{
                         file: {
                           attributes: {
@@ -250,6 +251,7 @@ const CustomViewvideo = () => {
                     <ReactPlayer
                       width="100%"
                       height="80%"
+                      playing
                       controls
                       url={videoSource ? videoSource : null}
                       light={currentLesson.thumbnail ? `data:image/jpeg;base64,${currentLesson.thumbnail}` :false} 

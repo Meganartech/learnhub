@@ -1,36 +1,22 @@
 package com.knowledgeVista.User.Controller;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.knowledgeVista.Course.CourseDetail;
-import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
-import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 @CrossOrigin
 @RestController
@@ -144,10 +130,7 @@ public class Listview {
            Optional<Muser> opuser = muserrepositories.findByuserIdandInstitutionName(userId, institution);
          if(opuser.isPresent()) {
         	 Muser user=opuser.get();
-         if(user.getProfile()!=null) {
-            byte[] decompressedImage = ImageUtils.decompressImage(user.getProfile());
-            user.setProfile(decompressedImage);
-         }
+        
             user.setCourses(null);
         	user.setAllotedCourses(null);
             return ResponseEntity.ok(user);
@@ -235,7 +218,7 @@ public ResponseEntity< List<String>> SearchEmailTrainer(String token,String quer
    	     
    	     if(opreq.isPresent()) {
    	    	 Muser requser=opreq.get();
-   	    	String institutionname=requser.getInstitutionName();
+   	    	requser.getInstitutionName();
    	    	if(requser.getRole().getRoleName().equals("TRAINER")) {
    	    	List<String> listu= muserrepositories.findEmailsInAllotedCoursesByUserEmail(email, query);
    	    	return ResponseEntity.ok(listu);

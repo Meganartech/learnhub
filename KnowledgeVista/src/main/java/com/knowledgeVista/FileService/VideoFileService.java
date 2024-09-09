@@ -28,7 +28,7 @@ public class VideoFileService {
 
 	        // Define the file path where the video file will be stored
 	        String filePath = uploadPath.resolve(uniqueFileName).toString();
-	        String modifiedPath = filePath.replace("video\\", "");
+	        filePath.replace("video\\", "");
 	        // Save the file to the server
 	        Files.copy(videoFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 

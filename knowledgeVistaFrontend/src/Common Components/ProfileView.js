@@ -6,7 +6,7 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import errorimg from"../images/errorimg.png"
 const ProfileView = () => {
   const navigate=useNavigate();
   const token=sessionStorage.getItem("token")
@@ -233,7 +233,11 @@ const ProfileView = () => {
       <div className='mainform'>
         <div className='profile-picture'>
           <div className='image-group'>
-            <img id="preview" src={img ? img : undraw_profile} alt='profile' />
+            <img id="preview" src={img ? img : undraw_profile} 
+            onError={(e) => {
+              e.target.src = errorimg; // Use the imported error image
+            }}
+            alt='profile' />
           </div>
         </div>
         <div className='formgroup'>
@@ -302,6 +306,9 @@ const ProfileView = () => {
           {userData.base64Image ? (
                     <img
                       src={userData.base64Image }
+                      onError={(e) => {
+                        e.target.src = errorimg; // Use the imported error image
+                      }}
                       alt="Selected Image"
                       className="profile-picture"
                     />

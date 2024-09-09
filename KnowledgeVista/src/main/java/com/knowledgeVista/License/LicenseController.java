@@ -1,6 +1,5 @@
 package com.knowledgeVista.License;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,16 +41,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.DownloadManagement.CustomerLeads;
 import com.knowledgeVista.DownloadManagement.Customer_downloads;
-import com.knowledgeVista.FileService.LicenceService;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -384,8 +379,8 @@ public class LicenseController {
 				             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				             Document doc = dBuilder.parse(file);
-				             Element root = doc.getDocumentElement();
-				             Element validity2 = doc.createElement("key");
+				             doc.getDocumentElement();
+				             doc.createElement("key");
 				             this.valu=(Jwts.builder()
 				 	                .setSubject(formattedDate)
 				 		            .signWith(SignatureAlgorithm.HS256, "yourSecretKeyStringWithAtLeast256BitsLength")
@@ -478,8 +473,8 @@ public class LicenseController {
 				             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				             Document doc = dBuilder.parse(file);
-				             Element root = doc.getDocumentElement();
-				             Element validity2 = doc.createElement("key");
+				             doc.getDocumentElement();
+				             doc.createElement("key");
 				             this.valu=(Jwts.builder()
 				 	                .setSubject(formattedDate)
 				 		            .signWith(SignatureAlgorithm.HS256, "yourSecretKeyStringWithAtLeast256BitsLength")

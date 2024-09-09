@@ -2,7 +2,7 @@ import React, {  useEffect, useRef, useState } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
-import { json, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Partialpaymentsetting from './Partialpaymentsetting';
 
@@ -398,6 +398,7 @@ const handlenextclick =(e)=>{
                                     <div>
                                         <img
                                             src={formData.base64Image}
+                                           
                                             alt="Selected"
                                             style={{ width: "100px", height: "100px" }}
                                         />

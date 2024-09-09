@@ -20,14 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,8 +29,6 @@ import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.FileService.VideoFileService;
-import com.knowledgeVista.ImageCompressing.ImageUtils;
-import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
@@ -124,7 +115,7 @@ public class videolessonController {
                    lesson.setCourseDetail(courseDetail);
                    lesson.setInstitutionName(courseDetail.getInstitutionName());
                    if(file != null) {
-                   lesson.setThumbnail(ImageUtils.compressImage(file.getBytes()));
+                   lesson.setThumbnail(file.getBytes());
                    }
 		          if (videoFile != null) {
 		        	  long totalExistingFileSize = lessonrepo.findAllByInstitutionName(courseDetail.getInstitutionName()).stream()
@@ -213,7 +204,7 @@ public class videolessonController {
 		                	}
 
 		                 if (file != null && !file.isEmpty()) {
-		                     video.setThumbnail(ImageUtils.compressImage(file.getBytes()));
+		                     video.setThumbnail(file.getBytes());
 		                 }
 		                 if (videoFile != null) {
 		                	 long totalExistingFileSize = lessonrepo.findAllByInstitutionName(institution).stream()
@@ -556,10 +547,7 @@ public class videolessonController {
 		        		  videoLessons video=oplesson.get();
 		        		  video.setCourseDetail(null);
 						  video.setVideoFile(null);
-						  if(video.getThumbnail() != null) {
-						  byte[] images =ImageUtils.decompressImage(video.getThumbnail());
-						  video.setThumbnail(images);
-						  }
+						  
 		        		  return ResponseEntity.ok(video);		        	  
 		        		  }
 		        	  return ResponseEntity.notFound().build();

@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../css/CourseView.module.css";
+import errorimg  from "../../images/errorimg.png"
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -107,6 +107,9 @@ const EditCourse = ({filteredCourses}) => {
                   <div className="imagedivnew">
                     <img
                       src={`data:image/jpeg;base64,${item.courseImage}`}
+                      onError={(e) => {
+                        e.target.src = errorimg; // Use the imported error image
+                      }}
                       alt="Course"
                     />
                   </div>

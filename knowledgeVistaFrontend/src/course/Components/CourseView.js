@@ -4,6 +4,7 @@ import "../../css/CourseView.css"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
+import errorimg from"../../images/errorimg.png"
 import axios from "axios";
 const CourseView = ({ filteredCourses }) => {
   const MySwal = withReactContent(Swal);
@@ -186,6 +187,9 @@ if(amount===0){
                   <div className="imagedivnew">
                     <img
                       src={`data:image/jpeg;base64,${item.courseImage}`}
+                      onError={(e) => {
+                        e.target.src = errorimg; // Use the imported error image
+                      }}
                       alt="Course"
                     />
                   </div>

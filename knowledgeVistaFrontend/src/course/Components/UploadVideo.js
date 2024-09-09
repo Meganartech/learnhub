@@ -342,6 +342,9 @@ const token=sessionStorage.getItem("token")
                <div className="invalid-feedback">
                {errors.fileUrl}
              </div>
+             {videodata.fileUrl && 
+             <iframe style={{marginTop:"10px"}} src={videodata.fileUrl}></iframe>
+                }
              </div>
             ) : (
                 <div

@@ -1,7 +1,6 @@
 package com.knowledgeVista.Notification.Service;
 
 import java.io.IOException;
-import java.lang.StackWalker.Option;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.knowledgeVista.ImageCompressing.ImageUtils;
+import com.knowledgeVista.ImageCompressing.ImageResizer;
 import com.knowledgeVista.Notification.NotificationDetails;
 import com.knowledgeVista.Notification.NotificationType;
 import com.knowledgeVista.Notification.NotificationUser;
@@ -47,8 +46,12 @@ public class NotificationService {
         notiDetails.setLink(link);
         if (file.isPresent()) { // Check if file is present (for approach 2)
             try {
-                notiDetails.setNotimage(ImageUtils.compressImage(file.get().getBytes()));; 
+               // notiDetails.setNotimage(ImageUtils.compressImage(file.get().getBytes()));
+                byte[] img= file.get().getBytes();
+                notiDetails.setNotimage(ImageResizer.resizeImage(img, 100, 100));
             } catch (IOException e) {
+            	System.out.println("null image first");
+            	notiDetails.setNotimage(null);
                 e.printStackTrace();
             }
         }
@@ -74,8 +77,13 @@ public class NotificationService {
         NotificationDetails notiDetails= new NotificationDetails();
         notiDetails.setHeading(heading);
         notiDetails.setLink(link);
-      
-        notiDetails.setNotimage(file);
+        try {
+			notiDetails.setNotimage(ImageResizer.resizeImage(file, 100, 100));
+		} catch (IOException e) {
+			notiDetails.setNotimage(null);
+
+        	System.out.println("null image first");
+		}
         
         notiDetails.setNotifyTypeId(notificationType.getNotifyTypeId());
         notiDetails.setUsername(username);

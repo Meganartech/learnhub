@@ -6,7 +6,7 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import errorimg from "../images/errorimg.png"
 
 const CertificateInputs = () => {
 
@@ -347,6 +347,9 @@ const certificateView=(
           <div className='profile-picture'>
           <div className='image-group'>
               <img src={sign} 
+               onError={(e) => {
+                e.target.src = errorimg; // Use the imported error image
+              }}
               width="200px"
               height="200px"
               alt='signature' />

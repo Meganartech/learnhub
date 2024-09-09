@@ -210,9 +210,6 @@
   .footermain{ 
     height: 15vh;
     width: 100%;
-    display: grid;
-    grid-template-rows: 3fr 1fr;
-    background-color: #2F3CED;
   }
   .part1{
     display: grid;

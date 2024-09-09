@@ -10,6 +10,8 @@ import axios from "axios";
 import bell from "../images/bell.png"
 import Notification from "./Notification";
 import { useLocation } from "react-router-dom";
+ import errorimg from "../images/errorimg.png" // Use the imported error image
+
 
 const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,handleSidebarToggle,showSidebar,navbarref}) => {
   
@@ -25,26 +27,38 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,handleSidebarTo
 
   useEffect(() => {
     
-    const fetchItems = async () => {
-        try {
-          if(token) {
-            const response = await axios.get(`${baseUrl}/Edit/profiledetails`, {
-                headers: {
-                    Authorization : token,
-                },
-            });
+    const cachedData = sessionStorage.getItem("profileData");
 
-            if (response.status===200) {
-                const data =  response.data;
-                setdata(data);
-            } 
+  if (cachedData) {
+    // Load data from sessionStorage if available
+    setdata(JSON.parse(cachedData));
+
+  } else {
+    // Fetch data from API if not cached
+    const fetchItems = async () => {
+      try {
+        if (token) {
+          const response = await axios.get(`${baseUrl}/Edit/profiledetails`, {
+            headers: {
+              Authorization: token,
+            },
+          });
+
+          if (response.status === 200) {
+            const fetchedData = response.data;
+            setdata(fetchedData);
+
+            // Cache the data in sessionStorage
+            sessionStorage.setItem("profileData", JSON.stringify(fetchedData));
           }
-        } catch (error) {
-            console.error("Error fetching data:", error);
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
     fetchItems();
+  }
 }, []);  
 const fetchUnreadCount = async () => {
   try {
@@ -74,6 +88,7 @@ useEffect(() => {
 }, [count]); // Only re-run on token change
 
 const handlemarkallasRead =async (notificationIds)=>{
+  try{
   const markread=  await axios.post(`${baseUrl}/MarkAllASRead`, notificationIds, {
       headers: {
         Authorization: token,
@@ -84,6 +99,9 @@ const handlemarkallasRead =async (notificationIds)=>{
 
       fetchUnreadCount();
     }
+  }catch (error) {
+    console.error("Error fetching unread count:", error);
+  }
  }
 
  
@@ -113,7 +131,7 @@ const handlemarkallasRead =async (notificationIds)=>{
           });
   
           if (response.status===200) {
-            sessionStorage.removeItem("token");
+            sessionStorage.clear(); 
             localStorage.clear();
             window.location.href = "/login";
             return;
@@ -212,6 +230,9 @@ const handlemarkallasRead =async (notificationIds)=>{
             <img
               className="img-profile rounded-circle  borderimg "
               src={imageSource}
+              onError={(e) => {
+                e.target.src = errorimg; // Use the imported error image
+              }}
               id="profi"
               alt="User Profile"
             />

@@ -108,7 +108,10 @@ const[sign,setsign]=useState();
                             <p>This is to certify that</p>
                             <h4 style={{ color: '#35477d' }}>{userdata.user}</h4>
                             <p>has successfully completed the online course of {userdata.course} on {userdata.testDate}</p>
-                            <div className='centerimg'><img src={sign} width="100px" height="50px" alt="Signature" /></div>
+                            <div className='centerimg'>
+                                <img src={sign}
+                                
+                                 width="100px" height="50px" alt="Signature" /></div>
                             <p>{defaultcerti.ownerName}</p>
                             <p>{defaultcerti.qualification}</p>
                             <p>{defaultcerti.address}</p>

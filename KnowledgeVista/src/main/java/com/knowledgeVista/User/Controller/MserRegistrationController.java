@@ -1,7 +1,6 @@
 package com.knowledgeVista.User.Controller;
 import com.knowledgeVista.DownloadManagement.CustomerLeads;
 import com.knowledgeVista.DownloadManagement.Customer_downloads;
-import com.knowledgeVista.ImageCompressing.ImageUtils;
 import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.Madmin_Licence;
 import com.knowledgeVista.License.mAdminLicenceRepo;
@@ -13,7 +12,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -87,7 +85,7 @@ public class MserRegistrationController {
 	           
 	            if (profile != null && !profile.isEmpty()) {                
 	            try {
-	                user.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	                user.setProfile(profile.getBytes());
 	                
 	            } catch (IOException e) {
 	                e.printStackTrace();
@@ -124,9 +122,9 @@ public class MserRegistrationController {
 	            custlead.setCountryCode(user.getCountryCode());
 	            custlead.setPhone(user.getPhone());
 	            
-	            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, custDown, String.class);
+	            restTemplate.postForEntity(apiUrl, custDown, String.class);
 
-	            ResponseEntity<String> response2 = restTemplate.postForEntity(apiUrl2, custlead, String.class);
+	            restTemplate.postForEntity(apiUrl2, custlead, String.class);
 	     	  
 	           
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
@@ -168,7 +166,7 @@ public class MserRegistrationController {
 	          
 	            // Decompress the profile image and set it in the user object
 	            if (user.getProfile() != null) {
-	                byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
+	                byte[] profileImage = user.getProfile();
 	                user.setProfile(profileImage);
 	            }
                user.setAllotedCourses(null);
@@ -223,7 +221,7 @@ public class MserRegistrationController {
 	                    Muser user = userOptional.get();
 	                    if("TRAINER".equals(user.getRole().getRoleName())) {
 	                    	if (user.getProfile() != null) {
-	                    	    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
+	                    	    byte[] profileImage = user.getProfile();
 	                    	    user.setProfile(profileImage);
 	                    	}
 	                    user.setAllotedCourses(null);
@@ -282,7 +280,7 @@ public class MserRegistrationController {
 	                    Muser user = userOptional.get();
 	                    if("USER".equals(user.getRole().getRoleName())) {
 	                    	if (user.getProfile() != null) {
-	                    	    byte[] profileImage = ImageUtils.decompressImage(user.getProfile());
+	                    	    byte[] profileImage = user.getProfile();
 	                    	    user.setProfile(profileImage);
 	                    	}
 	                    user.setCourses(null);

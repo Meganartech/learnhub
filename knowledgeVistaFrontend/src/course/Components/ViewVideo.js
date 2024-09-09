@@ -230,6 +230,7 @@ const handleOnSeek = (progress) => {
           light={currentLesson.thumbnail ? `data:image/jpeg;base64,${currentLesson.thumbnail}` :false} 
           onEnded={handleVideoEnd}
           progressInterval={1000}
+          playing
           config={{
             file: {
               attributes: {
@@ -244,6 +245,7 @@ const handleOnSeek = (progress) => {
         width="100%"
         height="80%"
         controls
+        playing
         url={videoSource ? videoSource : null}
         light={currentLesson.thumbnail ? `data:image/jpeg;base64,${currentLesson.thumbnail}` :false} 
         onEnded={handleVideoEnd}

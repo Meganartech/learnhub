@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Course.Controller.CheckAccess;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Controller.CourseControllerSecond;
@@ -33,9 +33,7 @@ import com.knowledgeVista.Course.Test.controller.QuestionController;
 import com.knowledgeVista.Course.Test.controller.Testcontroller;
 import com.knowledgeVista.Course.certificate.certificateController;
 import com.knowledgeVista.License.LicenceControllerSecond;
-import com.knowledgeVista.License.License;
 import com.knowledgeVista.License.LicenseController;
-import com.knowledgeVista.License.UserListWithStatus;
 import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Payments.PaymentIntegration;
 import com.knowledgeVista.Payments.PaymentListController;
@@ -187,7 +185,7 @@ public class FrontController {
 	 }
 	 
 	 @GetMapping("/course/viewAll")
-	    public ResponseEntity<List<CourseDetail>> viewCourse(@RequestHeader("Authorization") String token) {
+	    public ResponseEntity<List<CourseDetailDto>> viewCourse(@RequestHeader("Authorization") String token) {
 		 return courseController.viewCourse(token);
 		 }
 	 
@@ -906,6 +904,12 @@ public class FrontController {
                @GetMapping("/clearAll")
                public ResponseEntity<?>ClearAll(@RequestHeader("Authorization") String token){
             	   return noticontroller.ClearAll(token);
+               }
+               @PostMapping("/getImages")
+   		    public ResponseEntity<?> GetNotiImage(@RequestHeader("Authorization") String token,
+   		                                          @RequestBody List<Long> notifyIds) {
+            	   return noticontroller.GetNotiImage(token,notifyIds);
+            	   
                }
                
                

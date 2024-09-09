@@ -1,7 +1,5 @@
 package com.knowledgeVista.Meeting.zoomclass;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

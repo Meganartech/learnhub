@@ -1,6 +1,7 @@
 package com.knowledgeVista.Notification;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +38,17 @@ public class NotificationDetails {
     private Boolean for_trainer;
     private Boolean for_Admin;
     private Boolean for_All;
+    
+	public NotificationDetails(Long notifyId, byte[] notimage) {
+		super();
+		this.notifyId = notifyId;
+		this.notimage = notimage;
+	}
+
+	@Override
+	public String toString() {
+		return "NotificationDetails [notifyId=" + notifyId + ", notimage=" + Arrays.toString(notimage) + "]";
+	}
     
 	
 

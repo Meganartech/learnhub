@@ -8,20 +8,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
-import com.knowledgeVista.ImageCompressing.ImageUtils;
-import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserRoles;
@@ -38,18 +27,12 @@ public class AddUsers {
 	 @Autowired
 	    private JwtUtil jwtUtil;
     @Autowired
-    private MusertestactivityRepo activityrepo;
-	@Autowired
 	private MuserRoleRepository muserrolerepository;
 	
 	 @Autowired
 	private NotificationService notiservice;
 	 
-	 @Autowired
-	 private licenseRepository licencerepo;
-//===========================================ADMIN ADDING TRAINER==========================================	
-	
-	  public ResponseEntity<?> addTrainer( String username, String psw,String email,
+	 public ResponseEntity<?> addTrainer( String username, String psw,String email,
 	          LocalDate dob, String phone, String skills, MultipartFile profile, Boolean isActive, String countryCode,String token) {
 	      try {
 	          // Validate the token
@@ -95,12 +78,12 @@ public class AddUsers {
 	                  trainer.setCountryCode(countryCode);
 	                  if (profile != null && !profile.isEmpty()) { 
 	                  try {
-	                      trainer.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	                      trainer.setProfile(profile.getBytes());
 	                  } catch (IOException e) {
 	                      e.printStackTrace();
 	                  }
 	                  }
-	                Muser savedtrainer=  muserrepositories.save(trainer);
+	                muserrepositories.save(trainer);
 	                  
 
 
@@ -183,7 +166,7 @@ public class AddUsers {
 	                  user.setCountryCode(countryCode);
 	                  if (profile != null && !profile.isEmpty()) { 
 	                  try {
-	                     user.setProfile(ImageUtils.compressImage(profile.getBytes()));
+	                     user.setProfile(profile.getBytes());
 	                  } catch (IOException e) {
 	                      e.printStackTrace();
 	                  }

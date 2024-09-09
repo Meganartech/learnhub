@@ -3,19 +3,13 @@ import React from 'react'
 
 const Footer = () => {
   return (
-    <div className='footermain'>
-      <div className='part1'>
-        <div>About Us</div>
-        <div className='boderleftright'> Privacy Policies</div>
-        <div> Terms and Conditions</div>
-      </div>
       <div className='part2'>
         <div>&copy; 2024 All rights reserved</div>
-        <div>meganarTech@gmail.com</div>
+        <div>support@vsmartengine.com</div>
         <div>Ph : 91-9566191759</div>
-        <div>meganarE-learning.in</div>
+        <div>learnhubdigital.vsmartengine.com</div>
       </div>
-    </div>
+   
   )
 }
 

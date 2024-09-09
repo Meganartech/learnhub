@@ -9,7 +9,6 @@ import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.Settings;
 import com.knowledgeVista.Meeting.zoomclass.Meetrepo;
 import com.knowledgeVista.Meeting.zoomclass.ZoomMeetingInvitee;
 import com.knowledgeVista.Meeting.zoomclass.ZoomSettings;
-import com.knowledgeVista.Meeting.zoomclass.ZoomsettingRepo;
 import com.knowledgeVista.Meeting.zoomclass.calenderDto;
 import com.knowledgeVista.Notification.Repositories.NotificationDetailsRepo;
 import com.knowledgeVista.Notification.Repositories.NotificationUserRepo;
@@ -20,11 +19,9 @@ import com.knowledgeVista.zoomJar.ZoomMethods;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import okhttp3.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -340,7 +337,7 @@ public class ZoomMeetingService {
 	  	         String email=jwtUtil.getUsernameFromToken(token); 
 	  	         Optional<Muser> opuser=muserRepository.findByEmail(email);
 	  	         if(opuser.isPresent()) {
-	  	        	 Muser user=opuser.get();
+	  	        	 opuser.get();
 	  	        	  List<calenderDto> meetingDetailsList = new ArrayList<>();
 	  	        	List<ZoomMeetingInvitee>invitees= inviteerepo.findByEmail(email);
 	  	        	for(ZoomMeetingInvitee invitee :invitees) {
@@ -414,7 +411,7 @@ public class ZoomMeetingService {
 	  	         String email=jwtUtil.getUsernameFromToken(token); 
 	  	         Optional<Muser> opuser=muserRepository.findByEmail(email);
 	  	         if(opuser.isPresent()){
-	  	        	 Muser user=opuser.get();
+	  	        	 opuser.get();
 	  	        	 Optional<Meeting> optionalMeeting = meetrepo.FindByMeetingId(MeetingId);
 	  	        	 if(optionalMeeting.isPresent()) {
 	  	        		 Meeting meeting=optionalMeeting.get();
