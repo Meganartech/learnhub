@@ -1,14 +1,18 @@
 import undraw_profile from "../images/profile.png"
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import errorimg from "../images/errorimg.png"
 const StudentProfile = () => {
   
   const navigate=useNavigate();
     const token=sessionStorage.getItem("token");
   const role=sessionStorage.getItem("role");
   const [notfound,setnotfound]=useState(false);
+
+  const location = useLocation();
+  const [initialUserData, setInitialUserData] = useState(location.state?.user || null);
     const [img, setimg] = useState();
     const {studentemail}=useParams();
     const [userData, setUserData] = useState({
@@ -19,43 +23,64 @@ const StudentProfile = () => {
        skills:"",
        dob:"",
        countryCode:"",
-             role:{
         roleName:"",
-        roleId:""
-       }
+        profile:null,
       });
+
       useEffect(() => {
         const fetchData = async () => {
-          if(role==="ADMIN" ||role==="TRAINER"){
-          try {
-            const response = await axios.get(`${baseUrl}/student/admin/getstudent/${studentemail}`,{
-               headers: {
-                Authorization: token,
-              },
-            });
-            if (response.status === 200) {
-                const userData = response.data;
-                if(userData.profile!==null){
-                setimg(`data:image/jpeg;base64,${userData.profile}`);
-            }
-                setUserData(userData);
-            } } catch (error) {
-              if(error.response){
-                if(error.response.status===404){
+          if (role === "ADMIN" || role === "TRAINER") {
+            try {
+              let fetchedInitialUserData = initialUserData;
+              
+              // Fetch initialUserData if it's not available from location.state
+              if (!fetchedInitialUserData) {
+                const detailsRes = await axios.get(`${baseUrl}/details/${studentemail}`, {
+                  headers: { Authorization: token },
+                });
+                fetchedInitialUserData = detailsRes.data;
+                setInitialUserData(fetchedInitialUserData);
+              }
+              
+              // Fetch additional user data
+              if (fetchedInitialUserData) {
+                const email = fetchedInitialUserData.email;
+                const response = await axios.get(`${baseUrl}/student/admin/getstudent/${email}`, {
+                  headers: { Authorization: token },
+                });
+      
+                if (response.status === 200) {
+                  const serverData = response.data;
+      
+                  // Merge initialUserData and serverData into userData
+                  setUserData(prevData => {
+                    const updatedData = { ...prevData, ...fetchedInitialUserData, ...serverData };
+                    if (updatedData.profile) {
+                      setimg(`data:image/jpeg;base64,${updatedData.profile}`);
+                    }
+                    return updatedData;
+                  });
+                }
+              }
+            } catch (error) {
+              if (error.response) {
+                if (error.response.status === 404) {
                   setnotfound(true);
-                }else if(error.response.status===401){
+                } else if (error.response.status === 401) {
                   window.location.href = '/unauthorized';
                 }
               }
-          }}
-          
-          else{
-           window.location.href="/unauthorized";
+            }
+          } else {
+            window.location.href = "/unauthorized";
           }
         };
-    
+      
         fetchData();
       }, []);
+      
+    
+      
     
 
   return (
@@ -73,7 +98,11 @@ const StudentProfile = () => {
               <div className='mainform'>
                 <div className='profile-picture'>
                   <div className='image-group' >
-                    <img id="preview"  src={img ? img : undraw_profile} alt='profile' />
+                    <img id="preview"  src={img ? img : undraw_profile}
+                     onError={(e) => {
+                e.target.src = errorimg; // Use the imported error image
+              }}
+               alt='profile' />
                   </div>
                 </div>
 
@@ -115,7 +144,7 @@ const StudentProfile = () => {
         <div className='inputgrp2'>
           <label htmlFor='role'>RoleName</label>
           <span>:</span>
-        {userData.role ? <label>{userData.role.roleName}</label> : null}
+         <label>{userData.roleName}</label> 
 
 
         </div>

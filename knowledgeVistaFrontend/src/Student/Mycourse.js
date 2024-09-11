@@ -1,11 +1,9 @@
 
-//import styles from "../course/css/CourseView.module.css";
 import React, { useState, useEffect } from 'react';
-//import styles from "../css/CourseView.module.css";
 import { Link, useNavigate } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
-
+import errorimg from "../images/errorimg.png"
 const Mycourse = () => {
     const token = sessionStorage.getItem("token");
     const [courses, setCourses] = useState([]);
@@ -61,6 +59,9 @@ const Mycourse = () => {
                             <div className="imagedivnew">
                                 <img
                                     src={`data:image/jpeg;base64,${item.courseImage}`}
+                                    onError={(e) => {
+                                        e.target.src = errorimg; // Use the imported error image
+                                      }}
                                     alt="Course"
                                 />
                             </div>

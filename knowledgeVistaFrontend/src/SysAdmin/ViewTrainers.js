@@ -50,8 +50,6 @@ const ViewTrainers = () => {
             size:10
           }
         });
-    
-        console.log("res",response)
         if(response.status===200){
         setUsers(response.data.content);
         setTotalPages(response.data.totalPages);

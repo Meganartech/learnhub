@@ -6,7 +6,7 @@ import undraw_profile from "../images/profile.png"
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
-
+import errorimg from "../images/errorimg.png"
 const AssignCourse = () => {
 
   const { userId } = useParams();
@@ -120,7 +120,10 @@ const handleAssignCourse = async () => {
           <div className='mainform'>
             <div className='profile-picture'>
               <div className='image-group'>
-                <img id="preview" src={img ? img :undraw_profile} alt='profile' />
+                <img id="preview" src={img ? img :undraw_profile}  onError={(e) => {
+                        e.target.src = errorimg; // Use the imported error image
+                      }} 
+                      alt='profile' />
               </div>
               <div className=" mt-2 p-3 rounded" style={{ backgroundColor: "#F2E1F5", height: "100px" }}>
                 <div className='inputgrp2'>

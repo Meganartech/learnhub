@@ -8,6 +8,7 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
 import axios from 'axios';
 import errorimg from "../../images/errorimg.png"
+import { Tooltip } from 'react-tooltip'
 const EditLesson = () => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,6 +22,7 @@ const EditLesson = () => {
     lessontitle:"",
     lessonDescription:"",
     fileUrl:"",
+    normalurl:"",
     thumbnail:null,
     videoFile:null,
     base64Image: null,
@@ -31,6 +33,7 @@ const EditLesson = () => {
     lessonDescription:"",
     fileUrl:"",
     thumbnail:null,
+    normalurl:"",
     videoFile:null,
     base64Image: null,
     })
@@ -50,8 +53,11 @@ useEffect(() => {
            
             if (response.status===200) {
                 setvideodata(data);
+                
                 if(data.videofilename===null){
                     setUploadType('url')
+                    const url= data.fileUrl
+                    setvideodata((videodata)=>({ ...videodata, normalurl: url }));
                 }
                 console.log(videodata)
                 if (data.thumbnail) {
@@ -115,28 +121,26 @@ const handleChange = (e) => {
         error = value.length < 1 ? 'Please enter a Video Description' : '';
         setvideodata({ ...videodata, [name]: value });
         break;
-    case 'fileUrl':
-      setvideodata({ ...videodata, [name]: value });
-    const match = value.match(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/);
-      let extractedId
-    if (match) {
-       extractedId = match[1];
-      // ... rest of your code
-    } else {
-      error = 'Invalid YouTube URL. Please provide a valid URL.';
-    }
-       if (!extractedId) {
-          error = 'Invalid YouTube URL. Please provide a valid URL.';
-          
-        } else {
-          const embedUrl = `https://www.youtube.com/embed/${extractedId}`;
-         
-          setvideodata({ ...videodata, fileUrl: embedUrl });
-          console.log("link=",embedUrl)
-         
-      }
-      break;
-
+        case "normalurl":
+          const updatedData = { ...videodata, [name]: value }; // Update normalurl
+  
+          const match = value.match(
+            /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/
+          );
+          let extractedId;
+  
+          if (match) {
+            extractedId = match[1];
+            const embedUrl = `https://www.youtube.com/embed/${extractedId}`;
+  
+            // Combine both normalurl and fileUrl updates in one setvideodata
+            setvideodata({ ...updatedData, fileUrl: embedUrl });
+          } else {
+            setvideodata(updatedData); // Ensure the normalurl is still updated even if the match fails
+            error = "Invalid YouTube URL. Please provide a valid URL.";
+          }
+          break;
+  
           default:
             break;
   }
@@ -401,26 +405,52 @@ const handleChange = (e) => {
                 <label htmlFor="url" style={{marginLeft:"20px"}}>Youtube Url</label>
             </div>
 
-            {uploadType === 'url' ? (
-              <div>
-                <input 
-                type="text"
-                 placeholder="Enter Youtube URL" 
-                 name='fileUrl'
-                 value={videodata.fileUrl} 
-                 onChange={handleChange}
-                  disabled={isSubmitting}
-                  className={`form-control form-control-lg mt-1 urlinput ${errors.fileUrl && 'is-invalid'}`}
-               />
-                    <div className="invalid-feedback">
-                    {errors.fileUrl}
-                  </div>
-
-                  {videodata.fileUrl && 
-             <iframe style={{marginTop:"10px"}} src={videodata.fileUrl}></iframe>
-                }
-             </div>
-            ) : (
+            {uploadType === "url" ? (
+                  <>
+                    <div>
+                      <input
+                        type="text"
+                        name="normalurl"
+                        placeholder="Enter Youtube URL"
+                        value={videodata.normalurl}
+                        onChange={handleChange}
+                        className={`form-control form-control-lg mt-1 urlinput ${
+                          errors.normalurl && "is-invalid"
+                        }`}
+                        disabled={isSubmitting}
+                      />
+                      <div className="invalid-feedback">{errors.normalurl}</div>
+                      {videodata.fileUrl && (
+                        <>
+                          <div>
+                            <input
+                              type="text"
+                              name="fileUrl"
+                              value={videodata.fileUrl}
+                              onChange={handleChange}
+                              className="disabledbox mt-2"
+                              style={{height:"20px"}}
+                              readOnly
+                              disabled={isSubmitting}
+                              data-tooltip-id="embedurl"
+                              data-tooltip-content="Embeded Url"
+                            />
+                            <Tooltip id="embedurl" />
+                           
+                          </div>
+                          <div>
+                            {videodata.fileUrl && (
+                              <iframe
+                                style={{ marginTop: "10px" }}
+                                src={videodata.fileUrl}
+                              ></iframe>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                ) : (
                 <div
                 className="dropzone"
                 onDrop={handleDrop}

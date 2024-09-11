@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import errorimg from "../images/errorimg.png"
 const AssignCourseTRAINER = () => {
     
   const { userId } = useParams();
@@ -120,7 +121,11 @@ const handleAssignCourse = async () => {
           <div className='mainform'>
             <div className='profile-picture'>
               <div className='image-group'>
-                <img id="preview" src={img} alt='profile' />
+                <img id="preview" src={img}
+                 onError={(e) => {
+                  e.target.src = errorimg; // Use the imported error image
+                }}
+                 alt='profile' />
               </div>
               <div className=" mt-2 p-3 rounded" style={{ backgroundColor: "#F2E1F5", height: "100px" }}>
                 <div className='inputgrp2 '>

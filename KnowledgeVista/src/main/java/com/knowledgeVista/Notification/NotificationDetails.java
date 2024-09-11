@@ -47,7 +47,7 @@ public class NotificationDetails {
 
 	@Override
 	public String toString() {
-		return "NotificationDetails [notifyId=" + notifyId + ", notimage=" + Arrays.toString(notimage) + "]";
+		return "NotificationDetails [notifyId=" + notifyId+"]";
 	}
     
 	

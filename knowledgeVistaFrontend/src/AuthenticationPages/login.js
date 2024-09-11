@@ -21,7 +21,7 @@ const Login = () => {
     let error=""
     switch(name){
       case 'username':
-        error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'Please enter a valid email address';
+       error = /^[^\s@]+@[^\s@]+\.com$/.test(value) ? '' : 'Please enter a valid email address';
         break;
         case "password":
           error = value.length < 6 ? 'Password must be at least 6 characters long' : '';
@@ -58,6 +58,7 @@ const Login = () => {
       });
       
       if (response.status === 200) {
+        sessionStorage.clear()
         const data = response.data; 
         const jwtToken = data.token;
         const role = data.role;

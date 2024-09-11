@@ -7,10 +7,14 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../api/utils";
 import axios from "axios";
-
+import PhoneInput, { parsePhoneNumber } from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 const AdminRegister = () => {
   const MySwal = withReactContent(Swal);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
   const [formData, setFormData] = useState({
     username: "",
     psw: "",
@@ -21,94 +25,10 @@ const AdminRegister = () => {
     phone: "",
     skills: "",
     profile: null,
-    countryCode: "+91",
+    countryCode: "",
     isActive: true,
     role: "ADMIN",
   });
-
-  const countrycodelist = [
-    "+1",
-    "+7",
-    "+20",
-    "+27",
-    "+30",
-    "+31",
-    "+32",
-    "+33",
-    "+34",
-    "+36",
-    "+39",
-    "+40",
-    "+41",
-    "+43",
-    "+44",
-    "+45",
-    "+46",
-    "+47",
-    "+48",
-    "+49",
-    "+51",
-    "+52",
-    "+53",
-    "+54",
-    "+55",
-    "+56",
-    "+57",
-    "+60",
-    "+61",
-    "+62",
-    "+63",
-    "+64",
-    "+65",
-    "+66",
-    "+67",
-    "+68",
-    "+69",
-    "+71",
-    "+81",
-    "+82",
-    "+84",
-    "+86",
-    "+90",
-    "+91",
-    "+92",
-    "+93",
-    "+94",
-    "+95",
-    "+96",
-    "+98",
-    "+850",
-    "+852",
-    "+853",
-    "+855",
-    "+856",
-    "+880",
-    "+886",
-    "+960",
-    "+961",
-    "+962",
-    "+963",
-    "+964",
-    "+965",
-    "+966",
-    "+967",
-    "+968",
-    "+970",
-    "+971",
-    "+972",
-    "+973",
-    "+974",
-    "+975",
-    "+976",
-    "+977",
-    "+992",
-    "+993",
-    "+994",
-    "+995",
-    "+996",
-    "+998",
-  ];
-
   const [errors, setErrors] = useState({
     username: "",
     email: "",
@@ -129,19 +49,97 @@ const AdminRegister = () => {
   const confirmPswRef = useRef(null);
   const skillsRef = useRef(null);
   const phoneRef = useRef(null);
-  const countryCodeRef = useRef(null);
   const institutionRef = useRef(null);
+  const [defaultCountry, setDefaultCountry] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
-  // useEffect(() => {
-  //   const hasErrors = Object.values(errors).some(error => !!error) || Object.values(formData).some(value => value === null);
-  //   const submitBtn = document.querySelector('.btn.btn-primary');
-  //   if (hasErrors) {
-  //     submitBtn.disabled = true;
-  //   } else {
-  //     submitBtn.disabled = false;
-  //   }
-  // }, [errors, formData]);
+ const fetchUserCountryCode = async () => {
+    try {
+     
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+    
+      const dialingCode = data.country_calling_code||"+1"
+     
+      setFormData((prevState) => ({
+        ...prevState,
+        countryCode: dialingCode,
+      }));
+      const countryCode = data.country_code.toUpperCase(); // Get the country code (e.g., "IN" for India, "US" for USA)
+      setDefaultCountry(countryCode);
+    } catch (error) {
+      console.error("Error fetching country code: ", error);
+    }
+  };
 
+  useEffect(() => {
+    fetchUserCountryCode(); // Fetch user's country code on component mount
+  }, []);
+
+  const handlePhoneChange = (value) => {
+    if (typeof value !== 'string') {
+      return
+    }
+   
+    setPhoneNumber(value);
+    const phoneNumber = parsePhoneNumber(value);
+    if (phoneNumber) {
+      // Extract phone number without country code
+      const phoneNumberWithoutCountryCode = phoneNumber.nationalNumber;
+  
+      setFormData((prevState) => ({
+      ...prevState,
+      phone:phoneNumberWithoutCountryCode ,
+    }));
+  }
+    // Validate phone number
+    if (value && isValidPhoneNumber(value)) {
+      
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        phone: '',
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        phone: 'Enter a valid Phone number',
+      }));
+    }
+  };
+  const fetchCountryDialingCode = async (newCountryCode) => {
+    try {
+      if (!newCountryCode) {
+       return;
+      }
+     
+      // Fetch country data based on the new country code (e.g., "IN", "US")
+      const response = await fetch(`https://restcountries.com/v3.1/alpha/${newCountryCode}`);
+      const data = await response.json();
+  
+     
+      // Extract the dialing code from the 'idd' object in the response
+      const dialingCode = data[0]?.idd?.root + (data[0]?.idd?.suffixes?.[0] || "") || "+91";
+  
+      // Set the country dialing code in the formData
+      setFormData((prevState) => ({
+        ...prevState,
+        countryCode: dialingCode,
+      }));
+
+     // const countryCode = data.country_code.toUpperCase(); // Get the country code (e.g., "IN" for India, "US" for USA)
+      setDefaultCountry(newCountryCode);
+    } catch (error) {
+      console.error("Error fetching country dialing code: ", error);
+    }
+  };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     let error = "";
@@ -150,11 +148,9 @@ const AdminRegister = () => {
       case "username":
         error = value.length < 1 ? "Please enter a username" : "";
         break;
-      case "skills":
-        error = value.length < 1 ? "Please enter a skill" : "";
-        break;
+     
       case "email":
-        error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+        error = /^[^\s@]+@[^\s@]+\.com$/.test(value)
           ? ""
           : "Please enter a valid email address";
         break;
@@ -179,23 +175,17 @@ const AdminRegister = () => {
             ? ""
             : "Please enter a valid date of birth";
         break;
+
       case "psw":
-        error =
-          value.length < 6 ? "Password must be at least 6 characters long" : "";
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(value)) {
+          error = "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+        }
         break;
       case "confirm_password":
         error = value !== formData.psw ? "Passwords do not match" : "";
         break;
-      case "phone":
-        error =
-          value.length < 10
-            ? "Phone number must be at least 10 digits"
-            : value.length > 15
-            ? "Phone number cannot be longer than 15 digits"
-            : /^\d+$/.test(value)
-            ? ""
-            : "Please enter a valid phone number (digits only)";
-        break;
+     
       default:
         break;
     }
@@ -257,7 +247,6 @@ setErrors((prevErrors) => ({
     let hasErrors = false;
     const requiredFields = [
       "username",
-      "skills",
       "institution",
       "email",
       "dob",
@@ -323,8 +312,11 @@ setErrors((prevErrors) => ({
               skills: "",
               profile: null,
               isActive: true,
+              countryCode:"",
               base64Image: null,
             });
+            setPhoneNumber("")
+            fetchUserCountryCode()
           }
         });
       }
@@ -408,13 +400,7 @@ setErrors((prevErrors) => ({
         block: "nearest",
         inline: "start",
       });
-    } else if (errors.countryCode) {
-      countryCodeRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "start",
-      });
-    }
+    }  
   };
 
   useEffect(() => {
@@ -528,33 +514,97 @@ setErrors((prevErrors) => ({
                 </div>
               </div>
 
+
+              
+
               <div className="inputgrp">
-                <label htmlFor="skills">
+  <label htmlFor="Password">
+    Password
+    <span className="text-danger" ref={pswRef}>*</span>
+  </label>
+  <span>:</span>
+  <div>
+  <div className={`inputpsw form-control form-control-lg p-1  ${errors.psw && "is-invalid"}`} >
+    <input
+      type={showPassword ? "text" : "password"}
+      name="psw"
+      style={{outline:"none"}}
+      value={formData.psw}
+      onChange={handleChange}
+      placeholder="Password"
+       id="pswinp"
+      autoComplete="new-password"
+      required
+    />
+    <i className={showPassword ?"fa fa-eye-slash  ":"fa fa-eye "}  style={{display:"flex",alignItems:"center"}} onClick={togglePasswordVisibility}></i>
+   
+    </div>
+    <div className="invalid-feedback">{errors.psw}</div>
+    
+  </div>
+</div>
+
+<div className="inputgrp">
+  <label htmlFor="confirm_password">
+    Re-type password
+    <span className="text-danger" ref={confirmPswRef}>*</span>
+  </label>
+  <span>:</span>
+  <div>
+  <div className={`inputpsw form-control form-control-lg p-1 ${errors.confirm_password && "is-invalid"}`}>
+    <input
+      type={showConfirmPassword ? "text" : "password"}
+      name="confirm_password"
+      value={formData.confirm_password}
+      style={{outline:"none"}}
+      id="pswinp"
+      onChange={handleChange}
+      autoComplete="new-password"
+      placeholder="Repeat Password"
+      required
+    />
+    <i
+      className={showConfirmPassword ? "fa fa-eye-slash":"fa fa-eye"}
+      style={{display:"flex",alignItems:"center"}}
+      onClick={toggleConfirmPasswordVisibility}
+    >
+    </i>
+    </div>
+    <div className="invalid-feedback">{errors.confirm_password}</div>
+  </div>
+</div>
+
+             
+              <div className="inputgrp "  ref={phoneRef}>
+                <label htmlFor="Phone">
                   {" "}
-                  Skills{" "}
-                  <span className="text-danger" ref={skillsRef}>
+                  Phone
+                  <span className="text-danger">
                     *
                   </span>
                 </label>
                 <span>:</span>
                 <div>
-                  {" "}
-                  <input
-                    type="text"
-                    id="skills"
-                    value={formData.skills}
-                    onChange={handleChange}
-                    name="skills"
-                    className={`form-control form-control-lg mt-1 ${
-                      errors.skills && "is-invalid"
-                    }`}
-                    placeholder="skills"
-                    required
-                  />
-                  <div className="invalid-feedback">{errors.skills}</div>
+                  <div>
+                 
+      <PhoneInput
+        placeholder="Enter phone number"
+        id="phone"
+        value={phoneNumber||''}
+        onChange={handlePhoneChange}
+        className={`form-control form-control-lg ${
+          errors.phone && "is-invalid"
+        }`}
+        defaultCountry={defaultCountry}
+        international
+        countryCallingCodeEditable={true}
+        onCountryChange={fetchCountryDialingCode} 
+      />
+    
+                    <div className="invalid-feedback">{errors.phone}</div>
+                  </div>
                 </div>
               </div>
-
               <div className="inputgrp">
                 <label htmlFor="dob">
                   Date of Birth
@@ -578,114 +628,29 @@ setErrors((prevErrors) => ({
                   <div className="invalid-feedback">{errors.dob}</div>
                 </div>
               </div>
-
+              
               <div className="inputgrp">
-                <label htmlFor="Password">
-                  Password
-                  <span className="text-danger" ref={pswRef}>
-                    *
-                  </span>
+                <label htmlFor="skills" ref={skillsRef}>
+                  {" "}
+                  Skills{" "}
+                 
                 </label>
                 <span>:</span>
                 <div>
+                  {" "}
                   <input
-                    type="password"
-                    name="psw"
-                    className={`form-control form-control-lg ${
-                      errors.psw && "is-invalid"
-                    }`}
-                    value={formData.psw}
+                    type="text"
+                    id="skills"
+                    value={formData.skills}
                     onChange={handleChange}
-                    placeholder="Password"
-                    autoComplete="new-password"
+                    name="skills"
+                    className={`form-control form-control-lg mt-1 ${
+                      errors.skills && "is-invalid"
+                    }`}
+                    placeholder="skills"
                     required
                   />
-                  <div className="invalid-feedback">{errors.psw}</div>
-                </div>
-              </div>
-
-              <div className="inputgrp">
-                <label htmlFor="confirm_password">
-                  Re-type password
-                  <span className="text-danger" ref={confirmPswRef}>
-                    *
-                  </span>
-                </label>
-                <span>:</span>
-                <div>
-                  <input
-                    type="password"
-                    name="confirm_password"
-                    value={formData.confirm_password}
-                    className={`form-control form-control-lg ${
-                      errors.confirm_password && "is-invalid"
-                    }`}
-                    id="exampleRepeatPassword"
-                    onChange={handleChange}
-                    autoComplete="new-password"
-                    placeholder="Repeat Password"
-                    required
-                  />
-                  <div className="invalid-feedback">
-                    {errors.confirm_password}
-                  </div>
-                </div>
-              </div>
-              <div className="inputgrp ">
-                <label htmlFor="CountryCode">
-                  {" "}
-                  Country Code
-                  <span className="text-danger" ref={countryCodeRef}>
-                    *
-                  </span>
-                </label>
-                <span>:</span>
-                <div>
-                  <select
-                    id="countryCode"
-                    className={`form-control form-control-lg ${
-                      errors.countryCode && "is-invalid"
-                    }`}
-                    placeholder="countryCode"
-                    name="countryCode"
-                    value={formData.countryCode} // Set the initial value from formData
-                    onChange={handleChange}
-                    required
-                  >
-                    {countrycodelist.map((code) => (
-                      <option key={code} value={code}>
-                        {code}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="invalid-feedback">{errors.countryCode}</div>
-                </div>
-              </div>
-              <div className="inputgrp mb-4">
-                <label htmlFor="Phone">
-                  {" "}
-                  Phone
-                  <span className="text-danger" ref={phoneRef}>
-                    *
-                  </span>
-                </label>
-                <span>:</span>
-                <div>
-                  <div>
-                    <input
-                      type="text"
-                      id="phone"
-                      value={formData.phone}
-                      className={`form-control form-control-lg ${
-                        errors.phone && "is-invalid"
-                      }`}
-                      onChange={handleChange}
-                      name="phone"
-                      placeholder="Phone"
-                      required
-                    />
-                    <div className="invalid-feedback">{errors.phone}</div>
-                  </div>
+                  <div className="invalid-feedback">{errors.skills}</div>
                 </div>
               </div>
             </div>

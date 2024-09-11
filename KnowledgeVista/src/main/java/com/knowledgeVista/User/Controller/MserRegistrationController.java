@@ -5,6 +5,9 @@ import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.Madmin_Licence;
 import com.knowledgeVista.License.mAdminLicenceRepo;
 import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.MuserDto;
+import com.knowledgeVista.User.MuserProfileDTO;
+import com.knowledgeVista.User.MuserRequiredDto;
 import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Repository.*;
 import java.io.IOException;
@@ -140,7 +143,7 @@ public class MserRegistrationController {
 
 	
 
-	public ResponseEntity<Muser> getUserByEmail( String email, String token) {
+	public ResponseEntity<?> getUserByEmail( String email, String token) {
 	    try {
 	    	if (!jwtUtil.validateToken(token)) {
 	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -158,22 +161,12 @@ public class MserRegistrationController {
 		     }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }
-	        Optional<Muser> userOptional = muserrepositories.findByEmailandInstitutionName(email, institution);
+	        Optional<MuserRequiredDto> userOptional = muserrepositories.findDetailandProfileByEmailAndInstitution(email, institution);
 	        
 	        // If the user is found, process the user data
 	        if (userOptional.isPresent()) {
-	            Muser user = userOptional.get();
+	        	MuserRequiredDto user = userOptional.get();
 	          
-	            // Decompress the profile image and set it in the user object
-	            if (user.getProfile() != null) {
-	                byte[] profileImage = user.getProfile();
-	                user.setProfile(profileImage);
-	            }
-               user.setAllotedCourses(null);
-	            user.setCourses(null);
-	            user.setPsw(null);
-	            user.setRole(null);
-	            // Return the user object in the response
 	            return ResponseEntity.ok()
 	                    .contentType(MediaType.APPLICATION_JSON)
 	                    .body(user);
@@ -216,27 +209,15 @@ public class MserRegistrationController {
 			     }
 	            // Perform authentication based on role
 	            if ("ADMIN".equals(role)) {
-	                Optional<Muser> userOptional = muserrepositories.findByEmailandInstitutionName(email, institution);
-	                if (userOptional.isPresent()) {
-	                    Muser user = userOptional.get();
-	                    if("TRAINER".equals(user.getRole().getRoleName())) {
-	                    	if (user.getProfile() != null) {
-	                    	    byte[] profileImage = user.getProfile();
-	                    	    user.setProfile(profileImage);
-	                    	}
-	                    user.setAllotedCourses(null);
-	                    user.setCourses(null);
-
-	                    return ResponseEntity.ok()
-	                            .contentType(MediaType.APPLICATION_JSON)
-	                            .body(user);}
-	                    else {
-	   	   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Trainer not found\"}");
-	                            }
-	                    
-	                } else {
-	   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Trainer not found\"}");
-	                }
+	            	 Optional<MuserProfileDTO> userOptional = muserrepositories.findProfileAndCountryCodeAndRoleByEmailAndInstitutionName(email, institution);
+		                if (userOptional.isPresent()) {
+		                	MuserProfileDTO user = userOptional.get();
+		                    return ResponseEntity.ok()
+		                            .contentType(MediaType.APPLICATION_JSON)
+		                            .body(user);
+		                    }else {
+			   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Trainer not found\"}");
+		                }
 	            } else {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	            }
@@ -275,43 +256,59 @@ public class MserRegistrationController {
 			     }
 	            // Perform authentication based on role
 	            if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
-	                Optional<Muser> userOptional = muserrepositories.findByEmailandInstitutionName(email, institution);
+	                Optional<MuserProfileDTO> userOptional = muserrepositories.findProfileAndCountryCodeAndRoleByEmailAndInstitutionName(email, institution);
 	                if (userOptional.isPresent()) {
-	                    Muser user = userOptional.get();
-	                    if("USER".equals(user.getRole().getRoleName())) {
-	                    	if (user.getProfile() != null) {
-	                    	    byte[] profileImage = user.getProfile();
-	                    	    user.setProfile(profileImage);
-	                    	}
-	                    user.setCourses(null);
-	                    user.setAllotedCourses(null);
-
+	                	MuserProfileDTO user = userOptional.get();
 	                    return ResponseEntity.ok()
 	                            .contentType(MediaType.APPLICATION_JSON)
-	                            .body(user);}
-	                    else {
-
-	   	   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Student not found\"}");
-	                            }
-	                    
-	                } else {
+	                            .body(user);
+	                    }else {
 		   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Student not found\"}");
 	                }
 	            } else {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	            }
 	        } catch (Exception e) {
-	            // Log any other exceptions for debugging purposes
-	            e.printStackTrace(); // You can replace this with logging framework like Log4j
-	            // Return an internal server error response
+	            e.printStackTrace(); 
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
 
 
-    
+    public ResponseEntity<?> getDetailsbyemail(String email, String token){
+    	 try {
+	            // Validate the token
+	            if (!jwtUtil.validateToken(token)) {
+	                // If the token is not valid, return unauthorized status
+	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	            }
+
+	            String emailofreq=jwtUtil.getUsernameFromToken(token);
+	          
+	            String institution="";
+			     Optional<Muser> opuser =muserrepositories.findByEmail(emailofreq);
+			     if(opuser.isPresent()) {
+			    	 Muser user=opuser.get();
+			    	 institution=user.getInstitutionName();
+			    	 Optional<MuserDto> opdto=muserrepositories.findDetailsByEmailAndInstitution(email, institution);
+			    	 if (opdto.isPresent()) {
+		                	MuserDto usertosend = opdto.get();
+		                    return ResponseEntity.ok()
+		                            .contentType(MediaType.APPLICATION_JSON)
+		                            .body(opdto);
+		                    }else {
+			   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"User not found\"}");
+		                }
+
+    } else {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+} catch (Exception e) {
+    e.printStackTrace(); 
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+}
 	 
-	  
+    }  
 
 	  
 }

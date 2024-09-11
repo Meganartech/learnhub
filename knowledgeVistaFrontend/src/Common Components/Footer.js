@@ -3,11 +3,13 @@ import React from 'react'
 
 const Footer = () => {
   return (
+    <div>
       <div className='part2'>
         <div>&copy; 2024 All rights reserved</div>
         <div>support@vsmartengine.com</div>
         <div>Ph : 91-9566191759</div>
-        <div>learnhubdigital.vsmartengine.com</div>
+        <div>learnhub.vsmartengine.com</div>
+      </div>
       </div>
    
   )

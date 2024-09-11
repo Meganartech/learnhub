@@ -47,7 +47,6 @@ const ViewTrainerList = () => {
       }
     });
 
-    console.log("res",response)
     if(response.status===200){
     setUsers(response.data.content);
     setTotalPages(response.data.totalPages);
@@ -411,7 +410,7 @@ const handleChange = (e) => {
           {filterData().map((user, index) => (
               <tr key={user.userId}>
                 <th scope="row">{(currentPage * itemsperpage) + (index + 1)}</th>
-                <td className='py-2'><Link to={`/view/Trainer/profile/${user.email}`}>{user.username}</Link></td>
+                <td className='py-2'><Link to={`/view/Trainer/profile/${user.email}`}  state={{ user }}>{user.username}</Link></td>
                 <td className='py-2'>{user.email}</td>
                 <td className='py-2'>{user.phone}</td>
                 
@@ -419,7 +418,7 @@ const handleChange = (e) => {
                 <td className='py-2'>{user.dob}</td>
                 <td className='py-2' >{user.isActive===true? <div className='Activeuser'><i className="fa-solid fa-circle pr-3"></i>Active</div>:<div className='InActiveuser' ><i className="fa-solid fa-circle pr-3"></i>In Active</div>}</td>
                 <td className='text-center'>
-                <Link to={`/trainer/edit/${user.email}`} className='hidebtn' >
+                <Link to={`/trainer/edit/${user.email}`}  state={{ user }} className='hidebtn' >
                     <i className="fas fa-edit"></i>
                     </Link>
                 </td>

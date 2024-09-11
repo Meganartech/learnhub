@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 const Missing = () => {
   const navigate=useNavigate();
   return ( 
-  <div className='contentbackground' style={{height:"100vh"}}>
-  <div className='contentinner' style={{height:"88vh"}}>
+  <div className='contentbackground'>
+  <div className='contentinner' >
   <div className='navigateheaders'>
       <div onClick={()=>{navigate(-2)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>

@@ -48,7 +48,6 @@ const ViewStudentList = () => {
       }
     });
 
-    console.log("res",response)
     if(response.status===200){
     setUsers(response.data.content);
     setTotalPages(response.data.totalPages);
@@ -403,7 +402,11 @@ const handleChange = (e) => {
           {filterData().map((user, index) => (
               <tr key={user.userId}>
                 <th scope="row">{(currentPage * itemsperpage) + (index + 1)}</th>
-                <td className='py-2'> <Link to={`/view/Student/profile/${user.email}`}>{user.username}</Link></td>
+                <td className='py-2'> <Link
+    to={`/view/Student/profile/${user.email}`}
+    state={{ user }} // Pass user details in state
+  >   {user.username}
+  </Link></td>
                 <td className='py-2'>{user.email}</td>
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.skills}</td>
@@ -413,7 +416,7 @@ const handleChange = (e) => {
                 <div className='Activeuser'><i className="fa-solid fa-circle pr-3"></i>Active</div>
                 :<div className='InActiveuser' ><i className="fa-solid fa-circle pr-3"></i>In Active</div>}</td>
                 <td className='text-center'>
-                <Link to={`/student/edit/${user.email}`} className='hidebtn' >
+                <Link to={`/student/edit/${user.email}` }  state={{ user }} className='hidebtn' >
                     <i className="fas fa-edit"></i>
                     </Link>
                 </td>

@@ -522,10 +522,10 @@ public class FrontController {
        	          @RequestParam("email") String email,
        	          @RequestParam("dob") LocalDate dob,
        	          @RequestParam("phone") String phone,
-       	          @RequestParam("skills") String skills,
+       	          @RequestParam(value="skills",required=false) String skills,
        	       @RequestParam(value="profile", required=false) MultipartFile profile,
        	          @RequestParam("isActive") Boolean isActive,
-                  @RequestParam("countryCode")String countryCode,
+                  @RequestParam(value="countryCode",defaultValue = "+91")String countryCode,
        	          @RequestHeader("Authorization") String token) {
            		 return adduser.addTrainer(username, psw, email, dob, phone, skills, profile, isActive,countryCode, token);
            	 }
@@ -537,10 +537,10 @@ public class FrontController {
       	          @RequestParam("email") String email,
       	          @RequestParam("dob") LocalDate dob,
       	          @RequestParam("phone") String phone,
-      	          @RequestParam("skills") String skills,
+      	          @RequestParam(value="skills",required=false) String skills,
       	        @RequestParam(value="profile", required=false) MultipartFile profile,
       	          @RequestParam("isActive") Boolean isActive,
-                  @RequestParam("countryCode")String countryCode,
+                  @RequestParam(value="countryCode",defaultValue = "+91")String countryCode,
       	          @RequestHeader("Authorization") String token) {
            		return adduser.addStudent(username, psw, email, dob, phone, skills, profile, isActive,countryCode ,token);
            	}
@@ -640,10 +640,10 @@ public class FrontController {
     		     @RequestParam("email") String newEmail,
     		     @RequestParam("dob") LocalDate dob,
     		     @RequestParam("phone") String phone,
-    		     @RequestParam("skills") String skills,
+    		     @RequestParam(name="skills",required=false) String skills,
     		     @RequestParam(value="profile", required=false) MultipartFile profile,
     		     @RequestParam("isActive") Boolean isActive,
-                 @RequestParam("countryCode")String countryCode,
+                 @RequestParam(name="countryCode",defaultValue = "+91")String countryCode,
     		     @RequestHeader("Authorization") String token
     		 ) {
     	    	return edit.updateStudent(originalEmail, username, newEmail, dob, phone, skills, profile, isActive ,countryCode,token);
@@ -657,10 +657,10 @@ public class FrontController {
     		     @RequestParam("email") String newEmail,
     		     @RequestParam("dob") LocalDate dob,
     		     @RequestParam("phone") String phone,
-    		     @RequestParam("skills") String skills,
+    		     @RequestParam(name="skills",required=false) String skills,
     		     @RequestParam(value="profile", required=false) MultipartFile profile,
     		     @RequestParam("isActive") Boolean isActive,
-                 @RequestParam("countryCode")String countryCode,
+                 @RequestParam(name="countryCode",defaultValue = "+91")String countryCode,
     		     @RequestHeader("Authorization") String token
     		 ) {
     			 return edit.updateTrainer(originalEmail, username, newEmail, dob, phone, skills, profile, isActive,countryCode, token);
@@ -672,11 +672,11 @@ public class FrontController {
     		     @RequestParam("email") String newEmail,
     		     @RequestParam("dob") LocalDate dob,
     		     @RequestParam("phone") String phone,
-    		     @RequestParam("skills") String skills,
+    		     @RequestParam(name="skills",required=false) String skills,
     		     @RequestParam(value="profile", required=false) MultipartFile profile,
     		     @RequestParam("isActive") Boolean isActive,
     		     @RequestHeader("Authorization") String token,
-                 @RequestParam("countryCode")String countryCode
+                 @RequestParam(name="countryCode",defaultValue = "+91")String countryCode
     		 ) {
     			 return edit.EditProfile(username, newEmail, dob, phone, skills, profile, isActive,countryCode, token);
     		 }
@@ -813,15 +813,15 @@ public class FrontController {
     			                                          @RequestParam("dob") LocalDate dob,
     			                                          @RequestParam("role")String role,
     			                                          @RequestParam("phone") String phone,
-    			                                          @RequestParam("skills") String skills,
+    			                                          @RequestParam(name="skills",required=false ) String skills,
     			                                          @RequestParam(name="profile" ,required=false) MultipartFile profile,
     			                                          @RequestParam("isActive") Boolean isActive,
-    			                                          @RequestParam("countryCode")String countryCode) {
+    			                                          @RequestParam(name="countryCode",defaultValue = "+91")String countryCode) {
     				return muserreg.registerAdmin(username, psw, email, institutionName, dob,role, phone, skills, profile, isActive,countryCode);
     			}
 
     			@GetMapping("/student/users/{email}")
-    			public ResponseEntity<Muser> getUserByEmail(@PathVariable String email,
+    			public ResponseEntity<?> getUserByEmail(@PathVariable String email,
     					@RequestHeader("Authorization") String token) {
     				return muserreg.getUserByEmail(email,token);
     			}
@@ -839,7 +839,11 @@ public class FrontController {
     		    		@RequestHeader("Authorization") String token) {
     		    	return muserreg.getStudentDetailsByEmail(email, token);
     		    }
-    		   
+    		   @GetMapping("/details/{email}")
+    		   public ResponseEntity<?> getDetailsbyemail(@PathVariable String email,
+   		    		@RequestHeader("Authorization") String token) {
+   		    	return muserreg.getDetailsbyemail(email, token);
+   		    }
     		    
     			
     			  

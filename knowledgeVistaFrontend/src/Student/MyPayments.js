@@ -71,7 +71,7 @@ const MyPayments = () => {
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-    <div className="tableheader2">
+    <div className="tableheader3">
       <h1>Payment History</h1>
       <div style={{display:'grid',gridTemplateColumns:"10fr 6fr "}}>
       <input

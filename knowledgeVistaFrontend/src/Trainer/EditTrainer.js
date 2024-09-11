@@ -2,10 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import profile from "../images/profile.png"
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
-
+import errorimg from '../images/errorimg.png'
+import PhoneInput, { parsePhoneNumber } from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 const EditTrainer = () => {
     const{email}=useParams()
     const navigate = useNavigate();
@@ -33,41 +36,37 @@ const EditTrainer = () => {
       fileInput:''
       
     });
-    
+    const [defaultCountry, setDefaultCountry] = useState('IN');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const location = useLocation();
     const nameRef = useRef(null);
     const emailRef = useRef(null);
     const dobRef = useRef(null);
     const skillsRef = useRef(null);
     const phoneRef = useRef(null);
-    const countryCodeRef = useRef(null);
-    const countrycodelist = [
-      '+1', '+7', '+20', '+27', '+30', '+31', '+32', '+33', '+34', '+36', '+39',
-      '+40', '+41', '+43', '+44', '+45', '+46', '+47', '+48', '+49', '+51', '+52',
-      '+53', '+54', '+55', '+56', '+57', '+60', '+61', '+62', '+63', '+64', '+65',
-      '+66', '+67', '+68', '+69', '+71', '+81', '+82', '+84', '+86', '+90', '+91',
-      '+92', '+93', '+94', '+95', '+96', '+98', '+850', '+852', '+853', '+855',
-      '+856', '+880', '+886', '+960', '+961', '+962', '+963', '+964', '+965', '+966',
-      '+967', '+968', '+970', '+971', '+972', '+973', '+974', '+975', '+976', '+977',
-      '+992', '+993', '+994', '+995', '+996', '+998'
-    ];
-  //   useEffect(() => {
-  //     const hasErrors = Object.values(errors).some(error => !!error) ;
-  //     const submitBtn = document.querySelector('#submitbtn');
-  //     if (submitBtn) {
-  //         submitBtn.disabled = hasErrors;
-  //     }
-  // }, [errors, formData]);
+     
+   
+
+    // Access the passed user data from location.state
+    const initialUserData = location.state?.user || {};
+
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get(`${baseUrl}/student/users/${email}`, {
+          const response = await axios.get(`${baseUrl}/student/admin/getTrainer/${email}`, {
             headers: {
               Authorization: token,
             },
           });
           const userData = response.data;
         if(response.status===200){
-          setFormData(userData);
+          setFormData(prevData => {
+          const updatedData = { ...prevData, ...initialUserData, ...userData };
+          return updatedData;
+        });
+        const fullPhoneNumber = `${userData.countryCode}${initialUserData.phone}`; 
+          setPhoneNumber(fullPhoneNumber)
+         
           if(userData.profile !== null){
           setFormData((prevFormData) => ({
             ...prevFormData, 
@@ -95,6 +94,62 @@ const EditTrainer = () => {
       fetchData();
     }, []);
   
+    const handlePhoneChange = (value) => {
+      if (typeof value !== 'string') {
+        return
+      }
+     
+      setPhoneNumber(value);
+      const phoneNumber = parsePhoneNumber(value);
+      if (phoneNumber) {
+        // Extract phone number without country code
+        const phoneNumberWithoutCountryCode = phoneNumber.nationalNumber;
+    
+        setFormData((prevState) => ({
+        ...prevState,
+        phone:phoneNumberWithoutCountryCode ,
+      }));
+    }
+      // Validate phone number
+      if (value && isValidPhoneNumber(value)) {
+        
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phone: '',
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phone: 'Enter a valid Phone number',
+        }));
+      }
+    };
+    const fetchCountryDialingCode = async (newCountryCode) => {
+      try {
+        if (!newCountryCode) {
+         return;
+        }
+       
+        // Fetch country data based on the new country code (e.g., "IN", "US")
+        const response = await fetch(`https://restcountries.com/v3.1/alpha/${newCountryCode}`);
+        const data = await response.json();
+    
+       
+        // Extract the dialing code from the 'idd' object in the response
+        const dialingCode = data[0]?.idd?.root + (data[0]?.idd?.suffixes?.[0] || "") || "+91";
+    
+        // Set the country dialing code in the formData
+        setFormData((prevState) => ({
+          ...prevState,
+          countryCode: dialingCode,
+        }));
+  
+       // const countryCode = data.country_code.toUpperCase(); // Get the country code (e.g., "IN" for India, "US" for USA)
+        setDefaultCountry(newCountryCode);
+      } catch (error) {
+        console.error("Error fetching country dialing code: ", error);
+      }
+    };
     const handleChange = (e) => {
       const { name, value } = e.target;
       let error = '';
@@ -103,12 +158,12 @@ const EditTrainer = () => {
         case 'username':
           error = value.length < 1 ? 'Please enter a username' : '';
           break;
-          case 'skills':
-            error = value.length < 1 ? 'Please enter a skill' : '';
-          break;
+          // case 'skills':
+          //   error = value.length < 1 ? 'Please enter a skill' : '';
+          // break;
         case 'email':
           // This is a basic email validation, you can add more advanced validation if needed
-          error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'Please enter a valid email address';
+         error = /^[^\s@]+@[^\s@]+\.com$/.test(value) ? '' : 'Please enter a valid email address';
           break;
         case 'dob':
           const dobDate = new Date(value);
@@ -124,10 +179,7 @@ const EditTrainer = () => {
        /^\d+$/.test(value) ? '' : 'Please enter a valid phone number (digits only)';
 
         break;
-          case 'countryCode':
-            error=value.startsWith('+') ?
-            (value.length > 5 ? 'Enter a valid country code (max 5 digits)' : '') :
-            'Country code must start with +';
+         
           default:
             break;
       }
@@ -193,8 +245,6 @@ setErrors((prevErrors) => ({
         skillsRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
       } else if (errors.phone) {
         phoneRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-      } else if (errors.countryCode) {
-        countryCodeRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
       }
     };
     useEffect(() => {
@@ -203,7 +253,7 @@ setErrors((prevErrors) => ({
     const handleSubmit = async (e) => {
         e.preventDefault();
         let hasErrors = false;
-        const requiredFields = ['username', 'skills','profile', 'email', 'dob',  'phone', 'countryCode'];
+        const requiredFields = ['username', 'email', 'dob',  'phone', 'countryCode'];
       
         requiredFields.forEach(field => {
           if (!formData[field] || formData[field].length === 0 || errors[field]) {
@@ -214,12 +264,7 @@ setErrors((prevErrors) => ({
             }));
           }
         });
-        if (!formData.profile) {
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            profile: 'Image is required'
-          }));
-        }
+        
         if (hasErrors) {
           scrollToError(); // Scroll to the first error field
           return;
@@ -313,6 +358,9 @@ setErrors((prevErrors) => ({
           {formData.base64Image ? (
                     <img
                       src={formData.base64Image}
+                      onError={(e) => {
+                        e.target.src = errorimg; // Use the imported error image
+                      }}
                       alt="Selected Image"
                       className="profile-picture"
                     />
@@ -380,27 +428,37 @@ setErrors((prevErrors) => ({
                   </div></div>
 
           </div>
-          <div className='inputgrp' ref={skillsRef}>
-            <label htmlFor='skills'> Skills <span className="text-danger">*</span></label>
-            <span>:</span>
-          <div> <input
-             type="text"
-              id='skills'
-              value={formData.skills}
-              onChange={handleChange}
-              name="skills"
-              
-              className={`form-control form-control-lg  ${errors.skills && 'is-invalid'}`}
-              placeholder="skills"
-           
-              required
-            />
-            <div className="invalid-feedback">
-              {errors.skills}
-            </div></div> 
-          </div>
-
-          <div className='inputgrp' ref={dobRef}>
+          <div className="inputgrp "  ref={phoneRef} >
+                <label htmlFor="Phone">
+                  {" "}
+                  Phone
+                  <span className="text-danger">
+                    *
+                  </span>
+                </label>
+                <span>:</span>
+                <div>
+                  <div>
+                 
+      <PhoneInput
+        placeholder="Enter phone number"
+        id="phone"
+        value={phoneNumber||''}
+        onChange={handlePhoneChange}
+        className={`form-control form-control-lg ${
+          errors.phone && "is-invalid"
+        }`}
+        defaultCountry={defaultCountry}
+        international
+        countryCallingCodeEditable={true}
+        onCountryChange={fetchCountryDialingCode} 
+      />
+    
+                    <div className="invalid-feedback">{errors.phone}</div>
+                  </div>
+                </div>
+              </div>
+              <div className='inputgrp' ref={dobRef}>
             <label htmlFor='dob'>Date of Birth<span className="text-danger">*</span></label>
             <span>:</span>
             <div>
@@ -419,48 +477,30 @@ setErrors((prevErrors) => ({
             </div></div>
           </div>
 
-          <div className='inputgrp '  ref={countryCodeRef}>
-              <label htmlFor='CountryCode'> Country Code<span className="text-danger">*</span></label>
-              <span>:</span>
-            <div>
-                
-            <select
-        id="countryCode"
-        className={`form-control form-control-lg ${errors.countryCode && 'is-invalid'}`}
-        placeholder="countryCode"
-        name="countryCode"
-        value={formData.countryCode} // Set the initial value from formData
-        onChange={handleChange}
-        required
-      >
-        {countrycodelist.map((code) => (
-          <option key={code} value={code}>
-            {code}
-          </option>
-        ))}
-      </select>
-                </div>
-                </div>
-                
-          <div className='inputgrp ' ref={phoneRef}>
-            <label htmlFor='Phone'> Phone<span className="text-danger">*</span></label>
+          <div className='inputgrp' ref={skillsRef}>
+            <label htmlFor='skills'> Skills </label>
             <span>:</span>
-            <div>
-            <input
+          <div> <input
              type="text"
-              id='phone'
-              value={formData.phone}
-              className={`form-control form-control-lg ${errors.phone && 'is-invalid'}`}
+              id='skills'
+              value={formData.skills}
               onChange={handleChange}
-              name="phone"
-              placeholder="Phone"
+              name="skills"
+              
+              className={`form-control form-control-lg  ${errors.skills && 'is-invalid'}`}
+              placeholder="skills"
+           
               required
             />
             <div className="invalid-feedback">
-              {errors.phone}
-            </div>
-            </div>
+              {errors.skills}
+            </div></div> 
           </div>
+
+         
+
+        
+       
          
         </div>
       </div>

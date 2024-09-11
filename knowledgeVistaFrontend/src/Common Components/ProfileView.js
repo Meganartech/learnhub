@@ -6,6 +6,9 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import PhoneInput, { parsePhoneNumber } from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 import errorimg from"../images/errorimg.png"
 const ProfileView = () => {
   const navigate=useNavigate();
@@ -24,6 +27,8 @@ const ProfileView = () => {
     base64Image:null,
   });
   const [isEditing, setIsEditing] = useState(false); 
+  const [defaultCountry, setDefaultCountry] = useState('IN');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [errors, setErrors] = useState({
     username: '',
     email: '',
@@ -33,16 +38,7 @@ const ProfileView = () => {
     fileInput:''
     
   });
-  const countrycodelist = [
-    '+1', '+7', '+20', '+27', '+30', '+31', '+32', '+33', '+34', '+36', '+39',
-    '+40', '+41', '+43', '+44', '+45', '+46', '+47', '+48', '+49', '+51', '+52',
-    '+53', '+54', '+55', '+56', '+57', '+60', '+61', '+62', '+63', '+64', '+65',
-    '+66', '+67', '+68', '+69', '+71', '+81', '+82', '+84', '+86', '+90', '+91',
-    '+92', '+93', '+94', '+95', '+96', '+98', '+850', '+852', '+853', '+855',
-    '+856', '+880', '+886', '+960', '+961', '+962', '+963', '+964', '+965', '+966',
-    '+967', '+968', '+970', '+971', '+972', '+973', '+974', '+975', '+976', '+977',
-    '+992', '+993', '+994', '+995', '+996', '+998'
-  ];
+ 
   useEffect(() => {
     const hasErrors = Object.values(errors).some(error => !!error) ;
     const submitBtn = document.querySelector('#submitbtn');
@@ -59,10 +55,18 @@ const ProfileView = () => {
           },
         });
         const userData = response.data;
+        const fullPhoneNumber = `${userData.countryCode}${userData.phone}`; 
+          setPhoneNumber(fullPhoneNumber)
+          setUserData(userData);
         if(userData.profile !==null){
         setImg(`data:image/jpeg;base64,${userData.profile}`);
+        setUserData(prevData => ({
+          ...prevData,
+          base64Image: `data:image/jpeg;base64,${userData.profile}`
+        }));
       }
-        setUserData(userData);
+        
+        
       } catch (error) {
         if(error.response && error.response.status===401)
         {
@@ -84,7 +88,62 @@ const ProfileView = () => {
   const handleEditClick = () => {
     setIsEditing(true);
   };
+  const handlePhoneChange = (value) => {
+    if (typeof value !== 'string') {
+      return
+    }
+   
+    setPhoneNumber(value);
+    const phoneNumber = parsePhoneNumber(value);
+    if (phoneNumber) {
+      // Extract phone number without country code
+      const phoneNumberWithoutCountryCode = phoneNumber.nationalNumber;
+  
+      setUserData((prevState) => ({
+      ...prevState,
+      phone:phoneNumberWithoutCountryCode ,
+    }));
+  }
+    // Validate phone number
+    if (value && isValidPhoneNumber(value)) {
+      
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        phone: '',
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        phone: 'Enter a valid Phone number',
+      }));
+    }
+  };
+  const fetchCountryDialingCode = async (newCountryCode) => {
+    try {
+      if (!newCountryCode) {
+       return;
+      }
+     
+      // Fetch country data based on the new country code (e.g., "IN", "US")
+      const response = await fetch(`https://restcountries.com/v3.1/alpha/${newCountryCode}`);
+      const data = await response.json();
+  
+     
+      // Extract the dialing code from the 'idd' object in the response
+      const dialingCode = data[0]?.idd?.root + (data[0]?.idd?.suffixes?.[0] || "") || "+91";
+  
+      // Set the country dialing code in the formData
+      setUserData((prevState) => ({
+        ...prevState,
+        countryCode: dialingCode,
+      }));
 
+     // const countryCode = data.country_code.toUpperCase(); // Get the country code (e.g., "IN" for India, "US" for USA)
+      setDefaultCountry(newCountryCode);
+    } catch (error) {
+      console.error("Error fetching country dialing code: ", error);
+    }
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     let error = '';
@@ -97,7 +156,7 @@ const ProfileView = () => {
           error = value.length < 1 ? 'Please enter a skill' : '';
         break;
       case 'email':
-       error = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '' : 'Please enter a valid email address';
+      error = /^[^\s@]+@[^\s@]+\.com$/.test(value) ? '' : 'Please enter a valid email address';
         break;
       case 'dob':
         const dobDate = new Date(value);
@@ -113,10 +172,7 @@ const ProfileView = () => {
          /^\d+$/.test(value) ? '' : 'Please enter a valid phone number (digits only)';
   
           break;
-        case 'countryCode':
-          error=value.startsWith('+') ?
-          (value.length > 5 ? 'Enter a valid country code (max 5 digits)' : '') :
-          'Country code must start with +';
+        
         default:
           break;
     }
@@ -273,22 +329,33 @@ const ProfileView = () => {
               readOnly
               value={userData.skills}/>
           </div>
-          <div className='inputgrp'>
-            <label>country code</label>
-            <span>:</span>
-            <input
-              className='disabledbox'
-              readOnly
-              value={userData.countryCode}/>
-          </div>
-          <div className='inputgrp'>
-            <label>Phone</label>
-            <span>:</span>
-            <input
-              className='disabledbox'
-              readOnly
-              value={userData.phone}/>
-          </div>
+          <div className="inputgrp "  >
+                <label htmlFor="Phone">
+                  {" "}
+                  Phone
+                  <span className="text-danger">
+                    *
+                  </span>
+                </label>
+                <span>:</span>
+                <div>
+                  <div>
+                 
+      <PhoneInput
+        id="phone"
+        value={phoneNumber||''}
+        className='disabledbox '
+        readOnly
+        defaultCountry={defaultCountry}
+        international
+        countryCallingCodeEditable={true}
+      />
+    
+                    <div className="invalid-feedback">{errors.phone}</div>
+                  </div>
+                </div>
+              </div>
+        
         </div>
       </div>
       <div className='btngrp'>
@@ -411,46 +478,37 @@ const ProfileView = () => {
               {errors.skills}
             </div></div> 
           </div>
-          <div className='inputgrp '>
-              <label htmlFor='CountryCode'> Country Code<span className="text-danger">*</span></label>
-              <span>:</span>
-            <div>
-            <select
-        id="countryCode"
-        className={`form-control form-control-lg ${errors.countryCode && 'is-invalid'}`}
-        placeholder="countryCode"
-        name="countryCode"
-        value={userData.countryCode} // Set the initial value from formData
-        onChange={handleChange}
-        required
-      >
-        {countrycodelist.map((code) => (
-          <option key={code} value={code}>
-            {code}
-          </option>
-        ))}
-      </select> 
+         
+          <div className="inputgrp "  >
+                <label htmlFor="Phone">
+                  {" "}
+                  Phone
+                  <span className="text-danger">
+                    *
+                  </span>
+                </label>
+                <span>:</span>
+                <div>
+                  <div>
+                 
+      <PhoneInput
+        placeholder="Enter phone number"
+        id="phone"
+        value={phoneNumber||''}
+        onChange={handlePhoneChange}
+        className={`form-control form-control-lg ${
+          errors.phone && "is-invalid"
+        }`}
+        defaultCountry={defaultCountry}
+        international
+        countryCallingCodeEditable={true}
+        onCountryChange={fetchCountryDialingCode} 
+      />
+    
+                    <div className="invalid-feedback">{errors.phone}</div>
+                  </div>
                 </div>
-                </div>
-          <div className='inputgrp'>
-            <label htmlFor='Phone'>Phone</label>
-            <span>:</span>
-            <div>
-            <input
-             type="text"
-              id='phone'
-              value={userData.phone}
-              className={`form-control form-control-lg ${errors.phone && 'is-invalid'}`}
-              onChange={handleChange}
-              name="phone"
-              placeholder="Phone"
-              required
-            />
-            <div className="invalid-feedback">
-              {errors.phone}
-            </div>
-            </div>
-          </div>
+              </div>
         </div>
       </div>
       <div className='btngrp'>

@@ -11,16 +11,37 @@ import org.springframework.stereotype.Repository;
 
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
+import com.knowledgeVista.User.MuserProfileDTO;
+import com.knowledgeVista.User.MuserRequiredDto;
 
 
 @Repository
 public interface MuserRepositories extends JpaRepository<Muser,Long> {
 
-//	 @Query("SELECT u FROM Muser u WHERE u.dob = :dob")
-//	 List<Muser> findByDob(@Param("dob") LocalDate dob);
 
 	@Query("SELECT u FROM Muser u WHERE u.email = ?1")
   Optional<Muser> findByEmail(String email);
+	
+	  @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName) " +
+	           "FROM Muser u " +
+	           "WHERE u.email = :email AND u.institutionName = :institutionName")
+	    Optional<MuserDto> findDetailsByEmailAndInstitution(@Param("email") String email,
+	                                                        @Param("institutionName") String institutionName);
+	  
+	  @Query("SELECT new com.knowledgeVista.User.MuserRequiredDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName,u.profile, u.countryCode) " +
+	           "FROM Muser u " +
+	           "WHERE u.email = :email AND u.institutionName = :institutionName")
+	    Optional<MuserRequiredDto> findDetailandProfileByEmailAndInstitution(@Param("email") String email,
+	                                                        @Param("institutionName") String institutionName);
+	  
+@Query("SELECT new com.knowledgeVista.User.MuserProfileDTO(u.profile, u.countryCode, u.role.roleName ) " +
+	           "FROM Muser u " +
+	           "JOIN u.role r " +
+	           "WHERE u.email = :email AND u.institutionName = :institutionName")
+	    Optional<MuserProfileDTO> findProfileAndCountryCodeAndRoleByEmailAndInstitutionName(
+	        @Param("email") String email,
+	        @Param("institutionName") String institutionName
+	    );
 	@Query("SELECT u FROM Muser u WHERE u.username = ?1")
 	  Optional<Muser> findByname(String username);
 	
@@ -34,8 +55,7 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	@Query("SELECT u from Muser u WHERE u.institutionName = ?1")
 	Optional<Muser>findByInstitutionName(String institutionName);
 	
-	   @Query("SELECT u FROM Muser u WHERE u.role.roleName = :rolename")
-	    List<Muser> findByRoleName(@Param("rolename") String roleName);
+	   
 	   
 	   @Query("SELECT u FROM Muser u WHERE u.role.roleName = :rolename AND u.institutionName = :institutionname")
 		List<Muser> findByRoleNameAndInstitutionName(@Param("rolename") String roleName, @Param("institutionname") String institutionName);

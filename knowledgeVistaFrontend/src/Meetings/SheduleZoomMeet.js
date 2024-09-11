@@ -460,8 +460,6 @@ const updateStartTime = (event) => {
           },
         }
       );
-  
-      console.log("response", response.data.join_url);
       MySwal.fire({
         title: "Success!",
         text: "Meeting Created Successfully",

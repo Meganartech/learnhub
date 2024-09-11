@@ -62,13 +62,11 @@ import LicenceDetails from "./AuthenticationPages/LicenceDetails.js";
 import SheduleZoomMeet from "./Meetings/SheduleZoomMeet.js";
 import ZoomAccountkeys from "./Meetings/ZoomAccountkeys.js";
 import ZoomKeys from "./SysAdmin/ZoomKeys.js";
-import DayView from "./Meetings/CalenderView.js";
 import CalenderView from "./Meetings/CalenderView.js";
 import StudentCalenderView from "./Meetings/StudentCalenderView.js";
 import EditMeeting from "./Meetings/EditMeeting.js";
 import Footer from "./Common Components/Footer.js";
 import Affiliates from "./SysAdmin/Affiliates.js";
-import YouTubeEmbedChecker from "./YouTubeEmbedChecker.js";
 
 
 function App() {
@@ -123,7 +121,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App ">
+      <div className="App " >
 
         <Routes>
                   <Route element={<Layout  
@@ -184,7 +182,6 @@ function App() {
                         <Route path="/Affiliates" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><Affiliates/></PrivateRoute>}/>
                           {/* SysAdminRoutes */}
                         </Route> 
-         
           <Route path="/" element={<Login/>}/>
          <Route path="/login" element={<Login/>}/>
           <Route path="/refresh" element={<PrivateRoute authenticationRequired={true}><RefreshToken/></PrivateRoute>}/>
@@ -194,6 +191,7 @@ function App() {
           <Route path="/LicenceExpired" element={<LicenceExpired/>}/>
           <Route path="*" element={<Missing/>}/>
                   </Routes>
+                  
      <Footer/>
                    </div>
     </Router>  );

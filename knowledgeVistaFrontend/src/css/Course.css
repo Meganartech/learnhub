@@ -33,6 +33,11 @@ input::placeholder {
   grid-template-columns: 25fr 3fr;
   margin-bottom: 0.9rem;
 }
+.tableheader3{
+  display: grid;
+  grid-template-columns: 10fr 6fr;
+  margin-bottom: 0.9rem;
+}
 
 .centerflex{
 display: flex;
@@ -304,9 +309,11 @@ input::placeholder {
   margin-bottom: 2px;
 }
 .tableheader2,
+.tableheader3,
 .tableheader{
 grid-template-columns: 1fr;
 }
+
 .main{
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 2fr;
