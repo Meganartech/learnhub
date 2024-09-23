@@ -22,6 +22,10 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	@Query("SELECT u FROM Muser u WHERE u.email = ?1")
   Optional<Muser> findByEmail(String email);
 	
+
+	@Query("SELECT u.institutionName FROM Muser u WHERE u.email = ?1")
+  String findinstitutionByEmail(String email);
+	
 	  @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName) " +
 	           "FROM Muser u " +
 	           "WHERE u.email = :email AND u.institutionName = :institutionName")

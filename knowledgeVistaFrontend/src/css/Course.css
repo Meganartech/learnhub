@@ -38,7 +38,14 @@ input::placeholder {
   grid-template-columns: 10fr 6fr;
   margin-bottom: 0.9rem;
 }
-
+.inputlike,
+.ql-editor{
+font-size: 1rem;
+}
+.ql-editor img {
+  max-width: 100px;  /* Limit the image width to the container size */
+  height: 100px;     /* Maintain aspect ratio */
+}
 .centerflex{
 display: flex;
 justify-content: center;

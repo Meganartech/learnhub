@@ -1,22 +1,14 @@
 package com.knowledgeVista.Meeting;
 
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 
 
 @RestController
@@ -29,8 +21,8 @@ public class ZoomMeetAccountController {
 	 @Autowired
 		private MuserRepositories muserRepository;
 	
-	@PostMapping("/zoom/save/Accountdetails")
-	public ResponseEntity<?>SaveAccountDetails(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+	
+	public ResponseEntity<?>SaveAccountDetails( ZoomAccountKeys accountdetails , String token){
 		 try {
 		    	
 	    	 if (!jwtUtil.validateToken(token)) {
@@ -58,8 +50,8 @@ public class ZoomMeetAccountController {
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
 	}
-	@PatchMapping("/zoom/Edit/Accountdetails")
-	public ResponseEntity<?>EditAccountDetails(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+	
+	public ResponseEntity<?>EditAccountDetails( ZoomAccountKeys accountdetails , String token){
 		 try {
 		    	
 	    	 if (!jwtUtil.validateToken(token)) {
@@ -85,8 +77,8 @@ public class ZoomMeetAccountController {
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
 	}
-    @GetMapping("/zoom/get/Accountdetails")
-    public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String token) {
+   
+    public ResponseEntity<?> getMethodName(String token) {
     	 try {
 		    	
 	    	 if (!jwtUtil.validateToken(token)) {
@@ -122,8 +114,8 @@ public class ZoomMeetAccountController {
     
   
    //SysAdmin------------------------------------------------------
-    @PostMapping("/SysAdmin/zoom/save/Accountdetails")
-	public ResponseEntity<?>SaveAccountDetailsSYS(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+    
+	public ResponseEntity<?>SaveAccountDetailsSYS( ZoomAccountKeys accountdetails ,String token){
 		 try {
 		    	
 	    	 if (!jwtUtil.validateToken(token)) {
@@ -146,9 +138,8 @@ public class ZoomMeetAccountController {
 		    }
 	}
     
-    
-    @PatchMapping("/SysAdmin/zoom/Edit/Accountdetails")
-	public ResponseEntity<?>EditAccountDetailsSYS(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+
+	public ResponseEntity<?>EditAccountDetailsSYS( ZoomAccountKeys accountdetails , String token){
 		 try {
 		    	
 	    	 if (!jwtUtil.validateToken(token)) {
@@ -171,8 +162,8 @@ public class ZoomMeetAccountController {
     
 }
     
-    @GetMapping("/SysAdmin/zoom/get/Accountdetails")
-    public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String token) {
+    
+    public ResponseEntity<?> getMethodNameSYS( String token) {
     	 try {
 		    	
 	    	 if (!jwtUtil.validateToken(token)) {

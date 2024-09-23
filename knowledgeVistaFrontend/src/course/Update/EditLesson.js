@@ -8,7 +8,6 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
 import axios from 'axios';
 import errorimg from "../../images/errorimg.png"
-import { Tooltip } from 'react-tooltip'
 const EditLesson = () => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -432,10 +431,8 @@ const handleChange = (e) => {
                               style={{height:"20px"}}
                               readOnly
                               disabled={isSubmitting}
-                              data-tooltip-id="embedurl"
-                              data-tooltip-content="Embeded Url"
+                             data-toggle="tooltip" data-placement="top" title="Embeded Url"
                             />
-                            <Tooltip id="embedurl" />
                            
                           </div>
                           <div>

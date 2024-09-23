@@ -484,7 +484,28 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
           </div>
         </div>
       )}
-
+ {userRole === "ADMIN" && (
+        <li className="nav-item mt-2">
+          <a
+            className={
+              activeLink === "/mailsettings"
+                ? "ActiveLink nav-link"
+                : "nav-link text-muted"
+            }
+            href="#"
+            onClick={() => handleClick("/mailsettings")}
+          >
+            <i
+              className={
+                activeLink === "/mailsettings"
+                  ? "fa-solid fa-gear text-light"
+                  : "fa-solid fa-gear text-muted"
+              }
+            ></i>
+            <span>Email Settings</span>
+          </a>
+        </li>
+      )}
       {userRole === "ADMIN" && (
         <div
           className={`mt-2 ${activeLink.includes("/pay") ? "ActiveLink" : ""}`}

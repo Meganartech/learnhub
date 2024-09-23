@@ -265,9 +265,6 @@ const SheduleZoomMeet = () => {
     });
      setSearchQuery("");
      setUsers("");
-    // Optional: Log for debugging or analytics
-    console.log("Selected emails:", selectedEmails);
-    console.log("Updated zoom request:", zoomrequest);
   };
 
   const handleSearch = async (query) => {
@@ -333,19 +330,6 @@ const SheduleZoomMeet = () => {
   };
   
 
-
-// const generateTimeOptions = () => {
-//   const times = [];
-//   const start = moment().startOf('day'); // Start at 00:00
-//   for (let i = 0; i < 24 * 2; i++) { // 24 hours with 30 minutes intervals
-//     times.push(start.format('h:mm'));
-//     start.add(30, 'minutes');
-//   }
-//   return times;
-// };
-
-
-// const timeOptions = generateTimeOptions();
 const generateTimeOptions = () => {
   const times = [];
   const start = moment().startOf("day"); // Start at 00:00
@@ -443,12 +427,9 @@ const updateStartTime = (event) => {
       startTime: finalStartTime,
     };
   
-    if (issubmitting) {
-      return;
-    }
+  
   
     try {
-      console.log("request", updatedZoomRequest);
   
       setissubmitting(true);
       const response = await axios.post(
@@ -460,13 +441,15 @@ const updateStartTime = (event) => {
           },
         }
       );
+      setissubmitting(false)
       MySwal.fire({
         title: "Success!",
         text: "Meeting Created Successfully",
         icon: "success",
         confirmButtonText: "OK",
       }).then(() => {
-        window.location.reload();
+        const sentence = "New Meeting Scheduled:"
+        navigate('/mailSending', { state: { meetingData: response.data ,sentence} });
       });
     } catch (error) {
       setissubmitting(false);
@@ -491,6 +474,9 @@ const updateStartTime = (event) => {
   return (
     <div className="contentbackground">
       <div className="contentinner p-3">
+      <div className={`outerspinner ${issubmitting? 'active' : ''}`}>
+        <div className="spinner"></div>
+      </div>
         <div className="divider">
           <div className="navigateheaders">
             <div

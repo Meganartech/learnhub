@@ -30,7 +30,6 @@ const CalenderView = () => {
         });
       
          if(response.data){
-          console.log(response.data)
           const fetchedEvents = response.data.map((meeting) => {
             const utcStartTime = new Date(meeting.startTime); // Ensure meeting.startTime is a valid UTC date string
 
@@ -47,7 +46,7 @@ const CalenderView = () => {
               start: new Date(localStartTime), // Ensure this is a Date object or ISO string
               end: new Date(localEndTime),
               joinUrl: meeting.joinUrl,
-              title: meeting.topic || '',
+              title: meeting.topic||"",
             };
         });
         setEvents(fetchedEvents);

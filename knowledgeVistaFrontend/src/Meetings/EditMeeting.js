@@ -467,9 +467,7 @@ const EditMeeting = () => {
 
     console.log(zoomrequest)
    
-    if (issubmitting) {
-      return;
-    }
+  
 
     try {
 
@@ -483,13 +481,16 @@ const EditMeeting = () => {
           },
         }
       );
+      setissubmitting(false)
       MySwal.fire({
         title: "updated!",
         text: "Meeting Updated Successfully",
         icon: "success",
         confirmButtonText: "OK",
       }).then(() => {
-        window.location.reload();
+        const sentence = "Meeting Updated:"
+        navigate('/mailSending', { state: { meetingData: response.data ,sentence} });
+       // window.location.reload();
       });
     } catch (error) {
       setissubmitting(false);
@@ -514,6 +515,9 @@ const EditMeeting = () => {
   return (
     <div className="contentbackground">
       <div className="contentinner p-3">
+      <div className={`outerspinner ${issubmitting? 'active' : ''}`}>
+        <div className="spinner"></div>
+      </div>
         <div className="divider">
           <div className="navigateheaders">
             <div

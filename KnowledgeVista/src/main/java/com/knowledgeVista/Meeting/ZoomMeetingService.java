@@ -82,7 +82,7 @@ public class ZoomMeetingService {
   	        	 String InstitutionName=user.getInstitutionName();
   	        	 if("ADMIN".equals(role)||"TRAINER".equals(role)) {
   	        		  String accessToken = zoomTokenService.getAccessToken(InstitutionName);
-  	    	        System.out.println("accessToken"+accessToken);
+  	    	        System.out.println("accessToken= "+accessToken);
   	    	        if (accessToken == null || accessToken.isEmpty()) {
   	    	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Access Token Generation Failed");
   	    	        }
@@ -99,7 +99,7 @@ public class ZoomMeetingService {
 	         
 		  } catch (Exception e) {
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-		                .body("An error occurred while updating the certificate: " + e.getMessage() );
+		                .body("An error occurred while creating the meeting: " + e.getMessage() );
 		    }
        }
        
@@ -130,7 +130,7 @@ public class ZoomMeetingService {
     	    	        if (res != null && !res.contains("error")) {
     	    	            // Save the response data
     	    	            saveservice.PatchsaveData(email, res, MeetingId);
-    	    	            return ResponseEntity.ok("Meeting Updated");
+    	    	            return ResponseEntity.ok(res);
     	    	        } else {
     	    	        	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to Update");
     	    	          }

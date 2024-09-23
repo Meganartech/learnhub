@@ -108,7 +108,7 @@ const Affiliates = () => {
                 {/* <th scope="row">{(currentPage * itemsperpage) + (index + 1)}</th> */}
                 <th scope="row">{index + 1}</th>
                 <td className='py-2'>{user.name}</td>
-                <td className='py-2'>{user.emailId}</td>
+                <td className='py-2'>{user.emailid}</td>
                 <td className='py-2'>{user.address}</td>
                 <td className='py-2'>{user.mobilenumber}</td>
                 <td className='py-2'>{user.coupon10}</td>

@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import axios from "axios";
-import { Tooltip } from 'react-tooltip'
 const UploadVideo = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const MySwal = withReactContent(Swal);
@@ -380,10 +379,10 @@ const UploadVideo = () => {
                               style={{height:"20px"}}
                               readOnly
                               disabled={isSubmitting}
-                              data-tooltip-id="embedurl"
-                              data-tooltip-content="Embeded Url"
+                              data-toggle="tooltip" data-placement="top" title="Embeded Url"
+                             
                             />
-                            <Tooltip id="embedurl" />
+                          
                             
                           </div>
                           <div>

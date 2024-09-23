@@ -10,8 +10,7 @@ public class OpenApiConfig {
 	@Bean
 	public GroupedOpenApi publicApi() {
 		return GroupedOpenApi.builder().group("public").pathsToMatch("/**")
-				.pathsToExclude("/api/v2/affliation")
-				.pathsToExclude("/api/v2/affliators")
+				.pathsToExclude("/api/v2/affliation", "/api/v2/affliators")
 				.build();
 	}
 }

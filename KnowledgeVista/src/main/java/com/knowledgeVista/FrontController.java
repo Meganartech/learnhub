@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Course.Controller.CheckAccess;
@@ -32,8 +31,15 @@ import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.controller.QuestionController;
 import com.knowledgeVista.Course.Test.controller.Testcontroller;
 import com.knowledgeVista.Course.certificate.certificateController;
+import com.knowledgeVista.Email.EmailController;
+import com.knowledgeVista.Email.EmailRequest;
+import com.knowledgeVista.Email.Mailkeys;
 import com.knowledgeVista.License.LicenceControllerSecond;
 import com.knowledgeVista.License.LicenseController;
+import com.knowledgeVista.Meeting.ZoomAccountKeys;
+import com.knowledgeVista.Meeting.ZoomMeetAccountController;
+import com.knowledgeVista.Meeting.ZoomMeetingService;
+import com.knowledgeVista.Meeting.zoomclass.MeetingRequest;
 import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Payments.PaymentIntegration;
 import com.knowledgeVista.Payments.PaymentListController;
@@ -41,7 +47,6 @@ import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.PaymentSettingsController;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.SysAdminPackage.SysadminController;
-import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Controller.AddUsers;
 import com.knowledgeVista.User.Controller.AssignCourse;
@@ -49,7 +54,6 @@ import com.knowledgeVista.User.Controller.AuthenticationController;
 import com.knowledgeVista.User.Controller.Edituser;
 import com.knowledgeVista.User.Controller.Listview;
 import com.knowledgeVista.User.Controller.MserRegistrationController;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
@@ -120,6 +124,15 @@ public class FrontController {
 	
 	@Autowired
 	private SysadminController sysadmin;
+	
+	@Autowired
+	private ZoomMeetingService zoomMeetingService;
+	
+	@Autowired
+	private ZoomMeetAccountController zoomaccountconfig;
+	
+	@Autowired
+	private EmailController emailcontroller;
 	
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
@@ -949,6 +962,83 @@ public class FrontController {
                public ResponseEntity<?>DeActiveteAdmin(@RequestParam("email") String email,
             		   @RequestParam("reason") String reason, @RequestHeader("Authorization") String token){
             	   return sysadmin.DeactivateAdmin(reason,email, token);
+               }
+               
+    //--------------------ZOOM-------------------------------
+
+@PostMapping("/api/zoom/create-meeting")
+public ResponseEntity<?> createMeeting(@RequestBody MeetingRequest meetingReq,@RequestHeader("Authorization") String token) {
+    
+        return zoomMeetingService.createMeetReq(meetingReq,token);
+   
+}
+
+@GetMapping("/api/zoom/getMyMeetings")
+public ResponseEntity<?>GetMyMeetings(@RequestHeader("Authorization") String token){
+	return zoomMeetingService.getMetting(token);
+}
+
+@GetMapping("/api/zoom/get/meet/{meetingId}")
+public ResponseEntity<?>GetmeetbyMeetingId(@PathVariable Long meetingId ,@RequestHeader("Authorization") String token){
+	return zoomMeetingService.getMeetDetailsForEdit(token, meetingId);
+}
+
+@PatchMapping("/api/zoom/meet/{meetingId}")
+public ResponseEntity<?>EditMeetingByMeetingId(@RequestBody MeetingRequest meetingReq,@PathVariable Long meetingId,@RequestHeader("Authorization") String token){
+	return zoomMeetingService.EditZoomMeetReq(meetingReq, meetingId, token);
+}
+@DeleteMapping("/api/zoom/delete/{meetingId}")
+public ResponseEntity<?>DeleteMeeting(@PathVariable Long meetingId ,@RequestHeader("Authorization") String token)
+{
+	return zoomMeetingService.DeleteMeet(meetingId, token);
+}
+//---------------------------ZOOM ACCOUNT CONTROLLER_------------
+@PostMapping("/zoom/save/Accountdetails")
+public ResponseEntity<?>SaveAccountDetails(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+	return zoomaccountconfig.SaveAccountDetails(accountdetails, token);
+}
+@PatchMapping("/zoom/Edit/Accountdetails")
+public ResponseEntity<?>EditAccountDetails(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+	return zoomaccountconfig.EditAccountDetails(accountdetails, token);
+}
+
+@GetMapping("/zoom/get/Accountdetails")
+public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String token) {
+	return zoomaccountconfig.getMethodName(token);
+}
+@PostMapping("/SysAdmin/zoom/save/Accountdetails")
+	public ResponseEntity<?>SaveAccountDetailsSYS(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+		 return zoomaccountconfig.SaveAccountDetailsSYS(accountdetails, token);
+}
+@PatchMapping("/SysAdmin/zoom/Edit/Accountdetails")
+	public ResponseEntity<?>EditAccountDetailsSYS(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+		 return zoomaccountconfig.EditAccountDetailsSYS(accountdetails, token);
+}
+
+@GetMapping("/SysAdmin/zoom/get/Accountdetails")
+public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String token) {
+	return zoomaccountconfig.getMethodNameSYS(token);
+}
+   //-------------------EMAIL CONTROLLER--------------------------
+               @PostMapping("/sendMail")
+         	  public ResponseEntity<?> sendMail( @RequestHeader("Authorization") String token,@RequestBody EmailRequest emailRequest) {
+               return emailcontroller.sendMail(token, emailRequest);
+               }
+               
+               @GetMapping("/get/mailkeys")
+         	  public ResponseEntity<?>getMailkeys(@RequestHeader("Authorization") String token){
+            	   return emailcontroller.getMailkeys(token);
+               }
+               
+               @PatchMapping("/Edit/mailkeys")
+         	  public ResponseEntity<?>UpdateMailkeys(@RequestHeader("Authorization") String token,@RequestBody Mailkeys mailkeys){
+         		  return emailcontroller.UpdateMailkeys(token, mailkeys);
+               }
+               
+               @PostMapping("/save/mailkeys")
+         	  public ResponseEntity<?> saveMail(
+         	          @RequestHeader("Authorization") String token,@RequestBody Mailkeys mailkeys) {
+         	      return emailcontroller.saveMail(token, mailkeys);
                }
 }
 
