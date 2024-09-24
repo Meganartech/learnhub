@@ -7,11 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -28,10 +23,9 @@ public class RoleDisplayController {
 	 @Autowired
 		private MuserRepositories muserRepository;
 	
-	 @GetMapping("/get/displayName")
-	public ResponseEntity<?>getdisplayNames(@RequestHeader("Authorization") String token){
+	
+	public ResponseEntity<?>getdisplayNames(String token){
 		try {
-			System.out.println("getttt..........................................");
 			if (!jwtUtil.validateToken(token)) {return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Unauthorized access");
          }
@@ -56,15 +50,12 @@ public class RoleDisplayController {
 
 
 	 
-	 
-	 @PatchMapping("/edit/displayname")
 	 @Transactional
-	 public ResponseEntity<?> UpdateDisplayName(@RequestHeader("Authorization") String token,@RequestBody Role_display_name displayName){
+	 public ResponseEntity<?> UpdateDisplayName(String token, Role_display_name displayName){
 		 try {
 				if (!jwtUtil.validateToken(token)) {return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 	                    .body("Unauthorized access");
 	         }
-				System.out.println("edit..........................................");
 				Roledisplayrepo.save(displayName);
 				
 				return ResponseEntity.ok("updated");
@@ -76,9 +67,7 @@ public class RoleDisplayController {
 	    }
 
 }
-	 
-	 @PostMapping("/post/displayname")
-	 public ResponseEntity<?> postDisplayname(@RequestHeader("Authorization") String token,@RequestBody Role_display_name roledisplaynames){
+	 public ResponseEntity<?> postDisplayname(String token, Role_display_name roledisplaynames){
 		try {
 			 
 	         String email=jwtUtil.getUsernameFromToken(token); 

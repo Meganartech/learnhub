@@ -54,6 +54,9 @@ import com.knowledgeVista.User.Controller.AuthenticationController;
 import com.knowledgeVista.User.Controller.Edituser;
 import com.knowledgeVista.User.Controller.Listview;
 import com.knowledgeVista.User.Controller.MserRegistrationController;
+import com.knowledgeVista.User.Usersettings.RoleDisplayController;
+import com.knowledgeVista.User.Usersettings.Role_display_name;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
@@ -133,6 +136,9 @@ public class FrontController {
 	
 	@Autowired
 	private EmailController emailcontroller;
+	
+	@Autowired
+	private RoleDisplayController displayctrl; 
 	
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
@@ -1040,5 +1046,23 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
          	          @RequestHeader("Authorization") String token,@RequestBody Mailkeys mailkeys) {
          	      return emailcontroller.saveMail(token, mailkeys);
                }
+               
+//-------------------------------------------ROLE DISPLAY CONTROLLER----------------------------------------------------
+               @GetMapping("/get/displayName")
+           	public ResponseEntity<?>getdisplayNames(@RequestHeader("Authorization") String token){
+            	   return displayctrl.getdisplayNames(token);
+               }
+               
+               @PatchMapping("/edit/displayname")
+          	 public ResponseEntity<?> UpdateDisplayName(@RequestHeader("Authorization") String token,@RequestBody Role_display_name displayName){
+            	   return displayctrl.UpdateDisplayName(token, displayName);
+               }
+               
+               @PostMapping("/post/displayname")
+          	 public ResponseEntity<?> postDisplayname(@RequestHeader("Authorization") String token,@RequestBody Role_display_name roledisplaynames){
+          		return displayctrl.postDisplayname(token, roledisplaynames);
+               }
+            	   
+          		
 }
 
