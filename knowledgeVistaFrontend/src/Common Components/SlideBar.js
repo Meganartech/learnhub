@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Component.css";
 import baseUrl from "../api/utils";
 import axios from "axios";
+import { GlobalStateContext } from "../Context/GlobalStateProvider";
 
 const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
   const [isvalid, setIsvalid] = useState();
@@ -10,6 +11,7 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
   const userRole = sessionStorage.getItem("role");
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
+  const { displayname } = useContext(GlobalStateContext);
   useEffect(() => {
     const fetchData = async () => {
       
@@ -345,7 +347,10 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
                   : "fa-solid fa-chalkboard-user text-muted"
               }
             ></i>
-            <span>Trainers</span>
+            <span>{displayname && displayname.trainer_name 
+          ? displayname.trainer_name
+          : "Trainers" 
+        }</span>
           </a>
         </li>
       )}
@@ -367,7 +372,10 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
                   : "fa-solid fa-users text-muted"
               }
             ></i>
-            <span>Students</span>
+            <span>{displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        }</span>
           </a>
         </li>
       )}
@@ -506,6 +514,30 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
           </a>
         </li>
       )}
+
+{userRole === "ADMIN" && (
+        <li className="nav-item mt-2">
+          <a
+            className={
+              activeLink === "/displayname"
+                ? "ActiveLink nav-link"
+                : "nav-link text-muted"
+            }
+            href="#"
+            onClick={() => handleClick("/displayname")}
+          >
+            <i
+              className={
+                activeLink === "/displayname"
+                  ? "fa-solid fa-user text-light"
+                  : "fa-solid fa-user text-muted"
+              }
+            ></i>
+            <span>Role Settings</span>
+          </a>
+        </li>
+      )}
+
       {userRole === "ADMIN" && (
         <div
           className={`mt-2 ${activeLink.includes("/pay") ? "ActiveLink" : ""}`}

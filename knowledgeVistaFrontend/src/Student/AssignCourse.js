@@ -116,7 +116,7 @@ const handleAssignCourse = async () => {
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-          <h3>Assign Courseeee</h3>
+          <h3>Assign Course</h3>
           <div className='mainform'>
             <div className='profile-picture'>
               <div className='image-group'>

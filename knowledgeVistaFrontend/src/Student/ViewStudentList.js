@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,12 +6,14 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import { GlobalStateContext } from '../Context/GlobalStateProvider';
 //style.css
 const ViewStudentList = () => {
   const navigate=useNavigate();
   const MySwal = withReactContent(Swal);
   const token=sessionStorage.getItem("token");
   const userRole = sessionStorage.getItem('role');
+  const { displayname } = useContext(GlobalStateContext);
     const [users, setUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -189,7 +191,10 @@ const handleChange = (e) => {
       
         MySwal.fire({
           title: "De Activate ?",
-          text: `Are you sure you want to DeActivate Student ${username}`,
+          text: `Are you sure you want to DeActivate ${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        } ${username}`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#d33",
@@ -226,7 +231,10 @@ const handleChange = (e) => {
                 if (response.status === 200) {
                   MySwal.fire({
                     title: "De Activated",
-                    text: `Student ${username} De Activated successfully`,
+                    text: `${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        } ${username} De Activated successfully`,
                     icon: "success",
                     confirmButtonColor: "#3085d6",
                     confirmButtonButtonText: "OK"
@@ -246,13 +254,19 @@ const handleChange = (e) => {
                 MySwal.fire({
                   icon: 'error',
                   title: '404',
-                  text: 'Student not found'
+                  text: `${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        } not found`
                 });
               } else {
                 MySwal.fire({
                   icon: 'error',
                   title: 'ERROR',
-                  text: 'Error Deactivating Student'
+                  text: `Error Deactivating ${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        }`
                 });
                 console.error('Error during deactivation:', error); // Log detailed error for debugging
               }
@@ -264,8 +278,14 @@ const handleChange = (e) => {
     const formData = new FormData();
     formData.append('email', email);
     MySwal.fire({
-      title: "Activate Student?",
-      text: `Are you sure you want to Activate Student ${username}`,
+      title: `Activate ${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        }?`,
+      text: `Are you sure you want to Activate ${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        } ${username}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -285,7 +305,10 @@ const handleChange = (e) => {
             if (response.status===200) {
               MySwal.fire({
                 title: "Activated",
-                text: `Student ${username} Activated successfully`,
+                text: `${displayname && displayname.student_name 
+                  ? displayname.student_name 
+                  : "Student" 
+                } ${username} Activated successfully`,
                 icon: "success",
                 confirmButtonText: "OK",
             }).then(() => {
@@ -299,14 +322,20 @@ const handleChange = (e) => {
               MySwal.fire({
                 icon: 'error',
                 title: '404',
-                text: 'Student not found'
+                text: `${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        } not found`
             });
             }
           }else{
           MySwal.fire({
             icon: 'error',
             title: 'ERROR',
-            text: 'Error Activating Student'
+            text: `Error Activating ${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        }`
         });
         }
       }
@@ -323,7 +352,10 @@ const handleChange = (e) => {
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
       <div className="tableheader ">
-        <h1>Students Details</h1>
+        <h1>{displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        } Details</h1>
         
         
         <div className='selectandadd'>
@@ -337,7 +369,10 @@ const handleChange = (e) => {
                     <option className='bg-light text-dark' value="Active">Active</option>
                     <option className='bg-light text-dark' value="Inactive">Inactive</option>
                   </select>
-        <a href="/addStudent" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add Student</a>
+        <a href="/addStudent" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add {displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        }</a>
         </div>
       </div>
       <div className="table-container">

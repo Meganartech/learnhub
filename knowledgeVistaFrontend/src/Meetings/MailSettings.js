@@ -155,7 +155,7 @@ setsettings((prev)=>({
      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
      </div>
      <div className='innerFrameforset '>
- <h2 className='mb-5'>Mail Settings</h2>
+ <h2 className='mb-5' style={{ textDecoration: "underline" }}>Mail Settings</h2>
    
      <div className='formgroup pt-4' >
       
@@ -243,14 +243,15 @@ setsettings((prev)=>({
    
  </div>
  </div>) 
-   const defaultinputs=(<div>
+   const defaultinputs=(
+   <div>
     <div className='navigateheaders'>
      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
      <div></div>
      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
      </div>
      <div className='innerFrameforset '>
- <h2 className='mb-5'>Mail Settings</h2>
+ <h2 className='mb-5' style={{ textDecoration: "underline" }} >Mail Settings</h2>
    
      <div className='formgroup pt-4' >
       
@@ -315,7 +316,8 @@ setsettings((prev)=>({
      </div>
      
  </div>
- </div>)
+ </div>
+ )
   return (
     <div className="contentbackground">
     <div className='contentinner'>

@@ -1,16 +1,17 @@
 import undraw_profile from "../images/profile.png"
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
 import errorimg from "../images/errorimg.png"
+import { GlobalStateContext } from "../Context/GlobalStateProvider";
 const StudentProfile = () => {
   
   const navigate=useNavigate();
     const token=sessionStorage.getItem("token");
   const role=sessionStorage.getItem("role");
   const [notfound,setnotfound]=useState(false);
-
+  const { displayname } = useContext(GlobalStateContext);
   const location = useLocation();
   const [initialUserData, setInitialUserData] = useState(location.state?.user || null);
     const [img, setimg] = useState();
@@ -92,9 +93,15 @@ const StudentProfile = () => {
       <div onClick={()=>{navigate("/view/Students")}}><i className="fa-solid fa-xmark"></i></div>
       </div>
         {notfound ? (
-        <h1 style={{textAlign:"center",marginTop:"250px"}}>No Student found with the email</h1>) : (
+        <h1 style={{textAlign:"center",marginTop:"250px"}}>No {displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        } found with the email</h1>) : (
             <div className='innerFrame '>
-              <h2 style={{textDecoration:"underline"}}> Student Profile</h2>
+              <h2 style={{textDecoration:"underline"}}> {displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        } Profile</h2>
               <div className='mainform'>
                 <div className='profile-picture'>
                   <div className='image-group' >
@@ -144,7 +151,10 @@ const StudentProfile = () => {
         <div className='inputgrp2'>
           <label htmlFor='role'>RoleName</label>
           <span>:</span>
-         <label>{userData.roleName}</label> 
+         <label>{displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        }</label> 
 
 
         </div>

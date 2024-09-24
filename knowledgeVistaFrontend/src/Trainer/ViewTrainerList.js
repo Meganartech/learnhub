@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,8 +6,10 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import { GlobalStateContext } from '../Context/GlobalStateProvider';
 const ViewTrainerList = () => {
   const MySwal = withReactContent(Swal);
+  const { displayname } = useContext(GlobalStateContext);
     const [users, setUsers] = useState([]);
     const token=sessionStorage.getItem("token");
     const userRole = sessionStorage.getItem('role');
@@ -194,7 +196,10 @@ const handleChange = (e) => {
       
         MySwal.fire({
           title: "De Activate ?",
-          text: `Are you sure you want to DeActivate Trainer ${username}`,
+          text: `Are you sure you want to DeActivate  ${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}
+         ${username}`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#d33",
@@ -231,7 +236,10 @@ const handleChange = (e) => {
                 if (response.status === 200) {
                   MySwal.fire({
                     title: "De Activated",
-                    text: `Trainer ${username} De Activated successfully`,
+                    text: `${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}
+         ${username} De Activated successfully`,
                     icon: "success",
                     confirmButtonColor: "#3085d6",
                     confirmButtonButtonText: "OK"
@@ -251,13 +259,18 @@ const handleChange = (e) => {
                 MySwal.fire({
                   icon: 'error',
                   title: '404',
-                  text: 'Traier not found'
+                  text: `${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}
+       not found`
                 });
               } else {
                 MySwal.fire({
                   icon: 'error',
                   title: 'ERROR',
-                  text: 'Error Deactivating trainer'
+                  text: `Error Deactivating ${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}`
                 });
                 console.error('Error during deactivation:', error); // Log detailed error for debugging
               }
@@ -271,7 +284,10 @@ const handleChange = (e) => {
         formData.append('email', email);
         MySwal.fire({
           title: " Activate ?",
-          text: `Are you sure you want to Activate trainer ${username}`,
+          text: `Are you sure you want to Activate ${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}
+         ${username}`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#d33",
@@ -290,7 +306,10 @@ const handleChange = (e) => {
                 if (response.status===200) {
                   MySwal.fire({
                     title: "Activated",
-                    text: `Trainer ${username}  Activated successfully`,
+                    text: `${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}
+         ${username}  Activated successfully`,
                     icon: "success",
                     confirmButtonText: "OK",
                 }).then(() => {
@@ -304,13 +323,19 @@ const handleChange = (e) => {
                 MySwal.fire({
                   icon: 'error',
                   title: '404',
-                  text: 'Trainer not found'
+                  text: `${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}
+         not found`
               });
               }else{
               MySwal.fire({
                 icon: 'error',
                 title: 'ERROR',
-                text: 'Error  Activated Trainer'
+                text: `Error  Activated  ${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}`
+        
             });
             }
           }
@@ -329,7 +354,10 @@ const handleChange = (e) => {
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
       <div className="tableheader ">
-        <h1>Trainers Details</h1>
+        <h1> {displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}
+         Details</h1>
        
        
       <div className='selectandadd'>
@@ -343,7 +371,9 @@ const handleChange = (e) => {
                     <option className='bg-light text-dark' value="Active">Active</option>
                     <option className='bg-light text-dark' value="Inactive">Inactive</option>
                   </select>
-        <a href="/addTrainer" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add Trainer</a>
+        <a href="/addTrainer" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add {displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}</a>
         </div>
       </div>
       <div className="table-container">

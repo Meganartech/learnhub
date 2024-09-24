@@ -69,6 +69,7 @@ import Footer from "./Common Components/Footer.js";
 import Affiliates from "./SysAdmin/Affiliates.js";
 import MailSending from "./Meetings/MailSending.js";
 import MailSettings from "./Meetings/MailSettings.js";
+import DisplayName from "./UserSettings/DisplayName.js";
 
 
 function App() {
@@ -176,7 +177,8 @@ function App() {
                       <Route path="/meet/edit/:meetingId" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} ><EditMeeting/></PrivateRoute>}/>
                       <Route path="/user/meeting/calender"element={<PrivateRoute authenticationRequired={true} onlyuser={true}><StudentCalenderView/></PrivateRoute>}/>
                       <Route path="/mailSending" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><MailSending/></PrivateRoute>}/>
-                       <Route path="/mailsettings" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} onlyadmin={true}><MailSettings/></PrivateRoute>}/>
+                      <Route path="/mailsettings" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} onlyadmin={true}><MailSettings/></PrivateRoute>}/>
+                      <Route path="/displayname" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} onlyadmin={true}><DisplayName/></PrivateRoute>}/>
                        {/* SysAdminRoutes */}
                        <Route path="/viewAll/Admins" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewAdmin/></PrivateRoute>}/>
                        <Route path="/viewAll/Trainers" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewTrainers/></PrivateRoute>}/>
@@ -186,8 +188,7 @@ function App() {
                         <Route path="/Affiliates" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><Affiliates/></PrivateRoute>}/>
                           {/* SysAdminRoutes */}
                         </Route> 
-               
-          <Route path="/" element={<Login/>}/>
+         <Route path="/" element={<Login/>}/>
          <Route path="/login" element={<Login/>}/>
           <Route path="/refresh" element={<PrivateRoute authenticationRequired={true}><RefreshToken/></PrivateRoute>}/>
           <Route path="/unauthorized" element={<Unauthorized/>}/>

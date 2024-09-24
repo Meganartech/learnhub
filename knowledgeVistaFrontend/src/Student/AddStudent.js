@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import profile from "../images/profile.png";
@@ -7,13 +7,14 @@ import axios from "axios";
 import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { GlobalStateContext } from "../Context/GlobalStateProvider";
 
 const AddStudent = () => {
   const token = sessionStorage.getItem("token");
   const MySwal = withReactContent(Swal);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+  const { displayname } = useContext(GlobalStateContext);
   const [formData, setFormData] = useState({
     username: "",
     psw: "",
@@ -342,7 +343,10 @@ const AddStudent = () => {
       if (response.status === 200) {
         MySwal.fire({
           title: "Added !",
-          text: "New Student Added successfully!",
+          text: `New ${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        } Added successfully!`,
           icon: "success",
           confirmButtonText: "OK",
         }).then((result) => {
@@ -376,7 +380,10 @@ const AddStudent = () => {
         } else if (errorData.status === 401) {
           MySwal.fire({
             title: "Un Authorized!",
-            text: "you are unable to Add a student",
+            text: `you are unable to Add a ${displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        }`,
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -396,7 +403,10 @@ const AddStudent = () => {
     <div className="contentbackground">
       <div className="contentinner">
         <div className="innerFrame">
-          <h2 style={{ textDecoration: "underline" }}>Add Students</h2>
+          <h2 style={{ textDecoration: "underline" }}>Add {displayname && displayname.student_name 
+          ? displayname.student_name 
+          : "Student" 
+        }</h2>
           <div className="mainform">
             <div className="profile-picture">
               <div className="image-group">

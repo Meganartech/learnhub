@@ -249,8 +249,10 @@ const ProfileView = () => {
           }).then((result) => {
               if (result.isConfirmed) {
                 setIsEditing(false)
-                window.location.href="/login"
-              }
+                sessionStorage.removeItem("profileData")
+                window.location.reload()
+              }    
+              
             });
           }
         
@@ -351,7 +353,6 @@ const ProfileView = () => {
         countryCallingCodeEditable={true}
       />
     
-                    <div className="invalid-feedback">{errors.phone}</div>
                   </div>
                 </div>
               </div>
@@ -465,7 +466,7 @@ const ProfileView = () => {
             <div> <input
              type="text"
               id='skills'
-              value={userData.skills}
+              value={userData.skills }
               onChange={handleChange}
               name="skills"
               

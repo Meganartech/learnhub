@@ -1,14 +1,16 @@
 import profile from "../images/profile.png";
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import { GlobalStateContext } from "../Context/GlobalStateProvider";
 
 const TrainerProfile = () => {
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
   const role = sessionStorage.getItem("role");
   const [notfound, setNotFound] = useState(false);
+  const { displayname } = useContext(GlobalStateContext);
   const [img, setImg] = useState(null);
   const { traineremail } = useParams();
   const location = useLocation();
@@ -84,10 +86,14 @@ const TrainerProfile = () => {
           <div onClick={() => { navigate("/view/Trainer") }}><i className="fa-solid fa-xmark"></i></div>
         </div>
         {notfound ? (
-          <h1 style={{ textAlign: "center", marginTop: "250px" }}>No Trainer found with the email</h1>
+          <h1 style={{ textAlign: "center", marginTop: "250px" }}>No {displayname && displayname.trainer_name
+            ? displayname.trainer_name
+            : "Trainer"} found with the email</h1>
         ) : (
           <div className='innerFrame'>
-            <h2 style={{ textDecoration: "underline" }}>Trainer Profile</h2>
+            <h2 style={{ textDecoration: "underline" }}>{displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"} Profile</h2>
             <div className='mainform'>
               <div className='profile-picture'>
                 <div className='image-group'>
@@ -133,7 +139,10 @@ const TrainerProfile = () => {
                 <div className='inputgrp2'>
                   <label htmlFor='role'>RoleName</label>
                   <span>:</span>
-                  {userData.roleName ? <label>{userData.roleName}</label> : null}
+                  <label>
+                  {displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}</label> 
                 </div>
               </div>
             </div>

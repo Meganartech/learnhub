@@ -30,8 +30,8 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,handleSidebarTo
     const cachedData = sessionStorage.getItem("profileData");
 
   if (cachedData) {
-    // Load data from sessionStorage if available
     setdata(JSON.parse(cachedData));
+   
 
   } else {
     // Fetch data from API if not cached

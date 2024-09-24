@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import profile from "../images/profile.png"
@@ -9,8 +9,10 @@ import errorimg from '../images/errorimg.png'
 import PhoneInput, { parsePhoneNumber } from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
+import { GlobalStateContext } from '../Context/GlobalStateProvider';
 const EditTrainer = () => {
     const{email}=useParams()
+    const { displayname } = useContext(GlobalStateContext);
     const navigate = useNavigate();
     const token=sessionStorage.getItem("token")
     const MySwal = withReactContent(Swal);
@@ -290,7 +292,9 @@ setErrors((prevErrors) => ({
           if (response.status===200) {
             MySwal.fire({
               title: "Updated !",
-              text: "Trainer Information successfully!",
+              text: `${displayname && displayname.trainer_name
+                ? displayname.trainer_name
+                : "Trainer"} Information Updated successfully!`,
               icon: "success",
               confirmButtonText: "OK",
               
@@ -317,7 +321,9 @@ setErrors((prevErrors) => ({
             }else if(error.response.status===401){
               MySwal.fire({
                 title: "Un Authorized!",
-                text: "you are unable to Update a Trainer",
+                text: `you are unable to Update a ${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}`,
                 icon: "error",
                 confirmButtonText: "OK",
               });
@@ -326,7 +332,9 @@ setErrors((prevErrors) => ({
       
           MySwal.fire({
             title: "Error!",
-            text: "An error occurred while adding Trainer. Please try again later.",
+            text: `An error occurred while adding ${displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}. Please try again later.`,
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -345,13 +353,17 @@ setErrors((prevErrors) => ({
     {notFound ? (
       <div className='centerflex'>
           <div className='enroll'>
-            <h2>No trainer found in this email</h2>
+            <h2>No {displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"} found in this email</h2>
             <button className='btn btn-primary' onClick={()=>{navigate(-1);}}>Go Back</button>
           </div>
           </div>
         ) : (
   <div className='innerFrame'>
-    <h2  style={{textDecoration:"underline"}}>Edit  Trainer</h2>
+    <h2  style={{textDecoration:"underline"}}>Edit  {displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}</h2>
     <div className='mainform'>
         <div className='profile-picture'>
           <div className='image-group'>
