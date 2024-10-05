@@ -126,15 +126,11 @@ const TrainerProfile = () => {
                   <span>:</span>
                   <label>{userData.skills}</label>
                 </div>
-                <div className='inputgrp2'>
-                  <label htmlFor='countrycode'>Country Code</label>
-                  <span>:</span>
-                  <label>{userData.countryCode}</label>
-                </div>
+               
                 <div className='inputgrp2'>
                   <label htmlFor='Phone'>Phone</label>
                   <span>:</span>
-                  <label>{userData.phone}</label>
+                  <label>{userData.countryCode}{userData.phone}</label>
                 </div>
                 <div className='inputgrp2'>
                   <label htmlFor='role'>RoleName</label>

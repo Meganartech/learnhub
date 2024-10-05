@@ -289,13 +289,24 @@ public class MserRegistrationController {
 			     Optional<Muser> opuser =muserrepositories.findByEmail(emailofreq);
 			     if(opuser.isPresent()) {
 			    	 Muser user=opuser.get();
+			    	 if("SYSADMIN".equals(user.getRole().getRoleName())){
+			    		 Optional<MuserDto> opadmin=  muserrepositories.findDetailsByEmailforSysadmin(email);
+			    		 if (opadmin.isPresent()) {
+			                	MuserDto admin = opadmin.get();
+			                    return ResponseEntity.ok()
+			                            .contentType(MediaType.APPLICATION_JSON)
+			                            .body(admin);
+			                    }else {
+				   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"User not found\"}");
+			                }
+			    	 }
 			    	 institution=user.getInstitutionName();
 			    	 Optional<MuserDto> opdto=muserrepositories.findDetailsByEmailAndInstitution(email, institution);
 			    	 if (opdto.isPresent()) {
 		                	MuserDto usertosend = opdto.get();
 		                    return ResponseEntity.ok()
 		                            .contentType(MediaType.APPLICATION_JSON)
-		                            .body(opdto);
+		                            .body(usertosend);
 		                    }else {
 			   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"User not found\"}");
 		                }
@@ -310,6 +321,36 @@ public class MserRegistrationController {
 	 
     }  
 
-	  
+    public ResponseEntity<?> getAdminDetailsBYEmail( String email, String token) {
+
+        try {
+            // Validate the token
+            if (!jwtUtil.validateToken(token)) {
+                // If the token is not valid, return unauthorized status
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            String role = jwtUtil.getRoleFromToken(token);
+		    
+            // Perform authentication based on role
+            if ("SYSADMIN".equals(role)) {
+            	 Optional<MuserProfileDTO> userOptional = muserrepositories.findProfileAndCountryCodeAndRoleByEmail(email);
+	                if (userOptional.isPresent()) {
+	                	MuserProfileDTO user = userOptional.get();
+	                    return ResponseEntity.ok()
+	                            .contentType(MediaType.APPLICATION_JSON)
+	                            .body(user);
+	                    }else {
+		   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Trainer not found\"}");
+	                }
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        } catch (Exception e) {
+            // Log any other exceptions for debugging purposes
+            e.printStackTrace(); // You can replace this with logging framework like Log4j
+            // Return an internal server error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }  
 }
 	

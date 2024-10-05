@@ -139,15 +139,11 @@ const StudentProfile = () => {
         </div>
 
         <div className='inputgrp2'>
-          <label htmlFor='Phone'> Phone</label>
-          <span>:</span>
-          <label>{userData.phone}</label>
-        </div>
-        <div className='inputgrp2'>
-          <label htmlFor='countrycode'> country code</label>
-          <span>:</span>
-          <label>{userData.countryCode}</label>
-        </div>
+                  <label htmlFor='Phone'>Phone</label>
+                  <span>:</span>
+                  <label>{userData.countryCode}{userData.phone}</label>
+                </div>
+       
         <div className='inputgrp2'>
           <label htmlFor='role'>RoleName</label>
           <span>:</span>

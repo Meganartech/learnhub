@@ -25,6 +25,10 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 
 	@Query("SELECT u.institutionName FROM Muser u WHERE u.email = ?1")
   String findinstitutionByEmail(String email);
+	 @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName) " +
+	           "FROM Muser u " +
+	           "WHERE u.email = :email")
+	    Optional<MuserDto> findDetailsByEmailforSysadmin(@Param("email") String email);
 	
 	  @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName) " +
 	           "FROM Muser u " +
@@ -46,6 +50,15 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	        @Param("email") String email,
 	        @Param("institutionName") String institutionName
 	    );
+
+@Query("SELECT new com.knowledgeVista.User.MuserProfileDTO(u.profile, u.countryCode, u.role.roleName ) " +
+        "FROM Muser u " +
+        "JOIN u.role r " +
+        "WHERE u.email = :email ")
+ Optional<MuserProfileDTO> findProfileAndCountryCodeAndRoleByEmail(
+     @Param("email") String email
+ );
+
 	@Query("SELECT u FROM Muser u WHERE u.username = ?1")
 	  Optional<Muser> findByname(String username);
 	

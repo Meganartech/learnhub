@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 const ViewAdmin = () => {
   const MySwal = withReactContent(Swal);
     const [users, setUsers] = useState([]);
@@ -402,7 +403,7 @@ const ViewAdmin = () => {
           {filterData().map((user, index) => (
               <tr key={user.userId}>
                 <th scope="row">{(currentPage * itemsperpage) + (index + 1)}</th>
-                <td className='py-2'>{user.username}</td>
+                <td className='py-2'><Link to={`/viewAdmin/profile/${user.email}`}  state={{ user }}>{user.username}</Link></td>
                 <td className='py-2'>{user.email}</td>
                 <td className='py-2'>{user.institutionName}</td>
                 <td className='py-2'>{user.phone}</td>

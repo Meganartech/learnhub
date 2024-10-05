@@ -511,6 +511,10 @@ public class FrontController {
            		public ResponseEntity<?>GetLicenceDetails(@RequestHeader("Authorization") String token){
            			return licencesec.GetLicenseDetails(token);
            		}
+           		@GetMapping("/licence/getinfo/{email}")
+           		public ResponseEntity<?>GetLicenseDetailsofadmin(@RequestHeader("Authorization") String token,@PathVariable String email){
+           			return licencesec.GetLicenseDetailsofadmin(token,email);
+           		}
            	
  //------------------------SettingsController------------------------
            		@PostMapping("/api/Paymentsettings")
@@ -869,7 +873,11 @@ public class FrontController {
     		                            @RequestHeader("Authorization") String token) {
     		    	return muserreg.getTrainerDetailsByEmail(email, token);
     		    }
-    		    
+    		    @GetMapping("/student/getadmin/{email}")
+    		    public ResponseEntity<?> getAdminDetailsBYEmail(@PathVariable String email,
+    		                            @RequestHeader("Authorization") String token) {
+    		    	return muserreg.getAdminDetailsBYEmail(email, token);
+    		    }
 
     		    @GetMapping("/student/admin/getstudent/{email}")
     		    public ResponseEntity<?> getStudentDetailsByEmail(@PathVariable String email,

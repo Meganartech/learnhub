@@ -68,5 +68,36 @@ public class LicenceControllerSecond {
 	    	}
 	    }
 
+	    public ResponseEntity<?>GetLicenseDetailsofadmin(String token,String adminemail){
+	    	try {
+	    		if (!jwtUtil.validateToken(token)) {
+		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("token Expired");
+		         }
+	    		String role = jwtUtil.getRoleFromToken(token);
+	    		if("SYSADMIN".equals(role)) {
+	            Optional<Muser> opuser= muserrepo.findByEmail(adminemail);
+	            if(opuser.isPresent()) {
+
+	         	   Muser user= opuser.get();
+	         	   String institution=user.getInstitutionName();
+	         	   madminrepo.findByInstitutionName(institution);
+	         	  Optional<License> oplicence=licenseRepository.findByinstitution(institution);
+	         	    if(oplicence.isPresent()) {
+	         	    	License licence=oplicence.get();
+	         	    	return ResponseEntity.ok(licence);
+	         	   }else {
+	         		   return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Licence Not Found");
+	         	   }
+	            }else {
+	            	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Admin Not FOund");
+	            }
+	    		}else {
+	    			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    		}
+	    	}catch(Exception e) {
+	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	}
+	    }
+
 
 }

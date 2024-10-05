@@ -71,6 +71,7 @@ import MailSending from "./Meetings/MailSending.js";
 import MailSettings from "./Meetings/MailSettings.js";
 import DisplayName from "./UserSettings/DisplayName.js";
 import SlideViewer from "./UserSettings/SlideViewer.js";
+import AdminProfileView from "./SysAdmin/AdminProfileView.js";
 
 
 function App() {
@@ -188,6 +189,7 @@ function App() {
                        <Route path="/licenceupload" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><SysadminLicenceupload/></PrivateRoute>}/>
                        <Route path="/Zoomkeyupload" element={<PrivateRoute authenticationRequired={true} sysadmin={true} ><ZoomKeys/></PrivateRoute>}/>
                         <Route path="/Affiliates" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><Affiliates/></PrivateRoute>}/>
+                         <Route path="/viewAdmin/profile/:adminemail" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><AdminProfileView/></PrivateRoute>}/>
                           {/* SysAdminRoutes */}
                         </Route> 
                        
