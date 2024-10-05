@@ -144,7 +144,7 @@ const ForgetPassword = () => {
           type="text"
           name="email"
           id="username"
-          className="form-control form-control-lg"
+          className="form-control .form-control-sm "
           placeholder="Username"
           value={email}
           autoComplete="username"
@@ -156,7 +156,7 @@ const ForgetPassword = () => {
           type="password"
           name="password"
           id="password"
-          className={`form-control form-control-lg ${passwordError && 'is-invalid'}`}
+          className={`form-control .form-control-sm  ${passwordError && 'is-invalid'}`}
           placeholder="New Password"
           autoComplete="new-password"
           value={formData.password}
@@ -170,7 +170,7 @@ const ForgetPassword = () => {
           type="password"
           name="confirmPassword"
           id="confirmPassword"
-          className={`form-control form-control-lg ${confirmPasswordError && 'is-invalid'}`}
+          className={`form-control .form-control-sm  ${confirmPasswordError && 'is-invalid'}`}
           placeholder="Confirm Password"
           autoComplete="new-password"
           value={formData.confirmPassword}
@@ -195,7 +195,7 @@ const ForgetPassword = () => {
           type="text"
           name="email"
           id="username"
-          className={`form-control form-control-lg ${emailError ? 'is-invalid' : ''}`}
+          className={`form-control .form-control-sm  ${emailError ? 'is-invalid' : ''}`}
           placeholder="Enter Email Address..."
           autoComplete="username"
           autoFocus

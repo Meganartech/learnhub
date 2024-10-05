@@ -20,6 +20,7 @@ const UploadVideo = () => {
     fileUrl: "",
     thumbnail: null,
     videoFile: null,
+    documentContent: [],
     base64Image: null,
     normalurl: "",
   });
@@ -30,9 +31,29 @@ const UploadVideo = () => {
     fileUrl: "",
     thumbnail: null,
     videoFile: null,
+    documentContent: [],
     base64Image: null,
     normalurl: "",
   });
+  const handleDocChange = (e) => {
+    const file = e.target.files[0];
+    const allowedTypes = [
+      "application/pdf",
+      "application/vnd.ms-powerpoint", // For .ppt
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation", // For .pptx
+    ];
+    if (file && allowedTypes.includes(file.type)) {
+      setvideodata((prevData) => ({
+        ...prevData,
+        documentContent: [...(prevData.documentContent || []), file], // Store the actual file, not an object
+      }));
+    } else {
+      alert("Only PDF or PPT files are allowed!");
+      // Optionally, clear the input if invalid
+      e.target.value = null;
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     let error = "";
@@ -90,7 +111,6 @@ const UploadVideo = () => {
           videodata.fileUrl
         );
     }
-
     // Enable save button only if all conditions are met
     return !(isVideoTitleValid && isVideoDescriptionValid && isVideoValid);
   };
@@ -103,23 +123,25 @@ const UploadVideo = () => {
     });
   };
   const handleFileChange = (e) => {
+    const { name, value } = e.target;
     const file = e.target.files[0];
 
     // Update formData with the new file
-    setvideodata((prevVideodata) => ({ ...prevVideodata, thumbnail: file }));
-
-    // Convert the file to base64
-    convertImageToBase64(file)
-      .then((base64Data) => {
-        // Set the base64 encoded image in the state
-        setvideodata((prevVideodata) => ({
-          ...prevVideodata,
-          base64Image: base64Data,
-        }));
-      })
-      .catch((error) => {
-        console.error("Error converting image to base64:", error);
-      });
+    setvideodata((prevVideodata) => ({ ...prevVideodata, [name]: file }));
+    if (name === "thumbnail") {
+      // Convert the file to base64
+      convertImageToBase64(file)
+        .then((base64Data) => {
+          // Set the base64 encoded image in the state
+          setvideodata((prevVideodata) => ({
+            ...prevVideodata,
+            base64Image: base64Data,
+          }));
+        })
+        .catch((error) => {
+          console.error("Error converting image to base64:", error);
+        });
+    }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -128,7 +150,11 @@ const UploadVideo = () => {
     formDataToSend.append("Lessontitle", videodata.Lessontitle);
     formDataToSend.append("LessonDescription", videodata.LessonDescription);
     formDataToSend.append("thumbnail", videodata.thumbnail);
-
+    if (videodata.documentContent && videodata.documentContent.length > 0) {
+      videodata.documentContent.forEach((doc, index) => {
+        formDataToSend.append("documentContent", doc); // Ensure each document is appended properly
+      });
+    }
     if (uploadType === "video") {
       formDataToSend.append("videoFile", videodata.videoFile);
       formDataToSend.append("fileUrl", null);
@@ -156,7 +182,9 @@ const UploadVideo = () => {
           Lessontitle: "",
           LessonDescription: "",
           fileUrl: "",
+          normalurl: "",
           thumbnail: null,
+          documentContent: [],
           videoFile: null,
           base64Image: null,
         });
@@ -191,10 +219,41 @@ const UploadVideo = () => {
       }
     }
   };
+  const handleRemoveDoc = (indexToRemove) => {
+    const updatedDocs = videodata.documentContent.filter(
+      (doc, index) => index !== indexToRemove
+    );
+    // Update the state to remove the file
+    setvideodata({ ...videodata, documentContent: updatedDocs });
+  };
+
+  const handleDocDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    const allowedTypes = [
+      "application/pdf",
+      "application/vnd.ms-powerpoint", // For .ppt
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation", // For .pptx
+    ];
+    if (file && allowedTypes.includes(file.type)) {
+      setvideodata((prevData) => ({
+        ...prevData,
+        documentContent: [...(prevData.documentContent || []), file], // Store the actual file, not an object
+      }));
+    } else {
+      alert("Only PDF or PPT files are allowed!");
+      // Optionally, clear the input if invalid
+      e.target.value = null;
+    }
+  };
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    handleFile(file);
+    if (file && file.type.includes("video")) {
+      setSelectedFile(file);
+    } else {
+      alert("Please select a video file.");
+    }
   };
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -202,18 +261,14 @@ const UploadVideo = () => {
 
     if (file && file.size > maxSize) {
       alert("File size exceeds 1 GB limit.");
-    } else {
-      handleFile(file);
-      setvideodata({ ...videodata, videoFile: file, fileUrl: "" });
-    }
-  };
-  const handleFile = (file) => {
-    if (file && file.type.includes("video")) {
+    } else if (file.type.includes("video")) {
       setSelectedFile(file);
+      setvideodata({ ...videodata, videoFile: file, fileUrl: "" });
     } else {
       alert("Please select a video file.");
     }
   };
+
   const handleUploadTypeChange = (e) => {
     setUploadType(e.target.value);
   };
@@ -262,7 +317,7 @@ const UploadVideo = () => {
                       value={videodata.Lessontitle}
                       onChange={handleChange}
                       disabled={isSubmitting}
-                      className={`form-control form-control-lg mt-1 ${
+                      className={`form-control .form-control-sm  mt-1 ${
                         errors.Lessontitle && "is-invalid"
                       }`}
                       required
@@ -280,7 +335,7 @@ const UploadVideo = () => {
                       value={videodata.LessonDescription}
                       placeholder="Video Description"
                       rows={4}
-                      className={`form-control form-control-lg mt-1 ${
+                      className={`form-control .form-control-sm  mt-1 ${
                         errors.LessonDescription && "is-invalid"
                       }`}
                       disabled={isSubmitting}
@@ -319,6 +374,56 @@ const UploadVideo = () => {
                       style={{ width: "100px", height: "100px" }}
                     />
                   )}
+                </div>
+                <div className="grp">
+                  <label>Attachments</label>
+
+                  <div
+                    className="dropzone"
+                    onDrop={handleDocDrop}
+                    onDragOver={handleDragOver}
+                  >
+                    <p>Drag and drop </p>
+
+                    <p>or</p>
+                    <label
+                      htmlFor="documentContent"
+                      id="must"
+                      style={{ margin: "auto", width: "200px" }}
+                      className="file-upload-btn"
+                    >
+                      Upload
+                    </label>
+                    <p>Allowed Files .pdf |.ppt |.pptx</p>
+                    <input
+                      type="file"
+                      accept="application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                      name="documentContent"
+                      id="documentContent"
+                      className={`file-upload ${
+                        errors.documentContent && "is-invalid"
+                      }`}
+                      onChange={handleDocChange}
+                    />
+                    {videodata.documentContent &&
+                      videodata.documentContent.length > 0 && (
+                        <ul>
+                          {videodata.documentContent.map((doc, index) => (
+                            <li key={index} className="doclink2">
+                              {doc.name}
+                              <i
+                                className="fa-regular fa-trash-can"
+                                style={{
+                                  marginLeft: "10px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => handleRemoveDoc(index)}
+                              ></i>
+                            </li> // Display document name
+                          ))}
+                        </ul>
+                      )}
+                  </div>
                 </div>
               </div>
 
@@ -361,7 +466,7 @@ const UploadVideo = () => {
                         placeholder="Enter Youtube URL"
                         value={videodata.normalurl}
                         onChange={handleChange}
-                        className={`form-control form-control-lg mt-1 urlinput ${
+                        className={`form-control .form-control-sm  mt-1 urlinput ${
                           errors.normalurl && "is-invalid"
                         }`}
                         disabled={isSubmitting}
@@ -376,14 +481,13 @@ const UploadVideo = () => {
                               value={videodata.fileUrl}
                               onChange={handleChange}
                               className="disabledbox mt-2"
-                              style={{height:"20px"}}
+                              style={{ height: "20px" }}
                               readOnly
                               disabled={isSubmitting}
-                              data-toggle="tooltip" data-placement="top" title="Embeded Url"
-                             
+                              data-toggle="tooltip"
+                              data-placement="top"
+                              title="Embeded Url"
                             />
-                          
-                            
                           </div>
                           <div>
                             {videodata.fileUrl && (
@@ -437,11 +541,7 @@ const UploadVideo = () => {
               >
                 Cancel
               </button>
-              <button
-                className="btn btn-primary"
-                disabled={isSaveDisabled()}
-                type="submit"
-              >
+              <button className="btn btn-primary" type="submit">
                 Save
               </button>
             </div>

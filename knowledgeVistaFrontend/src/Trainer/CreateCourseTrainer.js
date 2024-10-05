@@ -221,7 +221,7 @@ const CreateCourseTrainer = () => {
                                         id='courseName'
                                         name="courseName"
                                         value={formData.courseName}
-                                        className={`form-control form-control-lg mt-2 ${errors.courseName && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm  mt-2 ${errors.courseName && 'is-invalid'}`}
                                         placeholder="Course Title"
                                         onChange={handleChange}
                                         autoFocus
@@ -246,7 +246,7 @@ const CreateCourseTrainer = () => {
                                         name="courseDescription"
                                         value={formData.courseDescription}
                                         onChange={handleChange}
-                                        className={`form-control form-control-lg ${errors.courseDescription && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm  ${errors.courseDescription && 'is-invalid'}`}
                                         placeholder="Course Description"
                                         required
                                     />
@@ -267,7 +267,7 @@ const CreateCourseTrainer = () => {
                                         id='courseCategory'
                                         name="courseCategory"
                                         onChange={handleChange}
-                                        className={`form-control form-control-lg mt-1 ${errors.courseCategory && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm  mt-1 ${errors.courseCategory && 'is-invalid'}`}
                                         placeholder="Course Category"
                                         value={formData.courseCategory}
                                         required
@@ -335,7 +335,7 @@ const CreateCourseTrainer = () => {
                                         name="Duration"
                                         value={formData.Duration}
                                         onChange={handleChange}
-                                        className={`form-control form-control-lg mt-1 ${errors.Duration && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm  mt-1 ${errors.Duration && 'is-invalid'}`}
                                         required
                                     />
                                     <div className="invalid-feedback">
@@ -354,7 +354,7 @@ const CreateCourseTrainer = () => {
                                        placeholder='No of Seats'
                                         id='Noofseats'
                                         name="Noofseats"
-                                        className={`form-control form-control-lg mt-1 ${errors.Noofseats && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm  mt-1 ${errors.Noofseats && 'is-invalid'}`}
                                         value={formData.Noofseats}
                                         onChange={handleChange}
                                         required
@@ -377,7 +377,7 @@ const CreateCourseTrainer = () => {
                                         id='courseAmount'
                                         name="courseAmount"
                                         value={formData.courseAmount}
-                                        className={`form-control form-control-lg mt-1 ${errors.courseAmount && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm  mt-1 ${errors.courseAmount && 'is-invalid'}`}
                                         onChange={handleChange}
                                         required
                                     />

@@ -131,7 +131,7 @@ const Login = () => {
             id="username"
             value={formData.username}
             onChange={handleChange}
-            className={`form-control form-control-lg ${errors.username && 'is-invalid'}`}
+            className={`form-control .form-control-sm  ${errors.username && 'is-invalid'}`}
             placeholder="Username"
             autoComplete="username"
             autoFocus
@@ -149,7 +149,7 @@ const Login = () => {
             id="password"
             value={formData.password}
             onChange={handleChange}
-            className={`form-control form-control-lg ${errors.password && "is-invalid"}`}
+            className={`form-control .form-control-sm  ${errors.password && "is-invalid"}`}
             placeholder="Password"
             autoComplete="current-password"
             required

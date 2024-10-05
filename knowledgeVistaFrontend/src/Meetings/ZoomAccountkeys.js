@@ -256,7 +256,7 @@ try{
              name='client_id'
              placeholder='Client Id'
              value={oldzoomset.client_id}
-             className={`form-control form-control-lg ${errors.client_id && 'is-invalid'}`}
+             className={`form-control .form-control-sm  ${errors.client_id && 'is-invalid'}`}
              onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -273,7 +273,7 @@ try{
              id='clientSecret'
              placeholder='Client Secet'
            value={oldzoomset.client_secret}
-           className={`form-control form-control-lg ${errors.client_secret && 'is-invalid'}`}
+           className={`form-control .form-control-sm  ${errors.client_secret && 'is-invalid'}`}
            onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -290,7 +290,7 @@ try{
              id='accountid'
              name='account_id'
              placeholder='Account Id'
-             className={`form-control form-control-lg ${errors.account_id && 'is-invalid'}`}
+             className={`form-control .form-control-sm  ${errors.account_id && 'is-invalid'}`}
              value={oldzoomset.account_id}
              onChange={handleInputsChange}
            />

@@ -202,7 +202,7 @@ const AddMoreQuestion = () => {
                         <div>
                             <h6>Add Question to {courseName}</h6>
                             <input
-                            className={`form-control form-control-lg ${errors.questionText && 'is-invalid'}`}
+                            className={`form-control .form-control-sm  ${errors.questionText && 'is-invalid'}`}
                             autoFocus
                             placeholder='Enter Question'
                             value={questionData.questionText}
@@ -223,7 +223,7 @@ const AddMoreQuestion = () => {
                                     />
                                     <div>
                                     <input
-                                        className={`form-control form-control-lg ${errors.options[option] && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm  ${errors.options[option] && 'is-invalid'}`}
                                         type='text'
                                         placeholder={`Option ${index + 1}`}
                                         value={questionData.options[option]}

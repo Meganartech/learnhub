@@ -218,7 +218,7 @@ const EditCourseForm = ({}) => {
                     type="text"
                     name="courseName"
                     id="courseName"
-                    className={`form-control form-control-lg ${
+                    className={`form-control .form-control-sm  ${
                       errors.courseName && "is-invalid"
                     }`}
                     placeholder="Enter the Course Name"
@@ -238,7 +238,7 @@ const EditCourseForm = ({}) => {
                     name="courseDescription"
                     id="courseDescription"
                     rows={5}
-                    className={`form-control form-control-lg ${
+                    className={`form-control .form-control-sm  ${
                       errors.courseDescription && "is-invalid"
                     }`}
                     placeholder="Description about the Course"
@@ -259,7 +259,7 @@ const EditCourseForm = ({}) => {
                     type="text"
                     name="courseCategory"
                     id="courseCategory"
-                    className={`form-control form-control-lg  ${
+                    className={`form-control .form-control-sm   ${
                       errors.courseCategory && "is-invalid"
                     }`}
                     placeholder="Category"
@@ -281,7 +281,7 @@ const EditCourseForm = ({}) => {
                     type="number"
                     id="noofseats"
                     value={courseEdit.noofseats}
-                    className={`form-control form-control-lg  ${
+                    className={`form-control .form-control-sm   ${
                       errors.noofseats && "is-invalid"
                     }`}
                     onChange={handleChange}
@@ -338,7 +338,7 @@ const EditCourseForm = ({}) => {
                       type="number"
                       name="amount"
                       id="amount"
-                      className={`form-control form-control-lg mt-1 ${
+                      className={`form-control .form-control-sm  mt-1 ${
                         errors.courseAmount && "is-invalid"
                       }`}
                       placeholder="Amount"
@@ -359,7 +359,7 @@ const EditCourseForm = ({}) => {
                       name="duration"
                       type="number"
                       id="duration"
-                      className={`form-control form-control-lg mt-1 ${
+                      className={`form-control .form-control-sm  mt-1 ${
                         errors.duration && "is-invalid"
                       }`}
                       value={courseEdit.duration}

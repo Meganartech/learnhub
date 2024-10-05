@@ -362,6 +362,7 @@
 
 
 @media screen and (max-width: 480px) {
+  
  .twosearch{
   grid-template-columns: 1fr ;
  }

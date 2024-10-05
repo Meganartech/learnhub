@@ -155,7 +155,7 @@ const getinputs=(
              name='admin_name'
              placeholder='Admin Name'
              value={displayname.admin_name}
-             className={`form-control form-control-lg ${errors.admin_name && 'is-invalid'}`}
+             className={`form-control .form-control-sm  ${errors.admin_name && 'is-invalid'}`}
              onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -173,7 +173,7 @@ const getinputs=(
              name='trainer_name'
              placeholder='Trainer Name'
              value={displayname.trainer_name}
-             className={`form-control form-control-lg ${errors.trainer_name && 'is-invalid'}`}
+             className={`form-control .form-control-sm  ${errors.trainer_name && 'is-invalid'}`}
              onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -191,7 +191,7 @@ const getinputs=(
              name='student_name'
              placeholder='Student Name'
              value={displayname.student_name}
-             className={`form-control form-control-lg ${errors.student_name && 'is-invalid'}`}
+             className={`form-control .form-control-sm  ${errors.student_name && 'is-invalid'}`}
              onChange={handleInputsChange}
            />
            <div className="invalid-feedback">

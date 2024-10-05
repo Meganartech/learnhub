@@ -17,4 +17,6 @@ public interface videoLessonRepo extends JpaRepository<videoLessons, Long> {
 	 @Query("SELECT vd FROM videoLessons vd WHERE vd.institutionName = :institutionName ")
 	 List<videoLessons>findAllByInstitutionName(String institutionName);
 	
+//	 @Query("SELECT documentPath FROM videoLessons vd WHERE vd.lessonId = :lessonId ")
+//	 String findDocumetByid(Long lessonId);
 }

@@ -366,7 +366,7 @@ TimeZone: ${meetingData.timezone}`,
           type="text"
           id="subject"
           name="subject"
-          className="form-control form-control-lg mb-2 inputlike"
+          className="form-control .form-control-sm  mb-2 inputlike"
           placeholder="Subject"
           value={mailvalues.subject}
           onChange={handleChange}

@@ -196,7 +196,7 @@ const EditQuestion = () => {
         <div className='atdiv'  >
           <div className='atgrid' >
             <div>            <input 
-              className={`form-control form-control-lg ${errors.questionText && 'is-invalid'}`}
+              className={`form-control .form-control-sm  ${errors.questionText && 'is-invalid'}`}
               autoFocus
               value={questionText}
               onChange={handleQuestionTextChange}
@@ -219,7 +219,7 @@ const EditQuestion = () => {
                     type='text'
                     value={options[optionKey]}
                     name={optionKey}
-                    className={`form-control form-control-lg ${errors[optionKey] && 'is-invalid'}`}
+                    className={`form-control .form-control-sm  ${errors[optionKey] && 'is-invalid'}`}
                     onChange={handleInputChange}
                   />
                   {errors[optionKey] && <div className="invalid-feedback">{errors[optionKey]}</div>}

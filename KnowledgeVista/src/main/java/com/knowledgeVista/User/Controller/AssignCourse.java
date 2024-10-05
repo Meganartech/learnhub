@@ -149,6 +149,7 @@ public class AssignCourse {
 	               }
 	    } catch (Exception e) {
 	        // If an error occurs, return 500
+	    	e.printStackTrace();
 	    	  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	    	            .body("{\"error\": \"An error occurred while processing the request.\"}");
 	    	     }

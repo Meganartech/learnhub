@@ -77,13 +77,14 @@ public class NotificationService {
         NotificationDetails notiDetails= new NotificationDetails();
         notiDetails.setHeading(heading);
         notiDetails.setLink(link);
+        if(file!=null) {
         try {
 			notiDetails.setNotimage(ImageResizer.resizeImage(file, 100, 100));
 		} catch (IOException e) {
 			notiDetails.setNotimage(null);
 
-        	System.out.println("null image first");
 		}
+        }
         
         notiDetails.setNotifyTypeId(notificationType.getNotifyTypeId());
         notiDetails.setUsername(username);

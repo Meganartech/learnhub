@@ -54,6 +54,31 @@ public boolean deleteVideoFile(String fileName) {
         return false; // Return false in case of an exception
     }
 }
+public long deleteFile(String fileName) {
+    Path filePath = Paths.get(videoUploadDirectory, fileName);
+
+    try {
+        // Check if the file exists and get its size before deletion
+        if (Files.exists(filePath)) {
+            long fileSize = Files.size(filePath); // Get the file size in bytes
+
+            boolean deleted = Files.deleteIfExists(filePath);
+
+            if (deleted) {
+                return fileSize; // Return the size of the deleted file
+            } else {
+                return 0; // Return 0 if the file deletion failed
+            }
+        } else {
+            System.out.println("File does not exist");
+            return 0; // Return 0 if the file does not exist
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+        System.out.println("Error occurred while deleting the file");
+        return 0; // Return 0 in case of an exception
+    }
+}
 
 public String updateVideoFile(String existingFileName, MultipartFile newVideoFile, String videoUploadDirectory) throws IOException {
     // Generate a unique file name for the updated video

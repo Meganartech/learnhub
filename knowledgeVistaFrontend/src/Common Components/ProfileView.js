@@ -415,7 +415,7 @@ const ProfileView = () => {
               onChange={handleChange}
               name="username"
               
-              className={`form-control form-control-lg mt-1 ${errors.username && 'is-invalid'}`}
+              className={`form-control .form-control-sm  mt-1 ${errors.username && 'is-invalid'}`}
               placeholder="Full Name"
               autoFocus
               required
@@ -431,7 +431,7 @@ const ProfileView = () => {
             <div>              <input
                     type="email"
                     autoComplete="off"
-                    className={`form-control form-control-lg ${errors.email && 'is-invalid'}`}
+                    className={`form-control .form-control-sm  ${errors.email && 'is-invalid'}`}
                     name="email"
                     value={userData.email}
                     onChange={handleChange}
@@ -449,7 +449,7 @@ const ProfileView = () => {
             <input
               type="date"
                                   name="dob"
-                                  className={`form-control form-control-lg ${errors.dob && 'is-invalid'}`}
+                                  className={`form-control .form-control-sm  ${errors.dob && 'is-invalid'}`}
                                   placeholder="Starting year"
                                   value={userData.dob}
                                   onChange={handleChange}
@@ -470,7 +470,7 @@ const ProfileView = () => {
               onChange={handleChange}
               name="skills"
               
-              className={`form-control form-control-lg  ${errors.skills && 'is-invalid'}`}
+              className={`form-control .form-control-sm   ${errors.skills && 'is-invalid'}`}
               placeholder="skills"
            
               required
@@ -497,7 +497,7 @@ const ProfileView = () => {
         id="phone"
         value={phoneNumber||''}
         onChange={handlePhoneChange}
-        className={`form-control form-control-lg ${
+        className={`form-control .form-control-sm  ${
           errors.phone && "is-invalid"
         }`}
         defaultCountry={defaultCountry}

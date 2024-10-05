@@ -212,7 +212,7 @@ const TestList = () => {
                      <div> <input
                         type="text"
                         name='testName'
-                        className={`form-control form-control-lg smalltextbox ${errors.testName && 'is-invalid'}`}
+                        className={`form-control .form-control-sm  smalltextbox ${errors.testName && 'is-invalid'}`}
                         value={editedTest && editedTest.testName !== undefined ? editedTest.testName : test.testName}
                         onChange={handleCriteriaChange}
                         />
@@ -235,7 +235,7 @@ const TestList = () => {
                         <input
                           type="number"
                           name='passPercentage'
-                          className={`form-control form-control-lg smalltextbox ${errors.passPercentage && 'is-invalid'}`}
+                          className={`form-control .form-control-sm  smalltextbox ${errors.passPercentage && 'is-invalid'}`}
                           value={editedTest && editedTest.passPercentage !== undefined ? editedTest.passPercentage : test.passPercentage}
                           onChange={handleCriteriaChange}
                         />
@@ -259,7 +259,7 @@ const TestList = () => {
                         <input
                           type="number"
                           name='noofattempt'
-                          className={`form-control form-control-lg  smalltextbox ${errors.noofattempt && 'is-invalid'}`}
+                          className={`form-control .form-control-sm   smalltextbox ${errors.noofattempt && 'is-invalid'}`}
                           value={editedTest && editedTest.noofattempt !== undefined ? editedTest.noofattempt : test.noofattempt}
                           onChange={handleCriteriaChange}
                         />

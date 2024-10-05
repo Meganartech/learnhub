@@ -6,6 +6,7 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
 import errorimg from "../images/errorimg.png"
+import undraw_profile from "../images/profile.png"
 const AssignCourseTRAINER = () => {
     
   const { userId } = useParams();
@@ -27,7 +28,9 @@ const navigate=useNavigate();
             if (!response.status===200) {
                 throw new Error('Failed to fetch user data');
             }
+            if(userData.profile!==null){
             setImg(`data:image/jpeg;base64,${userData.profile}`);
+            }
             setUserData(userData);
             const response1 = await axios.get(`${baseUrl}/course/allotList?email=${userData.email}`, {
                 headers: {
@@ -121,7 +124,7 @@ const handleAssignCourse = async () => {
           <div className='mainform'>
             <div className='profile-picture'>
               <div className='image-group'>
-                <img id="preview" src={img}
+                <img id="preview" src={img ? img :undraw_profile} 
                  onError={(e) => {
                   e.target.src = errorimg; // Use the imported error image
                 }}

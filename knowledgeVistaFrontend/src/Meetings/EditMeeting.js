@@ -550,7 +550,7 @@ const EditMeeting = () => {
                   value={zoomrequest.topic}
                   name="topic"
                   onChange={handleChangeFields}
-                  className="form-control form-control-lg "
+                  className="form-control .form-control-sm  "
                   placeholder="Title"
                   autoFocus
                   required
@@ -569,7 +569,7 @@ const EditMeeting = () => {
                   name="agenda"
                   onChange={handleChangeFields}
                   value={zoomrequest.agenda === null ? "" : zoomrequest.agenda}
-                  className="form-control form-control-lg "
+                  className="form-control .form-control-sm  "
                   placeholder="Description"
                   required
                 />
@@ -583,7 +583,7 @@ const EditMeeting = () => {
               <div>
                 <select
                   id="timezone"
-                  className="form-control form-control-lg"
+                  className="form-control .form-control-sm "
                   name="timezone"
                   value={zoomrequest.timezone}
                   onChange={handleChangeFields}
@@ -611,7 +611,7 @@ const EditMeeting = () => {
                   min={formattedDate}
                   value={formData.date}
                   onChange={updateStartTime}
-                  className="form-control form-control-lg"
+                  className="form-control .form-control-sm "
                   required
                 />
                 <select
@@ -619,7 +619,7 @@ const EditMeeting = () => {
                   name="time"
                   value={formData.time}
                   onChange={updateStartTime}
-                  className="form-control form-control-lg"
+                  className="form-control .form-control-sm "
                 >
                   {timeOptions.map((option, index) => (
                     <option key={index} value={option}>
@@ -632,7 +632,7 @@ const EditMeeting = () => {
                   name="ampm"
                   value={formData.ampm}
                   onChange={updateStartTime}
-                  className="form-control form-control-lg"
+                  className="form-control .form-control-sm "
                 >
                   <option value="AM">AM</option>
                   <option value="PM">PM</option>
@@ -668,7 +668,7 @@ const EditMeeting = () => {
                     value={formData.hours}
                     name="hrs"
                     onChange={handleTimeChange}
-                    className="form-control form-control-lg "
+                    className="form-control .form-control-sm  "
                   >
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -684,7 +684,7 @@ const EditMeeting = () => {
                     name="min"
                     value={formData.minutes}
                     onChange={handleTimeChange}
-                    className="form-control form-control-lg "
+                    className="form-control .form-control-sm  "
                   >
                     <option value="0">0</option>
                     <option value="15">15</option>

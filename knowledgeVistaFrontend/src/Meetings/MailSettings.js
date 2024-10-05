@@ -168,7 +168,7 @@ setsettings((prev)=>({
              name='hostname'
              placeholder='Email Host Name'
              value={settings.hostname}
-             className={`form-control form-control-lg ${errors.hostname && 'is-invalid'}`}
+             className={`form-control .form-control-sm  ${errors.hostname && 'is-invalid'}`}
              onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -186,7 +186,7 @@ setsettings((prev)=>({
              name='port'
              placeholder='Email port Name'
              value={settings.port}
-             className={`form-control form-control-lg ${errors.port && 'is-invalid'}`}
+             className={`form-control .form-control-sm  ${errors.port && 'is-invalid'}`}
              onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -203,7 +203,7 @@ setsettings((prev)=>({
              id='emailid'
              placeholder='Email Id'
            value={settings.emailid}
-           className={`form-control form-control-lg ${errors.emailid && 'is-invalid'}`}
+           className={`form-control .form-control-sm  ${errors.emailid && 'is-invalid'}`}
            onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -220,7 +220,7 @@ setsettings((prev)=>({
              id='password'
              name='password'
              placeholder='password '
-             className={`form-control form-control-lg ${errors.password && 'is-invalid'}`}
+             className={`form-control .form-control-sm  ${errors.password && 'is-invalid'}`}
              value={settings.password}
             onChange={handleInputsChange}
            />

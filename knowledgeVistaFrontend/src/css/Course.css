@@ -13,6 +13,87 @@ body {
 input::placeholder {
   font-size: 1.125rem; /* e.g., 14px, 1rem */
 }
+.slider_div{
+  padding: 5px;
+  width: 100%;
+  width: 1000px;
+  max-height: 600px;
+  overflow: auto;
+}
+.slider_div img{
+  margin: auto;
+}
+.outermini{
+  width: 150px;
+  height: 600px;
+  align-content: center;
+  overflow:auto ;
+  padding: 5px;
+}
+.activemini{
+  border:4px solid black
+}
+.pageshow{
+  background-color: rgba(190, 113, 141, 0.37);
+  width: auto;
+  margin: auto;
+  padding: 5px 45px;
+}
+.currentslide{
+ outline: none;
+ border: none;
+ width: auto;
+ max-width: 60px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding:2px;
+}
+.zoombtn{
+  cursor: pointer;
+  padding: 6px;
+  
+}
+.zoombtn:hover{
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.pageshowchild{
+  padding-right: 20px;
+border-right: 1px solid white
+}
+.headdocu{
+  display: grid;
+  grid-template-columns: 1fr 5fr 1fr;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 5px;
+  color: white;
+  border-bottom: 2px solid white;
+}
+.wrapppt{
+  margin: 5px;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: #6b6b6b;
+}
+.miniandoriginal{
+  width: 100%;
+  display:flex ;
+}
+
+.miniimg p{
+  text-align: center;
+  color: white;
+}
+.miniimg img{
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+}
 .assignlist{
   background-color: #F2E1F5;
   display: grid;
@@ -84,15 +165,17 @@ height: 70vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
-  height: 450px;
+  height: 500px;
   padding: 40px;
   position: relative;
+  overflow: auto;
 }
 
 .VideoFrame,
 .list {
   height: 400px;
 }
+
 
 .list {
   padding: 10px;
@@ -290,7 +373,12 @@ height: 70vh;
   height: 30px;
   animation: spin 2s linear infinite;
 }
-
+.canvas-style{
+  border: 1px solid black;
+  height: 100vh;
+  width: 100vw;
+  overflow: scroll;
+}
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -302,6 +390,9 @@ body {
   font-family: Arial, sans-serif; /* Example font family */
   font-size: 0.9rem;
   color: rgb(0, 0, 0); /* Example font size */
+}
+.outermini{
+  display: none;
 }
 textarea::placeholder,
 input::placeholder {
@@ -320,6 +411,14 @@ input::placeholder {
 .tableheader{
 grid-template-columns: 1fr;
 }
+.pageshow{
+  padding: 5px;
+}
+.slider_div img{
+  width: 100%;
+  height: 90vw;
+  object-fit: contain;
+  }
 
 .main{
   grid-template-columns: 1fr;

@@ -201,7 +201,7 @@ const[initialsave,setinitialsave]=useState(false);
               id='Razorpay_Key'
               placeholder='Razorpay_Key'
               value={Razorpay_Key}
-              className={`form-control form-control-lg ${errors.Razorpay_Key && 'is-invalid'}`}
+              className={`form-control .form-control-sm  ${errors.Razorpay_Key && 'is-invalid'}`}
               onChange={changeRazorpay_KeyHandler}
               required
             />
@@ -219,7 +219,7 @@ const[initialsave,setinitialsave]=useState(false);
               id='Razorpay_Secret_Key'
               placeholder='Razorpay Secret Key'
               value={Razorpay_Secret_Key}
-              className={`form-control form-control-lg ${errors.Razorpay_Secret_Key && 'is-invalid'}`}
+              className={`form-control .form-control-sm  ${errors.Razorpay_Secret_Key && 'is-invalid'}`}
               onChange={changeRazorpay_Secret_KeyHandler}
               required
             />

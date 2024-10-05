@@ -1,3 +1,20 @@
+.doclink{
+  color: #2F3CED;
+  cursor: pointer;
+  text-indent: 100px;
+}
+.doclink2{
+  color: #2F3CED;
+  cursor: pointer;
+  display: inline;
+}
+.doclink2 i
+.doclink i{
+  text-indent: 10px;
+}
+.doclist{
+  height:fit-content ;
+}
 .ActiveLink{
     background-color:#2F3CED;
     font-size: 1.2rem;
@@ -264,7 +281,6 @@
   .videoinputs{
     padding: 20px;
     height: min-content;
-    font-size: larger;
     display: grid;
     grid-template-rows: 1fr 1fr 4fr;
   }
@@ -276,6 +292,7 @@
     gap: 10px;
     padding: 10px;
   }
+  .thumb label,
   .videoinputs label,
   .grp label{
     font-size: larger;

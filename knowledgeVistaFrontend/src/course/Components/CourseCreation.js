@@ -307,7 +307,7 @@ const handlenextclick =(e)=>{
                                         id='courseName'
                                         name="courseName"
                                         value={formData.courseName}
-                                        className={`form-control form-control-lg  ${errors.courseName && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm   ${errors.courseName && 'is-invalid'}`}
                                         placeholder="Course Title"
                                         onChange={handleChange}
                                         autoFocus
@@ -332,7 +332,7 @@ const handlenextclick =(e)=>{
                                         name="courseDescription"
                                         value={formData.courseDescription}
                                         onChange={handleChange}
-                                        className={`form-control form-control-lg ${errors.courseDescription && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm  ${errors.courseDescription && 'is-invalid'}`}
                                         placeholder="Course Description"
                                         required
                                     />
@@ -353,7 +353,7 @@ const handlenextclick =(e)=>{
                                         id='courseCategory'
                                         name="courseCategory"
                                         onChange={handleChange}
-                                        className={`form-control form-control-lg  ${errors.courseCategory && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm   ${errors.courseCategory && 'is-invalid'}`}
                                         placeholder="Course Category"
                                         value={formData.courseCategory}
                                         required
@@ -416,7 +416,7 @@ const handlenextclick =(e)=>{
                                         name="Duration"
                                         value={formData.Duration}
                                         onChange={handleChange}
-                                        className={`form-control form-control-lg  ${errors.Duration && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm   ${errors.Duration && 'is-invalid'}`}
                                         required
                                     />
                                     <div className="invalid-feedback">
@@ -435,7 +435,7 @@ const handlenextclick =(e)=>{
                                         placeholder='No Of Seats'
                                         id='Noofseats'
                                         name="Noofseats"
-                                        className={`form-control form-control-lg  ${errors.Noofseats && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm   ${errors.Noofseats && 'is-invalid'}`}
                                         value={formData.Noofseats}
                                         onChange={handleChange}
                                         required
@@ -458,7 +458,7 @@ const handlenextclick =(e)=>{
                                         id='courseAmount'
                                         name="courseAmount"
                                         value={formData.courseAmount}
-                                        className={`form-control form-control-lg  ${errors.courseAmount && 'is-invalid'}`}
+                                        className={`form-control .form-control-sm   ${errors.courseAmount && 'is-invalid'}`}
                                         onChange={handleChange}
                                         required
                                     />

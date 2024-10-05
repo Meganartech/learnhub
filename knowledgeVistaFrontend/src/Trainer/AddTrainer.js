@@ -404,7 +404,7 @@ setErrors((prevErrors) => ({
                 onChange={handleChange}
                 name="username"
                 
-                className={`form-control form-control-lg mt-1 ${errors.username && 'is-invalid'}`}
+                className={`form-control .form-control-sm  mt-1 ${errors.username && 'is-invalid'}`}
                 placeholder="Full Name"
                 autoFocus
                 required
@@ -419,7 +419,7 @@ setErrors((prevErrors) => ({
               <span>:</span><div>              <input
                       type="email"
                       autoComplete="off"
-                      className={`form-control form-control-lg ${errors.email && 'is-invalid'}`}
+                      className={`form-control .form-control-sm  ${errors.email && 'is-invalid'}`}
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
@@ -440,7 +440,7 @@ setErrors((prevErrors) => ({
   </label>
   <span>:</span>
   <div>
-  <div className={`inputpsw form-control form-control-lg p-1  ${errors.psw && "is-invalid"}`} >
+  <div className={`inputpsw form-control .form-control-sm  p-1  ${errors.psw && "is-invalid"}`} >
     <input
       type={showPassword ? "text" : "password"}
       name="psw"
@@ -467,7 +467,7 @@ setErrors((prevErrors) => ({
   </label>
   <span>:</span>
   <div>
-  <div className={`inputpsw form-control form-control-lg p-1 ${errors.confirm_password && "is-invalid"}`}>
+  <div className={`inputpsw form-control .form-control-sm  p-1 ${errors.confirm_password && "is-invalid"}`}>
     <input
       type={showConfirmPassword ? "text" : "password"}
       name="confirm_password"
@@ -506,7 +506,7 @@ setErrors((prevErrors) => ({
         id="phone"
         value={phoneNumber||''}
         onChange={handlePhoneChange}
-        className={`form-control form-control-lg ${
+        className={`form-control .form-control-sm  ${
           errors.phone && "is-invalid"
         }`}
         defaultCountry={defaultCountry}
@@ -531,7 +531,7 @@ setErrors((prevErrors) => ({
                   <input
                     type="date"
                     name="dob"
-                    className={`form-control form-control-lg ${
+                    className={`form-control .form-control-sm  ${
                       errors.dob && "is-invalid"
                     }`}
                     placeholder="Starting year"
@@ -558,7 +558,7 @@ setErrors((prevErrors) => ({
                     value={formData.skills}
                     onChange={handleChange}
                     name="skills"
-                    className={`form-control form-control-lg mt-1 ${
+                    className={`form-control .form-control-sm  mt-1 ${
                       errors.skills && "is-invalid"
                     }`}
                     placeholder="skills"

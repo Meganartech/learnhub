@@ -8853,6 +8853,7 @@ button.bg-dark:hover {
 .text-primary {
   color: #4e73df !important;
 }
+
 a.text-primary:focus,
 a.text-primary:hover {
   color: #224abe !important;

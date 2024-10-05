@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
+import com.knowledgeVista.Course.DocsDetails;
 import com.knowledgeVista.Course.Controller.CheckAccess;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Controller.CourseControllerSecond;
@@ -250,28 +251,45 @@ public class FrontController {
 		 }
 		 
 //----------------------------videolessonController-------------------------------
+		 @GetMapping("/getDocs/{lessonId}")
+		 public ResponseEntity<?>getDocsName( @PathVariable Long lessonId,@RequestHeader("Authorization") String token){
+			 return videoless.getDocsName(lessonId,token);
+		 }
+		 @GetMapping("/getmini/{lessonId}/{docId}")
+		 public  ResponseEntity<?> getMiniatureDetails( @PathVariable Long lessonId,@PathVariable Long docId,@RequestHeader("Authorization") String token){
+			 return videoless.getMiniatureDetails(lessonId, docId, token);
+		 }
+		
 		 @PostMapping("/lessons/save/{courseId}")
-		  public ResponseEntity<?> savenote(
-				  									@RequestParam(value="thumbnail",required=false) MultipartFile file,
+		  public ResponseEntity<?> savenote(     @RequestParam(value="thumbnail",required=false) MultipartFile file,
 				  								  @RequestParam("Lessontitle") String Lessontitle,
 		                                          @RequestParam("LessonDescription") String LessonDescription,
 		                                          @RequestParam(value = "videoFile", required = false) MultipartFile videoFile,
 		                                          @RequestParam(value = "fileUrl", required = false) String fileUrl,
+		                                          @RequestParam(value="documentContent",required=false)List<MultipartFile> documentFiles,
 		                                          @PathVariable Long courseId,
 		                                          @RequestHeader("Authorization") String token
 		                                          ) {
-			 return videoless.savenote(file, Lessontitle, LessonDescription, videoFile, fileUrl, courseId, token);
+			 return videoless.savenote(file, Lessontitle, LessonDescription, videoFile, fileUrl,documentFiles,courseId, token);
 		 }
 		 
 		 @PatchMapping("/lessons/edit/{lessonId}")
 		 public ResponseEntity<?> EditLessons(@PathVariable Long lessonId,
-		     @RequestParam(value="thumbnail" , required = false) MultipartFile file,
-		     @RequestParam(value="Lessontitle" , required = false) String Lessontitle,
-		     @RequestParam(value="LessonDescription" , required = false) String LessonDescription,
-		     @RequestParam(value = "videoFile", required = false) MultipartFile videoFile,
-		     @RequestParam(value = "fileUrl", required = false) String fileUrl,
+		     @RequestParam( required = false) MultipartFile file,
+		     @RequestParam( required = false) String Lessontitle,
+		     @RequestParam( required = false) String LessonDescription,
+		     @RequestParam( required = false) MultipartFile videoFile,
+		     @RequestParam(required = false)List<MultipartFile> newDocumentFiles,
+		     @RequestParam(required=false) List<Long> removedDetails,
+		     @RequestParam( required = false) String fileUrl,
 		     @RequestHeader("Authorization") String token) {
-			 return videoless.EditLessons(lessonId, file, Lessontitle, LessonDescription, videoFile, fileUrl, token);
+			 return videoless.EditLessons(lessonId, file, Lessontitle, LessonDescription, videoFile, fileUrl, newDocumentFiles,  removedDetails ,token);
+		 }
+		 @GetMapping("/slide/{fileName}/{pageNumber}")
+		 public ResponseEntity<?>getDocFile(@PathVariable String fileName,
+                                                      @PathVariable int pageNumber,
+                                                      @RequestHeader("Authorization") String token){
+			 return videoless.getDocFile(fileName, pageNumber, token);
 		 }
 		 
 		 @GetMapping("/lessons/getvideoByid/{lessId}/{courseId}/{token}")

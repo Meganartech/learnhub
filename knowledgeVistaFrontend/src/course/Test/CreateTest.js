@@ -356,7 +356,7 @@ const handleOptionChange = (e, index) => {
             )}
               <div className="mb-3" > 
               <input
-                className={`form-control form-control-lg  ${errors.testName && 'is-invalid'}`}
+                className={`form-control .form-control-sm   ${errors.testName && 'is-invalid'}`}
                 value={testName}
                 placeholder="Test Name"
                 onChange={handleTestNameChange}
@@ -371,7 +371,7 @@ const handleOptionChange = (e, index) => {
                       ></i>)}
      
               <input 
-              className={`form-control form-control-lg ${errors.questionText && 'is-invalid'}`}       
+              className={`form-control .form-control-sm  ${errors.questionText && 'is-invalid'}`}       
               type="text"  
               value={questionText}
                 placeholder="Add Question here"
@@ -397,7 +397,7 @@ const handleOptionChange = (e, index) => {
     /> 
     <div>
     <input
-    className={`form-control form-control-lg ${errors.options[index] && 'is-invalid'}`}
+    className={`form-control .form-control-sm  ${errors.options[index] && 'is-invalid'}`}
     type="text"
     value={option}
     placeholder={`Option ${index + 1}`}
