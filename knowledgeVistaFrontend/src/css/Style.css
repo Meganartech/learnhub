@@ -81,6 +81,12 @@
   color: #264bc7;
   background-color: transparent;
 }
+.hidebtn2{
+  border: none;
+  outline: none;
+  color: white;
+  background-color: transparent;
+}
 .table-container {
   overflow-y:auto;
   overflow-x:auto;

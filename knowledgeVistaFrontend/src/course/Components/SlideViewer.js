@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import baseUrl from "../api/utils";
-import { useLocation, useNavigate } from "react-router-dom";
+import baseUrl from "../../api/utils";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const SlideViewer = () => {
   const token = sessionStorage.getItem("token");
@@ -9,7 +9,7 @@ const SlideViewer = () => {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [miniatures, setMiniatures] = useState([]);
   const navigate = useNavigate();
-  const { doc, lessonId } = location.state || {};
+  const {documentPath,lessonId,docid}=useParams();
   const [actualwidth,setactualwidth]=useState("")
   const [slideImages, setSlideImages] = useState([]); // To store all slide images
   const [totalSlides, setTotalSlides] = useState(0); // To store total slides count
@@ -66,8 +66,8 @@ const SlideViewer = () => {
   // Fetch slide image by slide number
   const fetchSlideImage = async (slideNumber) => {
     try {
-      const response = await axios.get(
-        `${baseUrl}/slide/${doc.documentPath}/${slideNumber}`,
+       
+      const response = await axios.get(`${baseUrl}/slide/${documentPath}/${slideNumber}` ,
         {
           responseType: "json",
           headers: {
@@ -116,8 +116,9 @@ const SlideViewer = () => {
   useEffect(() => {
     const fetchMinis = async () => {
       try {
+       console.log("lesid=")
         const miniResponse = await axios.get(
-          `${baseUrl}/getmini/${lessonId}/${doc.id}`,
+          `${baseUrl}/getmini/${lessonId}/${docid}`,
           {
             headers: {
               Authorization: token,
@@ -130,10 +131,10 @@ const SlideViewer = () => {
       }
     };
 
-    if (lessonId && doc && doc.id) {
+    if (lessonId && docid) {
       fetchMinis();
     }
-  }, [lessonId, doc]);
+  }, [lessonId,docid]);
 
   // Handle scroll event to track current slide
   const handleScroll = (event) => {
@@ -178,6 +179,7 @@ const SlideViewer = () => {
     <div className="contentbackground">
       <div className="contentinner">
         <div className="navigateheaders">
+          
           <div onClick={() => navigate(-1)}>
             <i className="fa-solid fa-arrow-left"></i>
           </div>
@@ -188,13 +190,13 @@ const SlideViewer = () => {
         </div>
         <div className="wrapppt">
           <div className="headdocu">
-            <div>{doc?.documentName}</div>
+            <div>{documentPath.substring(documentPath.indexOf("_")+1)}</div>
             <div className="pageshow">
               <span className="pageshowchild">
                 <span className="currentslide">{currentSlide}</span> / {totalSlides}
               </span>
               <span className="p-1">
-                <i onClick={zoomOut} className="fa-solid fa-minus zoombtn"></i>
+              <button disabled={slideImages.length<totalSlides}  className=" hidebtn2 "> <i onClick={zoomOut} className="zoombtn fa-solid fa-minus "  ></i></button>
                 <input
                   type="text"
                   className="m-1 currentslide"
@@ -204,7 +206,8 @@ const SlideViewer = () => {
                   min={10}
                   max={500}
                 />
-                <i onClick={zoomIn} className="fa-solid fa-plus zoombtn"></i>
+               <button disabled={slideImages.length<totalSlides}  className=" hidebtn2 ">  <i onClick={zoomIn} disabled={slideImages.length<totalSlides} className="fa-solid fa-plus zoombtn"></i>
+               </button>
               </span>
             </div>
           </div>

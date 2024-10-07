@@ -70,7 +70,7 @@ import Affiliates from "./SysAdmin/Affiliates.js";
 import MailSending from "./Meetings/MailSending.js";
 import MailSettings from "./Meetings/MailSettings.js";
 import DisplayName from "./UserSettings/DisplayName.js";
-import SlideViewer from "./UserSettings/SlideViewer.js";
+import SlideViewer from "./course/Components/SlideViewer.js";
 import AdminProfileView from "./SysAdmin/AdminProfileView.js";
 
 
@@ -181,7 +181,7 @@ function App() {
                       <Route path="/mailSending" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true}><MailSending/></PrivateRoute>}/>
                       <Route path="/mailsettings" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} onlyadmin={true}><MailSettings/></PrivateRoute>}/>
                       <Route path="/displayname" element={<PrivateRoute authenticationRequired={true} authorizationRequired={true} onlyadmin={true}><DisplayName/></PrivateRoute>}/>
-                      <Route path="/viewDocument" element={<PrivateRoute authenticationRequired={true}><SlideViewer/></PrivateRoute>}/>
+                      <Route path="/viewDocument/:documentPath/:lessonId/:docid" element={<PrivateRoute authenticationRequired={true}><SlideViewer/></PrivateRoute>}/>
                        {/* SysAdminRoutes */}
                        <Route path="/viewAll/Admins" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewAdmin/></PrivateRoute>}/>
                        <Route path="/viewAll/Trainers" element={<PrivateRoute authenticationRequired={true} sysadmin={true}><ViewTrainers/></PrivateRoute>}/>

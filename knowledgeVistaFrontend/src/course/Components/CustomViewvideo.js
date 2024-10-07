@@ -373,9 +373,7 @@ const CustomViewvideo = () => {
                             className="doclink"
                               key={doc.id}
                               onClick={() => {
-                                navigate("/viewDocument", {
-                                  state: { doc: doc , lessonId: lessonId,},
-                                });
+                                navigate(`/viewDocument/${doc.documentPath}/${lessonId}/${doc.id}`);
                               }}
                             >
                               {doc.documentName != null
