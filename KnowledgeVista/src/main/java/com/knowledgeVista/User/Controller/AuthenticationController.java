@@ -34,11 +34,15 @@ public class AuthenticationController {
 	    private TokenBlacklist tokenBlacklist;
 
 	    public ResponseEntity<String> logout(String token) {
-	        // Extract the token from the Authorization header
-	        // Check if the token is valid (e.g., not expired)
-	        // Blacklist the token to invalidate it
+	    	
+	      String email=jwtUtil.getUsernameFromToken(token);
+	        Optional<Muser> userOptional = muserRepositories.findByEmail(email);
+	        if (userOptional.isPresent()) {
+	            Muser user = userOptional.get();
+	            user.setLastactive(LocalDateTime.now());
+                muserRepositories.save(user);
 	        tokenBlacklist.blacklistToken(token);
-
+	        }
 	        // Respond with a success message
 	        return ResponseEntity.ok().body("Logged out successfully");
 	    }
