@@ -207,7 +207,7 @@ const EditTrainer = () => {
     };
     const handleFileChange = (e) => {
       const file = e.target.files[0];
-     if (file.size > 50 * 1024) {
+     if (file && file.size > 50 * 1024) {
   setErrors((prevErrors) => ({
     ...prevErrors,
     profile: 'Image size must be 50 KB or smaller',

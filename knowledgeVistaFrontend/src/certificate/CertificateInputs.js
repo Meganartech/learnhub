@@ -256,7 +256,7 @@ const certificateInputs=(
       <div>
       <input
         id='institutionName'
-        className={`${errors.institutionName && 'is-invalid'}`}
+        className={`form-control .form-control-sm  ${errors.institutionName && 'is-invalid'}`}
         placeholder='Institution Name'
         value={certificate.institutionName}
         onChange={handleChange}
@@ -276,7 +276,7 @@ const certificateInputs=(
         id='ownerName'
         placeholder='Owner Name'
         
-        className={`${errors.ownerName && 'is-invalid'}`}
+        className={`form-control .form-control-sm  ${errors.ownerName && 'is-invalid'}`}
         value={certificate.ownerName}
         onChange={handleChange}
         required
@@ -294,7 +294,7 @@ const certificateInputs=(
       <input
       name='qualification'
         id='qualification'
-        className={`${errors.qualification && 'is-invalid'}`}
+        className={` form-control .form-control-sm  ${errors.qualification && 'is-invalid'}`}
         placeholder='Qualification'
         value={certificate.qualification}
         onChange={handleChange}
@@ -314,7 +314,7 @@ const certificateInputs=(
         id='address'
         placeholder='Address'
         
-        className={`${errors.address && 'is-invalid'}`}
+        className={`form-control .form-control-sm  ${errors.address && 'is-invalid'}`}
         value={certificate.address}
         onChange={handleChange}
         required

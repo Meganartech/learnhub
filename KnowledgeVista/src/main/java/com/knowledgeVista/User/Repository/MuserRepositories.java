@@ -51,7 +51,7 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	        @Param("institutionName") String institutionName
 	    );
 
-@Query("SELECT new com.knowledgeVista.User.MuserProfileDTO(u.profile, u.countryCode, u.role.roleName ) " +
+@Query("SELECT new com.knowledgeVista.User.MuserProfileDTO(u.profile, u.countryCode, u.role.roleName,u.lastactive ) " +
         "FROM Muser u " +
         "JOIN u.role r " +
         "WHERE u.email = :email ")

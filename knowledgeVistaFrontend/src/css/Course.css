@@ -86,11 +86,15 @@ border-right: 1px solid white
   text-align: center;
   color: white;
 }
+.heightmini{
+  height: 125px;
+}
+.activemini img,
 .miniimg img{
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   
-  height: 100px;
+  height: 100%;
   width: 100px;
   object-fit: cover;
 }

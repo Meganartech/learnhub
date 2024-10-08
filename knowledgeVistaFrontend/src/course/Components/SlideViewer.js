@@ -9,8 +9,8 @@ const SlideViewer = () => {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [miniatures, setMiniatures] = useState([]);
   const navigate = useNavigate();
-  const {documentPath,lessonId,docid}=useParams();
-  const [actualwidth,setactualwidth]=useState("")
+  const { documentPath, lessonId, docid } = useParams();
+  const [actualwidth, setactualwidth] = useState("");
   const [slideImages, setSlideImages] = useState([]); // To store all slide images
   const [totalSlides, setTotalSlides] = useState(0); // To store total slides count
   const [width, setWidth] = useState(null); // Initial width dynamically set
@@ -22,11 +22,11 @@ const SlideViewer = () => {
     setZoomInputValue((prevValue) => {
       const numericValue = parseInt(prevValue.replace("%", ""));
       const newZoom = Math.min(numericValue + 10, 500); // Max zoom 500%
-      console.log("newzoom",newZoom)
-      console.log("calculated",(newZoom / 100) * actualwidth);
+      console.log("newzoom", newZoom);
+      console.log("calculated", (newZoom / 100) * actualwidth);
       setWidth((newZoom / 100) * actualwidth); // Adjust width based on new zoom level
-      console.log("actual",actualwidth)
-      console.log("width",width)
+      console.log("actual", actualwidth);
+      console.log("width", width);
       return `${newZoom}%`;
     });
   };
@@ -36,25 +36,24 @@ const SlideViewer = () => {
     setZoomInputValue((prevValue) => {
       const numericValue = parseInt(prevValue.replace("%", ""));
       const newZoom = Math.max(numericValue - 10, 10); // Min zoom 10%
-      console.log("newzoom",newZoom)
-      console.log("calculated",(newZoom / 100) * actualwidth);
+      console.log("newzoom", newZoom);
+      console.log("calculated", (newZoom / 100) * actualwidth);
       setWidth((newZoom / 100) * actualwidth); // Adjust width based on new zoom level
-      console.log("actual",actualwidth)
-      console.log("width",width)
+      console.log("actual", actualwidth);
+      console.log("width", width);
       return `${newZoom}%`;
     });
   };
-  
 
   const handleZoomChange = (event) => {
     setZoomInputValue(event.target.value);
-    const inputValue = event.target.value.replace('%', '');
-    
+    const inputValue = event.target.value.replace("%", "");
+
     const numericValue = Number(inputValue);
     if (!isNaN(numericValue)) {
       const newZoom = Math.max(numericValue - 10, 10); // Min zoom 10%
       setWidth((newZoom / 100) * actualwidth); // Adjust width
-     // setZoomInputValue(`${newZoom}%`);
+      // setZoomInputValue(`${newZoom}%`);
     }
   };
 
@@ -66,8 +65,8 @@ const SlideViewer = () => {
   // Fetch slide image by slide number
   const fetchSlideImage = async (slideNumber) => {
     try {
-       
-      const response = await axios.get(`${baseUrl}/slide/${documentPath}/${slideNumber}` ,
+      const response = await axios.get(
+        `${baseUrl}/slide/${documentPath}/${slideNumber}`,
         {
           responseType: "json",
           headers: {
@@ -95,7 +94,6 @@ const SlideViewer = () => {
 
   // Fetch all slides
   useEffect(() => {
-  
     const fetchAllSlides = async () => {
       for (let i = 1; i <= totalSlides; i++) {
         await fetchSlideImage(i);
@@ -116,7 +114,7 @@ const SlideViewer = () => {
   useEffect(() => {
     const fetchMinis = async () => {
       try {
-       console.log("lesid=")
+        console.log("lesid=");
         const miniResponse = await axios.get(
           `${baseUrl}/getmini/${lessonId}/${docid}`,
           {
@@ -134,7 +132,7 @@ const SlideViewer = () => {
     if (lessonId && docid) {
       fetchMinis();
     }
-  }, [lessonId,docid]);
+  }, [lessonId, docid]);
 
   // Handle scroll event to track current slide
   const handleScroll = (event) => {
@@ -170,7 +168,7 @@ const SlideViewer = () => {
   // Handle image load to get its natural dimensions and calculate the aspect ratio
   const handleImageLoad = (event) => {
     const { naturalWidth, naturalHeight } = event.target;
-    setactualwidth(naturalWidth)
+    setactualwidth(naturalWidth);
     setAspectRatio(naturalWidth / naturalHeight); // Calculate aspect ratio
     setWidth(naturalWidth); // Set initial width based on natural dimensions
   };
@@ -179,7 +177,6 @@ const SlideViewer = () => {
     <div className="contentbackground">
       <div className="contentinner">
         <div className="navigateheaders">
-          
           <div onClick={() => navigate(-1)}>
             <i className="fa-solid fa-arrow-left"></i>
           </div>
@@ -190,13 +187,23 @@ const SlideViewer = () => {
         </div>
         <div className="wrapppt">
           <div className="headdocu">
-            <div>{documentPath.substring(documentPath.indexOf("_")+1)}</div>
+            <div>{documentPath.substring(documentPath.indexOf("_") + 1)}</div>
             <div className="pageshow">
               <span className="pageshowchild">
-                <span className="currentslide">{currentSlide}</span> / {totalSlides}
+                <span className="currentslide">{currentSlide}</span> /{" "}
+                {totalSlides}
               </span>
               <span className="p-1">
-              <button disabled={slideImages.length<totalSlides}  className=" hidebtn2 "> <i onClick={zoomOut} className="zoombtn fa-solid fa-minus "  ></i></button>
+                <button
+                  disabled={slideImages.length < totalSlides}
+                  className=" hidebtn2 "
+                >
+                  {" "}
+                  <i
+                    onClick={zoomOut}
+                    className="zoombtn fa-solid fa-minus "
+                  ></i>
+                </button>
                 <input
                   type="text"
                   className="m-1 currentslide"
@@ -206,8 +213,17 @@ const SlideViewer = () => {
                   min={10}
                   max={500}
                 />
-               <button disabled={slideImages.length<totalSlides}  className=" hidebtn2 ">  <i onClick={zoomIn} disabled={slideImages.length<totalSlides} className="fa-solid fa-plus zoombtn"></i>
-               </button>
+                <button
+                  disabled={slideImages.length < totalSlides}
+                  className=" hidebtn2 "
+                >
+                  {" "}
+                  <i
+                    onClick={zoomIn}
+                    disabled={slideImages.length < totalSlides}
+                    className="fa-solid fa-plus zoombtn"
+                  ></i>
+                </button>
               </span>
             </div>
           </div>
@@ -221,11 +237,19 @@ const SlideViewer = () => {
                     className="miniimg"
                     onClick={() => goToSlide(mini.pageNumber)} // Scroll to the slide
                   >
-                    <img
-                      className={`${currentSlide === mini.pageNumber ? "activemini" : ""}`}
-                      src={`data:image/jpeg;base64,${mini.miniatureContent}`}
-                      
-                    />
+                    {" "}
+                    <div
+                      className={`  ${
+                        documentPath.endsWith(".pdf") ? "heightmini" : ""
+                      }`}
+                    >
+                      <img
+                        className={`${
+                          currentSlide === mini.pageNumber ? "activemini" : ""
+                        } `}
+                        src={`data:image/jpeg;base64,${mini.miniatureContent}`}
+                      />
+                    </div>
                     <p>{mini.pageNumber}</p>
                   </div>
                 ))}
@@ -256,7 +280,14 @@ const SlideViewer = () => {
                       onLoad={handleImageLoad}
                     />
                   ) : (
-                    <div key={index} style={{ width: "100%", height: "100%", backgroundColor: "lightgrey" }}>
+                    <div
+                      key={index}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "lightgrey",
+                      }}
+                    >
                       Loading...
                     </div>
                   )

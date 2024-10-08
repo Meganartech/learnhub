@@ -71,7 +71,7 @@ const CourseForm = ({ formData, setFormData, errors, setErrors, setnextclick }) 
             return;
         }
 
-        if (file.size > 1 * 1024 * 1024) {
+        if (file && file.size > 1 * 1024 * 1024) {
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 courseImage: 'Image size must be 1 MB or smaller',

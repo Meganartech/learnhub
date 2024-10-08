@@ -602,7 +602,7 @@ const EditLesson = () => {
                                      
                                   </>
                                 )}</div><i
-                                className="fa-regular fa-trash-can"
+                                className="fa-regular fa-trash-can text-danger"
                                 style={{
                                   marginLeft: "10px",
                                   cursor: "pointer",
@@ -633,7 +633,7 @@ const EditLesson = () => {
                                 </>
                               )}
                                <i
-                                className="fa-regular fa-trash-can"
+                                className="fa-regular fa-trash-can text-danger"
                                 style={{
                                   marginLeft: "10px",
                                   cursor: "pointer",

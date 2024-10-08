@@ -16,7 +16,7 @@ const AdminProfileView = () => {
   const [initialUserData, setInitialUserData] = useState(
     location.state?.user || null
   );
-  const[LicenceNotfound,setLicenceNotfound]=useState(true)
+  const [LicenceNotfound, setLicenceNotfound] = useState(true);
   const [userData, setUserData] = useState({
     username: "",
     email: "",
@@ -26,6 +26,7 @@ const AdminProfileView = () => {
     countryCode: "",
     profile: null,
     roleName: "",
+    lastactive: "",
   });
 
   useEffect(() => {
@@ -58,6 +59,7 @@ const AdminProfileView = () => {
 
             if (response.status === 200) {
               const serverData = response.data;
+
               if (serverData.profile) {
                 setImg(`data:image/jpeg;base64,${serverData.profile}`);
               }
@@ -86,48 +88,47 @@ const AdminProfileView = () => {
   }, [initialUserData, adminemail, role, token]);
   useEffect(() => {
     const fetchlicencedetailsforadmin = async () => {
-        try{
-      const response = await axios.get(
-        `${baseUrl}/licence/getinfo/${adminemail}`,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      const { data } = response; // Destructure data from response
+      try {
+        const response = await axios.get(
+          `${baseUrl}/licence/getinfo/${adminemail}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        const { data } = response; // Destructure data from response
+        setLicenceNotfound(false);
+        // Filter out unwanted properties
+        const filteredData = {
+          ProductName: data.product_name,
+          CompanyName: data.company_name,
+          trainer: data.trainer, // Assuming Contact refers to trainer
+          student: data.students,
+          course: data.course,
+          Email: data.email, // Assuming email property exists
+          version: data.version, // Assuming version property exists
+          Type: data.type,
+          StartDate: data.start_date
+            ? new Date(data.start_date).toLocaleDateString()
+            : "NA",
+          EndDate: data.end_date
+            ? new Date(data.end_date).toLocaleDateString()
+            : "NA",
+          StorageSize: `${data.storagesize || 0} GB`, // Handle null storage size
+        };
 
-      // Filter out unwanted properties
-      const filteredData = {
-        ProductName: data.product_name,
-        CompanyName: data.company_name,
-        trainer: data.trainer, // Assuming Contact refers to trainer
-        student: data.students,
-        course: data.course,
-        Email: data.email, // Assuming email property exists
-        version: data.version, // Assuming version property exists
-        Type: data.type,
-        StartDate: data.start_date
-          ? new Date(data.start_date).toLocaleDateString()
-          : "NA",
-        EndDate: data.end_date
-          ? new Date(data.end_date).toLocaleDateString()
-          : "NA",
-        StorageSize: `${data.storagesize || 0} GB`, // Handle null storage size
-      };
-
-      setLicenceDetails(filteredData);
-    }
-catch(error){
+        setLicenceDetails(filteredData);
+      } catch (error) {
         if (error.response) {
-            if (error.response.status === 404) {
-                setLicenceNotfound(true)
-            }else{
-                console.log(error)
-            }
+          if (error.response.status === 404) {
+            setLicenceNotfound(true);
+          } else {
+            console.log(error);
+          }
         }
-    }
-};
+      }
+    };
     fetchlicencedetailsforadmin();
   }, []);
   return (
@@ -177,6 +178,36 @@ catch(error){
                   borderRadius: "20px",
                 }}
               >
+              {userData.lastactive &&
+              <div style={{ display: 'flex', alignItems: 'center' }} >
+                  <div
+                  className={
+                    (new Date() - new Date(userData.lastactive)) /
+                      (1000 * 60 * 60 * 24) <=
+                    7
+                      ? "Activeuser"
+                      : "InActiveuser"
+                  }
+                >
+                  <i className="fa-solid fa-circle pr-3"></i>
+                  {(new Date() - new Date(userData.lastactive)) /
+                    (1000 * 60 * 60 * 24) <=
+                  7
+                    ? "Active"
+                    : "In Active"}
+                </div>
+                <div className="small ml-2">
+  {"Last Active: " +
+    (new Date(userData.lastactive).toDateString() === new Date().toDateString()
+      ? "Today"
+      : new Date(userData.lastactive).toDateString() === new Date(Date.now() - 86400000).toDateString()
+      ? "Yesterday"
+      : new Date(userData.lastactive).toLocaleDateString()) +
+    " at " +
+    new Date(userData.lastactive).toLocaleTimeString()}
+</div>
+</div>}
+
                 <div className="inputgrp2">
                   <label htmlFor="Name">Name</label>
                   <span>:</span>
@@ -214,72 +245,71 @@ catch(error){
               </div>
             </div>
             {LicenceNotfound ? (
-          <h1 style={{ textAlign: "center", marginTop: "20px" }}>
-            No Licence found with the email
-          </h1>
-        ) : (
-            <div className="mt-5">
-              <h2 style={{ textDecoration: "underline", textAlign: "center"  }}>
-                Licence Info
-              </h2>
+              <h1 style={{ textAlign: "center", marginTop: "20px" }}>
+                No Licence found with the email
+              </h1>
+            ) : (
+              <div className="mt-5">
+                <h2
+                  style={{ textDecoration: "underline", textAlign: "center" }}
+                >
+                  Licence Info
+                </h2>
 
-              <div
-                className="twosplit"
-                style={{ marginBottom: "10px", gap: "20px" }}
-              >
-                <div className="inputgrp2">
-                  <label>Product name </label>
-                  <span>:</span>
-                  <label>{licenceDetails.ProductName || "NA"}</label>
+                <div
+                  className="twosplit"
+                  style={{ marginBottom: "10px", gap: "20px" }}
+                >
+                  <div className="inputgrp2">
+                    <label>Product name </label>
+                    <span>:</span>
+                    <label>{licenceDetails.ProductName || "NA"}</label>
+                  </div>
+
+                  <div className="inputgrp2">
+                    <label>Trainers </label>
+                    <span>:</span>
+                    <label>{licenceDetails.trainer || "NA"}</label>
+                  </div>
+
+                  <div className="inputgrp2">
+                    <label>Students </label>
+                    <span>:</span>
+                    <label>{licenceDetails.student || "NA"}</label>
+                  </div>
+
+                  <div className="inputgrp2">
+                    <label>Course </label>
+                    <span>:</span>
+                    <label>{licenceDetails.course || "NA"}</label>
+                  </div>
+
+                  <div className="inputgrp2">
+                    <label>Type </label>
+                    <span>:</span>
+                    <label>{licenceDetails.Type || "NA"}</label>
+                  </div>
+
+                  <div className="inputgrp2">
+                    <label>Start Date </label>
+                    <span>:</span>
+                    <label>{licenceDetails.StartDate}</label>
+                  </div>
+
+                  <div className="inputgrp2">
+                    <label>End Date </label>
+                    <span>:</span>
+                    <label>{licenceDetails.EndDate}</label>
+                  </div>
+
+                  <div className="inputgrp2">
+                    <label>Storage Size </label>
+                    <span>:</span>
+                    <label>{licenceDetails.StorageSize}</label>
+                  </div>
                 </div>
-
-              
-
-                <div className="inputgrp2">
-                  <label>Trainers </label>
-                  <span>:</span>
-                  <label>{licenceDetails.trainer || "NA"}</label>
-                </div>
-
-                <div className="inputgrp2">
-                  <label>Students </label>
-                  <span>:</span>
-                  <label>{licenceDetails.student || "NA"}</label>
-                </div>
-
-                <div className="inputgrp2">
-                  <label>Course </label>
-                  <span>:</span>
-                  <label>{licenceDetails.course || "NA"}</label>
-                </div>
-
-                <div className="inputgrp2">
-                  <label>Type </label>
-                  <span>:</span>
-                  <label>{licenceDetails.Type || "NA"}</label>
-                </div>
-
-                <div className="inputgrp2">
-                  <label>Start Date </label>
-                  <span>:</span>
-                  <label>{licenceDetails.StartDate}</label>
-                </div>
-
-                <div className="inputgrp2">
-                  <label>End Date </label>
-                  <span>:</span>
-                  <label>{licenceDetails.EndDate}</label>
-                </div>
-
-                <div className="inputgrp2">
-                  <label>Storage Size </label>
-                  <span>:</span>
-                  <label>{licenceDetails.StorageSize}</label>
-                </div>
-
-              
               </div>
-            </div>)}
+            )}
           </div>
         )}
       </div>

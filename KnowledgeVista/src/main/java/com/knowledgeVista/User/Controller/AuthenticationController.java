@@ -1,6 +1,8 @@
 package com.knowledgeVista.User.Controller;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -64,7 +66,8 @@ public class AuthenticationController {
 			                if(isActiveAdmin.equals(true)) {
 				            	String Role=user.getRole().getRoleName();
 				                String jwtToken = jwtUtil.generateToken(username,Role);
-			
+			                    user.setLastactive(LocalDateTime.now());
+			                    muserRepositories.save(user);
 				                // Prepare response body as JSON
 				                Map<String, Object> responseBody = new HashMap<>();
 				                responseBody.put("token", jwtToken);
@@ -84,7 +87,8 @@ public class AuthenticationController {
 	            		}else {
 	            			String Role=user.getRole().getRoleName();
 			                String jwtToken = jwtUtil.generateToken(username,Role);
-		
+			                user.setLastactive(LocalDateTime.now());
+		                    muserRepositories.save(user);
 			                // Prepare response body as JSON
 			                Map<String, Object> responseBody = new HashMap<>();
 			                responseBody.put("token", jwtToken);
@@ -113,25 +117,6 @@ public class AuthenticationController {
 	    }
 		
 	 
-	 
-//	 @GetMapping("/dashboard")
-//	 public ResponseEntity<String> getDashboard(@RequestHeader("Authorization") String token) {
-//	     if (jwtUtil.validateToken(token)) {
-//	         // User is authenticated
-//	         // Return dashboard data
-//	         return ResponseEntity.ok("Dashboard data");
-//	     } else {
-//	         // Unauthorized access
-//	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
-//	     }
-//	 }
-
-	 
-	   
-	  
-
-	    
-	    
 
 	    
 	    //````````````````````````````````````````````````for view`````````````````````````````````````````````

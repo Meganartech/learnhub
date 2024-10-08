@@ -847,9 +847,7 @@ public ResponseEntity<?>getMiniatureDetails(Long lessonId,Long Id , String token
 						
 						if (Sizedeleted>0) {
 							lessonrepo.deleteById(lessonId);
-                            Long ResultSize=Size-Sizedeleted;
-                            videolesson.setSize(ResultSize);
-                            lessonrepo.save(videolesson);
+                           
 							return ResponseEntity
 									.ok("{\"message\":\"Lesson " + Lessontitle + " Deleted Successfully\"}");
 						} else {
