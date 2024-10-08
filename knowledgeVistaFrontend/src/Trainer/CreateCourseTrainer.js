@@ -101,7 +101,7 @@ const CreateCourseTrainer = () => {
     }
 
     // Check file size (should be 1 MB or less)
-    if (file.size > 50 * 1024) {
+    if (file && file.size > 50 * 1024) {
         setErrors((prevErrors) => ({
             ...prevErrors,
             courseImage: 'Image size must be 50kb or smaller',
