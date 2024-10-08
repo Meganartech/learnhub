@@ -1,5 +1,6 @@
 package com.knowledgeVista.User.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,13 +52,17 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	        @Param("institutionName") String institutionName
 	    );
 
-@Query("SELECT new com.knowledgeVista.User.MuserProfileDTO(u.profile, u.countryCode, u.role.roleName,u.lastactive ) " +
+@Query("SELECT new com.knowledgeVista.User.MuserProfileDTO(u.profile, u.countryCode, u.role.roleName ,u.lastactive) " +
         "FROM Muser u " +
         "JOIN u.role r " +
         "WHERE u.email = :email ")
  Optional<MuserProfileDTO> findProfileAndCountryCodeAndRoleByEmail(
      @Param("email") String email
  );
+
+@Query("SELECT MAX(m.lastactive) FROM Muser m WHERE m.institutionName = :institutionName")
+LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String institutionName);
+
 
 	@Query("SELECT u FROM Muser u WHERE u.username = ?1")
 	  Optional<Muser> findByname(String username);

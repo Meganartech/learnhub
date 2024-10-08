@@ -333,15 +333,24 @@ public class MserRegistrationController {
 		    
             // Perform authentication based on role
             if ("SYSADMIN".equals(role)) {
+            	Optional<Muser>opuser=muserrepositories.findByEmail(email);
+            	if(opuser.isPresent()) {
+            		Muser user=opuser.get();
+            		
             	 Optional<MuserProfileDTO> userOptional = muserrepositories.findProfileAndCountryCodeAndRoleByEmail(email);
 	                if (userOptional.isPresent()) {
-	                	MuserProfileDTO user = userOptional.get();
+	                	
+	                	MuserProfileDTO userdto = userOptional.get();
+	                	userdto.setLastactive(muserrepositories.findLatestLastActiveByInstitution(user.getInstitutionName()));
 	                    return ResponseEntity.ok()
 	                            .contentType(MediaType.APPLICATION_JSON)
-	                            .body(user);
+	                            .body(userdto);
 	                    }else {
-		   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Trainer not found\"}");
+		   	             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Admin not found\"}");
 	                }
+            	}else {
+            		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Admin not found\"}");
+            	}
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
