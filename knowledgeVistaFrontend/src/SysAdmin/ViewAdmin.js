@@ -413,8 +413,8 @@ const ViewAdmin = () => {
                 <td className='py-2'> {(new Date() - new Date(user.lastActive)) /
                     (1000 * 60 * 60 * 24) <=
                   7
-                    ? <i className="fa-solid fa-circle text-success"></i>
-                    : <i className="fa-solid fa-circle text-danger"></i>}</td>
+                    ? <i className="fa-solid fa-person-shelter text-success"></i>
+                    :<i className="fa-solid fa-person-walking-luggage text-danger"></i>}</td>
                 {/* <td className='text-center'>
               <button to={`/trainer/edit/${user.email}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>
