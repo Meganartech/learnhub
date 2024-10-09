@@ -1,6 +1,7 @@
 package com.knowledgeVista.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class MuserDto {
 	    private LocalDate dob;
 	    private String skills;
 	    private String institutionName;
+	    private LocalDateTime LastActive;
 
 	    public MuserDto(Long userId, String username, String email, String phone, Boolean isActive, LocalDate dob, String skills,String institutionName) {
 	        this.userId = userId;

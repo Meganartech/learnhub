@@ -147,12 +147,13 @@ const SlideViewer = () => {
     }
     if (currentSlide <= totalSlides) {
       const activemini = document.querySelector(".activemini");
+      if(activemini!==null){
       activemini.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
         inline: "start",
       });
-    }
+    }}
   };
 
   // Scroll to the desired slide

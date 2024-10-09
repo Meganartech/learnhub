@@ -181,20 +181,13 @@ const AdminProfileView = () => {
               {userData.lastactive &&
               <div style={{ display: 'flex', alignItems: 'center' }} >
                   <div
-                  className={
-                    (new Date() - new Date(userData.lastactive)) /
-                      (1000 * 60 * 60 * 24) <=
-                    7
-                      ? "Activeuser"
-                      : "InActiveuser"
-                  }
+                 
                 >
-                  <i className="fa-solid fa-circle pr-3"></i>
-                  {(new Date() - new Date(userData.lastactive)) /
+                 {(new Date() - new Date(userData.lastactive)) /
                     (1000 * 60 * 60 * 24) <=
                   7
-                    ? "Active"
-                    : "In Active"}
+                    ? <i className="fa-solid fa-circle text-success"></i>
+                    : <i className="fa-solid fa-circle text-danger"></i>}
                 </div>
                 <div className="small ml-2">
   {"Last Active: " +

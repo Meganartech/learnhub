@@ -1,5 +1,6 @@
 package com.knowledgeVista.SysAdminPackage;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,14 @@ public class SysadminController {
 	   	     if(role.equals("SYSADMIN")) {
 	   	    	Pageable pageable = PageRequest.of(pageNumber, pageSize);
 	            Page<MuserDto> admins = muserPageRepo.findByRoleName("ADMIN", pageable);
-	   	
+	            admins.forEach(admin -> {
+	                // Find the latest last active for the admin's institution
+	                String institutionName = admin.getInstitutionName();
+	                LocalDateTime latestLastActive = muserrepositories.findLatestLastActiveByInstitution(institutionName);
+	                
+	                // Set the last active field in the admin DTO
+	                admin.setLastActive(latestLastActive);
+	            });
          return ResponseEntity.ok(admins);
 	   	     }else {
 	   	      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

@@ -345,7 +345,7 @@ const ViewAdmin = () => {
               <th scope="col"> Skills</th>
               <th scope="col">Date of Birth</th>
               <th scope="col">Status</th>
-
+              <th scope='col'>Lead </th>
               <th scope="col">Action</th>
             </tr>
             {fullsearch ?  <tr>
@@ -410,6 +410,11 @@ const ViewAdmin = () => {
                 <td className='py-2'>{user.skills}</td>
                 <td className='py-2'>{user.dob}</td>
                 <td className='py-2' >{user.isActive===true? <div className='Activeuser'><i className="fa-solid fa-circle pr-3"></i>Active</div>:<div className='InActiveuser' ><i className="fa-solid fa-circle pr-3"></i>In Active</div>}</td>
+                <td className='py-2'> {(new Date() - new Date(user.lastActive)) /
+                    (1000 * 60 * 60 * 24) <=
+                  7
+                    ? <i className="fa-solid fa-circle text-success"></i>
+                    : <i className="fa-solid fa-circle text-danger"></i>}</td>
                 {/* <td className='text-center'>
               <button to={`/trainer/edit/${user.email}`} className='hidebtn' >
                     <i className="fas fa-edit"></i>

@@ -18,9 +18,13 @@ const [Activeprofile,setActiverofile]=useState();
 const navigate=useNavigate();
   useEffect(() => {
     const fetchactive=async()=>{
+      try{
       const active=await axios.get(`${baseUrl}/Active/Environment`)
       
       setActiverofile(active.data);
+      }catch(error){
+        console.error(error);
+      }
     }
     const fetchData = async () => {
       try {
