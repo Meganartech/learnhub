@@ -20,5 +20,10 @@ public class MuserProfileDTO {
 	        this.roleName = roleName;
 	        this.lastactive=lastactive;
 	    }
+	    public MuserProfileDTO(byte[] profile, String countryCode, String roleName) {
+	    	 this.profile = profile;
+		        this.countryCode = countryCode;
+		        this.roleName = roleName;
+	    }
 
 }

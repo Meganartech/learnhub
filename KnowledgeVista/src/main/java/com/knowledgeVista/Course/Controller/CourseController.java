@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +33,7 @@ import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 import io.jsonwebtoken.io.DecodingException;
+import io.jsonwebtoken.lang.Collections;
 
 @RestController
 public class CourseController {
@@ -55,7 +57,9 @@ public class CourseController {
 	 
 	 @Autowired
 	 private licenseRepository licencerepo;
-	
+	 
+	 @Value("${spring.environment}")
+	    private String environment;
 	
 //`````````````````````````WORKING``````````````````````````````````
 	
@@ -364,7 +368,7 @@ public class CourseController {
 	                String heading=" Course Updated !";
 	 		       String link=updatedCourse.getCourseUrl();
 	 		       String notidescription= " Course "+updatedCourse.getCourseName() + " was Updated " ;
-	 		      Long NotifyId =  notiservice.createNotification("CourseAdd",username,notidescription ,email,heading,link, Optional.ofNullable(file));
+	 		      Long NotifyId =  notiservice.createNotification("CourseAdd",username,notidescription ,email,heading,link, updatedCourse.getCourseImage());
 	 		        if(NotifyId!=null) {
 	 		         	notiservice.SpecificCreateNotification(NotifyId, ids);
 	 		        	List<String> notiuserlist = new ArrayList<>(); 
@@ -433,20 +437,33 @@ public class CourseController {
 		     if(opuser.isPresent()) {
 		    	 Muser user=opuser.get();
 		    	 institution=user.getInstitutionName();
+		    	
 		    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
 		   	    	if(!adminIsactive) {
 		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		   	    	}
+		   	     List<CourseDetailDto> courses = coursedetailrepository.findAllByInstitutionNameDto(institution);
+		   	  
+			        return ResponseEntity.ok()
+		            .contentType(MediaType.APPLICATION_JSON)
+		            .body(courses);
 		     }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		     }
-	        List<CourseDetailDto> courses = coursedetailrepository.findAllByInstitutionNameDto(institution);
-	        
 	       
-	        return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(courses);
 	    }
+	    
+	    public ResponseEntity<List<CourseDetailDto>> viewCourseVps() {
+	        if (environment.equals("VPS")) {
+	            List<CourseDetailDto> courses = coursedetailrepository.findallcoursevps();
+	            
+	            return ResponseEntity.ok()
+	                    .contentType(MediaType.APPLICATION_JSON)
+	                    .body(courses);
+	        }
+			return null;
+	    }
+
 
 	 //-------------------------Under check------------------------------------
 

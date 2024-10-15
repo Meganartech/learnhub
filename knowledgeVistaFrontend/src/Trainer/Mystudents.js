@@ -412,8 +412,8 @@ const handleChange = (e) => {
           {filterData().map((user, index) => (
               <tr key={user.userId}>
                <th scope="row">{(currentPage * itemsperpage) + (index + 1)}</th>
-                <td className='py-2'> <Link to={`/view/Student/profile/${user.email}`}>{user.username}</Link></td>
-                <td className='py-2'>{user.email}</td>
+                <td className='py-2'> {user.username}</td>
+                <td className='py-2'><Link to={`/view/Student/profile/${user.email}`}>{user.email}</Link></td>
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.skills}</td>
                 <td className='py-2'>{user.dob}</td>

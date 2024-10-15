@@ -98,13 +98,16 @@ const CustomViewvideo = () => {
   }, [currentLessonIndex, AllLessons]);
 
   const fetchdoc = async (lessonId) => {
+    try{
     const docResponse = await axios.get(`${baseUrl}/getDocs/${lessonId}`,{
       headers: {
         Authorization: token,
       },
     });
     setcurrentDocs(docResponse.data);
-    console.log(currentDocs);
+  }catch(error){
+    console.error(error)
+  }
   };
   useEffect(() => {
     // Update the currently playing lesson whenever lessonId changes

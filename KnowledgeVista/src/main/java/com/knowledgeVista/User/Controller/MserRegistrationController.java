@@ -48,6 +48,9 @@ public class MserRegistrationController {
 	 @Value("${base.url}")
 	    private String baseUrl;
 	
+	 public Long countadmin() {
+		 return muserrepositories.countByRoleName("ADMIN");
+	 }
 
 	public ResponseEntity<?> registerAdmin( String username, String psw, String email, String institutionName, LocalDate dob,String role,
 	                                         String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode) {
@@ -59,10 +62,7 @@ public class MserRegistrationController {
 	        Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	       
 	        Optional<Muser>existingInstitute =muserrepositories.findByInstitutionName(institutionName);
-	        Optional<Muser> existingusername=muserrepositories.findByname(username);
-	        if(existingusername.isPresent()) {
-	        	 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NAME");
-	        }
+	       
 	            if (existingUser.isPresent()) {
 	                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
 	            } 
@@ -140,6 +140,133 @@ public class MserRegistrationController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
 	    }
 	}
+public ResponseEntity<?>RegisterStudent(String username, String psw, String email,  LocalDate dob,String role,
+	                                         String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode){
+	try {
+		if(!environment.equals("VPS")) {
+ 		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot Register as Student in Sas Environment");
+ 	}
+		Long admincount=muserrepositories.countByRoleName("ADMIN");
+		if(admincount==0) {
+			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Institution Found");
+		}
+		if(admincount>1) {
+			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot Register as Student in Sas Environment");
+		}
+		 Optional<Muser> existingUser = muserrepositories.findByEmail(email);
+	       
+	       String existingInstitute =muserrepositories.getInstitution("ADMIN");
+	       if(existingInstitute.isEmpty()) {
+           	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("institution not Found");
+           }
+	       
+	            if (existingUser.isPresent()) {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
+	            } 
+	           
+	            
+	            Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName("USER");
+	            if(oproleUser.isPresent()) {
+	            	MuserRoles roleuser=oproleUser.get();
+	            	  
+	            Muser user = new Muser();
+	            user.setUsername(username);
+	            user.setEmail(email);
+	            user.setIsActive(isActive);
+	            user.setPsw(psw);
+	            user.setPhone(phone);
+	            user.setDob(dob);
+	            user.setSkills(skills);
+	            user.setInstitutionName(existingInstitute);
+	            user.setCountryCode(countryCode);	   
+	            user.setRole(roleuser);     
+	           
+	            if (profile != null && !profile.isEmpty()) {                
+	            try {
+	                user.setProfile(profile.getBytes());
+	                
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
+	            }
+	            }
+	          muserrepositories.save(user);
+	          return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
+	            }else {
+	            	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error getting role\"}");
+	   	            
+	            }
+		
+	 } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
+	    }
+}
+
+public ResponseEntity<?>RegisterTrainer(String username, String psw, String email,  LocalDate dob,String role,
+        String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode){
+try {
+if(!environment.equals("VPS")) {
+return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot Register as Trainer in Sas Environment");
+}
+Long admincount=muserrepositories.countByRoleName("ADMIN");
+if(admincount==0) {
+return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Institution Found");
+}
+if(admincount>1) {
+return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot Register as Trainer in Sas Environment");
+}
+Optional<Muser> existingUser = muserrepositories.findByEmail(email);
+
+String existingInstitute =muserrepositories.getInstitution("ADMIN");
+if(existingInstitute.isEmpty()) {
+return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("institution not Found");
+}
+
+if (existingUser.isPresent()) {
+return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
+} 
+
+
+Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName("TRAINER");
+if(oproleUser.isPresent()) {
+MuserRoles roleuser=oproleUser.get();
+
+Muser user = new Muser();
+user.setUsername(username);
+user.setEmail(email);
+user.setIsActive(isActive);
+user.setPsw(psw);
+user.setPhone(phone);
+user.setDob(dob);
+user.setSkills(skills);
+user.setInstitutionName(existingInstitute);
+user.setCountryCode(countryCode);	   
+user.setRole(roleuser);     
+
+if (profile != null && !profile.isEmpty()) {                
+try {
+user.setProfile(profile.getBytes());
+
+} catch (IOException e) {
+e.printStackTrace();
+return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
+}
+}
+ muserrepositories.save(user);
+return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
+}else {
+return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error getting role\"}");
+
+}
+
+} catch (Exception e) {
+e.printStackTrace();
+return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
+}
+}
+
+
 
 	
 

@@ -96,6 +96,7 @@ const EditCourse = ({filteredCourses}) => {
         </a> 
       )}
       </div>
+     
       {filteredCourses.length > 0 ? (
         <ul className="maincontainernew" style={{height:"65vh"}}>
           {filteredCourses

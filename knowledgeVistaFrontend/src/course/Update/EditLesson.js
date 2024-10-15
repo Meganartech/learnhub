@@ -470,7 +470,9 @@ const EditLesson = () => {
           </div>
         </div>
         <form onSubmit={handleEdit}>
-          {isSubmitting && <div className="loading-spinner"></div>}
+          {isSubmitting &&  <div className="outerspinner active">
+        <div className="spinner"></div>
+      </div>}
           <div className="divider">
             <h2 style={{ textDecoration: "underline" }}>
               Edit Lesson {Lessontitle}{" "}

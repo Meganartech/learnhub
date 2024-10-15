@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import login from "../images/login.png"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -10,9 +10,83 @@ import logo from "../images/logo.png"
 const Login = () => {
   const MySwal = withReactContent(Swal);
   const [formData, setFormData] = useState({ username: "", password: "" });
-  const [valid, setValid] = useState();
-  const [Tag, setTag] = useState([]);
-  const [isEmpty, setIsEmpty] = useState();
+  const navigate = useNavigate(); // useNavigate hook for navigation
+  const [activeProfile, setActiveProfile] = useState(sessionStorage.getItem("Activeprofile"));
+  const handleRegistration = async () => {
+    try {
+      const active = await axios.get(`${baseUrl}/Active/Environment`);
+      sessionStorage.setItem("Activeprofile", active.data);
+      setActiveProfile(active.data);
+  
+      if (activeProfile === "VPS") {
+        const count = await axios.get(`${baseUrl}/count/admin`);
+        let htmlContent;
+  
+        // Determine which buttons to display based on the admin count
+        if (count.data > 0) {
+          htmlContent = `
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <button id="trainer-btn" class="swal2-confirm swal2-styled" style="margin-bottom: 10px; width: 100%;">Register as Trainer</button>
+              <button id="student-btn" class="swal2-confirm swal2-styled" style="width: 100%;">Register as Student</button>
+            </div>
+          `;
+        } else {
+          htmlContent = `
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <button id="admin-btn" class="swal2-confirm swal2-styled" style="margin-bottom: 10px; width: 100%;">Register as Admin</button>
+              <button id="trainer-btn" class="swal2-confirm swal2-styled" style="margin-bottom: 10px; width: 100%;">Register as Trainer</button>
+              <button id="student-btn" class="swal2-confirm swal2-styled" style="width: 100%;">Register as Student</button>
+            </div>
+          `;
+        }
+  
+        // Show the SweetAlert with the dynamically created HTML
+        MySwal.fire({
+          title: 'Select your Role',
+          html: htmlContent,
+          showCancelButton: true,
+          showConfirmButton: false, // Disable default confirm button, we will use custom buttons
+          cancelButtonText: 'Cancel',
+          didOpen: () => {
+            // Check if the admin button exists before adding event listeners
+            const adminBtn = document.getElementById('admin-btn');
+            const trainerBtn = document.getElementById('trainer-btn');
+            const studentBtn = document.getElementById('student-btn');
+  
+            if (adminBtn) {
+              adminBtn.addEventListener('click', () => {
+                navigate('/adminRegistration');
+                MySwal.close();
+              });
+            }
+  
+            if (trainerBtn) {
+              trainerBtn.addEventListener('click', () => {
+                navigate('/trainerRegistration');
+                MySwal.close();
+              });
+            }
+  
+            if (studentBtn) {
+              studentBtn.addEventListener('click', () => {
+                navigate('/studentRegistration');
+                MySwal.close();
+              });
+            }
+          }
+        });
+      } else if (activeProfile === "SAS") {
+        navigate("/RegisterInstitute");
+      }
+    } catch (error) {
+      MySwal.fire({
+        icon: "error",
+        title: "Some Error Occurred",
+        text: error.message,
+      });
+    }
+  };
+  
   
   const [errors, setErrors] = useState({username: "", password: "" });
 
@@ -45,12 +119,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
+    try {
     if (Object.values(errors).some(error => error) || !formData.username || !formData.password) {
       return;
     }
   
-    try {
+   
       const response = await axios.post(`${baseUrl}/login`, formData, {
         headers: {
           "Content-Type": "application/json",
@@ -58,7 +132,6 @@ const Login = () => {
       });
       
       if (response.status === 200) {
-        sessionStorage.clear()
         const data = response.data; 
         const jwtToken = data.token;
         const role = data.role;
@@ -68,6 +141,7 @@ const Login = () => {
         sessionStorage.setItem('role', role);
         sessionStorage.setItem('userid', userId);
         sessionStorage.setItem('email', email);
+       
     if(role==="SYSADMIN"){
       window.location.href = "/viewAll/Admins";
     }else{
@@ -166,9 +240,13 @@ const Login = () => {
           >
             Forgot Password?
           </Link> 
-          <Link className="user text-decoration-none ml-3" to="/adminRegistration">
-           Register as Admin
-          </Link>
+          <Link
+      className="user text-decoration-none ml-3"
+      onClick={handleRegistration} // Trigger the modal on click
+      to="#"
+    >
+      New user?
+    </Link>
         </div>
   
         <button

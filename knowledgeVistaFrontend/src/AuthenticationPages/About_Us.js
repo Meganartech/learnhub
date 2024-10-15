@@ -7,21 +7,11 @@ import { useNavigate } from 'react-router-dom';
 
 const About_Us = () => {
   
-  const MySwal = withReactContent(Swal);
-  const [audioFile, setAudioFile] = useState(null);
-  const [Activeprofile,setActiverofile]=useState();
-  const [errors, setErrors] = useState({});
   const [isDataList, setIsDataList] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [lastModifiedDate, setLastModifiedDate] = useState(null);
   const navigate=useNavigate();
   const token=sessionStorage.getItem("token")
   useEffect(() => {
-    const fetchactive=async()=>{
-      const active=await axios.get(`${baseUrl}/Active/Environment`)
-      
-      setActiverofile(active.data);
-    }
+    
     const fetchData = async () => {
       try {
         const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`,{
@@ -42,7 +32,6 @@ const About_Us = () => {
     };
   
     fetchData();
-    fetchactive();
   
   }, []); 
 

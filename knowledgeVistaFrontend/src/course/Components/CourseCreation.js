@@ -201,7 +201,7 @@ const handlenextclick =(e)=>{
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-       
+        try {
         // Create a FormData object to send the form data
         const formDataToSend = new FormData();
         formDataToSend.append("courseName", formData.courseName);
@@ -226,7 +226,7 @@ const handlenextclick =(e)=>{
           
         
        
-        try {
+       
             const response = await axios.post(`${baseUrl}/course/add`,formDataToSend,{
             headers:{
                 Authorization:token

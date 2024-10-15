@@ -33,7 +33,6 @@ const ViewAdmin = () => {
     // Function to call the search API
     const searchUsers = async () => {
       try {
-        console.log(dob)
         const response = await axios.get(`${baseUrl}/admin/search`, {
           headers:{
             'Authorization':token
@@ -403,8 +402,8 @@ const ViewAdmin = () => {
           {filterData().map((user, index) => (
               <tr key={user.userId}>
                 <th scope="row">{(currentPage * itemsperpage) + (index + 1)}</th>
-                <td className='py-2'><Link to={`/viewAdmin/profile/${user.email}`}  state={{ user }}>{user.username}</Link></td>
-                <td className='py-2'>{user.email}</td>
+                <td className='py-2'>{user.username}</td>
+                <td className='py-2'><Link to={`/viewAdmin/profile/${user.email}`}  state={{ user }}>{user.email}</Link></td>
                 <td className='py-2'>{user.institutionName}</td>
                 <td className='py-2'>{user.phone}</td>
                 <td className='py-2'>{user.skills}</td>

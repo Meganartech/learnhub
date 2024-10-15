@@ -297,7 +297,9 @@ const UploadVideo = () => {
           </div>
         </div>
         <form onSubmit={handleSubmit}>
-          {isSubmitting && <div className="loading-spinner"></div>}
+          {isSubmitting &&  <div className="outerspinner active">
+        <div className="spinner"></div>
+      </div>}
           <div className="divider">
             <h2 style={{ textDecoration: "underline" }}>
               Upload Video for {courseName}{" "}

@@ -22,7 +22,8 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 
 	@Query("SELECT u FROM Muser u WHERE u.email = ?1")
   Optional<Muser> findByEmail(String email);
-	
+	@Query("SELECT u.institutionName FROM Muser u WHERE u.role.roleName = :rolename")
+	String getInstitution(String rolename);
 
 	@Query("SELECT u.institutionName FROM Muser u WHERE u.email = ?1")
   String findinstitutionByEmail(String email);

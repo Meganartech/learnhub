@@ -31,18 +31,24 @@ const TrainerProfile = () => {
       if (role === "ADMIN") {
         try {
           let fetchedInitialUserData = initialUserData;
-
+          console.log("initial=",initialUserData)
           // Fetch initialUserData if it's not available from location.state
           if (!fetchedInitialUserData) {
+
             const detailsRes = await axios.get(`${baseUrl}/details/${traineremail}`, {
               headers: { Authorization: token },
             });
             fetchedInitialUserData = detailsRes.data;
             setInitialUserData(fetchedInitialUserData);
+            console.log("from server")
           }
 
           // Fetch additional user data
-          if (fetchedInitialUserData) {
+         else if (fetchedInitialUserData) {
+          setUserData(prevData => ({
+            ...prevData,
+            ...fetchedInitialUserData
+          }));
             const email = fetchedInitialUserData.email;
             const response = await axios.get(`${baseUrl}/student/admin/getTrainer/${email}`, {
               headers: { Authorization: token },
@@ -55,7 +61,6 @@ const TrainerProfile = () => {
               }
               setUserData(prevData => ({
                 ...prevData,
-                ...fetchedInitialUserData,
                 ...serverData
               }));
             }

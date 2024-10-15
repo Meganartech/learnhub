@@ -33,7 +33,6 @@ const ViewStudents = () => {
   // Function to call the search API
   const searchUsers = async () => {
     try {
-      console.log(dob)
       const response = await axios.get(`${baseUrl}/users/search`, {
         headers:{
           'Authorization':token
@@ -70,7 +69,6 @@ const ViewStudents = () => {
         break;
         case 'dob':
           setDob(value);
-          console.log(dob);
           break;
       case 'email':
         setEmail(value);

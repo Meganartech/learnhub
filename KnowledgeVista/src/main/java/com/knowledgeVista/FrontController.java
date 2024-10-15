@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -204,9 +205,17 @@ public class FrontController {
 		 return courseController.getCourse(courseId,token);
 	 }
 	 
+	 @GetMapping("/course/viewAllVps")
+	 public ResponseEntity<List<CourseDetailDto>>viewCourseForVps(){
+		 return courseController.viewCourseVps();
+	 }
 	 @GetMapping("/course/viewAll")
 	    public ResponseEntity<List<CourseDetailDto>> viewCourse(@RequestHeader("Authorization") String token) {
+		 if(environment=="VPS") {
+			 return courseController.viewCourseVps(); 
+		 }else {
 		 return courseController.viewCourse(token);
+		 }
 		 }
 	 
 
@@ -558,30 +567,30 @@ public class FrontController {
 //--------------------AddUser---------------------------
            	 @PostMapping("/admin/addTrainer") 
        	  public ResponseEntity<?> addTrainer(
-       	          @RequestParam("username") String username,
-       	          @RequestParam("psw") String psw,
-       	          @RequestParam("email") String email,
-       	          @RequestParam("dob") LocalDate dob,
-       	          @RequestParam("phone") String phone,
-       	          @RequestParam(value="skills",required=false) String skills,
-       	       @RequestParam(value="profile", required=false) MultipartFile profile,
-       	          @RequestParam("isActive") Boolean isActive,
-                  @RequestParam(value="countryCode",defaultValue = "+91")String countryCode,
+       	          @RequestParam(required=false) String username,
+       	          @RequestParam String psw,
+       	          @RequestParam String email,
+       	          @RequestParam(required=false) LocalDate dob,
+       	          @RequestParam String phone,
+       	          @RequestParam(required=false) String skills,
+       	       @RequestParam(required=false) MultipartFile profile,
+       	          @RequestParam Boolean isActive,
+                  @RequestParam(defaultValue = "+91")String countryCode,
        	          @RequestHeader("Authorization") String token) {
            		 return adduser.addTrainer(username, psw, email, dob, phone, skills, profile, isActive,countryCode, token);
            	 }
            	 
            	@PostMapping("/admin/addStudent") 
       	  public ResponseEntity<?> addStudent(
-      	          @RequestParam("username") String username,
-      	          @RequestParam("psw") String psw,
-      	          @RequestParam("email") String email,
-      	          @RequestParam("dob") LocalDate dob,
-      	          @RequestParam("phone") String phone,
-      	          @RequestParam(value="skills",required=false) String skills,
-      	        @RequestParam(value="profile", required=false) MultipartFile profile,
-      	          @RequestParam("isActive") Boolean isActive,
-                  @RequestParam(value="countryCode",defaultValue = "+91")String countryCode,
+      	          @RequestParam(required=false) String username,
+      	          @RequestParam String psw,
+      	          @RequestParam String email,
+      	          @RequestParam(required=false) LocalDate dob,
+      	          @RequestParam String phone,
+      	          @RequestParam(required=false) String skills,
+      	        @RequestParam( required=false) MultipartFile profile,
+      	          @RequestParam Boolean isActive,
+                  @RequestParam(defaultValue = "+91")String countryCode,
       	          @RequestHeader("Authorization") String token) {
            		return adduser.addStudent(username, psw, email, dob, phone, skills, profile, isActive,countryCode ,token);
            	}
@@ -677,9 +686,9 @@ public class FrontController {
     	    @PatchMapping("/Edit/Student/{email}")
     		 public ResponseEntity<?> updateStudent(
     		     @PathVariable("email") String originalEmail,
-    		     @RequestParam("username") String username,
+    		     @RequestParam(name="username",required=false) String username,
     		     @RequestParam("email") String newEmail,
-    		     @RequestParam("dob") LocalDate dob,
+    		     @RequestParam(name="dob",required=false) LocalDate dob,
     		     @RequestParam("phone") String phone,
     		     @RequestParam(name="skills",required=false) String skills,
     		     @RequestParam(value="profile", required=false) MultipartFile profile,
@@ -694,9 +703,9 @@ public class FrontController {
     		 @PatchMapping("/Edit/Trainer/{email}")
     		 public ResponseEntity<?> updateTrainer(
     		     @PathVariable("email") String originalEmail,
-    		     @RequestParam("username") String username,
+    		     @RequestParam(name="username",required=false) String username,
     		     @RequestParam("email") String newEmail,
-    		     @RequestParam("dob") LocalDate dob,
+    		     @RequestParam(name="dob",required=false) LocalDate dob,
     		     @RequestParam("phone") String phone,
     		     @RequestParam(name="skills",required=false) String skills,
     		     @RequestParam(value="profile", required=false) MultipartFile profile,
@@ -709,15 +718,15 @@ public class FrontController {
     		 
     		 @PatchMapping("/Edit/self")
     		 public ResponseEntity<?> EditProfile(
-    		     @RequestParam("username") String username,
+    		     @RequestParam(required=false) String username,
     		     @RequestParam("email") String newEmail,
-    		     @RequestParam("dob") LocalDate dob,
-    		     @RequestParam("phone") String phone,
-    		     @RequestParam(name="skills",required=false) String skills,
-    		     @RequestParam(value="profile", required=false) MultipartFile profile,
-    		     @RequestParam("isActive") Boolean isActive,
+    		     @RequestParam(name="dob" ,required=false) LocalDate dob,
+    		     @RequestParam String phone,
+    		     @RequestParam(required=false) String skills,
+    		     @RequestParam( required=false) MultipartFile profile,
+    		     @RequestParam Boolean isActive,
     		     @RequestHeader("Authorization") String token,
-                 @RequestParam(name="countryCode",defaultValue = "+91")String countryCode
+                 @RequestParam(defaultValue = "+91")String countryCode
     		 ) {
     			 return edit.EditProfile(username, newEmail, dob, phone, skills, profile, isActive,countryCode, token);
     		 }
@@ -845,19 +854,49 @@ public class FrontController {
     		    	return listview.searchStudentsOfTrainer(username, email, phone, dob, skills, page, size,token);
     		    }
 //------------------------MuserRegistrationController------------------------------
+    		    @PostMapping("/Student/register")
+    			public ResponseEntity<?> RegisterStudent(@RequestParam( required=false) String username,
+    			                                          @RequestParam String psw,
+    			                                          @RequestParam String email,
+    			                                          @RequestParam( required=false) LocalDate dob,
+    			                                          @RequestParam String role,
+    			                                          @RequestParam String phone,
+    			                                          @RequestParam(required=false ) String skills,
+    			                                          @RequestParam(required=false) MultipartFile profile,
+    			                                          @RequestParam Boolean isActive,
+    			                                          @RequestParam(defaultValue = "+91")String countryCode) {
+    				return muserreg.RegisterStudent(username, psw, email, dob,role, phone, skills, profile, isActive,countryCode);
+    			}
+    		    @GetMapping("/count/admin")
+    		    public Long CountAdmin() {
+    		    	return muserreg.countadmin();
+    		    }
+    		    @PostMapping("/Trainer/register")
+    			public ResponseEntity<?> RegisterTrainer(@RequestParam( required=false) String username,
+    			                                          @RequestParam String psw,
+    			                                          @RequestParam String email,
+    			                                          @RequestParam( required=false) LocalDate dob,
+    			                                          @RequestParam String role,
+    			                                          @RequestParam String phone,
+    			                                          @RequestParam(required=false ) String skills,
+    			                                          @RequestParam(required=false) MultipartFile profile,
+    			                                          @RequestParam Boolean isActive,
+    			                                          @RequestParam(defaultValue = "+91")String countryCode) {
+    				return muserreg.RegisterTrainer(username, psw, email, dob,role, phone, skills, profile, isActive,countryCode);
+    		    }
 
     			@PostMapping("/admin/register")
-    			public ResponseEntity<?> registerAdmin(@RequestParam("username") String username,
-    			                                          @RequestParam("psw") String psw,
-    			                                          @RequestParam("email") String email,
-    			                                          @RequestParam("institutionname") String institutionName,
-    			                                          @RequestParam("dob") LocalDate dob,
-    			                                          @RequestParam("role")String role,
-    			                                          @RequestParam("phone") String phone,
-    			                                          @RequestParam(name="skills",required=false ) String skills,
-    			                                          @RequestParam(name="profile" ,required=false) MultipartFile profile,
-    			                                          @RequestParam("isActive") Boolean isActive,
-    			                                          @RequestParam(name="countryCode",defaultValue = "+91")String countryCode) {
+    			public ResponseEntity<?> registerAdmin(@RequestParam(required=false) String username,
+    			                                          @RequestParam String psw,
+    			                                          @RequestParam String email,
+    			                                          @RequestParam String institutionName,
+    			                                          @RequestParam(required=false) LocalDate dob,
+    			                                          @RequestParam String role,
+    			                                          @RequestParam String phone,
+    			                                          @RequestParam(required=false ) String skills,
+    			                                          @RequestParam(required=false) MultipartFile profile,
+    			                                          @RequestParam Boolean isActive,
+    			                                          @RequestParam(defaultValue = "+91")String countryCode) {
     				return muserreg.registerAdmin(username, psw, email, institutionName, dob,role, phone, skills, profile, isActive,countryCode);
     			}
 

@@ -14,7 +14,7 @@ import { useLocation } from "react-router-dom";
 
 
 const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,handleSidebarToggle,showSidebar,navbarref}) => {
-  
+  const islogedin=sessionStorage.getItem("token")!==null;
   const location = useLocation();
   const [data,setdata]=useState({
     name:"",
@@ -165,9 +165,9 @@ const handlemarkallasRead =async (notificationIds)=>{
      
       </a>
       
-      <div className="barhide " ref={navbarref} onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
-      
-     {["/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(location.pathname) && (
+     {islogedin && <div className="barhide " ref={navbarref} onClick={handleSidebarToggle}><i className={showSidebar?'fa-solid fa-bars-staggered':'fa-solid fa-bars'}></i></div> 
+}
+     {["/","/dashboard/course","/AssignedCourses", '/mycourses',"/course/admin/edit"].includes(location.pathname) && (
       <div className="searchbar " style={{gridColumn:"3"}}>
     <i className="fa fa-search pt-1 pl-1 " aria-hidden="true"></i>
     
@@ -186,8 +186,26 @@ const handlemarkallasRead =async (notificationIds)=>{
             onClick={() => setSearchQuery('')}></i>)}
     </div>
     )}
+ {!islogedin && <div className="singinupbtn" style={{gridColumn:"4", width:"250px"}}>
+            <button
+              className="btn btn-primary mr-2"
+              onClick={() => {
+                window.location.href = "/login";
+              }}
+            >
+              Sign In{" "}
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => {
+                window.location.href = "/StudentRegistration";
+              }}
+            >
+              Sign up
+            </button>
+          </div>}
    
-<div className="navbar-nav  " style={{gridColumn:"4"}}>
+{islogedin &&<div className="navbar-nav  " style={{gridColumn:"4"}}>
   <div className="nav-item nav-link dropdown no-arrow">
     <a
     onClick={()=>{setisopen(! isopen)}}
@@ -210,9 +228,9 @@ const handlemarkallasRead =async (notificationIds)=>{
     </a>
     
     </div>
-</div>
+</div>}
  
-      <ul className="navbar-nav " style={{gridColumn:"5"}} >
+     {islogedin && <ul className="navbar-nav " style={{gridColumn:"5"}} >
         <li className="nav-item dropdown no-arrow ">
           
           <a
@@ -262,11 +280,11 @@ const handlemarkallasRead =async (notificationIds)=>{
           </div>
 
           </li>
-          </ul>
+          </ul>}
           </div>
       
           
-          {isopen && 
+       { islogedin && isopen && 
           <div style={{width:"100%" , display:"flex",justifyContent:"flex-end"}}>
         <Notification setisopen={setisopen} isopen={isopen} setcount={setcount} handlemarkallasRead={handlemarkallasRead}/>
         </div> }

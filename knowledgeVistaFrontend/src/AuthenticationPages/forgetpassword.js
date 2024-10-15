@@ -52,6 +52,7 @@ const ForgetPassword = () => {
   };
 
   const handleResetPasswordSubmit = async (e) => {
+    try {
     e.preventDefault();
     // Check if passwords match and have minimum length
     if (formData.password !== formData.confirmPassword) {
@@ -68,7 +69,7 @@ const ForgetPassword = () => {
     formDataToSend.append("password", formData.password);
 
     // If passwords match and have minimum length, proceed with reset password request
-    try {
+  
       const response = await axios.post(`${baseUrl}/resetpassword`,formDataToSend);
 
       if (response.status===200) {

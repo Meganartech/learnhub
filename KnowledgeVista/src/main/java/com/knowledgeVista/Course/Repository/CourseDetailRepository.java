@@ -19,6 +19,8 @@ public interface CourseDetailRepository  extends JpaRepository<CourseDetail,Long
 	//for alloted list
 	@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(cd.courseId, cd.courseName, cd.courseUrl, cd.courseDescription, cd.courseCategory, cd.amount, cd.courseImage, cd.paytype, cd.Duration, cd.institutionName, cd.Noofseats) FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
 	List<CourseDetailDto> findAllByInstitutionNameDto(@Param("institutionName") String institutionName);
+	@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(cd.courseId, cd.courseName, cd.courseUrl, cd.courseDescription, cd.courseCategory, cd.amount, cd.courseImage, cd.paytype, cd.Duration, cd.institutionName, cd.Noofseats) FROM CourseDetail cd ")
+	List<CourseDetailDto>findallcoursevps();
 	
 	@Query("SELECT COUNT(cd) FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
 	Long countCourseByInstitutionName(@Param("institutionName") String institutionName);

@@ -18,8 +18,8 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class EmailService {
 
-	  @Value("${spring.mail.username}")
-	  private String fromMail;
+//	  @Value("${spring.mail.username}")
+//	  private String fromMail;
 	  
 	  @Autowired
 	  private MailkeysRepo mailkeyrepo;
@@ -32,7 +32,7 @@ public class EmailService {
 		  MimeMessage mimeMessage = mailSender.createMimeMessage();
 	        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-	        helper.setFrom(fromMail);
+//	        helper.setFrom(fromMail);
 	        if (to != null && !to.isEmpty()) {
 	            helper.setTo(to.toArray(new String[0]));
 	        }

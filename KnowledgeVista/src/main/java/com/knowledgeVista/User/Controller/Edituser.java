@@ -73,8 +73,9 @@ public class Edituser {
 	             }
 	         }
 
-	         // Update other student properties
-	         student.setDob(dob);
+	        
+	        	    student.setDob(dob);  // dob should be of type LocalDate
+	        
 	         student.setPhone(phone);
 	         student.setSkills(skills);
 	         student.setIsActive(isActive);
@@ -210,8 +211,9 @@ public class Edituser {
 	             }
 	         }
 
-	         // Update other student properties
+	         if(dob !=null) {
 	         student.setDob(dob);
+	         }
 	         student.setPhone(phone);
 	         student.setSkills(skills);
 	         student.setIsActive(isActive);

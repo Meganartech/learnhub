@@ -34,7 +34,6 @@ const ViewTrainers = () => {
     // Function to call the search API
     const searchUsers = async () => {
       try {
-        console.log(dob)
         const response = await axios.get(`${baseUrl}/trainer/search`, {
           headers:{
             'Authorization':token

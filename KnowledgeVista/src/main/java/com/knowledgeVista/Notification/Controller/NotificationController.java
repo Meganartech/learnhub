@@ -31,53 +31,7 @@ public class NotificationController {
 		@Autowired
 		private NotificationUserRepo notiuserRepo;
 		
-//	public ResponseEntity<?>GetAllNotification(String token){
-//		try {
-//
-//	         if (!jwtUtil.validateToken(token)) {
-//	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//	         }
-//	         String email=jwtUtil.getUsernameFromToken(token);
-//	         Optional<Muser> opmuser= muserRepository.findByEmail(email);
-//	         if(opmuser.isPresent()) {
-//	        	 Muser user=opmuser.get();
-//	        	 String institution=user.getInstitutionName();
-//	        	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-//		   	    	if(!adminIsactive) {
-//		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//		   	    	}
-//	        	 LocalDate today=LocalDate.now();
-//	        	 List<Long> ids=notiuserRepo.findNotificationIdsByUserId(user.getUserId(),today);
-//
-//              	 List<Object> notimap = new ArrayList<>();
-//	        
-//              	 for(Long id:ids) {
-//	        		 
-//	        		Optional<NotificationDetails> opnotidetails=notidetailRepo.findById(id);
-//	        		 if (opnotidetails.isPresent()) {
-//	        			 NotificationDetails notidetails=opnotidetails.get();
-//	        			 if(notidetails.getNotimage() !=null) {
-//	        			 try {
-//	        				 byte[] images = ImageUtils.decompressImage(notidetails.getNotimage()); 
-//	        				 notidetails.setNotimage(images);
-//	        	            } catch (Exception e) {
-//	        	                e.printStackTrace();
-//	        	            }
-//	        			 }
-//	        			 notimap.add(notidetails);
-//			            }
-//	        		 
-//	        		 
-//	        	 }
-//	        	 return ResponseEntity.ok(notimap);
-//	         }else {
-//	        	 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//	         }
-//	         
-//		}catch (Exception e) {
-//	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-//        }
-//	}
+
 	
 		    public ResponseEntity<?> GetNotiImage( String token, List<Long> notifyIds) {
 		        try {
@@ -100,18 +54,9 @@ public class NotificationController {
 		                // Fetch images for the notification IDs in the list
 		                List<NotificationDetails> notificationsWithImages = notidetailRepo.findNotificationsWithImagesByNotifyIdIn(notifyIds);
 
-		                if (!notificationsWithImages.isEmpty()) {
-//		                	 List<byte[]> images = notificationsWithImages.stream()
-//                                     .map(NotificationDetails::getNotimage)
-//                                     .collect(Collectors.toList());
-		                	 System.out.println("images" );
-		                	 for(NotificationDetails img :notificationsWithImages) {
-		                		 System.out.println(img.toString());
-		                	 }
+		          
              return ResponseEntity.ok(notificationsWithImages);
-		                } else {
-		                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No images found for the given IDs.");
-		                }
+		               
 		               
 		            } else {
 		                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");

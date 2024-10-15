@@ -63,7 +63,15 @@
     justify-items: end;
     align-items:flex-start;
   }
-  
+  .gridnav2{
+    display: grid;
+    grid-template-columns:1fr  6fr  2fr ;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 10px;
+    justify-items: end;
+    align-items:flex-start;
+  }
   
   
  
@@ -175,7 +183,7 @@
     border: 2px solid rgb(255, 255, 255);
     box-shadow: 5px 5px 6px 0px #d6d6d6;
     border-radius: 30px;
-   
+   overflow: hidden;
   }
   .user-list{
     margin-top: 10px;
@@ -431,6 +439,9 @@ margin-bottom: 10px;
   #noti{
     width: 35px;
     height: 35px;
+  }
+  .gridnav2{
+    grid-template-columns:1fr 12fr  12fr ;
   }
   .navgrid{
     height: 60px;

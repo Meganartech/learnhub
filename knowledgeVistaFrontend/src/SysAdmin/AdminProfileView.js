@@ -49,6 +49,10 @@ const AdminProfileView = () => {
 
           // Fetch additional user data
           if (fetchedInitialUserData) {
+            setUserData((prevData) => ({
+              ...prevData,
+              ...fetchedInitialUserData,
+            }));
             const email = fetchedInitialUserData.email;
             const response = await axios.get(
               `${baseUrl}/student/getadmin/${email}`,
@@ -65,7 +69,6 @@ const AdminProfileView = () => {
               }
               setUserData((prevData) => ({
                 ...prevData,
-                ...fetchedInitialUserData,
                 ...serverData,
               }));
             }

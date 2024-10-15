@@ -1,16 +1,42 @@
 import React, { useEffect, useState } from "react";
-//import styles from "../../css/CourseView.module.css";
-import "../../css/CourseView.css"
+import baseUrl from "../../api/utils";
+import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import baseUrl from "../../api/utils";
-import errorimg from"../../images/errorimg.png"
-import axios from "axios";
-const CourseView = ({ filteredCourses }) => {
+import errorimg from "../../images/errorimg.png";
+import NavBar from "../../Common Components/NavBar";
+const ViewCourseVps = () => {
+  
   const MySwal = withReactContent(Swal);
-  const userId = sessionStorage.getItem("userid");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [course, setCourse] = useState([]);
+  
   const [submitting,setsubmitting]=useState(false);
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        setsubmitting(true)
+        const response = await axios.get(`${baseUrl}/course/viewAllVps`);
+        setsubmitting(false)
+        const data = response.data;
+        setCourse(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCourse();
+  }, []);
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  const filteredCourses = course.filter((item) => {
+    const name = item.courseName ? item.courseName.toLowerCase() : "";
+    return name.includes(searchQuery.toLowerCase());
+  });
+
+  const userId = sessionStorage.getItem("userid");
   const token = sessionStorage.getItem("token");
+
   useEffect(() => {
     const pendingPayment = JSON.parse(sessionStorage.getItem("pendingPayment"));
   
@@ -22,10 +48,9 @@ const CourseView = ({ filteredCourses }) => {
       const userId = sessionStorage.getItem("userid");
       // Resume the payment process
       handlepaytype(courseId, userId, paytype);
-      
-
     }
-  }, []);  
+  }, []);  // Empty dependency array ensures this only runs once when the component mounts
+  
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -40,7 +65,14 @@ const CourseView = ({ filteredCourses }) => {
     });
   };
   const handlepaytype =(courseId, userId,paytype)=>{
-
+   
+    if (!token) {
+      // Save payment data to localStorage or sessionStorage
+      sessionStorage.setItem("pendingPayment", JSON.stringify({ courseId,  paytype }));
+     
+      window.location.href = "/login";
+      return;
+    }
     let url=""
     if(paytype==="FULL"){
       url="/full/buyCourse/create";
@@ -84,7 +116,6 @@ const CourseView = ({ filteredCourses }) => {
             'Content-Type': 'application/json'
           }
         });
-      
         setsubmitting(false)
         const scriptLoaded = await loadRazorpayScript();
 
@@ -209,95 +240,109 @@ if(amount===0){
 }
 };
 
-
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
-    <div className="supercontainernew" >
-    <div></div>
-   {submitting &&  <div className="outerspinner active">
+    <>
+   
+      <NavBar setSearchQuery={setSearchQuery} searchQuery={searchQuery} handleSearchChange={handleSearchChange}/>
+      <div className="contentbackground">
+        <div className="contentinner">
+          <div className="supercontainernew">
+            <div>
+            {submitting &&  <div className="outerspinner active">
         <div className="spinner"></div>
       </div>}
-      {filteredCourses.length > 0 ? (
-        <ul className="maincontainernew"  style={{height:"65vh"}}>
-          {filteredCourses
-            .slice()
-            .reverse()
-            .map((item) => (
-              <li key={item.courseId}>
-                <div className="containersnew">
-                  <div className="imagedivnew">
-                    <img
-                      src={`data:image/jpeg;base64,${item.courseImage}`}
-                      onError={(e) => {
-                        e.target.src = errorimg; // Use the imported error image
-                      }}
-                      alt="Course"
-                    />
-                  </div>
-                 
-                  <div className="contentnew">
-                    <h4>
-                   
-                      <button className="anchorlike" onClick={(e)=>{handleClick(e,item.courseId,item.amount,item.courseUrl)}}>
-
-                        {item.courseName.length > 15
-                          ? item.courseName.slice(0, 15) + "..."
-                          : item.courseName}
-                      </button>
-                    </h4>
-                    <p>
-                      {item.courseDescription.length > 40
-                        ? item.courseDescription.slice(0, 40) + "..."
-                        : item.courseDescription}
-                    </p>
-                    <h6>
-                      {item.amount === 0 ? (
-                        <a
-                          href={item.courseUrl}
-                          className=" btn btn-outline-success w-100"
-                        >
-                          Enroll for Free
-                        </a>
-                      ) : (
-                        <div
-                          style={{
-                          
-                            display: "grid",
-                            gridTemplateColumns: "1fr 2fr"
-                          }}
-                        >
-                          <div>
-                            <i className="fa-solid fa-indian-rupee-sign"></i>
-                            <label className="mt-3 blockquote">
-                              {item.amount}
-                            </label>
-                          </div>
-                          <a
-                            className="btn btn-outline-primary"
-                            style={{maxHeight:"50px" ,padding:"5px"}}
-                            onClick={() => handlepaytype(item.courseId, userId,item.paytype)}
-                          >
-                            Enroll Now
-                          </a>
+              {" "}
+              <h4>Courses For You</h4>
+            </div>
+            {filteredCourses && filteredCourses.length > 0 ? (
+              <ul className="maincontainernew" style={{ height: "65vh" }}>
+                {filteredCourses
+                  .slice()
+                  .reverse()
+                  .map((item) => (
+                    <li key={item.courseId}>
+                      <div className="containersnew">
+                        <div className="imagedivnew">
+                          <img
+                            src={`data:image/jpeg;base64,${item.courseImage}`}
+                            onError={(e) => {
+                              e.target.src = errorimg; // Use the imported error image
+                            }}
+                            alt="Course"
+                          />
                         </div>
-                      )}
-                    </h6>
-                  </div>
-                </div>
-              </li>
-            ))}
-        </ul>
-    
-      ) : (
-        <div className="maincontainernew" style={{borderRadius:"10px",display:"flex",justifyContent:"center",alignItems:"center"}}>
-             <h1>No Course Found </h1>
+
+                        <div className="contentnew">
+                          <h4>
+                            <button
+                              className="anchorlike"
+                              onClick={(e)=>{handleClick(e,item.courseId,item.amount,item.courseUrl)}}
+                            >
+                              {item.courseName.length > 15
+                                ? item.courseName.slice(0, 15) + "..."
+                                : item.courseName}
+                            </button>
+                          </h4>
+                          <p>
+                            {item.courseDescription.length > 40
+                              ? item.courseDescription.slice(0, 40) + "..."
+                              : item.courseDescription}
+                          </p>
+                          <h6>
+                            {item.amount === 0 ? (
+                              <a
+                                href={item.courseUrl}
+                                className=" btn btn-outline-success w-100"
+
+                              >
+                                Enroll for Free
+                              </a>
+                            ) : (
+                              <div
+                                style={{
+                                  display: "grid",
+                                  gridTemplateColumns: "1fr 2fr",
+                                }}
+                              >
+                                <div>
+                                  <i className="fa-solid fa-indian-rupee-sign"></i>
+                                  <label className="mt-3 blockquote">
+                                    {item.amount}
+                                  </label>
+                                </div>
+                                <a
+                                  className="btn btn-outline-primary"
+                                  style={{ maxHeight: "50px", padding: "5px" }}
+                                  onClick={() => handlepaytype(item.courseId, userId,item.paytype)}
+                                >
+                                  Enroll Now
+                                </a>
+                              </div>
+                            )}
+                          </h6>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <div
+                className="maincontainernew"
+                style={{
+                  borderRadius: "10px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <h1>No Course Found </h1>
+              </div>
+            )}
+          </div>
         </div>
-      )}
-    </div>
-    </div>
-    </div>
+      </div>
+    </>
   );
 };
 
-export default CourseView;
+export default ViewCourseVps;

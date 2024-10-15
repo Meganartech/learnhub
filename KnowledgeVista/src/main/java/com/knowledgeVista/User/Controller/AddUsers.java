@@ -48,10 +48,7 @@ public class AddUsers {
 	          // Perform authentication based on role
 	          if ("ADMIN".equals(role)) {
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
-	              Optional<Muser> existingusername=muserrepositories.findByname(username);
-	  	        if(existingusername.isPresent()) {
-	  	        	 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NAME");
-	  	        }
+	             
 	              if (existingUser.isPresent()) {
 	                  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
 	              } else {
@@ -144,10 +141,7 @@ public class AddUsers {
 
 	          // Perform authentication based on role
 	          if ("ADMIN".equals(role)||"TRAINER".equals(role)) {
-	        	  Optional<Muser> existingusername=muserrepositories.findByname(username);
-	  	        if(existingusername.isPresent()) {
-	  	        	 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NAME");
-	  	        }
+	        	 
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
 	              if (existingUser.isPresent()) {
 	                  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");

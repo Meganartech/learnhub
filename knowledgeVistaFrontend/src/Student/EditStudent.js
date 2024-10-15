@@ -170,9 +170,7 @@ const EditStudent = () => {
     let error = '';
 
     switch (name) {
-      case 'username':
-        error = value.length < 1 ? 'Please enter a username' : '';
-        break;
+     
         // case 'skills':
         //   error = value.length < 1 ? 'Please enter a skill' : '';
         // break;
@@ -254,7 +252,7 @@ setErrors((prevErrors) => ({
   const handleSubmit = async (e) => {
       e.preventDefault();
       let hasErrors = false;
-      const requiredFields = ['username',  'email', 'dob', 'phone', 'countryCode'];
+      const requiredFields = [  'email',  'phone', 'countryCode'];
     
       requiredFields.forEach(field => {
         if (!formData[field] || formData[field].length === 0 || errors[field]) {
@@ -275,7 +273,14 @@ setErrors((prevErrors) => ({
       formDataToSend.append("username", formData.username);
       formDataToSend.append("psw", formData.psw);
       formDataToSend.append("email", formData.email);
+      if(formData.dob===null){
+        setFormData((prev)=>({
+          ...prev,
+          dob:""
+        }))
+      }else{
       formDataToSend.append("dob", formData.dob);
+      }
       formDataToSend.append("phone", formData.phone);
       formDataToSend.append("isActive", formData.isActive);
       formDataToSend.append("profile", formData.profile);
@@ -407,7 +412,7 @@ setErrors((prevErrors) => ({
 
         <div className='formgroup'>
           <div className='inputgrp' ref={nameRef}>
-            <label htmlFor='Name'> Name <span className="text-danger">*</span></label>
+            <label htmlFor='Name'> Name </label>
             <span>:</span>
           <div> 
             <input
@@ -482,7 +487,7 @@ setErrors((prevErrors) => ({
                 </div>
               </div>
               <div className='inputgrp' ref={dobRef}>
-            <label htmlFor='dob'>Date of Birth<span className="text-danger">*</span></label>
+            <label htmlFor='dob'>Date of Birth</label>
             <span>:</span>
             <div>
             <input

@@ -141,7 +141,7 @@ const AddTrainer = () => {
   
       switch (name) {
         case 'username':
-          error = value.length < 1 ? 'Please enter a username' : '';
+          error = value.length < 1 ? 'Please enter a' : '';
           break;
           // case 'skills':
           //   error = value.length < 1 ? 'Please enter a skill' : '';
@@ -253,7 +253,7 @@ setErrors((prevErrors) => ({
     const handleSubmit = async (e) => {
         e.preventDefault();
         let hasErrors = false;
-  const requiredFields = ['username',  'email', 'dob', 'psw', 'confirm_password', 'phone', 'countryCode'];
+  const requiredFields = [  'email',  'psw', 'confirm_password', 'phone', 'countryCode'];
 
   requiredFields.forEach(field => {
     if (!formData[field] || formData[field].length === 0 || errors[field]) {
@@ -310,13 +310,7 @@ setErrors((prevErrors) => ({
             ...prevErrors,
             email: "This email is already registered."
           }));
-        }else if (error.response.data==="NAME"){
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            username: "This UserName is already Taken."
-          }));
-        }
-        }else if(error.response.status===401){
+        }}else if(error.response.status===401){
           MySwal.fire({
             title: "Un Authorized!",
             text: `you are unable to add the $ {displayname && displayname.trainer_name
@@ -395,7 +389,7 @@ setErrors((prevErrors) => ({
 
           <div className='formgroup'>
             <div className='inputgrp' ref={nameRef}>
-              <label htmlFor='Name'> Name <span className="text-danger">*</span></label>
+              <label htmlFor='Name'> Name </label>
               <span>:</span>
             <div> <input
                type="text"
@@ -520,11 +514,9 @@ setErrors((prevErrors) => ({
                 </div>
               </div>
               <div className="inputgrp">
-                <label htmlFor="dob">
+                <label htmlFor="dob" ref={dobRef}>
                   Date of Birth
-                  <span className="text-danger" ref={dobRef}>
-                    *
-                  </span>
+                 
                 </label>
                 <span>:</span>
                 <div>

@@ -10,28 +10,28 @@ import axios from "axios";
 import PhoneInput, { parsePhoneNumber } from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-const AdminRegister = () => {
+import { useNavigate } from "react-router-dom";
+const TrainerRegistration = () => {
   const MySwal = withReactContent(Swal);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate=useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     psw: "",
     confirm_password: "",
     email: "",
-    institution: "",
     dob: "",
     phone: "",
     skills: "",
     profile: null,
     countryCode: "",
     isActive: true,
-    role: "ADMIN",
+    role: "TRAINER",
   });
   const [errors, setErrors] = useState({
     username: "",
     email: "",
-    institution: "",
     dob: "",
     psw: "",
     skills: "",
@@ -48,7 +48,6 @@ const AdminRegister = () => {
   const confirmPswRef = useRef(null);
   const skillsRef = useRef(null);
   const phoneRef = useRef(null);
-  const institutionRef = useRef(null);
   const [defaultCountry, setDefaultCountry] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
@@ -144,18 +143,14 @@ const AdminRegister = () => {
     let error = "";
 
     switch (name) {
-      case "username":
-        error = value.length < 1 ? "Please enter a username" : "";
-        break;
+   
      
       case "email":
         error = /^[^\s@]+@[^\s@]+\.com$/.test(value)
           ? ""
           : "Please enter a valid email address";
         break;
-      case "institution":
-        error = value.length < 1 ? "Please enter a Institution Name" : "";
-        break;
+      
       case "dob":
         const dobDate = new Date(value);
         const today = new Date();
@@ -245,10 +240,7 @@ setErrors((prevErrors) => ({
     // Check if any required fields are empty or have errors
     let hasErrors = false;
     const requiredFields = [
-      "username",
-      "institution",
       "email",
-      "dob",
       "psw",
       "confirm_password",
       "phone",
@@ -273,8 +265,7 @@ setErrors((prevErrors) => ({
     formDataToSend.append("username", formData.username);
     formDataToSend.append("psw", formData.psw);
     formDataToSend.append("email", formData.email);
-    formDataToSend.append("institutionname", formData.institution);
-    formDataToSend.append("dob", formData.dob);
+   formDataToSend.append("dob", formData.dob);
     formDataToSend.append("role", formData.role);
     formDataToSend.append("phone", formData.phone);
     formDataToSend.append("isActive", formData.isActive);
@@ -284,7 +275,7 @@ setErrors((prevErrors) => ({
 
     try {
       const response = await axios.post(
-        `${baseUrl}/admin/register`,
+        `${baseUrl}/Trainer/register`,
         formDataToSend
       );
 
@@ -305,7 +296,6 @@ setErrors((prevErrors) => ({
               psw: "",
               confirm_password: "",
               email: "",
-              institution: "",
               dob: "",
               phone: "",
               skills: "",
@@ -327,23 +317,13 @@ setErrors((prevErrors) => ({
             ...prevErrors,
             email: "This email is already registered.",
           }));
-        } else if (data === "NAME") {
-          setErrors((prevErrors) => ({
-            ...prevErrors,
-            username: "This UserName is already Taken.",
-          }));
-        } else if (data === "INSTITUTE") {
-          setErrors((prevErrors) => ({
-            ...prevErrors,
-            institution: "This institution is already registered.",
-          }));
-        } else if (data === "ADMIN") {
-          MySwal.fire({
-            title: "Error!",
-            text: "Admin Already Registered.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+        } else{
+            MySwal.fire({
+                title: "Error!",
+                text: data,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
         }
       } else {
         MySwal.fire({
@@ -369,12 +349,7 @@ setErrors((prevErrors) => ({
         block: "nearest",
         inline: "start",
       });
-    } else if (errors.institution) {
-      institutionRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "start",
-      });
+    
     } else if (errors.dob) {
       dobRef.current.scrollIntoView({
         behavior: "smooth",
@@ -410,7 +385,7 @@ setErrors((prevErrors) => ({
     <div className="contentbackgroundforfull">
       <div className="contentinnerforfull">
         <div className="innerFrame">
-          <h2 style={{ textDecoration: "underline" }}>Join with us</h2>
+          <h2 style={{ textDecoration: "underline" }}>Trainer Registration</h2>
           <div className="mainform">
             <div className="profile-picture">
               <div className="image-group">
@@ -439,12 +414,10 @@ setErrors((prevErrors) => ({
 
             <div className="formgroup">
               <div className="inputgrp">
-                <label htmlFor="Name">
+                <label htmlFor="Name" ref={nameRef}>
                   {" "}
                   Name{" "}
-                  <span className="text-danger" ref={nameRef}>
-                    *
-                  </span>
+                 
                 </label>
                 <span>:</span>
                 <div>
@@ -489,29 +462,7 @@ setErrors((prevErrors) => ({
                 </div>
               </div>
 
-              <div className="inputgrp" ref={institutionRef}>
-                <label htmlFor="institution">
-                  {" "}
-                  Institution Name<span className="text-danger">*</span>
-                </label>
-                <span>:</span>
-                <div>
-                  {" "}
-                  <input
-                    type="text"
-                    autoComplete="off"
-                    className={`form-control .form-control-sm  ${
-                      errors.institution && "is-invalid"
-                    }`}
-                    name="institution"
-                    value={formData.institution}
-                    onChange={handleChange}
-                    placeholder="Institution Name"
-                    required
-                  />
-                  <div className="invalid-feedback">{errors.institution}</div>
-                </div>
-              </div>
+             
 
 
               
@@ -605,11 +556,9 @@ setErrors((prevErrors) => ({
                 </div>
               </div>
               <div className="inputgrp">
-                <label htmlFor="dob">
+                <label htmlFor="dob" ref={dobRef}>
                   Date of Birth
-                  <span className="text-danger" ref={dobRef}>
-                    *
-                  </span>
+                 
                 </label>
                 <span>:</span>
                 <div>
@@ -655,7 +604,16 @@ setErrors((prevErrors) => ({
             </div>
           </div>
           <div className="btngrp" style={{ display: "inline" }}>
-            <div className="w-100 alignright">
+          <div className="cornerbtn">
+            <button
+                               className='btn btn-warning'
+                               type="button"
+                               onClick={() => {
+                                  navigate(-1) 
+                               }}
+                           >
+                               Cancel
+                           </button>
               <button className={`btn btn-primary `} onClick={handleSubmit}>
                 Register
               </button>
@@ -672,4 +630,4 @@ setErrors((prevErrors) => ({
   );
 };
 
-export default AdminRegister;
+export default TrainerRegistration;

@@ -22,7 +22,6 @@ const ProfileView = () => {
     phone: "",
     skills: "",
     dob: "",
-    
     countryCode:"",
     base64Image:null,
   });
@@ -149,12 +148,8 @@ const ProfileView = () => {
     let error = '';
 
     switch (name) {
-      case 'username':
-        error = value.length < 1 ? 'Please enter a username' : '';
-        break;
-        case 'skills':
-          error = value.length < 1 ? 'Please enter a skill' : '';
-        break;
+     
+       
       case 'email':
       error = /^[^\s@]+@[^\s@]+\.com$/.test(value) ? '' : 'Please enter a valid email address';
         break;
@@ -220,11 +215,18 @@ const ProfileView = () => {
 
   const handleSubmit = async (e) => {
       e.preventDefault();
-     
+      try {
       const formDataToSend = new FormData();
       formDataToSend.append("username", userData.username);
       formDataToSend.append("email", userData.email);
+      if (userData.dob === null) {
+        setUserData((prev) => ({
+          ...prev,   // Correctly spread the previous state
+          dob: "",   // Update dob to an empty string if it's null
+        }));
+      }else{
       formDataToSend.append("dob", userData.dob);
+      }
       formDataToSend.append("phone", userData.phone);
       formDataToSend.append("profile", userData.profile);
       formDataToSend.append("skills",userData.skills);
@@ -232,7 +234,7 @@ const ProfileView = () => {
     formDataToSend.append("countryCode",userData.countryCode);
       formDataToSend.append("isActive", userData.isActive);
     
-      try {
+    
         const response = await axios.patch(`${baseUrl}/Edit/self`,formDataToSend, {
           headers: {
             Authorization: token,

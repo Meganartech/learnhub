@@ -1,42 +1,46 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import profile from "../images/profile.png";
+import "../css/StudentRegister.css";
+import "../css/certificate.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import profile from "../images/profile.png";
 import baseUrl from "../api/utils";
 import axios from "axios";
-import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
-import "react-phone-number-input/style.css";
-import { isValidPhoneNumber } from "react-phone-number-input";
-import { GlobalStateContext } from "../Context/GlobalStateProvider";
-
-const AddStudent = () => {
-  const token = sessionStorage.getItem("token");
+import PhoneInput, { parsePhoneNumber } from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import { isValidPhoneNumber } from 'react-phone-number-input';
+import { useNavigate } from "react-router-dom";
+const StudentRegister = () => {
   const MySwal = withReactContent(Swal);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { displayname } = useContext(GlobalStateContext);
+  const navigate=useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     psw: "",
+    confirm_password: "",
     email: "",
     dob: "",
-    skills: "",
     phone: "",
+    skills: "",
     profile: null,
     countryCode: "",
     isActive: true,
+    role: "USER",
   });
   const [errors, setErrors] = useState({
     username: "",
     email: "",
     dob: "",
-    skills: "",
     psw: "",
+    skills: "",
     confirm_password: "",
     phone: "",
     fileInput: "",
     profile: "",
   });
+
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const dobRef = useRef(null);
@@ -44,16 +48,17 @@ const AddStudent = () => {
   const confirmPswRef = useRef(null);
   const skillsRef = useRef(null);
   const phoneRef = useRef(null);
-  
-  const [defaultCountry, setDefaultCountry] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const fetchUserCountryCode = async () => {
+  const [defaultCountry, setDefaultCountry] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+ const fetchUserCountryCode = async () => {
     try {
-      const response = await fetch("https://ipapi.co/json/");
+     
+      const response = await fetch('https://ipapi.co/json/');
       const data = await response.json();
-
-      const dialingCode = data.country_calling_code || "+1";
-
+    
+      const dialingCode = data.country_calling_code||"+1"
+     
       setFormData((prevState) => ({
         ...prevState,
         countryCode: dialingCode,
@@ -70,57 +75,56 @@ const AddStudent = () => {
   }, []);
 
   const handlePhoneChange = (value) => {
-    if (typeof value !== "string") {
-      return;
+    if (typeof value !== 'string') {
+      return
     }
-
+   
     setPhoneNumber(value);
     const phoneNumber = parsePhoneNumber(value);
     if (phoneNumber) {
       // Extract phone number without country code
       const phoneNumberWithoutCountryCode = phoneNumber.nationalNumber;
-
+  
       setFormData((prevState) => ({
-        ...prevState,
-        phone: phoneNumberWithoutCountryCode,
-      }));
-    }
+      ...prevState,
+      phone:phoneNumberWithoutCountryCode ,
+    }));
+  }
     // Validate phone number
     if (value && isValidPhoneNumber(value)) {
+      
       setErrors((prevErrors) => ({
         ...prevErrors,
-        phone: "",
+        phone: '',
       }));
     } else {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        phone: "Enter a valid Phone number",
+        phone: 'Enter a valid Phone number',
       }));
     }
   };
   const fetchCountryDialingCode = async (newCountryCode) => {
     try {
       if (!newCountryCode) {
-        return;
+       return;
       }
-
+     
       // Fetch country data based on the new country code (e.g., "IN", "US")
-      const response = await fetch(
-        `https://restcountries.com/v3.1/alpha/${newCountryCode}`
-      );
+      const response = await fetch(`https://restcountries.com/v3.1/alpha/${newCountryCode}`);
       const data = await response.json();
-
+  
+     
       // Extract the dialing code from the 'idd' object in the response
-      const dialingCode =
-        data[0]?.idd?.root + (data[0]?.idd?.suffixes?.[0] || "") || "+91";
-
+      const dialingCode = data[0]?.idd?.root + (data[0]?.idd?.suffixes?.[0] || "") || "+91";
+  
       // Set the country dialing code in the formData
       setFormData((prevState) => ({
         ...prevState,
         countryCode: dialingCode,
       }));
 
-      // const countryCode = data.country_code.toUpperCase(); // Get the country code (e.g., "IN" for India, "US" for USA)
+     // const countryCode = data.country_code.toUpperCase(); // Get the country code (e.g., "IN" for India, "US" for USA)
       setDefaultCountry(newCountryCode);
     } catch (error) {
       console.error("Error fetching country dialing code: ", error);
@@ -133,18 +137,20 @@ const AddStudent = () => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     let error = "";
 
     switch (name) {
+   
      
       case "email":
-        // This is a basic email validation, you can add more advanced validation if needed
         error = /^[^\s@]+@[^\s@]+\.com$/.test(value)
           ? ""
           : "Please enter a valid email address";
         break;
+      
       case "dob":
         const dobDate = new Date(value);
         const today = new Date();
@@ -163,7 +169,8 @@ const AddStudent = () => {
             ? ""
             : "Please enter a valid date of birth";
         break;
-        case "psw":
+
+      case "psw":
         const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(value)) {
           error = "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
@@ -172,18 +179,7 @@ const AddStudent = () => {
       case "confirm_password":
         error = value !== formData.psw ? "Passwords do not match" : "";
         break;
-      case "phone":
-        error =
-          value.length < 10
-            ? "Phone number must be at least 10 digits"
-            : value.length > 15
-            ? "Phone number cannot be longer than 15 digits"
-            : /^\d+$/.test(value)
-            ? ""
-            : "Please enter a valid phone number (digits only)";
-
-        break;
-
+     
       default:
         break;
     }
@@ -207,23 +203,22 @@ const AddStudent = () => {
       reader.onerror = (error) => reject(error);
     });
   };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.size > 50 * 1024) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        profile: "Image size must be 50 KB or smaller",
-      }));
-      return;
-    }
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      profile: "",
-    }));
-    // Convert the file to base64
+   if (file && file.size > 50 * 1024) {
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    profile: 'Image size must be 50 KB or smaller',
+  }));
+  return;
+}
+setErrors((prevErrors) => ({
+  ...prevErrors,
+  profile: '',
+}));
     convertImageToBase64(file)
       .then((base64Data) => {
-        // Set the base64 encoded image and the file in the state
         setFormData((prevFormData) => ({
           ...prevFormData,
           profile: file,
@@ -234,10 +229,111 @@ const AddStudent = () => {
           profile: "",
         }));
       })
-
       .catch((error) => {
         console.error("Error converting image to base64:", error);
       });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Check if any required fields are empty or have errors
+    let hasErrors = false;
+    const requiredFields = [
+      "email",
+      "psw",
+      "confirm_password",
+      "phone",
+    ];
+
+    requiredFields.forEach((field) => {
+      if (!formData[field] || formData[field].length === 0 || errors[field]) {
+        hasErrors = true;
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [field]: !formData[field] ? "This field is required" : errors[field],
+        }));
+      }
+    });
+   
+
+    if (hasErrors) {
+      scrollToError(); // Scroll to the first error field
+      return;
+    }
+    const formDataToSend = new FormData();
+    formDataToSend.append("username", formData.username);
+    formDataToSend.append("psw", formData.psw);
+    formDataToSend.append("email", formData.email);
+   formDataToSend.append("dob", formData.dob);
+    formDataToSend.append("role", formData.role);
+    formDataToSend.append("phone", formData.phone);
+    formDataToSend.append("isActive", formData.isActive);
+    formDataToSend.append("profile", formData.profile);
+    formDataToSend.append("skills", formData.skills);
+    formDataToSend.append("countryCode", formData.countryCode);
+
+    try {
+      const response = await axios.post(
+        `${baseUrl}/Student/register`,
+        formDataToSend
+      );
+
+      if (response.status === 200) {
+        MySwal.fire({
+          title: "Welcome to our Family!",
+          text: "You have been registered successfully!",
+          icon: "success",
+          confirmButtonText: "Go to Login",
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/login";
+          } else {
+            setFormData({
+              username: "",
+              psw: "",
+              confirm_password: "",
+              email: "",
+              dob: "",
+              phone: "",
+              skills: "",
+              profile: null,
+              isActive: true,
+              countryCode:"",
+              base64Image: null,
+            });
+            setPhoneNumber("")
+            fetchUserCountryCode()
+          }
+        });
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        const data = error.response.data;
+        if (data === "EMAIL") {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            email: "This email is already registered.",
+          }));
+        } else{
+            MySwal.fire({
+                title: "Error!",
+                text: data,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+        }
+      } else {
+        MySwal.fire({
+          title: "Error!",
+          text: "An error occurred while registering. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    }
   };
 
   const scrollToError = () => {
@@ -253,6 +349,7 @@ const AddStudent = () => {
         block: "nearest",
         inline: "start",
       });
+    
     } else if (errors.dob) {
       dobRef.current.scrollIntoView({
         behavior: "smooth",
@@ -277,146 +374,32 @@ const AddStudent = () => {
         block: "nearest",
         inline: "start",
       });
-    } 
+    }  
   };
 
   useEffect(() => {
     scrollToError();
   }, [errors]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let hasErrors = false;
-    const requiredFields = [
-      "email",
-      "psw",
-      "confirm_password",
-      "phone",
-      "countryCode",
-    ];
-
-    requiredFields.forEach((field) => {
-      if (!formData[field] || formData[field].length === 0 || errors[field]) {
-        hasErrors = true;
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [field]: !formData[field] ? "This field is required" : errors[field],
-        }));
-      }
-    });
-
-    if (hasErrors) {
-      scrollToError(); // Scroll to the first error field
-      return;
-    }
-    const formDataToSend = new FormData();
-    formDataToSend.append("username", formData.username);
-    formDataToSend.append("psw", formData.psw);
-    formDataToSend.append("email", formData.email);
-    formDataToSend.append("dob", formData.dob);
-    formDataToSend.append("phone", formData.phone);
-    formDataToSend.append("isActive", formData.isActive);
-    formDataToSend.append("profile", formData.profile);
-    formDataToSend.append("skills", formData.skills);
-    formDataToSend.append("countryCode", formData.countryCode);
-     console.log("dob",formData.dob)
-    try {
-      const response = await axios.post(
-        `${baseUrl}/admin/addStudent`,
-        formDataToSend,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-
-      const data = response.data;
-
-      if (response.status === 200) {
-        MySwal.fire({
-          title: "Added !",
-          text: `New ${displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        } Added successfully!`,
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = "/view/Students";
-          }
-        });
-      }
-    } catch (error) {
-      const errorData = error.response;
-      if (errorData) {
-        if (error.response.status === 400) {
-          if (error.response.data === "EMAIL") {
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              email: "This email is already registered.",
-            }));
-          } 
-        } else if (errorData.status === 500) {
-          MySwal.fire({
-            title: "Server Error!",
-            text: "Unexpected Error Occured",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        } else if (errorData.status === 401) {
-          MySwal.fire({
-            title: "Un Authorized!",
-            text: `you are unable to Add a ${displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        }`,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        } else {
-          MySwal.fire({
-            title: "Error!",
-            text: errorData.data,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        }
-      }
-    }
-  };
-
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
+    <div className="contentbackgroundforfull">
+      <div className="contentinnerforfull">
         <div className="innerFrame">
-          <h2 style={{ textDecoration: "underline" }}>Add {displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        }</h2>
+          <h2 style={{ textDecoration: "underline" }}>Student Registration</h2>
           <div className="mainform">
             <div className="profile-picture">
               <div className="image-group">
                 {formData.base64Image ? (
-                  <img
-                    src={formData.base64Image}
-                    alt="Selected Image"
-                    className="profile-picture"
-                  />
+                  <img src={formData.base64Image} alt="Selected Image" />
                 ) : (
-                  <img
-                    src={profile}
-                    alt="Default Profile Picture"
-                    className="prof"
-                  />
+                  <img src={profile} alt="Default Profile Picture" />
                 )}
               </div>
-              <div style={{ textAlign: "center" }}>
+              <div style={{textAlign:'center'}}>
                 <label htmlFor="fileInput" className="file-upload-btn">
                   Upload
                 </label>
-                <div className="text-danger"> {errors.profile}</div>
+                <div className="text-danger">{errors.profile}</div>
                 <input
                   type="file"
                   name="fileInput"
@@ -430,10 +413,11 @@ const AddStudent = () => {
             </div>
 
             <div className="formgroup">
-              <div className="inputgrp" ref={nameRef}>
-                <label htmlFor="Name">
+              <div className="inputgrp">
+                <label htmlFor="Name" ref={nameRef}>
                   {" "}
-                  Name <span className="text-danger">*</span>
+                  Name{" "}
+                 
                 </label>
                 <span>:</span>
                 <div>
@@ -444,7 +428,7 @@ const AddStudent = () => {
                     value={formData.username}
                     onChange={handleChange}
                     name="username"
-                    className={`form-control .form-control-sm  mt-1 ${
+                    className={`form-control .form-control-sm   mt-1 ${
                       errors.username && "is-invalid"
                     }`}
                     placeholder="Full Name"
@@ -477,6 +461,11 @@ const AddStudent = () => {
                   <div className="invalid-feedback">{errors.email}</div>
                 </div>
               </div>
+
+             
+
+
+              
 
               <div className="inputgrp">
   <label htmlFor="Password">
@@ -534,7 +523,9 @@ const AddStudent = () => {
     <div className="invalid-feedback">{errors.confirm_password}</div>
   </div>
 </div>
-              <div className="inputgrp " ref={phoneRef}>
+
+             
+              <div className="inputgrp "  ref={phoneRef}>
                 <label htmlFor="Phone">
                   {" "}
                   Phone
@@ -545,28 +536,29 @@ const AddStudent = () => {
                 <span>:</span>
                 <div>
                   <div>
-                    <PhoneInput
-                      placeholder="Enter phone number"
-                      id="phone"
-                      value={phoneNumber || ""}
-                      onChange={handlePhoneChange}
-                      className={`form-control .form-control-sm  ${
-                        errors.phone && "is-invalid"
-                      }`}
-                  
-                      defaultCountry={defaultCountry}
-                      international
-                      countryCallingCodeEditable={true}
-                      onCountryChange={fetchCountryDialingCode}
-                    />
-
+                 
+      <PhoneInput
+        placeholder="Enter phone number"
+        id="phone"
+        value={phoneNumber||''}
+        onChange={handlePhoneChange}
+        className={`form-control .form-control-sm  ${
+          errors.phone && "is-invalid"
+        }`}
+        defaultCountry={defaultCountry}
+        international
+        countryCallingCodeEditable={true}
+        onCountryChange={fetchCountryDialingCode} 
+      />
+    
                     <div className="invalid-feedback">{errors.phone}</div>
                   </div>
                 </div>
               </div>
-              <div className="inputgrp" ref={dobRef}>
-                <label htmlFor="dob">
+              <div className="inputgrp">
+                <label htmlFor="dob" ref={dobRef}>
                   Date of Birth
+                 
                 </label>
                 <span>:</span>
                 <div>
@@ -584,8 +576,13 @@ const AddStudent = () => {
                   <div className="invalid-feedback">{errors.dob}</div>
                 </div>
               </div>
-              <div className="inputgrp" ref={skillsRef}>
-                <label htmlFor="skills"> Skills </label>
+              
+              <div className="inputgrp">
+                <label htmlFor="skills" ref={skillsRef}>
+                  {" "}
+                  Skills{" "}
+                 
+                </label>
                 <span>:</span>
                 <div>
                   {" "}
@@ -595,7 +592,7 @@ const AddStudent = () => {
                     value={formData.skills}
                     onChange={handleChange}
                     name="skills"
-                    className={`form-control .form-control-sm   ${
+                    className={`form-control .form-control-sm  mt-1 ${
                       errors.skills && "is-invalid"
                     }`}
                     placeholder="skills"
@@ -606,10 +603,26 @@ const AddStudent = () => {
               </div>
             </div>
           </div>
-          <div className="btngrp">
-            <button className={`btn btn-primary `} onClick={handleSubmit}>
-              Add
-            </button>
+          <div className="btngrp" style={{ display: "inline" }}>
+          <div className="cornerbtn">
+            <button
+                               className='btn btn-warning'
+                               type="button"
+                               onClick={() => {
+                                  navigate(-1) 
+                               }}
+                           >
+                               Cancel
+                           </button>
+              <button className={`btn btn-primary `} onClick={handleSubmit}>
+                Register
+              </button>
+            </div>
+            <div className="w-100 alignright">
+              <a className="small" href="/login">
+                Already have an account? Login!
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -617,4 +630,4 @@ const AddStudent = () => {
   );
 };
 
-export default AddStudent;
+export default StudentRegister;

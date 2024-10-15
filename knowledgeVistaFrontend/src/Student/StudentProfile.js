@@ -45,6 +45,10 @@ const StudentProfile = () => {
               
               // Fetch additional user data
               if (fetchedInitialUserData) {
+                setUserData(prevData =>  ({
+                  ...prevData,
+                  ...fetchedInitialUserData,
+                }));
                 const email = fetchedInitialUserData.email;
                 const response = await axios.get(`${baseUrl}/student/admin/getstudent/${email}`, {
                   headers: { Authorization: token },
@@ -55,7 +59,7 @@ const StudentProfile = () => {
       
                   // Merge initialUserData and serverData into userData
                   setUserData(prevData => {
-                    const updatedData = { ...prevData, ...fetchedInitialUserData, ...serverData };
+                    const updatedData = { ...prevData,  ...serverData };
                     if (updatedData.profile) {
                       setimg(`data:image/jpeg;base64,${updatedData.profile}`);
                     }
