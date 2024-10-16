@@ -35,6 +35,7 @@ const RedirectComponent = ({ vpsonly, admincount, children,sasonly }) => {
             try {
                 const count = await axios.get(`${baseUrl}/count/admin`);
                 setAdminCount(count.data); // Set the admin count in state
+               
             } catch (error) {
                 console.log(error);
             }
@@ -55,7 +56,8 @@ const RedirectComponent = ({ vpsonly, admincount, children,sasonly }) => {
     navigate("/notfound");
    }
     // Check the admin count and navigate if needed
-    if (admincount && adminCount <= 0) {
+
+    if (admincount   && adminCount >0){
         navigate("/notfound");
         return null; // Prevent rendering children if navigation occurs
     }
