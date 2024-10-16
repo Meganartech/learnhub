@@ -9,8 +9,7 @@ const ViewCourseVps = () => {
   
   const MySwal = withReactContent(Swal);
   const [searchQuery, setSearchQuery] = useState("");
-  const [course, setCourse] = useState([]);
-  
+  const [course, setCourse] = useState([]);  
   const [submitting,setsubmitting]=useState(false);
   useEffect(() => {
     const fetchCourse = async () => {

@@ -76,9 +76,10 @@ import StudentRegister from "./Registration/StudentRegister.js";
 import RedirectComponent from "./RedirectComponent.js";
 import TrainerRegistration from "./Registration/TrainerRegistration.js";
 import ViewCourseVps from "./course/Components/ViewCourseVps.js";
+import ErrorBoundary from "./ErrorBoundary.js";
 
 function App() {
-  const isAuthenticated = sessionStorage.getItem('token') !== null;
+  const isAuthenticated = sessionStorage.getItem("token") !== null;
   const MySwal = withReactContent(Swal);
   const [searchQuery, setSearchQuery] = useState("");
   const [course, setCourse] = useState([
@@ -105,20 +106,19 @@ function App() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-          const token = sessionStorage.getItem("token");
-          const role = sessionStorage.getItem("role");
-          if (token) {
-            if (role !== "SYSADMIN") {
-              const response = await axios.get(`${baseUrl}/course/viewAll`, {
-                headers: {
-                  Authorization: token,
-                },
-              });
-              const data = response.data;
-              setCourse(data);
-            }
+        const token = sessionStorage.getItem("token");
+        const role = sessionStorage.getItem("role");
+        if (token) {
+          if (role !== "SYSADMIN") {
+            const response = await axios.get(`${baseUrl}/course/viewAll`, {
+              headers: {
+                Authorization: token,
+              },
+            });
+            const data = response.data;
+            setCourse(data);
           }
-        
+        }
       } catch (error) {
         console.error(error);
       }
@@ -144,577 +144,693 @@ function App() {
             <Route
               path="/admin/dashboard"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   onlyadmin={true}
                   authenticationRequired={true}
                   authorizationRequired={true}
                   licence={true}
                 >
-                  <Dashboard />
+                    <Dashboard />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/lessonList/:courseName/:courseId"
               element={
+                
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <LessonList />
+                    <LessonList />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/edit/:courseName/:courseId/:Lessontitle/:lessonId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <EditLesson />
+                    <EditLesson />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/courses/:courseName/:courseId/"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true}>
-                  <ViewVideo />
+                    <ViewVideo />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/courses/:courseName/:courseId/:current"
               element={
+                
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <CustomViewvideo />
+                    <CustomViewvideo />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/course/Addlesson/:courseName/:courseId"
               element={
+                
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <UploadVideo />
+                    <UploadVideo />
                 </PrivateRoute>
+                  </ErrorBoundary>
               }
             />
             <Route
               path="/course/addcourse"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <CourseCreation />
+                    <CourseCreation />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/course/Trainer/addcourse"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                   onlytrainer={true}
                 >
-                  <CreateCourseTrainer />
+                    <CreateCourseTrainer />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/addTrainer"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <AddTrainer />
+                    <AddTrainer />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/addStudent"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <AddStudent />
+                    <AddStudent />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/mycourses"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true}>
-                  <Mycourse />
+                    <Mycourse />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/myStudents"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true} onlytrainer={true}>
-                  <Mystudents />
+                    <Mystudents />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             ></Route>
             <Route
               path="/dashboard/course"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true}>
-                  <CourseView filteredCourses={filteredCourses} />
+                    <CourseView filteredCourses={filteredCourses} />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/course/admin/edit"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   onlyadmin={true}
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <EditCourse filteredCourses={filteredCourses} />
+                    <EditCourse filteredCourses={filteredCourses} />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/course/AddTest/:courseName/:courseId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <CreateTest />
+                    <CreateTest />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/test/start/:courseName/:courseId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute onlyuser={true} authenticationRequired={true}>
-                  <AttenTest />
+                    <AttenTest />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/test/Edit/:questionId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authorizationRequired={true}
                   authenticationRequired={true}
                 >
-                  <EditQuestion />
+                    <EditQuestion />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/test/AddMore/:courseName/:testId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authorizationRequired={true}
                   authenticationRequired={true}
                 >
-                  <AddMoreQuestion />
+                    <AddMoreQuestion />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/course/edit/:courseId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <EditCourseForm />
+                    <EditCourseForm />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/course/testlist/:courseName/:courseId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <TestList />
+                    <TestList />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/course/dashboard/profile"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true}>
-                  <ProfileView />
+                    <ProfileView />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/MyCertificateList"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true}>
-                  <MyCertificateList />
+                    <MyCertificateList />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/template/:activityId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true}>
-                  <Template />
+                    <Template />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/assignCourse/Student/:userId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <AssignCourse />
+                    <AssignCourse />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/assignCourse/Trainer/:userId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   onlyadmin={true}
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <AssignCourseTRAINER />
+                    <AssignCourseTRAINER />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/view/Students"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <ViewStudentList />
+                    <ViewStudentList />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/view/Trainer"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <ViewTrainerList />
+                    <ViewTrainerList />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/settings/payment"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   onlyadmin={true}
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <Razorpay_Settings />
+                    <Razorpay_Settings />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/certificate"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   onlyadmin={true}
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <CertificateInputs />
+                    <CertificateInputs />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/view/Trainer/profile/:traineremail"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <TrainerProfile />
+                    <TrainerProfile />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/view/Student/profile/:studentemail"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <StudentProfile />
+                    <StudentProfile />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/student/edit/:email"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <EditStudent />
+                    <EditStudent />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/trainer/edit/:email"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <EditTrainer />
+                    <EditTrainer />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/AssignedCourses"
               element={
+                <ErrorBoundary>
                 <PrivateRoute onlytrainer={true} authenticationRequired={true}>
-                  <MyAssignedcourses />
+                    <MyAssignedcourses />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/about"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   onlyadmin={true}
                   authenticationRequired={true}
                   authorizationRequired={true}
                   licence={true}
                 >
-                  <About_Us />
+                    <About_Us />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/myPayments"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true} onlyuser={true}>
-                  <MyPayments />
+                    <MyPayments />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/payment/transactionHitory"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   onlyadmin={true}
                   authorizationRequired={true}
                 >
-                  <Paymenttransactions />
+                    <Paymenttransactions />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/payment/trainer/transactionHitory"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   onlytrainer={true}
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <TransactionHistoryTrainer />
+                    <TransactionHistoryTrainer />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/course/update/paymentSettings/:courseName/:courseId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <UpdatePartialPaymentSettings />
+                    <UpdatePartialPaymentSettings />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/licenceDetails"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   onlyadmin={true}
                   authorizationRequired={true}
                   licence={true}
                 >
-                  <LicenceDetails />
+                    <LicenceDetails />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/meeting/Shedule"
               element={
+                
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <SheduleZoomMeet />
+                    <SheduleZoomMeet />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/meeting/settings"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                   onlyadmin={true}
                 >
-                  <ZoomAccountkeys />
+                    <ZoomAccountkeys />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/meeting/calender"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <CalenderView />
+                    <CalenderView />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/meet/edit/:meetingId"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <EditMeeting />
+                    <EditMeeting />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/user/meeting/calender"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true} onlyuser={true}>
-                  <StudentCalenderView />
+                    <StudentCalenderView />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/mailSending"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                 >
-                  <MailSending />
+                    <MailSending />
                 </PrivateRoute>
+                  </ErrorBoundary>
               }
             />
             <Route
               path="/mailsettings"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                   onlyadmin={true}
                 >
-                  <MailSettings />
+                    <MailSettings />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/displayname"
               element={
+                <ErrorBoundary>
                 <PrivateRoute
                   authenticationRequired={true}
                   authorizationRequired={true}
                   onlyadmin={true}
                 >
-                  <DisplayName />
+                    <DisplayName />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/viewDocument/:documentPath/:lessonId/:docid"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true}>
-                  <SlideViewer />
+                    <SlideViewer />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             {/* SysAdminRoutes */}
             <Route
               path="/viewAll/Admins"
               element={
-                <PrivateRoute authenticationRequired={true} sysadmin={true}>
-                  <ViewAdmin />
+                <ErrorBoundary>
+                <PrivateRoute authenticationRequired={true} sysadmin={true}>\
+                    <ViewAdmin />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/viewAll/Trainers"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true} sysadmin={true}>
-                  <ViewTrainers />
+                    <ViewTrainers />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/viewAll/Students"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true} sysadmin={true}>
-                  <ViewStudents />
+                    <ViewStudents />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/licenceupload"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true} sysadmin={true}>
-                  <SysadminLicenceupload />
+                    <SysadminLicenceupload />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/Zoomkeyupload"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true} sysadmin={true}>
-                  <ZoomKeys />
+                    <ZoomKeys />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/Affiliates"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true} sysadmin={true}>
-                  <Affiliates />
+                    <Affiliates />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/viewAdmin/profile/:adminemail"
               element={
+                <ErrorBoundary>
                 <PrivateRoute authenticationRequired={true} sysadmin={true}>
-                  <AdminProfileView />
+                    <AdminProfileView />
                 </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             {/* SysAdminRoutes */}
@@ -722,25 +838,100 @@ function App() {
 
           <Route
             path="/"
-           element={<RedirectComponent vpsonly={true}><ViewCourseVps/></RedirectComponent>}
+            element={
+              <ErrorBoundary>
+              <RedirectComponent vpsonly={true}>
+                  {" "}
+                  <ViewCourseVps />
+              </RedirectComponent>
+              
+              </ErrorBoundary>
+            }
           />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<ErrorBoundary><Login /></ErrorBoundary>} />
           <Route
             path="/refresh"
             element={
+              
+                <ErrorBoundary>
               <PrivateRoute authenticationRequired={true}>
-                <RefreshToken />
+                  <RefreshToken />
               </PrivateRoute>
+              </ErrorBoundary>
             }
           />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/forgot-password" element={<ForgetPassword />} />
-          <Route path="/RegisterInstitute" element={<RedirectComponent sasonly={true}><AdminRegister/></RedirectComponent>}/>
-          <Route path="/adminRegistration" element={<RedirectComponent admincount={true} vpsonly={true}><AdminRegister /></RedirectComponent>} />
-          <Route path="/TrainerRegistration"element={<RedirectComponent  vpsonly={true}><TrainerRegistration/></RedirectComponent>}/>
-          <Route path="/StudentRegistration" element={<RedirectComponent  vpsonly={true}><StudentRegister/></RedirectComponent>}/>
-          <Route path="/LicenceExpired" element={<LicenceExpired />} />
-          <Route path="*" element={<Missing />} />
+          <Route
+            path="/unauthorized"
+            element={
+              <ErrorBoundary>
+                <Unauthorized />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <ErrorBoundary>
+                <ForgetPassword />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/RegisterInstitute"
+            element={
+              <ErrorBoundary>
+                <RedirectComponent sasonly={true}>
+                  <AdminRegister />
+                </RedirectComponent>
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/adminRegistration"
+            element={
+              <ErrorBoundary>
+                <RedirectComponent admincount={true} vpsonly={true}>
+                  <AdminRegister />
+                </RedirectComponent>
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/TrainerRegistration"
+            element={
+              <ErrorBoundary>
+                <RedirectComponent vpsonly={true}>
+                  <TrainerRegistration />
+                </RedirectComponent>
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/StudentRegistration"
+            element={
+              <ErrorBoundary>
+                <RedirectComponent vpsonly={true}>
+                  <StudentRegister />
+                </RedirectComponent>
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/LicenceExpired"
+            element={
+              <ErrorBoundary>
+                <LicenceExpired />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <ErrorBoundary>
+                <Missing />
+              </ErrorBoundary>
+            }
+          />
         </Routes>
 
         <Footer />

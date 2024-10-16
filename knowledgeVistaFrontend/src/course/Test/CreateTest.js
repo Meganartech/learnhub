@@ -176,10 +176,7 @@ const CreateTest = () => {
         }
       });
 
-      if (!response.status===200) {
-        throw new Error("Failed to submit test");
-      }
-
+     
       // Reset state after successful submission
       setSavedQuestions([]);
       setTestName("");

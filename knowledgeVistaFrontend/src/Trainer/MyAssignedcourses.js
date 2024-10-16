@@ -23,9 +23,7 @@ const MyAssignedcourses = () => {
                     'Authorization':token
                 }
             });
-                if (!response.status===200) {
-                    throw new Error('Failed to fetch courses');
-                }
+               
                 const data = response.data;
                 setCourses(data);
             } catch (error) {

@@ -25,9 +25,7 @@ const AssignCourse = () => {
               }
             });
             const userData =  response.data;
-            if (!response.status===200) {
-                throw new Error('Failed to fetch user data');
-            }
+           
             if(userData.profile!==null){
             setImg(`data:image/jpeg;base64,${userData.profile}`);
           }

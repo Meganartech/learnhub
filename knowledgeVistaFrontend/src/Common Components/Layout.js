@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import SlideBar from './SlideBar';
 import NavBar from './NavBar';
+import ErrorBoundary from '../ErrorBoundary';
 
 const Layout = ({ searchQuery, handleSearchChange, setSearchQuery }) => {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -20,18 +21,24 @@ const Layout = ({ searchQuery, handleSearchChange, setSearchQuery }) => {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    try {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    } catch (error) {
+      console.error("Error in useEffect:", error);
+    }
   }, []);
+  
 
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
 
   return (
     <div>
-      <NavBar
+         <ErrorBoundary>      
+          <NavBar
        navbarref={navbarref}
         showSidebar={showSidebar}
         handleSidebarToggle={handleSidebarToggle}
@@ -39,16 +46,20 @@ const Layout = ({ searchQuery, handleSearchChange, setSearchQuery }) => {
         handleSearchChange={handleSearchChange}
         setSearchQuery={setSearchQuery}
       />
+      </ErrorBoundary>
       <div id="wrappercenter">
         <div id="sidebar" ref={sidebarRef} className={showSidebar ? "displayit" : "hide"}>
+        <ErrorBoundary>
           <SlideBar
             handleSidebarToggle={handleSidebarToggle}
             activeLink={activeLink}
             setActiveLink={setActiveLink}
           />
+          </ErrorBoundary>
         </div>
         <div id="outlet" className='w-100'>
-          <Outlet />
+      
+          <Outlet key={location.pathname}/>
         </div>
       </div>
 

@@ -22,11 +22,7 @@ const SlideViewer = () => {
     setZoomInputValue((prevValue) => {
       const numericValue = parseInt(prevValue.replace("%", ""));
       const newZoom = Math.min(numericValue + 10, 500); // Max zoom 500%
-      console.log("newzoom", newZoom);
-      console.log("calculated", (newZoom / 100) * actualwidth);
       setWidth((newZoom / 100) * actualwidth); // Adjust width based on new zoom level
-      console.log("actual", actualwidth);
-      console.log("width", width);
       return `${newZoom}%`;
     });
   };
@@ -35,12 +31,8 @@ const SlideViewer = () => {
   const zoomOut = () => {
     setZoomInputValue((prevValue) => {
       const numericValue = parseInt(prevValue.replace("%", ""));
-      const newZoom = Math.max(numericValue - 10, 10); // Min zoom 10%
-      console.log("newzoom", newZoom);
-      console.log("calculated", (newZoom / 100) * actualwidth);
-      setWidth((newZoom / 100) * actualwidth); // Adjust width based on new zoom level
-      console.log("actual", actualwidth);
-      console.log("width", width);
+      const newZoom = Math.max(numericValue - 10, 10); 
+      setWidth((newZoom / 100) * actualwidth); 
       return `${newZoom}%`;
     });
   };

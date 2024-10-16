@@ -20,9 +20,7 @@ const LessonList = () => {
                 Authorization: token,
                }
             });
-            if (!response.status===200) {
-              throw new Error('Failed to fetch data');
-            }
+          
             const lessonList = response.data;
            setlessons(lessonList);
           } catch (error) {

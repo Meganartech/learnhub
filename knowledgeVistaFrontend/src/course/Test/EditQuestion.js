@@ -38,9 +38,7 @@ const EditQuestion = () => {
             "Authorization": token
           }
         });
-        if (!response.status===200) {
-          throw new Error('Failed to fetch test');
-        } else {
+       
           const data =  response.data;
           setQuestionText(data.questionText);
           setOptions({
@@ -51,7 +49,7 @@ const EditQuestion = () => {
           });
           const selectedOption = Object.keys(data).find(optionKey => data[optionKey] === data.answer);
           setSelectedOption(selectedOption); 
-        }
+        
       } catch (error) {
         MySwal.fire({
           title: "Error",
