@@ -18,8 +18,6 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class EmailService {
 
-//	  @Value("${spring.mail.username}")
-//	  private String fromMail;
 	  
 	  @Autowired
 	  private MailkeysRepo mailkeyrepo;
@@ -31,8 +29,11 @@ public class EmailService {
           }
 		  MimeMessage mimeMessage = mailSender.createMimeMessage();
 	        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-
-//	        helper.setFrom(fromMail);
+	        String from= this.getfrom(InstitutionName);
+	        if(from==null) {
+	        	 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	        }
+           helper.setFrom(from);
 	        if (to != null && !to.isEmpty()) {
 	            helper.setTo(to.toArray(new String[0]));
 	        }
@@ -51,6 +52,15 @@ public class EmailService {
 	        mailSender.send(mimeMessage);
 	       return ResponseEntity.ok("Mail Sent");
 	    }
+	  public String getfrom(String institution) {
+		  Optional<Mailkeys> opkeys = mailkeyrepo.FindMailkeyByInstituiton(institution);
+		  if(opkeys.isPresent()) {
+			  Mailkeys keys =opkeys.get();
+			  return keys.getEmailid();
+		  } else {
+			    return null;   
+			    }
+	  }
 	  
 	  public JavaMailSender getJavaMailSender(String institution) {
 		  Optional<Mailkeys> opkeys = mailkeyrepo.FindMailkeyByInstituiton(institution);
