@@ -68,8 +68,6 @@ import EditMeeting from "./Meetings/EditMeeting.js";
 import Footer from "./Common Components/Footer.js";
 import Affiliates from "./SysAdmin/Affiliates.js";
 import MailSending from "./Meetings/MailSending.js";
-import MailSettings from "./Meetings/MailSettings.js";
-import DisplayName from "./UserSettings/DisplayName.js";
 import SlideViewer from "./course/Components/SlideViewer.js";
 import AdminProfileView from "./SysAdmin/AdminProfileView.js";
 import StudentRegister from "./Registration/StudentRegister.js";
@@ -77,6 +75,8 @@ import RedirectComponent from "./RedirectComponent.js";
 import TrainerRegistration from "./Registration/TrainerRegistration.js";
 import ViewCourseVps from "./course/Components/ViewCourseVps.js";
 import ErrorBoundary from "./ErrorBoundary.js";
+import SettingsComponent from "./UserSettings/SettingsComponent.js";
+import DisplayName from "./UserSettings/DisplayName.js";
 
 function App() {
   const isAuthenticated = sessionStorage.getItem("token") !== null;
@@ -145,28 +145,27 @@ function App() {
               path="/admin/dashboard"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  onlyadmin={true}
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                  licence={true}
-                >
+                  <PrivateRoute
+                    onlyadmin={true}
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                    licence={true}
+                  >
                     <Dashboard />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
             <Route
               path="/lessonList/:courseName/:courseId"
               element={
-                
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <LessonList />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -174,12 +173,12 @@ function App() {
               path="/edit/:courseName/:courseId/:Lessontitle/:lessonId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <EditLesson />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -187,50 +186,48 @@ function App() {
               path="/courses/:courseName/:courseId/"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute authenticationRequired={true}>
                     <ViewVideo />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
             <Route
               path="/courses/:courseName/:courseId/:current"
               element={
-                
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <CustomViewvideo />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
             <Route
               path="/course/Addlesson/:courseName/:courseId"
               element={
-                
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <UploadVideo />
-                </PrivateRoute>
-                  </ErrorBoundary>
+                  </PrivateRoute>
+                </ErrorBoundary>
               }
             />
             <Route
               path="/course/addcourse"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <CourseCreation />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -238,13 +235,13 @@ function App() {
               path="/course/Trainer/addcourse"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                  onlytrainer={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                    onlytrainer={true}
+                  >
                     <CreateCourseTrainer />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -252,12 +249,12 @@ function App() {
               path="/addTrainer"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <AddTrainer />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -265,12 +262,12 @@ function App() {
               path="/addStudent"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <AddStudent />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -278,9 +275,9 @@ function App() {
               path="/mycourses"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute authenticationRequired={true}>
                     <Mycourse />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -288,9 +285,12 @@ function App() {
               path="/myStudents"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} onlytrainer={true}>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    onlytrainer={true}
+                  >
                     <Mystudents />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             ></Route>
@@ -298,9 +298,9 @@ function App() {
               path="/dashboard/course"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute authenticationRequired={true}>
                     <CourseView filteredCourses={filteredCourses} />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -308,13 +308,13 @@ function App() {
               path="/course/admin/edit"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  onlyadmin={true}
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    onlyadmin={true}
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <EditCourse filteredCourses={filteredCourses} />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -322,12 +322,12 @@ function App() {
               path="/course/AddTest/:courseName/:courseId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <CreateTest />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -335,9 +335,9 @@ function App() {
               path="/test/start/:courseName/:courseId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute onlyuser={true} authenticationRequired={true}>
+                  <PrivateRoute onlyuser={true} authenticationRequired={true}>
                     <AttenTest />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -345,12 +345,12 @@ function App() {
               path="/test/Edit/:questionId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authorizationRequired={true}
-                  authenticationRequired={true}
-                >
+                  <PrivateRoute
+                    authorizationRequired={true}
+                    authenticationRequired={true}
+                  >
                     <EditQuestion />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -358,12 +358,12 @@ function App() {
               path="/test/AddMore/:courseName/:testId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authorizationRequired={true}
-                  authenticationRequired={true}
-                >
+                  <PrivateRoute
+                    authorizationRequired={true}
+                    authenticationRequired={true}
+                  >
                     <AddMoreQuestion />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -371,12 +371,12 @@ function App() {
               path="/course/edit/:courseId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <EditCourseForm />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -384,12 +384,12 @@ function App() {
               path="/course/testlist/:courseName/:courseId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <TestList />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -397,9 +397,9 @@ function App() {
               path="/course/dashboard/profile"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute authenticationRequired={true}>
                     <ProfileView />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -407,9 +407,9 @@ function App() {
               path="/MyCertificateList"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute authenticationRequired={true}>
                     <MyCertificateList />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -417,9 +417,9 @@ function App() {
               path="/template/:activityId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute authenticationRequired={true}>
                     <Template />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -427,12 +427,12 @@ function App() {
               path="/assignCourse/Student/:userId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <AssignCourse />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -440,13 +440,13 @@ function App() {
               path="/assignCourse/Trainer/:userId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  onlyadmin={true}
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    onlyadmin={true}
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <AssignCourseTRAINER />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -454,12 +454,12 @@ function App() {
               path="/view/Students"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <ViewStudentList />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -467,12 +467,12 @@ function App() {
               path="/view/Trainer"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <ViewTrainerList />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -480,13 +480,13 @@ function App() {
               path="/settings/payment"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  onlyadmin={true}
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    onlyadmin={true}
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <Razorpay_Settings />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -494,13 +494,13 @@ function App() {
               path="/certificate"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  onlyadmin={true}
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    onlyadmin={true}
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <CertificateInputs />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -508,12 +508,12 @@ function App() {
               path="/view/Trainer/profile/:traineremail"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <TrainerProfile />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -521,12 +521,12 @@ function App() {
               path="/view/Student/profile/:studentemail"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <StudentProfile />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -534,12 +534,12 @@ function App() {
               path="/student/edit/:email"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <EditStudent />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -547,12 +547,12 @@ function App() {
               path="/trainer/edit/:email"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <EditTrainer />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -560,9 +560,12 @@ function App() {
               path="/AssignedCourses"
               element={
                 <ErrorBoundary>
-                <PrivateRoute onlytrainer={true} authenticationRequired={true}>
+                  <PrivateRoute
+                    onlytrainer={true}
+                    authenticationRequired={true}
+                  >
                     <MyAssignedcourses />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -570,14 +573,14 @@ function App() {
               path="/about"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  onlyadmin={true}
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                  licence={true}
-                >
+                  <PrivateRoute
+                    onlyadmin={true}
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                    licence={true}
+                  >
                     <About_Us />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -585,9 +588,9 @@ function App() {
               path="/myPayments"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
                     <MyPayments />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -595,13 +598,13 @@ function App() {
               path="/payment/transactionHitory"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  onlyadmin={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    onlyadmin={true}
+                    authorizationRequired={true}
+                  >
                     <Paymenttransactions />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -609,13 +612,13 @@ function App() {
               path="/payment/trainer/transactionHitory"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  onlytrainer={true}
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    onlytrainer={true}
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <TransactionHistoryTrainer />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -623,12 +626,12 @@ function App() {
               path="/course/update/paymentSettings/:courseName/:courseId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <UpdatePartialPaymentSettings />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -636,28 +639,27 @@ function App() {
               path="/licenceDetails"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  onlyadmin={true}
-                  authorizationRequired={true}
-                  licence={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    onlyadmin={true}
+                    authorizationRequired={true}
+                    licence={true}
+                  >
                     <LicenceDetails />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
             <Route
               path="/meeting/Shedule"
               element={
-                
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <SheduleZoomMeet />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -665,13 +667,13 @@ function App() {
               path="/meeting/settings"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                  onlyadmin={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                    onlyadmin={true}
+                  >
                     <ZoomAccountkeys />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -679,12 +681,12 @@ function App() {
               path="/meeting/calender"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <CalenderView />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -692,12 +694,12 @@ function App() {
               path="/meet/edit/:meetingId"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <EditMeeting />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -705,9 +707,9 @@ function App() {
               path="/user/meeting/calender"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
                     <StudentCalenderView />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -715,30 +717,27 @@ function App() {
               path="/mailSending"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <MailSending />
-                </PrivateRoute>
-                  </ErrorBoundary>
-              }
-            />
-            <Route
-              path="/mailsettings"
-              element={
-                <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                  onlyadmin={true}
-                >
-                    <MailSettings />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
+            
             <Route
+              path="/viewDocument/:documentPath/:lessonId/:docid"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true}>
+                    <SlideViewer />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+ <Route
               path="/displayname"
               element={
                 <ErrorBoundary>
@@ -753,23 +752,25 @@ function App() {
               }
             />
             <Route
-              path="/viewDocument/:documentPath/:lessonId/:docid"
+              path="/viewsettings"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true}>
-                    <SlideViewer />
-                </PrivateRoute>
+                  <PrivateRoute authorizationRequired={true} onlyadmin={true}>
+                    <SettingsComponent />
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
+
             {/* SysAdminRoutes */}
             <Route
               path="/viewAll/Admins"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} sysadmin={true}>\
+                  <PrivateRoute authenticationRequired={true} sysadmin={true}>
+                    \
                     <ViewAdmin />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -777,9 +778,9 @@ function App() {
               path="/viewAll/Trainers"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} sysadmin={true}>
+                  <PrivateRoute authenticationRequired={true} sysadmin={true}>
                     <ViewTrainers />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -787,9 +788,9 @@ function App() {
               path="/viewAll/Students"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} sysadmin={true}>
+                  <PrivateRoute authenticationRequired={true} sysadmin={true}>
                     <ViewStudents />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -797,9 +798,9 @@ function App() {
               path="/licenceupload"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} sysadmin={true}>
+                  <PrivateRoute authenticationRequired={true} sysadmin={true}>
                     <SysadminLicenceupload />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -807,9 +808,9 @@ function App() {
               path="/Zoomkeyupload"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} sysadmin={true}>
+                  <PrivateRoute authenticationRequired={true} sysadmin={true}>
                     <ZoomKeys />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -817,9 +818,9 @@ function App() {
               path="/Affiliates"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} sysadmin={true}>
+                  <PrivateRoute authenticationRequired={true} sysadmin={true}>
                     <Affiliates />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -827,9 +828,9 @@ function App() {
               path="/viewAdmin/profile/:adminemail"
               element={
                 <ErrorBoundary>
-                <PrivateRoute authenticationRequired={true} sysadmin={true}>
+                  <PrivateRoute authenticationRequired={true} sysadmin={true}>
                     <AdminProfileView />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -840,23 +841,28 @@ function App() {
             path="/"
             element={
               <ErrorBoundary>
-              <RedirectComponent vpsonly={true}>
+                <RedirectComponent vpsonly={true} checkvisible={true}>
                   {" "}
                   <ViewCourseVps />
-              </RedirectComponent>
-              
+                </RedirectComponent>
               </ErrorBoundary>
             }
           />
-          <Route path="/login" element={<ErrorBoundary><Login /></ErrorBoundary>} />
+          <Route
+            path="/login"
+            element={
+              <ErrorBoundary>
+                <Login />
+              </ErrorBoundary>
+            }
+          />
           <Route
             path="/refresh"
             element={
-              
-                <ErrorBoundary>
-              <PrivateRoute authenticationRequired={true}>
+              <ErrorBoundary>
+                <PrivateRoute authenticationRequired={true}>
                   <RefreshToken />
-              </PrivateRoute>
+                </PrivateRoute>
               </ErrorBoundary>
             }
           />

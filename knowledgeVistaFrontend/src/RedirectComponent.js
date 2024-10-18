@@ -1,14 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Updated import for navigation
+import { Navigate } from 'react-router-dom';
 import baseUrl from './api/utils';
 
-const RedirectComponent = ({ vpsonly, admincount, children,sasonly }) => {
+const RedirectComponent = ({ vpsonly, admincount, children, sasonly, checkvisible }) => {
     const [activeProfile, setActiveProfile] = useState(sessionStorage.getItem("Activeprofile"));
     const [loading, setLoading] = useState(true);
     const [adminCount, setAdminCount] = useState(0); // State to hold the admin count
-    const navigate = useNavigate(); // Use the useNavigate hook for navigation
+    const [showInLandingPage, setShowInLandingPage] = useState(null); // Set initial state to null
 
+    // Fetch show in landing page setting
+    useEffect(() => {
+        const fetchShowInLandingPage = async () => {
+            try {
+                const response = await axios.get(`${baseUrl}/settings/viewCourseInLanding`);
+                setShowInLandingPage(response.data); 
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchShowInLandingPage(); // Always fetch when component loads
+    }, []); 
+
+    // Fetch the active environment
     useEffect(() => {
         const fetchActive = async () => {
             try {
@@ -17,25 +34,20 @@ const RedirectComponent = ({ vpsonly, admincount, children,sasonly }) => {
                 setActiveProfile(active.data);
             } catch (error) {
                 console.error(error);
-            } finally {
-                setLoading(false);
             }
         };
 
-        // Only fetch if activeProfile is not already in sessionStorage
         if (!activeProfile) {
             fetchActive();
-        } else {
-            setLoading(false);  // If already available, stop loading
         }
     }, [activeProfile]);
 
+    // Fetch admin count if needed
     useEffect(() => {
         const countAdmin = async () => {
             try {
                 const count = await axios.get(`${baseUrl}/count/admin`);
                 setAdminCount(count.data); // Set the admin count in state
-               
             } catch (error) {
                 console.log(error);
             }
@@ -48,27 +60,37 @@ const RedirectComponent = ({ vpsonly, admincount, children,sasonly }) => {
 
     // Handle loading state
     if (loading) {
-        return <div className="outerspinner active">
-        <div className="spinner"></div>
-      </div>;
-    }
-   if(sasonly && activeProfile !=="SAS" ){
-    navigate("/notfound");
-   }
-    // Check the admin count and navigate if needed
-
-    if (admincount   && adminCount >0){
-        navigate("/notfound");
-        return null; // Prevent rendering children if navigation occurs
+        return (
+            <div className="outerspinner active">
+                <div className="spinner"></div>
+            </div>
+        );
     }
 
-    // Check for vpsonly condition
+    // Redirect logic after loading
+    if (sasonly && activeProfile !== "SAS") {
+        return <Navigate to="/notfound" />;
+    }
+
+    if (admincount && adminCount > 0) {
+        return <Navigate to="/notfound" />;
+    }
+
     if (vpsonly && activeProfile !== "VPS") {
-        navigate("/login");
-        return null; // Prevent rendering children if navigation occurs
+        return <Navigate to="/login" />;
     }
 
-    return <>{children}</>;
+    // Check for visibility and showInLandingPage
+    if (checkvisible && showInLandingPage === false) {
+        return <Navigate to="/login" />;
+    }
+
+    // Render children if showInLandingPage is true
+    if (showInLandingPage === true) {
+        return <>{children}</>;
+    }
+
+    return null; // Or render a fallback UI if needed
 };
 
 export default RedirectComponent;

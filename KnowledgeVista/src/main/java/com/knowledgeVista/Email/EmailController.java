@@ -1,15 +1,20 @@
 package com.knowledgeVista.Email;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
+
 
 
 @RestController
@@ -24,7 +29,22 @@ public class EmailController {
 		 @Autowired
 		 private JwtUtil jwtUtil;
 		 
-
+		 @GetMapping("/logs")
+         private ResponseEntity<?> sendlogfile() {
+             try {
+          	   List<String> to = Arrays.asList("akshayalatha786@gmail.com");
+     	        List<String> cc = new ArrayList<>(); // No CC
+     	        List<String> bcc = new ArrayList<>(); // No BCC
+     	        String subject = "Log";
+     	        String body = "Please find the attached log file.";
+   	        
+     	        return emailService.sendHtmlEmail("Aks", to, cc, bcc, subject, body);
+   	          
+             } catch (Exception e) {
+                
+                 return null;
+             }
+         }
 	  public ResponseEntity<?> sendMail( String token, EmailRequest emailRequest) {
 	      try {
 	    	  if (!jwtUtil.validateToken(token)) {

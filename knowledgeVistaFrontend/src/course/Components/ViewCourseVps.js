@@ -11,20 +11,29 @@ const ViewCourseVps = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [course, setCourse] = useState([]);  
   const [submitting,setsubmitting]=useState(false);
+  const[notfound,setnotfound]=useState(false);
+ 
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        setsubmitting(true)
-        const response = await axios.get(`${baseUrl}/course/viewAllVps`);
-        setsubmitting(false)
-        const data = response.data;
-        setCourse(data);
+        
+          setsubmitting(true); // Show loading indicator
+          const response = await axios.get(`${baseUrl}/course/viewAllVps`);
+          setsubmitting(false); // Hide loading indicator
+          const data = response.data;
+          setCourse(data); // Set the fetched course data
+        
       } catch (error) {
-        console.error(error);
+        setnotfound(true)
+        console.error('Error fetching courses:', error);
       }
     };
-    fetchCourse();
-  }, []);
+
+   
+      fetchCourse();
+    
+  }, []); // This effect depends on the `showInLandingPage` state
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -245,15 +254,15 @@ if(amount===0){
       <NavBar setSearchQuery={setSearchQuery} searchQuery={searchQuery} handleSearchChange={handleSearchChange}/>
       <div className="contentbackground">
         <div className="contentinner">
-          <div className="supercontainernew">
-            <div>
-            {submitting &&  <div className="outerspinner active">
+           {submitting &&  <div className="outerspinner active">
         <div className="spinner"></div>
       </div>}
-              {" "}
+          <div className="supercontainernew">
+            
+            {filteredCourses && filteredCourses.length > 0 &&
+              <>
               <h4>Courses For You</h4>
-            </div>
-            {filteredCourses && filteredCourses.length > 0 ? (
+           
               <ul className="maincontainernew" style={{ height: "65vh" }}>
                 {filteredCourses
                   .slice()
@@ -324,8 +333,10 @@ if(amount===0){
                     </li>
                   ))}
               </ul>
-            ) : (
-              <div
+              </>
+          
+                }
+              {notfound && <div
                 className="maincontainernew"
                 style={{
                   borderRadius: "10px",
@@ -335,8 +346,8 @@ if(amount===0){
                 }}
               >
                 <h1>No Course Found </h1>
-              </div>
-            )}
+              </div>}
+          
           </div>
         </div>
       </div>

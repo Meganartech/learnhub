@@ -48,6 +48,7 @@ import com.knowledgeVista.Payments.PaymentListController;
 import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.PaymentSettingsController;
 import com.knowledgeVista.Settings.Feedback;
+import com.knowledgeVista.Settings.Controller.SettingsController;
 import com.knowledgeVista.SysAdminPackage.SysadminController;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Controller.AddUsers;
@@ -141,6 +142,9 @@ public class FrontController {
 	
 	@Autowired
 	private RoleDisplayController displayctrl; 
+	
+	@Autowired
+	private SettingsController settingcontroller;
 	
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
@@ -1128,6 +1132,34 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
           		return displayctrl.postDisplayname(token, roledisplaynames);
                }
             	   
-          		
+//-------------------------------------SettingsController---------------------------------------------
+               @GetMapping("/settings/viewCourseInLanding")
+               public Boolean isViewCourseinLandingPageEnabled() {
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return settingcontroller.isViewCourseinLandingPageEnabled();
+            		   }else {
+            			   return null;
+            		   }
+            	   }catch(Exception e) {
+            		   e.printStackTrace();
+            		   return null;
+            	   }
+            	   
+               }
+               
+               @PostMapping("/settings/viewCourseInLanding")
+               public Boolean updateViewCourseInLandingPage(@RequestBody Boolean isEnabled,@RequestHeader("Authorization") String token) {
+            	   try {
+            		   if(environment.equals("VPS")) {
+            	   return settingcontroller.updateViewCourseInLandingPage(isEnabled,token);
+            		   }else {
+            			   return null;
+            		   }
+            	   }catch(Exception e) {
+            		   e.printStackTrace();
+            		   return null;
+            	   }
+               }
 }
 

@@ -6,11 +6,11 @@ import baseUrl from "../api/utils"
 import axios from 'axios';
 
 const MailSettings = () => {
+ 
 const[initialsave,setinitialsave]=useState(false);
   const MySwal = withReactContent(Swal); 
   const token=sessionStorage.getItem("token")
   const [isnotFound,setisnotFound]=useState(false);
-  const navigate=useNavigate();
   const[settings,setsettings]=useState({
     hostname:"",
     port:"587",
@@ -48,7 +48,6 @@ const[initialsave,setinitialsave]=useState(false);
           if (error.response) {
             if (error.response.status === 404) {
               setisnotFound(true);
-              console.log("notfound",isnotFound)
               setinitialsave(true);
             } else if (error.response.status === 401) {
               window.location.href = "/unauthorized";
@@ -148,14 +147,11 @@ setsettings((prev)=>({
     setisnotFound(true);
   }
 
-  const getinputs=(<div>
-    <div className='navigateheaders'>
-     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
-     <div></div>
-     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
-     </div>
+  const getinputs=(
+  <div>
+   
      <div className='innerFrameforset '>
- <h2 className='mb-5' style={{ textDecoration: "underline" }}>Mail Settings</h2>
+ <h4 className='mb-2' style={{ textDecoration: "underline" }}>Mail Settings</h4>
    
      <div className='formgroup pt-4' >
       
@@ -245,13 +241,9 @@ setsettings((prev)=>({
  </div>) 
    const defaultinputs=(
    <div>
-    <div className='navigateheaders'>
-     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
-     <div></div>
-     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
-     </div>
+  
      <div className='innerFrameforset '>
- <h2 className='mb-5' style={{ textDecoration: "underline" }} >Mail Settings</h2>
+ <h4 className='mb-2' style={{ textDecoration: "underline" }} >Mail Settings</h4>
    
      <div className='formgroup pt-4' >
       
@@ -319,12 +311,11 @@ setsettings((prev)=>({
  </div>
  )
   return (
-    <div className="contentbackground">
-    <div className='contentinner'>
-    {isnotFound ? getinputs :defaultinputs }
-    </div>
+   <>
+    {isnotFound ? getinputs: defaultinputs }
+    </>
   
-</div>
+
   )
 }
 

@@ -26,7 +26,7 @@ class ErrorBoundary extends React.Component {
         <div className="text-center mt-5 ">
               <h2 className="display-4">Oops! Something Went Wrong</h2>
               <p className="lead">Some Unexpected Error Occured Please Try again later.</p>
-              <p>Go back To <a href="/course/admin/edit">Home</a></p>
+ 
           </div>
            
         </div></div>;

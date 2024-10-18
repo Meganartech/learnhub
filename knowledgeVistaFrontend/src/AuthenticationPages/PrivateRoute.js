@@ -39,8 +39,12 @@ const PrivateRoute = ({sysadmin, authenticationRequired, authorizationRequired,o
     }
 
     // Check if authorization is required and user has the ADMIN role
-    if (authorizationRequired && userRole === "USER") {
-        return <Navigate to="/unauthorized" />;
+    if (authorizationRequired ) {
+      if(userRole === "USER")  {
+      return <Navigate to="/unauthorized" />;
+      }else if(userRole===null){
+        return <Navigate to="/login" />;
+      }
     }
     
      if(onlyadmin && (userRole ==="TRAINER" || userRole==="USER")){

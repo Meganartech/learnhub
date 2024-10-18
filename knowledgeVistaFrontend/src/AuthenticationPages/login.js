@@ -12,7 +12,9 @@ const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const navigate = useNavigate(); // useNavigate hook for navigation
   const [activeProfile, setActiveProfile] = useState(sessionStorage.getItem("Activeprofile"));
+
   const handleRegistration = async () => {
+   
     try {
       const active = await axios.get(`${baseUrl}/Active/Environment`);
       sessionStorage.setItem("Activeprofile", active.data);
