@@ -10,12 +10,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.knowledgeVista.SocialLogin.SocialKeyRepo;
+import com.knowledgeVista.SocialLogin.SocialLoginKeys;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
 
-
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.time.LocalDate;
 
@@ -26,12 +28,15 @@ public class DataLoaderService {
     private MuserRoleRepository muserRoleRepository;
    @Autowired 
     private MuserRepositories muserrepositories;
+   @Autowired
+   private SocialKeyRepo SocialKeysRepo;
     @PostConstruct
     @Transactional
     public void init() {
         try {
             loadRoles();
              loadUsers(); 
+             loadSocialLoginKeys();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,6 +124,37 @@ public class DataLoaderService {
             // Handle exceptions as per your application's requirements
         }
     }
+    
+private void loadSocialLoginKeys() {
+	try {
+		if(SocialKeysRepo.checkIfSysAdminExists()) {
+			return ;
+		}
+		 InputStream is = getClass().getResourceAsStream("/social_login_keys.xml");
+         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+         DocumentBuilder builder = factory.newDocumentBuilder();
+         Document doc = builder.parse(is);
 
+         NodeList rootNodes = doc.getElementsByTagName("Socialkeys");
+         for (int i = 0; i < rootNodes.getLength(); i++) {
+             Element SocialLogin = (Element) rootNodes.item(i);
+             String provider = SocialLogin.getElementsByTagName("provider").item(0).getTextContent();
+             String institutionName=SocialLogin.getElementsByTagName("institutionName").item(0).getTextContent();
+             String clientid=SocialLogin.getElementsByTagName("clientid").item(0).getTextContent();
+             String clientSecret=SocialLogin.getElementsByTagName("clientSecret").item(0).getTextContent();
+             String RedirectUrl=SocialLogin.getElementsByTagName("RedirectUrl").item(0).getTextContent();
+
+             SocialLoginKeys keys= new SocialLoginKeys();
+             keys.setProvider(provider);
+             keys.setInstitutionName(institutionName);
+             keys.setClientid(clientid);
+             keys.setClientSecret(clientSecret);
+             keys.setRedirectUrl(RedirectUrl);
+             SocialKeysRepo.save(keys);
+         }
+	}catch(Exception e) {
+		e.printStackTrace();
+	}
+}
 
 }

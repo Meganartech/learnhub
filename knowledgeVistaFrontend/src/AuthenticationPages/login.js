@@ -1,29 +1,52 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import login from "../images/login.png"
+import login from "../images/login.png";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import baseUrl from '../api/utils';
-import axios from 'axios';
-import logo from "../images/logo.png"
+import baseUrl from "../api/utils";
+import axios from "axios";
+import logo from "../images/logo.png";
+import GoogleLoginComponent from "../Registration/GoogleLoginComponent";
 const Login = () => {
   const MySwal = withReactContent(Swal);
   const [formData, setFormData] = useState({ username: "", password: "" });
   const navigate = useNavigate(); // useNavigate hook for navigation
-  const [activeProfile, setActiveProfile] = useState(sessionStorage.getItem("Activeprofile"));
+  const [client_id,setclient_id]=useState(null);
+  const [activeProfile, setActiveProfile] = useState(
+    sessionStorage.getItem("Activeprofile")
+  );
 
+  useEffect(() => {
+    const getActiveprofile = async () => {
+      try {
+        const active = await axios.get(`${baseUrl}/Active/Environment`);
+        sessionStorage.setItem("Activeprofile", active.data);
+        setActiveProfile(active.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  const getclientid=async()=>{
+    try{
+      const client= await axios.get(`${baseUrl}/getgoogleclient`,{
+        params:{Provider:"GOOGLE"}
+    });
+      setclient_id(client.data)
+
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+    getActiveprofile();
+    getclientid();
+  }, []);
   const handleRegistration = async () => {
-   
     try {
-      const active = await axios.get(`${baseUrl}/Active/Environment`);
-      sessionStorage.setItem("Activeprofile", active.data);
-      setActiveProfile(active.data);
-  
       if (activeProfile === "VPS") {
         const count = await axios.get(`${baseUrl}/count/admin`);
         let htmlContent;
-  
+
         // Determine which buttons to display based on the admin count
         if (count.data > 0) {
           htmlContent = `
@@ -41,44 +64,44 @@ const Login = () => {
             </div>
           `;
         }
-  
+
         // Show the SweetAlert with the dynamically created HTML
         MySwal.fire({
-          title: 'Select your Role',
+          title: "Select your Role",
           html: htmlContent,
           showCancelButton: true,
           showConfirmButton: false, // Disable default confirm button, we will use custom buttons
-          cancelButtonText: 'Cancel',
+          cancelButtonText: "Cancel",
           didOpen: () => {
             // Check if the admin button exists before adding event listeners
-            const adminBtn = document.getElementById('admin-btn');
-            const trainerBtn = document.getElementById('trainer-btn');
-            const studentBtn = document.getElementById('student-btn');
-  
+            const adminBtn = document.getElementById("admin-btn");
+            const trainerBtn = document.getElementById("trainer-btn");
+            const studentBtn = document.getElementById("student-btn");
+
             if (adminBtn) {
-              adminBtn.addEventListener('click', () => {
-                navigate('/adminRegistration');
+              adminBtn.addEventListener("click", () => {
+                navigate("/adminRegistration");
                 MySwal.close();
               });
             }
-  
+
             if (trainerBtn) {
-              trainerBtn.addEventListener('click', () => {
-                navigate('/trainerRegistration');
+              trainerBtn.addEventListener("click", () => {
+                navigate("/trainerRegistration");
                 MySwal.close();
               });
             }
-  
+
             if (studentBtn) {
-              studentBtn.addEventListener('click', () => {
-                navigate('/studentRegistration');
+              studentBtn.addEventListener("click", () => {
+                navigate("/studentRegistration");
                 MySwal.close();
               });
             }
-          }
+          },
         });
       } else if (activeProfile === "SAS") {
-        navigate("/RegisterInstitute");
+        window.location.href = "/RegisterInstitute";
       }
     } catch (error) {
       MySwal.fire({
@@ -88,22 +111,24 @@ const Login = () => {
       });
     }
   };
-  
-  
-  const [errors, setErrors] = useState({username: "", password: "" });
+
+  const [errors, setErrors] = useState({ username: "", password: "" });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    let error=""
-    switch(name){
-      case 'username':
-       error = /^[^\s@]+@[^\s@]+\.com$/.test(value) ? '' : 'Please enter a valid email address';
+    let error = "";
+    switch (name) {
+      case "username":
+        error = /^[^\s@]+@[^\s@]+\.com$/.test(value)
+          ? ""
+          : "Please enter a valid email address";
         break;
-        case "password":
-          error = value.length < 6 ? 'Password must be at least 6 characters long' : '';
-          break;
-          default:
-            break;
+      case "password":
+        error =
+          value.length < 6 ? "Password must be at least 6 characters long" : "";
+        break;
+      default:
+        break;
     }
     setFormData((prevState) => ({
       ...prevState,
@@ -115,60 +140,73 @@ const Login = () => {
     }));
   };
 
-
- 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-    if (Object.values(errors).some(error => error) || !formData.username || !formData.password) {
-      return;
-    }
-  
-   
+      if (formData.password === "") {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: "Please Enter The Password",
+        }));
+      }
+      if (formData.username === "") {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          username: "Please Enter The Email",
+        }));
+      }
+      if (
+        Object.values(errors).some((error) => error) ||
+        !formData.username ||
+        !formData.password
+      ) {
+        return;
+      }
+
       const response = await axios.post(`${baseUrl}/login`, formData, {
         headers: {
           "Content-Type": "application/json",
-        }
+        },
       });
-      
+
       if (response.status === 200) {
-        const data = response.data; 
+        const data = response.data;
         const jwtToken = data.token;
         const role = data.role;
         const userId = data.userid;
         const email = data.email;
-        sessionStorage.setItem('token', jwtToken);
-        sessionStorage.setItem('role', role);
-        sessionStorage.setItem('userid', userId);
-        sessionStorage.setItem('email', email);
-       
-    if(role==="SYSADMIN"){
-      window.location.href = "/viewAll/Admins";
-    }else{
-       window.location.href = "/dashboard/course";
-    }
-      } 
+        sessionStorage.setItem("token", jwtToken);
+        sessionStorage.setItem("role", role);
+        sessionStorage.setItem("userid", userId);
+        sessionStorage.setItem("email", email);
+
+        if (role === "SYSADMIN") {
+          window.location.href = "/viewAll/Admins";
+        } else {
+          window.location.href = "/dashboard/course";
+        }
+      }
     } catch (error) {
-      if (error.response && error.response.status === 404 ){
-        setErrors(prevErrors => ({
+      if (error.response && error.response.status === 404) {
+        setErrors((prevErrors) => ({
           ...prevErrors,
-          username: "User not found"
+          username: "User not found",
         }));
-      } else if (error.response && error.response.status === 401){
-        const data = error.response.data ? error.response.data : "error occured";
-       const message=data.message;
-        if (message === 'Incorrect password') {
+      } else if (error.response && error.response.status === 401) {
+        const data = error.response.data
+          ? error.response.data
+          : "error occured";
+        const message = data.message;
+        if (message === "Incorrect password") {
           setErrors((prevErrors) => ({
             ...prevErrors,
-            password: 'Incorrect password',
+            password: "Incorrect password",
           }));
-        } else if (message === 'In Active') {
+        } else if (message === "In Active") {
           MySwal.fire({
-            title: 'In Active User!',
+            title: "In Active User!",
             text: `reason : ${data.Description}`,
-            icon: 'error',
+            icon: "error",
           });
         }
       } else {
@@ -176,96 +214,99 @@ const Login = () => {
           title: "Error Occured!",
           text: "An error occurred while logging in. Please try again later.",
           icon: "error",
-        })
+        });
       }
     }
   };
-  
-
-
 
   return (
-    <form  onSubmit={handleSubmit}>
-     
-    <div className="login-container d-flex flex-wrap justify-content-center align-items-center"> 
+    <div className="login-container d-flex flex-wrap justify-content-center align-items-center">
       <div className="image-section card-body text-center ">
-    <img id="boyimage"
+        <img
+          id="boyimage"
           style={{ width: "90%", height: "95%" }}
           src={login}
-          alt='boy-pic'
+          alt="boy-pic"
         />
-        </div>
+      </div>
 
-        <div className="form-section card-body  text-center"> 
- <img style={{width:"200px",height:"200px"}} src={logo}/>
-        <h3 className="h4 text-gray-900 mb-4">Sign in</h3>
-  
-        <div className="form-outline mb-4">
+      <div className="form-section card-body  text-center">
+        <img style={{ width: "200px", height: "200px" }} src={logo} />
+        <h3 className="h4 text-gray-900 mb-3">Sign in</h3>
+
+        <div className="form-outline mb-3">
           <input
             type="text"
             name="username"
             id="username"
             value={formData.username}
             onChange={handleChange}
-            className={`form-control .form-control-sm  ${errors.username && 'is-invalid'}`}
-            placeholder="Username"
+            className={`form-control .form-control-sm  ${
+              errors.username && "is-invalid"
+            }`}
+            placeholder="Email"
             autoComplete="username"
             autoFocus
             required
           />
-          <div className="invalid-feedback">
-            {errors.username}
-          </div>
+          <div className="invalid-feedback">{errors.username}</div>
         </div>
-  
-        <div className="form-outline mb-4">
+
+        <div className="form-outline mb-3">
           <input
             type="password"
             name="password"
             id="password"
             value={formData.password}
             onChange={handleChange}
-            className={`form-control .form-control-sm  ${errors.password && "is-invalid"}`}
+            className={`form-control .form-control-sm  ${
+              errors.password && "is-invalid"
+            }`}
             placeholder="Password"
             autoComplete="current-password"
             required
           />
-          <div className="invalid-feedback">
-            {errors.password}
-          </div>
+          <div className="invalid-feedback">{errors.password}</div>
         </div>
-  
-        <div className="mb-4">
+
+        <div className="mb-2">
           <Link
             className="user text-decoration-none mr-3"
             to="/forgot-password"
           >
             Forgot Password?
-          </Link> 
+          </Link>
           <Link
-      className="user text-decoration-none ml-3"
-      onClick={handleRegistration} // Trigger the modal on click
-      to="#"
-    >
-      New user?
-    </Link>
+            className="user text-decoration-none ml-3"
+            onClick={handleRegistration} // Trigger the modal on click
+            to="#"
+          >
+            New user?
+          </Link>
         </div>
-  
+
         <button
           className="btn btn-primary btn-lg btn-block"
-          type="submit"
+          onClick={handleSubmit}
         >
           Login
         </button>
         <Link className="btn btn-warning btn-lg btn-block" to="/">
           Cancel
         </Link>
-  
-        <hr className="my-4" />
+
+        <hr className="my-2 mt-2" />
+        {activeProfile === "VPS" && (
+         
+          <div>
+             {client_id !==null &&(
+            <GoogleLoginComponent clientId={client_id}/>
+          )}
+          </div>
+        
+        )}
       </div>
     </div>
-  </form>
-  
   );
 };
 

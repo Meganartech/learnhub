@@ -81,16 +81,13 @@ const RedirectComponent = ({ vpsonly, admincount, children, sasonly, checkvisibl
     }
 
     // Check for visibility and showInLandingPage
-    if (checkvisible && showInLandingPage === false) {
+    if (checkvisible && (showInLandingPage === false || activeProfile!=="VPS")) {
         return <Navigate to="/login" />;
     }
-
-    // Render children if showInLandingPage is true
-    if (showInLandingPage === true) {
+    
         return <>{children}</>;
-    }
+    
 
-    return null; // Or render a fallback UI if needed
 };
 
 export default RedirectComponent;

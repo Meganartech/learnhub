@@ -28,7 +28,6 @@ const ZoomKeys = () => {
       client_secret:"",
       account_id:""
     })
-    const [valid, setValid] = useState(true);
     const navigate=useNavigate();
   
     useEffect(() => {
@@ -228,11 +227,11 @@ const ZoomKeys = () => {
          
         </div>
      
-        {valid?
+    
         <div className='btngrp' >
           <button className='btn btn-primary' onClick={Edit}>Edit</button>
-        </div>:<div></div>
-        }
+        </div>
+        
     </div>
     </div>)
   
@@ -303,14 +302,14 @@ const ZoomKeys = () => {
         
        </div>
     
-       {valid?
+  
        <div className='btngrp'>
          <button className='btn btn-primary' 
          onClick={save}
           >
            Save</button>
-       </div>:<div></div>
-     }
+       </div>
+     
    </div>
    </div>)   
     return (

@@ -56,7 +56,7 @@ public class Muser {
 	    )
 	    private List<CourseDetail> courses;
 
-	    private Boolean isActive;
+	    private Boolean isActive=true;
 	    private LocalDateTime lastactive;
 	    private String inactiveDescription;
 }

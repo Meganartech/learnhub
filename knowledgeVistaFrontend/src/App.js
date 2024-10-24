@@ -77,6 +77,7 @@ import ViewCourseVps from "./course/Components/ViewCourseVps.js";
 import ErrorBoundary from "./ErrorBoundary.js";
 import SettingsComponent from "./UserSettings/SettingsComponent.js";
 import DisplayName from "./UserSettings/DisplayName.js";
+import SocialLoginKeys from "./SysAdmin/SocialLoginKeys.js";
 
 function App() {
   const isAuthenticated = sessionStorage.getItem("token") !== null;
@@ -726,7 +727,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
-            
+
             <Route
               path="/viewDocument/:documentPath/:lessonId/:docid"
               element={
@@ -737,17 +738,17 @@ function App() {
                 </ErrorBoundary>
               }
             />
- <Route
+            <Route
               path="/displayname"
               element={
                 <ErrorBoundary>
-                <PrivateRoute
-                  authenticationRequired={true}
-                  authorizationRequired={true}
-                  onlyadmin={true}
-                >
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                    onlyadmin={true}
+                  >
                     <DisplayName />
-                </PrivateRoute>
+                  </PrivateRoute>
                 </ErrorBoundary>
               }
             />
@@ -810,6 +811,16 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true} sysadmin={true}>
                     <ZoomKeys />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/SocialLogin"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} sysadmin={true}>
+                    <SocialLoginKeys />
                   </PrivateRoute>
                 </ErrorBoundary>
               }

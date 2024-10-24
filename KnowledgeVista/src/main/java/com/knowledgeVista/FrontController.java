@@ -49,12 +49,14 @@ import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.PaymentSettingsController;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.Controller.SettingsController;
+import com.knowledgeVista.SocialLogin.SocialLoginKeys;
 import com.knowledgeVista.SysAdminPackage.SysadminController;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Controller.AddUsers;
 import com.knowledgeVista.User.Controller.AssignCourse;
 import com.knowledgeVista.User.Controller.AuthenticationController;
 import com.knowledgeVista.User.Controller.Edituser;
+import com.knowledgeVista.User.Controller.GoogleAuthController;
 import com.knowledgeVista.User.Controller.Listview;
 import com.knowledgeVista.User.Controller.MserRegistrationController;
 import com.knowledgeVista.User.Usersettings.RoleDisplayController;
@@ -146,6 +148,9 @@ public class FrontController {
 	@Autowired
 	private SettingsController settingcontroller;
 	
+	@Autowired
+	private GoogleAuthController googleauth;
+	
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
 	public String getActiEnvironment() {
@@ -156,6 +161,7 @@ public class FrontController {
 	 @GetMapping("/course/countcourse")
 	 public ResponseEntity<?> countCoursefront(@RequestHeader("Authorization") String token) {
 		 return courseController.countCourse(token);
+		
 	 }
 
 	 @PostMapping("/course/add")
@@ -1161,5 +1167,27 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
             		   return null;
             	   }
                }
+               
+   //========================================GoogleLogin=================================
+
+               @PostMapping("/api/auth/google")
+               public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> tokenMap) {
+            	   return googleauth.googleLogin(tokenMap);
+               }
+               
+               @GetMapping("/getgoogleclient")
+               public String getClientid(@RequestParam(required = false) String institution,@RequestParam String Provider){
+            	   return googleauth.getClientidforgoogle(institution, Provider);
+               }
+               
+               @GetMapping("/sysadmin/get/socialLoginKeys")
+               public ResponseEntity<?> getSocialLoginKeys(@RequestParam String institution,@RequestParam String Provider,@RequestHeader("Authorization") String token) {
+            	   return googleauth.getSocialLoginKeys(institution, Provider,token);
+               }
+               @PostMapping("/sysadmin/save/SocialKeys")
+               public ResponseEntity<?> postMethodName(@RequestBody SocialLoginKeys loginkeys,@RequestHeader("Authorization") String token) {
+                  return googleauth.saveOrUpdateSocialLoginKeys(loginkeys,token);
+               }
+               
 }
 

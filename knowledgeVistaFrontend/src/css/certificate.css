@@ -298,7 +298,11 @@ grid-template-columns: 6fr 1fr 12fr;
     overflow: hidden;
     margin-bottom: 10px; /* Adjust the margin as needed */
   }
- 
+  #google-signin-button{
+    width: 30px;
+    height: 30px;
+  }
+ #google-signin-button img,
   .image-group img {
     width: 100%;
     height: 100%;
@@ -413,14 +417,18 @@ background-color: var(--input-bg)!important;
   width: auto;
 
 }
+
+
+
 .image-section{
   flex:1;
   width: 100%;
+  height: 700px;
 }
 .form-section{
   flex:1;
-  padding: 25px;
-  margin:50px;
+  padding: 15px;
+  margin:10px;
 }
 #wrappernav{
   display: flex;
@@ -516,6 +524,7 @@ background-color: var(--input-bg)!important;
     padding: 2rem; 
     margin: 0px;
   }
+
   .image-section{
     display: none;
   }
