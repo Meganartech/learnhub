@@ -1153,7 +1153,19 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
             	   }
             	   
                }
-               
+               @GetMapping("/settings/ShowSocialLogin")
+               public Boolean isSocialLoginEnabled() {
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return settingcontroller.isSocialLoginEnabled();
+            		   }else {
+            			   return null;
+            		   }
+            	   }catch(Exception e) {
+            		   e.printStackTrace();
+            		   return null;
+            	   }
+               }
                @PostMapping("/settings/viewCourseInLanding")
                public Boolean updateViewCourseInLandingPage(@RequestBody Boolean isEnabled,@RequestHeader("Authorization") String token) {
             	   try {
@@ -1167,6 +1179,20 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
             		   return null;
             	   }
                }
+               @PostMapping("/settings/ShowSocialLogin")
+               public Boolean updateSocialLoginEnabled(@RequestBody Boolean isEnabled,@RequestHeader("Authorization") String token) {
+            	   try {
+            		   if(environment.equals("VPS")) {
+            	   return settingcontroller.updateSocialLogin(isEnabled,token);
+            		   }else {
+            			   return null;
+            		   }
+            	   }catch(Exception e) {
+            		   e.printStackTrace();
+            		   return null;
+            	   }
+               }
+               
                
    //========================================GoogleLogin=================================
 
@@ -1181,8 +1207,8 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
                }
                
                @GetMapping("/sysadmin/get/socialLoginKeys")
-               public ResponseEntity<?> getSocialLoginKeys(@RequestParam String institution,@RequestParam String Provider,@RequestHeader("Authorization") String token) {
-            	   return googleauth.getSocialLoginKeys(institution, Provider,token);
+               public ResponseEntity<?> getSocialLoginKeys(@RequestParam String Provider,@RequestHeader("Authorization") String token) {
+            	   return googleauth.getSocialLoginKeys( Provider,token);
                }
                @PostMapping("/sysadmin/save/SocialKeys")
                public ResponseEntity<?> postMethodName(@RequestBody SocialLoginKeys loginkeys,@RequestHeader("Authorization") String token) {
