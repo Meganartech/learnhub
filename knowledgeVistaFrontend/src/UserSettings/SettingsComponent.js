@@ -1,6 +1,5 @@
 import React from "react";
 import DisplayCourses from "./DisplayCourses";
-import MailSettings from "./MailSettings";
 import { useNavigate } from "react-router-dom";
 import ErrorBoundary from "../ErrorBoundary";
 import DisplaysocialLogin from "./DisplaysocialLogin";
@@ -38,9 +37,7 @@ const SettingsComponent = () => {
         <ErrorBoundary>
           <SocialLoginKeysAdmin/>
         </ErrorBoundary>
-        <ErrorBoundary>
-          <MailSettings />
-        </ErrorBoundary>
+       
         
       </div>
     </div>

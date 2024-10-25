@@ -128,10 +128,6 @@ public class FrontController {
 	
 	@Autowired
 	private NotificationController noticontroller;
-
-	
-	@Autowired
-	private SysadminController sysadmin;
 	
 	@Autowired
 	private ZoomMeetingService zoomMeetingService;
@@ -515,15 +511,7 @@ public class FrontController {
                    	
            		   }
            		   }
-           		@PostMapping("/api/Sysadmin/uploadLicence")
-    		    public ResponseEntity<?> uploadLicence(@RequestParam("audioFile") MultipartFile File,@RequestHeader("Authorization") String token){
-           		   if(environment.equals("SAS")) {
-           			   return licence.uploadBysysAdmin(File,token);
-           		   }else{
-           			   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Licence Cannot Be uploaded By SysAdmin");
-                   	
-           		   }
-           		}
+           		
            		
   //----------------------------LICENCE CONTROLLER SECOND---------------------------
            		@GetMapping("/licence/getinfo")
@@ -922,11 +910,7 @@ public class FrontController {
     		                            @RequestHeader("Authorization") String token) {
     		    	return muserreg.getTrainerDetailsByEmail(email, token);
     		    }
-    		    @GetMapping("/student/getadmin/{email}")
-    		    public ResponseEntity<?> getAdminDetailsBYEmail(@PathVariable String email,
-    		                            @RequestHeader("Authorization") String token) {
-    		    	return muserreg.getAdminDetailsBYEmail(email, token);
-    		    }
+    		  
 
     		    @GetMapping("/student/admin/getstudent/{email}")
     		    public ResponseEntity<?> getStudentDetailsByEmail(@PathVariable String email,
@@ -1013,38 +997,11 @@ public class FrontController {
                
  //------------------------------------------SYSADMIN CONTROl------------------------------              
                
-               @GetMapping("/ViewAll/Admins")
-               public ResponseEntity<?> ViewAllAdmins(
-                       @RequestHeader("Authorization") String token,
-                      @RequestParam(defaultValue = "0") int pageNumber, 
-                    @RequestParam(defaultValue = "10") int pageSize  ){
-            	   
-                 return sysadmin.viewAdmins(token, pageNumber, pageSize);
-               }
+             
 
-               @GetMapping("/ViewAll/Trainers")
-               public ResponseEntity<?>ViewAllTrainers(@RequestHeader("Authorization") String token,
-            		   @RequestParam(defaultValue = "0") int pageNumber, 
-                       @RequestParam(defaultValue = "10") int pageSize){
-            	   return sysadmin.viewTrainers(token, pageNumber, pageSize);
-               }
-               @GetMapping("/ViewAll/Students")
-               public ResponseEntity<?>ViewAllStudents(@RequestHeader("Authorization") String token,
-            		   @RequestParam(defaultValue = "0") int pageNumber, 
-                       @RequestParam(defaultValue = "10") int pageSize){
-            	   return sysadmin.viewStudents(token, pageNumber, pageSize);
-               }
-               @DeleteMapping("/activate/admin")
-               public ResponseEntity<?>ActiveteAdmin(@RequestParam("email") String email, 
-            		   @RequestHeader("Authorization") String token){
-            	   return sysadmin.activateAdmin(email, token);
-               }
-               @DeleteMapping("/deactivate/admin")
-               public ResponseEntity<?>DeActiveteAdmin(@RequestParam("email") String email,
-            		   @RequestParam("reason") String reason, @RequestHeader("Authorization") String token){
-            	   return sysadmin.DeactivateAdmin(reason,email, token);
-               }
-               
+             
+             
+              
     //--------------------ZOOM-------------------------------
 
 @PostMapping("/api/zoom/create-meeting")
@@ -1086,19 +1043,6 @@ public ResponseEntity<?>EditAccountDetails(@RequestBody ZoomAccountKeys accountd
 @GetMapping("/zoom/get/Accountdetails")
 public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String token) {
 	return zoomaccountconfig.getMethodName(token);
-}
-@PostMapping("/SysAdmin/zoom/save/Accountdetails")
-	public ResponseEntity<?>SaveAccountDetailsSYS(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
-		 return zoomaccountconfig.SaveAccountDetailsSYS(accountdetails, token);
-}
-@PatchMapping("/SysAdmin/zoom/Edit/Accountdetails")
-	public ResponseEntity<?>EditAccountDetailsSYS(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
-		 return zoomaccountconfig.EditAccountDetailsSYS(accountdetails, token);
-}
-
-@GetMapping("/SysAdmin/zoom/get/Accountdetails")
-public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String token) {
-	return zoomaccountconfig.getMethodNameSYS(token);
 }
    //-------------------EMAIL CONTROLLER--------------------------
                @PostMapping("/sendMail")
@@ -1206,14 +1150,7 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
             	   return googleauth.getClientidforgoogle(institution, Provider);
                }
                
-               @GetMapping("/sysadmin/get/socialLoginKeys")
-               public ResponseEntity<?> getSocialLoginKeys(@RequestParam String Provider,@RequestHeader("Authorization") String token) {
-            	   return googleauth.getSocialLoginKeys( Provider,token);
-               }
-               @PostMapping("/sysadmin/save/SocialKeys")
-               public ResponseEntity<?> postMethodName(@RequestBody SocialLoginKeys loginkeys,@RequestHeader("Authorization") String token) {
-                  return googleauth.saveOrUpdateSocialLoginKeys(loginkeys,token);
-               }
+             
                
 }
 

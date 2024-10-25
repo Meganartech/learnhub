@@ -4,20 +4,38 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.knowledgeVista.License.LicenseController;
+import com.knowledgeVista.Meeting.ZoomAccountKeys;
+import com.knowledgeVista.Meeting.ZoomMeetAccountController;
+import com.knowledgeVista.SocialLogin.SocialLoginKeys;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
+import com.knowledgeVista.User.Controller.GoogleAuthController;
+import com.knowledgeVista.User.Controller.MserRegistrationController;
 import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
+@CrossOrigin
 public class SysadminController {
 	@Autowired
 	private MuserRepositories muserrepositories;
@@ -27,8 +45,25 @@ public class SysadminController {
 	 @Autowired 
 	 private MuserRepoPageable muserPageRepo;
 	 
+	  @Value("${spring.environment}")
+	    private String environment;
+	  
+		@Autowired
+		private LicenseController licence;
+		
+		@Autowired
+		private ZoomMeetAccountController zoomaccountconfig;
+		
+		@Autowired
+		private GoogleAuthController googleauth;
+		@Autowired
+		private MserRegistrationController muserreg;
 	
-	public ResponseEntity<Page<MuserDto>>viewAdmins(String token ,int pageNumber,int pageSize ){
+	   @GetMapping("/ViewAll/Admins")
+       public ResponseEntity<?> ViewAllAdmins(
+               @RequestHeader("Authorization") String token,
+              @RequestParam(defaultValue = "0") int pageNumber, 
+            @RequestParam(defaultValue = "10") int pageSize  ){
 		  try {
 			
 	        	if (!jwtUtil.validateToken(token)) {
@@ -59,7 +94,10 @@ public class SysadminController {
 	    }
 	
 	
-	public ResponseEntity<Page<MuserDto>>viewTrainers(String token ,int pageNumber,int pageSize ){
+	   @GetMapping("/ViewAll/Trainers")
+       public ResponseEntity<?>ViewAllTrainers(@RequestHeader("Authorization") String token,
+    		   @RequestParam(defaultValue = "0") int pageNumber, 
+               @RequestParam(defaultValue = "10") int pageSize){
 		  try {
 	        	if (!jwtUtil.validateToken(token)) {
 	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -81,7 +119,11 @@ public class SysadminController {
 	        }
 	    }
 	
-	public ResponseEntity<Page<MuserDto>>viewStudents(String token,int pageNumber,int pageSize){
+	   
+       @GetMapping("/ViewAll/Students")
+       public ResponseEntity<?>ViewAllStudents(@RequestHeader("Authorization") String token,
+    		   @RequestParam(defaultValue = "0") int pageNumber, 
+               @RequestParam(defaultValue = "10") int pageSize){
 		  try {
 	        	if (!jwtUtil.validateToken(token)) {
 	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -104,7 +146,9 @@ public class SysadminController {
 	    }
 
 	
-	 public ResponseEntity<?> DeactivateAdmin(String reason ,String email, String token) {
+       @DeleteMapping("/deactivate/admin")
+       public ResponseEntity<?>DeActiveteAdmin(@RequestParam("email") String email,
+    		   @RequestParam("reason") String reason, @RequestHeader("Authorization") String token){
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -146,7 +190,9 @@ public class SysadminController {
 	  }
 
 
-	  public ResponseEntity<?> activateAdmin(String email, String token) {
+	 @DeleteMapping("/activate/admin")
+     public ResponseEntity<?>ActiveteAdmin(@RequestParam("email") String email, 
+  		   @RequestHeader("Authorization") String token){
 	      try {
 	          // Validate the token
 	          if (!jwtUtil.validateToken(token)) {
@@ -187,6 +233,43 @@ public class SysadminController {
 	      }
 	  }
 
-	
+	 @PostMapping("/api/Sysadmin/uploadLicence")
+	    public ResponseEntity<?> uploadLicence(@RequestParam("audioFile") MultipartFile File,@RequestHeader("Authorization") String token){
+		   if(environment.equals("SAS")) {
+			   return licence.uploadBysysAdmin(File,token);
+		   }else{
+			   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Licence Cannot Be uploaded By SysAdmin");
+        	
+		   }
+		}
+	 
+
+@PostMapping("/SysAdmin/zoom/save/Accountdetails")
+	public ResponseEntity<?>SaveAccountDetailsSYS(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+		 return zoomaccountconfig.SaveAccountDetailsSYS(accountdetails, token);
+}
+@PatchMapping("/SysAdmin/zoom/Edit/Accountdetails")
+	public ResponseEntity<?>EditAccountDetailsSYS(@RequestBody ZoomAccountKeys accountdetails ,@RequestHeader("Authorization") String token){
+		 return zoomaccountconfig.EditAccountDetailsSYS(accountdetails, token);
+}
+
+@GetMapping("/SysAdmin/zoom/get/Accountdetails")
+public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String token) {
+	return zoomaccountconfig.getMethodNameSYS(token);
+}
+
+@GetMapping("/sysadmin/get/socialLoginKeys")
+public ResponseEntity<?> getSocialLoginKeys(@RequestParam String Provider,@RequestHeader("Authorization") String token) {
+	   return googleauth.getSocialLoginKeys( Provider,token);
+}
+@PostMapping("/sysadmin/save/SocialKeys")
+public ResponseEntity<?> postMethodName(@RequestBody SocialLoginKeys loginkeys,@RequestHeader("Authorization") String token) {
+   return googleauth.saveOrUpdateSocialLoginKeys(loginkeys,token);
+}
+@GetMapping("/student/getadmin/{email}")
+public ResponseEntity<?> getAdminDetailsBYEmail(@PathVariable String email,
+                        @RequestHeader("Authorization") String token) {
+	return muserreg.getAdminDetailsBYEmail(email, token);
+}
 }
 	    

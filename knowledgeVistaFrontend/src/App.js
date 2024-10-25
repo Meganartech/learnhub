@@ -78,6 +78,7 @@ import ErrorBoundary from "./ErrorBoundary.js";
 import SettingsComponent from "./UserSettings/SettingsComponent.js";
 import DisplayName from "./UserSettings/DisplayName.js";
 import SocialLoginKeys from "./SysAdmin/SocialLoginKeys.js";
+import MailSettings from "./UserSettings/MailSettings.js";
 
 function App() {
   const isAuthenticated = sessionStorage.getItem("token") !== null;
@@ -727,7 +728,16 @@ function App() {
                 </ErrorBoundary>
               }
             />
-
+            <Route
+              path="/mailSettings"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyadmin={true}>
+                    <MailSettings />
+                  </PrivateRoute>{" "}
+                </ErrorBoundary>
+              }
+            />
             <Route
               path="/viewDocument/:documentPath/:lessonId/:docid"
               element={

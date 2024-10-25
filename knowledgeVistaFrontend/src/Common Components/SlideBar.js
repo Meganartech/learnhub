@@ -514,7 +514,7 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
                 <i className=" pr-1 fa-solid fa-user-clock text-light pl-4"></i>
                 <span>My Meetings</span>
               </a>
-{userRole==="ADMIN" &&
+              {userRole==="ADMIN" &&
               <a
                 className={`nav-link mb-2 collapse-item text-light ${
                   activeLink === "/meeting/settings" ? " SubActiveLink " : ""
@@ -571,6 +571,28 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
         </li>
       )}
 
+{userRole === "ADMIN" && (
+        <li className="nav-item mt-2">
+          <a
+            className={
+              activeLink === "/mailSettings"
+                ? "ActiveLink nav-link"
+                : "nav-link text-muted"
+            }
+            href="#"
+            onClick={() => handleClick("/mailSettings")}
+          >
+            <i
+              className={
+                activeLink === "/mailSettings"
+                  ? "fa-regular fa-envelope text-light"
+                  : "fa-regular fa-envelope text-muted"
+              }
+            ></i>
+            <span>Mail Settings</span>
+          </a>
+        </li>
+      )}
 {userRole === "ADMIN" && (
         <li className="nav-item mt-2">
           <a
