@@ -2,8 +2,9 @@ import React from "react";
 import DisplayCourses from "./DisplayCourses";
 import MailSettings from "./MailSettings";
 import { useNavigate } from "react-router-dom";
-import DisplayName from "./DisplayName";
 import ErrorBoundary from "../ErrorBoundary";
+import DisplaysocialLogin from "./DisplaysocialLogin";
+import SocialLoginKeysAdmin from "./SocialLoginKeysAdmin";
 
 const SettingsComponent = () => {
   const navigate = useNavigate();
@@ -30,6 +31,12 @@ const SettingsComponent = () => {
         <h2 style={{ textDecoration: "underline" }}>Settings</h2>
         <ErrorBoundary>
           <DisplayCourses />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <DisplaysocialLogin/>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <SocialLoginKeysAdmin/>
         </ErrorBoundary>
         <ErrorBoundary>
           <MailSettings />

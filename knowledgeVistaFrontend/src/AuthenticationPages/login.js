@@ -11,36 +11,57 @@ const Login = () => {
   const MySwal = withReactContent(Swal);
   const [formData, setFormData] = useState({ username: "", password: "" });
   const navigate = useNavigate(); // useNavigate hook for navigation
+  const[showSocialLogin,setshowSocialLogin]=useState()
   const [client_id,setclient_id]=useState(null);
   const [activeProfile, setActiveProfile] = useState(
     sessionStorage.getItem("Activeprofile")
   );
 
   useEffect(() => {
-    const getActiveprofile = async () => {
+    const getActiveProfile = async () => {
       try {
         const active = await axios.get(`${baseUrl}/Active/Environment`);
         sessionStorage.setItem("Activeprofile", active.data);
         setActiveProfile(active.data);
+  
+        // If the active profile is 'VPS', proceed with the next requests
+        if (active.data === "VPS") {
+          fetchShowInLandingPage();
+        }
       } catch (error) {
         console.log(error);
       }
     };
-  const getclientid=async()=>{
-    try{
-      const client= await axios.get(`${baseUrl}/getgoogleclient`,{
-        params:{Provider:"GOOGLE"}
-    });
-      setclient_id(client.data)
-
-    }catch(error){
-      console.log(error);
-    }
-  }
-
-    getActiveprofile();
-    getclientid();
+  
+    const fetchShowInLandingPage = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/settings/ShowSocialLogin`);
+        setshowSocialLogin(response.data);
+  
+        // If showSocialLogin is true, proceed to get the client ID
+        if (response.data === true) {
+          getClientId();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    const getClientId = async () => {
+      try {
+        const client = await axios.get(`${baseUrl}/getgoogleclient`, {
+          params: { Provider: "GOOGLE" },
+        });
+        setclient_id(client.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    // First fetch the active profile
+    getActiveProfile();
   }, []);
+  
   const handleRegistration = async () => {
     try {
       if (activeProfile === "VPS") {
@@ -296,7 +317,7 @@ const Login = () => {
         </Link>
 
         <hr className="my-2 mt-2" />
-        {activeProfile === "VPS" && (
+        {activeProfile === "VPS" && showSocialLogin &&(
          
           <div>
              {client_id !==null &&(

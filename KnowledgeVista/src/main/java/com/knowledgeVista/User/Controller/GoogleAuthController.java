@@ -38,21 +38,36 @@ public class GoogleAuthController {
 	 
     private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/tokeninfo?id_token=";
 
-public ResponseEntity<?> getSocialLoginKeys(String institutionName,String Provider,String token) {
+public ResponseEntity<?> getSocialLoginKeys(String Provider,String token) {
 	try {
 		   if (!jwtUtil.validateToken(token)) {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	         }
 
-	         String role = jwtUtil.getRoleFromToken(token);
+	         String email = jwtUtil.getUsernameFromToken(token);
+	         Optional<Muser> opuser=muserRepository.findByEmail(email);
+	         if(opuser.isPresent()) {
+	        	 Muser user=opuser.get();
+	        	 String institutionName=user.getInstitutionName();
+	        	String  role=user.getRole().getRoleName();
+	         
 	         if("SYSADMIN".equals(role)) {
 	        	 SocialLoginKeys keys= socialkeysrepo.findByInstitutionNameAndProvider(institutionName, Provider);
 	        	 if(keys==null) {
-	        		 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	        		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("keys not found");
 	        	 }
 	        	 return ResponseEntity.ok(keys);
+	         }else if("ADMIN".equals(role)) {
+	        	 SocialLoginKeys keys= socialkeysrepo.findByInstitutionNameAndProviderforAdmin(institutionName, Provider);
+	        	 if(keys==null) {
+	        		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Keys not Found");
+	        	 }
+	        	 return ResponseEntity.ok(keys);
+	         } else {
+	        	 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not an authorized user");
+	         }
 	         }else {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not Found");
 	         }
 	}catch(Exception e) {
 		e.printStackTrace();
@@ -63,19 +78,37 @@ public ResponseEntity<?> getSocialLoginKeys(String institutionName,String Provid
 public ResponseEntity<?> saveOrUpdateSocialLoginKeys(SocialLoginKeys loginKeys,  String token) {
 	
 try {
-    // Validate JWT token
     if (!jwtUtil.validateToken(token)) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-
+   
     String email = jwtUtil.getUsernameFromToken(token);
 Optional<Muser>opuser=muserRepository.findByEmail(email);
     if(opuser.isPresent()) {
     	Muser user=opuser.get();
+    	
     	String role=user.getRole().getRoleName();
-    	if ("SYSADMIN".equals(role) ||"ADMIN".equals(role)){
+    	if ("SYSADMIN".equals(role)){
     		
         SocialLoginKeys existingKeys = socialkeysrepo.findByInstitutionNameAndProvider(user.getInstitutionName(), loginKeys.getProvider());
+        if (existingKeys != null) {
+            existingKeys.setClientid(loginKeys.getClientid());
+            existingKeys.setClientSecret(loginKeys.getClientSecret());
+            existingKeys.setRedirectUrl(loginKeys.getRedirectUrl());
+            socialkeysrepo.save(existingKeys);
+            
+            
+            return ResponseEntity.ok("Social login keys updated successfully");
+        } 
+        // If keys do not exist, create a new entry (POST operation)
+        else {
+        	 loginKeys.setInstitutionName(user.getInstitutionName());
+            socialkeysrepo.save(loginKeys);
+            return ResponseEntity.ok("Social login keys created successfully");
+        }
+    }else if ("ADMIN".equals(role)){
+    		
+        SocialLoginKeys existingKeys = socialkeysrepo.findByInstitutionNameAndProviderforAdmin(user.getInstitutionName(), loginKeys.getProvider());
         if (existingKeys != null) {
             existingKeys.setClientid(loginKeys.getClientid());
             existingKeys.setClientSecret(loginKeys.getClientSecret());
@@ -85,10 +118,11 @@ Optional<Muser>opuser=muserRepository.findByEmail(email);
         } 
         // If keys do not exist, create a new entry (POST operation)
         else {
+        	 loginKeys.setInstitutionName(user.getInstitutionName());
             socialkeysrepo.save(loginKeys);
             return ResponseEntity.ok("Social login keys created successfully");
         }
-    }else {
+    } else {
     	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 

@@ -24,8 +24,6 @@ public class SettingsController {
 	public Boolean isViewCourseinLandingPageEnabled() {
 		try {
 		 Optional<ViewSettings> setting = settingsrepo.findBySettingName("viewCourseInLanding");
-         
-	        // If setting exists, return its Boolean value; otherwise, return the default value (true)
 	        return setting.map(s -> s.getSettingValue()).orElse(true);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -68,4 +66,51 @@ public class SettingsController {
 			 return false;
 		 }
 	    }
+	 
+	 
+	 public Boolean isSocialLoginEnabled() {
+			try {
+			 Optional<ViewSettings> setting = settingsrepo.findBySettingName("SocialLogin");
+		        return setting.map(s -> s.getSettingValue()).orElse(true);
+			}catch(Exception e) {
+				e.printStackTrace();
+				return true;
+			}
+		    }
+	 public Boolean updateSocialLogin(Boolean isEnabled,String token) {
+		 try {
+			 if (!jwtUtil.validateToken(token)) {
+	             return false;
+	         }
+	         String role = jwtUtil.getRoleFromToken(token);
+	         if("ADMIN".equals(role)) {
+	        	
+	        Optional<ViewSettings> setting = settingsrepo.findBySettingName("SocialLogin");
+             
+	        ViewSettings viewSettings;
+	        if (setting.isPresent()) {
+	            // Update existing setting
+	            viewSettings = setting.get();
+	           
+		      
+	        } else {
+	            // Create new setting
+	            viewSettings = new ViewSettings();
+	            viewSettings.setSettingName("SocialLogin");
+	          
+	        }
+	        // Set the new value
+	        viewSettings.setSettingValue(isEnabled);
+	      settingsrepo.save(viewSettings);
+	     
+	        return true;
+	         }else {
+	        	 return false;
+	         }
+		 }catch(Exception e) {
+			 e.printStackTrace();
+			 return false;
+		 }
+	    }
+	 
 }

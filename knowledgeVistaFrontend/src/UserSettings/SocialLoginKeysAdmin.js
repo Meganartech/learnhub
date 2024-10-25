@@ -5,7 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import axios from 'axios';
 import baseUrl from '../api/utils';
 
-const SocialLoginKeys = () => {
+const SocialLoginKeysAdmin = () => {
     const MySwal = withReactContent(Swal); 
     const token=sessionStorage.getItem("token")
     const [isnotFound,setisnotFound]=useState(false);
@@ -26,7 +26,7 @@ const SocialLoginKeys = () => {
     clientid:"",
     clientSecret:"",
     redirectUrl:"",
-    provider:"GOOGLE"
+    provider:"GOOGLE",
   })
   useEffect(() => {
     if(token){
@@ -140,13 +140,9 @@ const SocialLoginKeys = () => {
       };
       const oldinputs=(
       <div>
-         <div className='navigateheaders'>
-          <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
-          <div></div>
-          <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
-          </div>
+       
           <div className='innerFrameforset '>
-      <h2 className='mb-5'>Google Login Settings</h2>
+         <h4 className='mb-2' style={{ textDecoration: "underline" }}>Google Login Settings</h4>
         
           <div className='formgroup pt-4' >
            
@@ -202,13 +198,9 @@ const SocialLoginKeys = () => {
       )
 
       const EditInputs=(  <div>
-        <div className='navigateheaders'>
-         <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
-         <div></div>
-         <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
-         </div>
+       
          <div className='innerFrameforset '>
-     <h2 className='mb-5'>Google Login Settings</h2>
+        <h4 className='mb-2' style={{ textDecoration: "underline" }}>Google Login Settings</h4>
        
          <div className='formgroup pt-4' >
           
@@ -269,13 +261,11 @@ const SocialLoginKeys = () => {
      </div>
      </div>)
   return (
-    <div className="contentbackground">
-    <div className='contentinner'>
+   <>
     {isnotFound ?EditInputs: oldinputs  }
-    </div>
-  
-</div>
+    </>
   )
 }
 
-export default SocialLoginKeys
+
+export default SocialLoginKeysAdmin

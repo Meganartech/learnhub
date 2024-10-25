@@ -80,6 +80,62 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
       className="navbar-nav   sidebar sidebar-dark accordion "
       id="accordionSidebar"
     >
+      {/* <div className="simplebar-content">
+       <div className="pc-sidebar pc-trigger">
+       <div className="navbar-wrapper">
+       <div className="navbar-content">
+      <ul className="pc-navbar" style={{display:"block"}}>
+        <li className="pc-item pc-hasmenu">
+          <a href="#!" className="pc-link"
+            ><span className="pc-micon">
+              <i className="ph ph-tree-structure"></i> </span
+            ><span className="pc-mtext">Menu levels</span><span className="pc-arrow"><i data-feather="chevron-right"></i></span
+          ></a>
+          <ul className="pc-submenu">
+            <li className="pc-item"><a className="pc-link" href="#!">Level 2.1</a></li>
+            <li className="pc-item pc-hasmenu">
+              <a href="#!" className="pc-link"
+                >Level 2.2<span className="pc-arrow"><i data-feather="chevron-right"></i></span
+              ></a>
+              <ul className="pc-submenu">
+                <li className="pc-item"><a className="pc-link" href="#!">Level 3.1</a></li>
+                <li className="pc-item"><a className="pc-link" href="#!">Level 3.2</a></li>
+                <li className="pc-item pc-hasmenu">
+                  <a href="#!" className="pc-link"
+                    >Level 3.3<span className="pc-arrow"><i data-feather="chevron-right"></i></span
+                  ></a>
+                  <ul className="pc-submenu">
+                    <li className="pc-item"><a className="pc-link" href="#!">Level 4.1</a></li>
+                    <li className="pc-item"><a className="pc-link" href="#!">Level 4.2</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li className="pc-item pc-hasmenu">
+              <a href="#!" className="pc-link"
+                >Level 2.3<span className="pc-arrow"><i data-feather="chevron-right"></i></span
+              ></a>
+              <ul className="pc-submenu">
+                <li className="pc-item"><a className="pc-link" href="#!">Level 3.1</a></li>
+                <li className="pc-item"><a className="pc-link" href="#!">Level 3.2</a></li>
+                <li className="pc-item pc-hasmenu">
+                  <a href="#!" className="pc-link"
+                    >Level 3.3<span className="pc-arrow"><i data-feather="chevron-right"></i></span
+                  ></a>
+                  <ul className="pc-submenu">
+                    <li className="pc-item"><a className="pc-link" href="#!">Level 4.1</a></li>
+                    <li className="pc-item"><a className="pc-link" href="#!">Level 4.2</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        </ul>
+</div>
+        </div>
+        </div>
+        </div> */}
       <hr className="sidebar-divider " />
 
       {userRole === "ADMIN" && (
@@ -819,6 +875,7 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
           </a>
         </li>
       )}
+
 {userRole === "SYSADMIN" && (
         <li className="nav-item mt-2">
           <a
@@ -841,7 +898,28 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
           </a>
         </li>
       )}
-
+ {userRole === "SYSADMIN" && (
+        <li className="nav-item mt-2">
+          <a
+            className={
+              activeLink === "/view/SocialLogin"
+                ? "ActiveLink nav-link"
+                : "nav-link text-muted"
+            }
+            href="#"
+            onClick={() => handleClick("/view/SocialLogin")}
+          >
+            <i
+              className={
+                activeLink === "/view/SocialLogin"
+                  ? "fa-solid fa-users text-light"
+                  : "fa-solid fa-users text-muted"
+              }
+            ></i>
+            <span>Social Login</span>
+          </a>
+        </li>
+      )}
 {userRole === "SYSADMIN" && (
         <li className="nav-item mt-2">
           <a
