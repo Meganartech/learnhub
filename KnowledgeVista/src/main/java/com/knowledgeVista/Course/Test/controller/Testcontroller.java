@@ -453,6 +453,7 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
                     .body("{\"error\": \"Invalid Token\"}");
         }
     } catch (Exception e) {
+    	e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error updating test: " + e.getMessage() + "\"}");
     }
 }

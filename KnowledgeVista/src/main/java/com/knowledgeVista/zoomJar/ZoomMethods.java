@@ -54,6 +54,7 @@ public class ZoomMethods {
 	        }
 	    } catch (RestClientException e) {
 	        // Log or handle the exception
+	    	e.printStackTrace();
 	        System.err.println("Error retrieving access token: " + e.getMessage());
 	        return null;
 	    }

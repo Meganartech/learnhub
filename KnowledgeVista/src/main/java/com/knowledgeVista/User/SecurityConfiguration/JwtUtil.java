@@ -54,6 +54,7 @@ public class JwtUtil {
 	            return !expiration.before(now); // Return true if not expired
 	        } catch (Exception e) {
 	            // Token parsing failed or expired
+	        	e.printStackTrace();
 	            return false;
 	        }
 	    }

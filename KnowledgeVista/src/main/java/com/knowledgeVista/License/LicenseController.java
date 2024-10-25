@@ -563,6 +563,7 @@ public class LicenseController {
 	            try {
 	                localDateTime = LocalDateTime.parse(lastModifiedDate, formatter);
 	            } catch (DateTimeParseException e) {
+	            	e.printStackTrace();
 	                System.err.println("Error parsing date string: " + e.getMessage());
 	                return ResponseEntity.badRequest().build();
 	            }

@@ -208,6 +208,7 @@ public class CourseController {
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    }
 		     }catch (Exception e) {
+		    	 e.printStackTrace();
 			        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 		        }
 		     }
@@ -648,6 +649,7 @@ public class CourseController {
 	       }catch (DataIntegrityViolationException e) {
 	           // If a foreign key constraint violation occurs
 	           // Return a custom error response with an appropriate status code and message
+	    	   e.printStackTrace();
 	           return ResponseEntity.status(HttpStatus.FORBIDDEN)
 	                   .body("The course cannot be deleted. Delete all associated lessons, test.");
 	       }
@@ -713,6 +715,7 @@ public class CourseController {
 	        	   }
 	           }
 	       } catch (Exception e) {
+	    	   e.printStackTrace();
 	           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	       }
 	   }

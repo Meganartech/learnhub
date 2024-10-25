@@ -81,6 +81,7 @@ public void PatchsaveData(String email,String jsonString,Long meetingId) {
 	        try {
 	            meeting.setStartTime(startTimeStr);
 	        } catch (DateTimeParseException e) {
+	        	e.printStackTrace();
 	            System.err.println("Failed to parse start time: " + startTimeStr);
 	        }
 	    }
@@ -201,6 +202,7 @@ public void PatchsaveData(String email,String jsonString,Long meetingId) {
 			              meeting.setStartTime(startTimeStr);
 			             
 			          } catch (DateTimeParseException e) {
+			        	  e.printStackTrace();
 			              System.err.println("Failed to parse start time: " + startTimeStr);
 			          }
 			         

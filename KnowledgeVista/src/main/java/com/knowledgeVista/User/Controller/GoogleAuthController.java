@@ -215,6 +215,7 @@ System.out.println("access"+AccessToken);
             }
 
         } catch (Exception e) {
+        	e.printStackTrace();
             return ResponseEntity.status(500).body("Error verifying token: " + e.getMessage());
         }
     }

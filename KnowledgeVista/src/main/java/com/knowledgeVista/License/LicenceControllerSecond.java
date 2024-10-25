@@ -64,6 +64,7 @@ public class LicenceControllerSecond {
 	            }
 
 	    	}catch(Exception e) {
+	    		e.printStackTrace();
 	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    	}
 	    }
@@ -95,6 +96,7 @@ public class LicenceControllerSecond {
 	    			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    		}
 	    	}catch(Exception e) {
+	    		e.printStackTrace();
 	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    	}
 	    }

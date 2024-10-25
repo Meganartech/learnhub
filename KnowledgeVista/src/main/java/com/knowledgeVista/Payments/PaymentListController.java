@@ -58,6 +58,7 @@ public class PaymentListController {
 		    			}
 
 		  }catch (Exception e) {
+			  e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred : " + e.getMessage() );
 		    }
@@ -113,6 +114,7 @@ public class PaymentListController {
 			 }
 			
 		}catch (Exception e) {
+			e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred : " + e.getMessage() );
 	    }
@@ -159,6 +161,7 @@ public ResponseEntity<?> viewTransactionHistory(String token) {
             }
         
     } catch (Exception e) {
+    	e.printStackTrace();
         // Log the exception and return a more informative error response
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("An error occurred: " + e.getMessage() );
@@ -206,6 +209,7 @@ public ResponseEntity<?>ViewMypaymentHistrytrainer(String token){
 	    			}
 
 	  }catch (Exception e) {
+		  e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred : " + e.getMessage() );
 	    }
