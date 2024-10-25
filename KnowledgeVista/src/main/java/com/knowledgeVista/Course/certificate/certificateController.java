@@ -82,6 +82,7 @@ public class certificateController {
 	         }
 	        
 	    } catch (Exception e) {
+		    e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred while updating the certificate: " + e.getMessage() );
 	    }
@@ -152,6 +153,7 @@ public class certificateController {
 	        }
 	    } catch (Exception e) {
 	        // Handle internal server error and return a JSON response
+		    e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred while updating the certificate: " + e.getMessage() );
 	    }
@@ -200,6 +202,7 @@ public class certificateController {
 	    
 		 } catch (Exception e) {
 		        // Handle internal server error and return a JSON response
+			 e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
@@ -244,6 +247,7 @@ public class certificateController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
 		 } catch (Exception e) {
 		        // Handle internal server error and return a JSON response
+			 e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage());
 		    }
@@ -265,6 +269,7 @@ public ResponseEntity<?> getByActivityId( Long activityId, String token) {
             return ResponseEntity.ok().body(hashMap);
         } else {
             // Activity not found
+		
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Activity not found");
         }
     } else {
@@ -273,6 +278,7 @@ public ResponseEntity<?> getByActivityId( Long activityId, String token) {
     }
 	 } catch (Exception e) {
 	        // Handle internal server error and return a JSON response
+		 e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred while updating the certificate: " + e.getMessage() );
 	    }
