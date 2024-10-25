@@ -81,6 +81,7 @@ public class NotificationService {
         try {
 			notiDetails.setNotimage(ImageResizer.resizeImage(file, 100, 100));
 		} catch (IOException e) {
+			e.printStackTrace();
 			notiDetails.setNotimage(null);
 
 		}

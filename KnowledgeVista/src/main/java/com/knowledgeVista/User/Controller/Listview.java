@@ -63,6 +63,7 @@ public class Listview {
    	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
    	     }
         } catch (Exception e) {
+        	e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -97,6 +98,7 @@ public class Listview {
       	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
       	     }
         } catch (Exception e) {
+        	e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }  
@@ -182,6 +184,7 @@ public ResponseEntity<Page<MuserDto>> getTrainerByRoleName( String token ,int pa
 	    	  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	     }
     } catch (Exception e) {
+    	e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 }

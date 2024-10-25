@@ -98,7 +98,9 @@ public class ZoomMeetingService {
 	         }
 	         
 		  } catch (Exception e) {
+			  e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		        		
 		                .body("An error occurred while creating the meeting: " + e.getMessage() );
 		    }
        }
@@ -145,6 +147,7 @@ public class ZoomMeetingService {
   	         }
   	         
   		  } catch (Exception e) {
+  			e.printStackTrace();
   		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
   		                .body("An error occurred while updating the certificate: " + e.getMessage() );
   		    }

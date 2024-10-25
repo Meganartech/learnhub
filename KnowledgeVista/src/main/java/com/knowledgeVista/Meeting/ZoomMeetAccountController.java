@@ -46,6 +46,7 @@ public class ZoomMeetAccountController {
 	         }
 	         
 		  } catch (Exception e) {
+			  e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
@@ -73,6 +74,7 @@ public class ZoomMeetAccountController {
 	         }
 	         
 		  } catch (Exception e) {
+			  e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
@@ -106,6 +108,7 @@ public class ZoomMeetAccountController {
 	         }
 	         
 		  } catch (Exception e) {
+			  e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
@@ -133,6 +136,7 @@ public class ZoomMeetAccountController {
 	         
 	         
 		  } catch (Exception e) {
+			  e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
@@ -156,6 +160,7 @@ public class ZoomMeetAccountController {
 	        
 	         
 		  } catch (Exception e) {
+			  e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
@@ -185,6 +190,7 @@ public class ZoomMeetAccountController {
 	        
 	         
 		  } catch (Exception e) {
+			  e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }

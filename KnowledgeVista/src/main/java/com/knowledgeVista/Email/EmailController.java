@@ -41,7 +41,7 @@ public class EmailController {
      	        return emailService.sendHtmlEmail("Aks", to, cc, bcc, subject, body);
    	          
              } catch (Exception e) {
-                
+            	 e.printStackTrace();
                  return null;
              }
          }

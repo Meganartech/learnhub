@@ -69,6 +69,7 @@ public class CheckAccess {
 
 	     } catch (Exception e) {
 	         // Handle any exceptions
+	    	 e.printStackTrace();
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	     }
 	 }

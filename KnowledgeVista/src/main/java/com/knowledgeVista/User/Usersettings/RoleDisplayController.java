@@ -42,6 +42,7 @@ public class RoleDisplayController {
         	  return ResponseEntity.ok(display);
          
 		} catch (Exception e) {
+			e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred  " + e.getMessage() );
 	    }
@@ -62,6 +63,7 @@ public class RoleDisplayController {
 			
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred  " + e.getMessage() );
 	    }
@@ -80,6 +82,7 @@ public class RoleDisplayController {
 	          Roledisplayrepo.save(roledisplaynames);
 	          return ResponseEntity.ok("saved"); 
 		 } catch (Exception e) {
+			 e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }

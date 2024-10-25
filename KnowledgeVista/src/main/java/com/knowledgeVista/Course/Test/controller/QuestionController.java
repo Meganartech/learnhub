@@ -158,6 +158,7 @@ public class QuestionController {
 	    	  }catch (Exception e) {
 			        // Handle any unexpected exceptions here
 			        // You can log the error or return an appropriate response
+	    		  e.printStackTrace();
 			        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 			    }
 
@@ -210,6 +211,7 @@ public class QuestionController {
 		    } catch (Exception e) {
 		        // Handle any unexpected exceptions here
 		        // You can log the error or return an appropriate response
+		    	e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 		    }
 		}
@@ -263,6 +265,7 @@ public class QuestionController {
 		    } catch (Exception e) {
 		        // Handle any unexpected exceptions here
 		        // You can log the error or return an appropriate response
+		    	e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"" + e.getMessage() + "\"}");
 		    }
 		}
@@ -318,6 +321,7 @@ public class QuestionController {
 		    } catch (Exception e) {
 		        // Handle any unexpected exceptions here
 		        // You can log the error or return an appropriate response
+		    	e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"" + e.getMessage() + "\"}");
 		    }
 		}
