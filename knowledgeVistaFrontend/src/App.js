@@ -79,6 +79,7 @@ import SettingsComponent from "./UserSettings/SettingsComponent.js";
 import DisplayName from "./UserSettings/DisplayName.js";
 import SocialLoginKeys from "./SysAdmin/SocialLoginKeys.js";
 import MailSettings from "./UserSettings/MailSettings.js";
+import NavBar from "./Common Components/NavBar.js";
 
 function App() {
   const isAuthenticated = sessionStorage.getItem("token") !== null;
@@ -479,7 +480,7 @@ function App() {
               }
             />
             <Route
-              path="/settings/payment"
+              path="/payment/keys"
               element={
                 <ErrorBoundary>
                   <PrivateRoute
@@ -666,7 +667,7 @@ function App() {
               }
             />
             <Route
-              path="/meeting/settings"
+              path="/zoom/settings"
               element={
                 <ErrorBoundary>
                   <PrivateRoute
@@ -729,7 +730,7 @@ function App() {
               }
             />
             <Route
-              path="/mailSettings"
+              path="/settings/mailSettings"
               element={
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true} onlyadmin={true}>
@@ -749,7 +750,7 @@ function App() {
               }
             />
             <Route
-              path="/displayname"
+              path="/settings/displayname"
               element={
                 <ErrorBoundary>
                   <PrivateRoute
@@ -763,7 +764,7 @@ function App() {
               }
             />
             <Route
-              path="/viewsettings"
+              path="/settings/viewsettings"
               element={
                 <ErrorBoundary>
                   <PrivateRoute authorizationRequired={true} onlyadmin={true}>

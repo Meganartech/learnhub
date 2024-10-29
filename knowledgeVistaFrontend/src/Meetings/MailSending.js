@@ -220,7 +220,7 @@ TimeZone: ${meetingData.timezone}`,
           icon: "error",
           confirmButtonText: "OK",
         }).then(()=>{
-          window.location.href="/mailsettings"
+          window.location.href="/settings/mailsettings"
         })
       }else{
       MySwal.fire({

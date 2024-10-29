@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from 'axios';
 import baseUrl from '../api/utils';
+import googleicon from "../images/google.png"
 
 const SocialLoginKeys = () => {
     const MySwal = withReactContent(Swal); 
@@ -146,7 +147,7 @@ const SocialLoginKeys = () => {
           <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
           </div>
           <div className='innerFrameforset '>
-      <h2 className='mb-5'>Google Login Settings</h2>
+      <h2 className='mb-5' style={{ textDecoration: "underline" }}>  Google Login Settings</h2>
         
           <div className='formgroup pt-4' >
            
@@ -208,7 +209,7 @@ const SocialLoginKeys = () => {
          <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
          </div>
          <div className='innerFrameforset '>
-     <h2 className='mb-5'>Google Login Settings</h2>
+     <h2 className='mb-5'style={{ textDecoration: "underline" }}>  Google Login Settings</h2>
        
          <div className='formgroup pt-4' >
           

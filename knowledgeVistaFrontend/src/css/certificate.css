@@ -103,7 +103,8 @@ font-size: 48px;
   padding: 30px;
   min-height: 90vh;
   height: auto;
-  width: auto;
+  width: 100%;
+
 }
 .contentinner{
   background-color: white;
@@ -338,7 +339,7 @@ grid-template-columns: 6fr 1fr 12fr;
     cursor: pointer;
   }
   #wrappercenter{
-    width: 100%;
+    width: 100vw;
     height: auto;
     display: flex;
 
@@ -445,21 +446,21 @@ background-color: var(--input-bg)!important;
 @media screen and (max-width: 480px) {
    /* Styles for larger screens (laptop and up) */
 
-   h1 {
-    font-size: 2rem; /* Larger size for main title */
+    h1 {
+    font-size: 2rem; 
   }
   
   h2 {
-    font-size: 1.75rem; /* Slightly smaller for subheadings */
+    font-size: 1.75rem; 
   }
   
   h3, h4 {
-    font-size: 1.5rem; /* Moderate size for sub-subheadings or sections */
+    font-size: 1.5rem; 
   }
   
   h5, h6 {
-    font-size: 1.25rem; /* Smaller size for less prominent sections */
-  }
+    font-size: 1.25rem; 
+  } 
    .login-container {
     height: auto;
     flex-direction: column;  
@@ -473,7 +474,7 @@ background-color: var(--input-bg)!important;
 #wrappercenter {
   display: block;
   position: relative; /* Enable absolute positioning for children */
-  width: 100%;
+  width: 100vw;
   height: 100%;
 }
 .certificate{
@@ -499,7 +500,7 @@ background-color: var(--input-bg)!important;
 }
 
 #sidebar {
- 
+  width: 10vw;
   position: absolute; /* Make it positioned within the wrapper */
   top: 0;
   left: 0; /* Place it at the top-left corner */
@@ -511,7 +512,8 @@ background-color: var(--input-bg)!important;
 }
 
 #outlet {
-  overflow: hidden; /* Hide overflow content of the outlet */
+  flex: 1;
+  overflow: hidden; 
 } 
 /*style for outlet*/
  .maxheight{

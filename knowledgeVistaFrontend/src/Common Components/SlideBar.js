@@ -514,21 +514,7 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
                 <i className=" pr-1 fa-solid fa-user-clock text-light pl-4"></i>
                 <span>My Meetings</span>
               </a>
-              {userRole==="ADMIN" &&
-              <a
-                className={`nav-link mb-2 collapse-item text-light ${
-                  activeLink === "/meeting/settings" ? " SubActiveLink " : ""
-                }`}
-                href="#"
-                onClick={() => {
-                  handleClick("/meeting/settings");
-                  setActiveLink("/meeting/settings");
-                }}
-              >
-                <i className=" pr-1 fa-solid fa-gear text-light pl-4"></i>
-                <span>Settings</span>
-              </a>
-}
+     
               <a
                 className={`collapse-item mb-2 text-light nav-link ${
                   activeLink === "/meeting/Shedule"
@@ -548,73 +534,96 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
           </div>
         </div>
       )}
- {userRole === "ADMIN" && (
-        <li className="nav-item mt-2">
-          <a
-            className={
-              activeLink === "/viewsettings"
-                ? "ActiveLink nav-link"
-                : "nav-link text-muted"
-            }
-            href="#"
-            onClick={() => handleClick("/viewsettings")}
-          >
-            <i
-              className={
-                activeLink === "/viewsettings"
-                  ? "fa-solid fa-gear text-light"
-                  : "fa-solid fa-gear text-muted"
-              }
-            ></i>
-            <span>Settings</span>
-          </a>
-        </li>
-      )}
 
+    
+ 
 {userRole === "ADMIN" && (
-        <li className="nav-item mt-2">
-          <a
-            className={
-              activeLink === "/mailSettings"
-                ? "ActiveLink nav-link"
-                : "nav-link text-muted"
-            }
-            href="#"
-            onClick={() => handleClick("/mailSettings")}
-          >
-            <i
-              className={
-                activeLink === "/mailSettings"
-                  ? "fa-regular fa-envelope text-light"
-                  : "fa-regular fa-envelope text-muted"
-              }
-            ></i>
-            <span>Mail Settings</span>
-          </a>
-        </li>
-      )}
-{userRole === "ADMIN" && (
-        <li className="nav-item mt-2">
-          <a
-            className={
-              activeLink === "/displayname"
-                ? "ActiveLink nav-link"
-                : "nav-link text-muted"
-            }
-            href="#"
-            onClick={() => handleClick("/displayname")}
-          >
-            <i
-              className={
-                activeLink === "/displayname"
-                  ? "fa-solid fa-user text-light"
-                  : "fa-solid fa-user text-muted"
-              }
-            ></i>
-            <span>Role Settings</span>
-          </a>
-        </li>
-      )}
+  <div className={`mt-2 ${activeLink.includes("/settings") ? "ActiveLink" : ""}`}>
+    <li className="nav-item">
+      <a
+        className={`nav-link ${activeLink.includes("/settings") ? "text-light" : "text-muted"}`}
+        href="#"
+        onClick={() => {
+          setActiveLink("/settings");
+          const collapseSettings = document.getElementById("collapseSettings");
+          if (collapseSettings.classList.contains("show")) {
+            collapseSettings.classList.remove("show");
+          } else {
+            collapseSettings.classList.add("show");
+          }
+        }}
+      >
+        <i className={`fa-solid fa-gear ${activeLink.includes("/settings") ? "text-light" : "text-muted"}`}></i>
+        <span>Settings</span>
+      </a>
+    </li>
+    <div
+      style={{ width: "100%" }}
+      id="collapseSettings"
+      className={`collapse newnav ${activeLink.includes("/settings") ? "show" : ""}`}
+      aria-labelledby="headingSettings"
+      data-parent="#accordionSidebar"
+    >
+      <div style={{ width: "100%" }} className="text-light collapse-inner">
+        <a
+          className={`nav-link mb-2 collapse-item text-light ${
+            activeLink === "/settings/viewsettings" ? "SubActiveLink" : ""
+          }`}
+          href="#"
+          onClick={() => {
+            handleClick("/settings/viewsettings");
+            setActiveLink("/settings/viewsettings");
+          }}
+        >
+          <i className="pr-1 fa-solid fa-gear text-light pl-4"></i>
+          <span>General Settings</span>
+        </a>
+        <a
+          className={`nav-link mb-2 collapse-item text-light ${
+            activeLink === "/settings/mailSettings" ? "SubActiveLink" : ""
+          }`}
+          href="#"
+          onClick={() => {
+            handleClick("/settings/mailSettings");
+            setActiveLink("/settings/mailSettings");
+          }}
+        >
+           
+          <i className="pr-1 fa-regular fa-envelope text-light pl-4"></i>
+          <span>Mail Settings</span>
+        </a>
+        <a
+                className={`nav-link mb-2 collapse-item text-light ${
+                  activeLink === "/zoom/settings" ? " SubActiveLink " : ""
+                }`}
+                href="#"
+                onClick={() => {
+                  handleClick("/zoom/settings");
+                  setActiveLink("/zoom/settings");
+                }}
+              >
+                <i className=" pr-1 fa-solid fa-video text-light pl-4"></i>
+                <span>Zoom settings</span>
+              </a>
+              
+        <a
+          className={`nav-link mb-2 collapse-item text-light ${
+            activeLink === "/settings/displayname" ? "SubActiveLink" : ""
+          }`}
+          href="#"
+          onClick={() => {
+            handleClick("/settings/displayname");
+            setActiveLink("/settings/displayname");
+          }}
+        >
+          <i className="pr-1 fa-solid fa-user text-light pl-4"></i>
+          <span>Role Settings</span>
+        </a>
+      </div>
+    </div>
+  </div>
+)}
+
 
 
       {userRole === "ADMIN" && (
@@ -660,12 +669,12 @@ const SlideBar = ({ handleSidebarToggle, activeLink, setActiveLink }) => {
             >
               <a
                 className={`nav-link mb-2 collapse-item text-light ${
-                  activeLink === "/settings/payment" ? " SubActiveLink " : ""
+                  activeLink === "/payment/keys" ? " SubActiveLink " : ""
                 }`}
                 href="#"
                 onClick={() => {
-                  handleClick("/settings/payment");
-                  setActiveLink("/settings/payment");
+                  handleClick("/payment/keys");
+                  setActiveLink("/payment/keys");
                 }}
               >
                 <i className=" pr-1 fa-solid fa-gear text-light pl-4"></i>
