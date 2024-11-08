@@ -51,12 +51,13 @@ const EditQuestion = () => {
           setSelectedOption(selectedOption); 
         
       } catch (error) {
-        MySwal.fire({
-          title: "Error",
-          text: "Some error occurred. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK"
-        }).then((result) => {
+        // MySwal.fire({
+        //   title: "Error",
+        //   text: "Some error occurred. Please try again later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK"
+        // })
+        throw error.then((result) => {
           if (result.isConfirmed) {
             navigate(-1);
           }
@@ -174,12 +175,13 @@ const EditQuestion = () => {
         });
         window.location.href="/unauthorized";
       } else {
-        MySwal.fire({
-          title: "Error",
-          text: error,
-          icon: "error",
-          confirmButtonText: "OK"
-        });
+        // MySwal.fire({
+        //   title: "Error",
+        //   text: error,
+        //   icon: "error",
+        //   confirmButtonText: "OK"
+        // });
+        throw error
       }}
   };
   

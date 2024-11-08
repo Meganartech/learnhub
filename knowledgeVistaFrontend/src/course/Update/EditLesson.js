@@ -123,12 +123,13 @@ const EditLesson = () => {
             });
           }
         } else {
-          MySwal.fire({
-            title: "Error!",
-            text: "An error occurred . Please try again later.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: "An error occurred . Please try again later.",
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
+          throw error
         }
       }
     };
@@ -351,12 +352,13 @@ const EditLesson = () => {
         });
       } else {
         setIsSubmitting(false);
-        MySwal.fire({
-          title: "error!",
-          text: "Some Unexpected Error occured . Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        // MySwal.fire({
+        //   title: "error!",
+        //   text: "Some Unexpected Error occured . Please try again later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
+        throw error
       }
     }
   };

@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +31,8 @@ public class Listview {
 	 @Autowired 
 	 private MuserRepoPageable muserPageRepo;
 	
+	 private static final Logger logger = LoggerFactory.getLogger(Listview.class);
+
 	
 //```````````````WORKING````````````````````````````````````
 
@@ -64,6 +69,7 @@ public class Listview {
    	     }
         } catch (Exception e) {
         	e.printStackTrace();
+        	 logger.error("", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -99,6 +105,7 @@ public class Listview {
       	     }
         } catch (Exception e) {
         	e.printStackTrace();
+        	 logger.error("", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }  
@@ -146,6 +153,7 @@ public class Listview {
      	     }
         } catch (Exception e) {
         	e.printStackTrace();
+        	 logger.error("", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -185,6 +193,7 @@ public ResponseEntity<Page<MuserDto>> getTrainerByRoleName( String token ,int pa
 	     }
     } catch (Exception e) {
     	e.printStackTrace();
+    	 logger.error("", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 }
@@ -207,6 +216,7 @@ public ResponseEntity< List<String>> SearchEmail(String token,String Query){
 		
 	}catch(Exception e) {
 		e.printStackTrace();
+		 logger.error("", e);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
 	}
 }
@@ -234,6 +244,7 @@ public ResponseEntity< List<String>> SearchEmailTrainer(String token,String quer
 		
 	}catch(Exception e) {
 		e.printStackTrace();
+		 logger.error("", e);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
 	}
 }
@@ -257,6 +268,7 @@ public ResponseEntity<Page<MuserDto>> searchUser( String username, String email,
 		 }
 	}catch (Exception e) {
 	    e.printStackTrace();
+	    logger.error("", e);
 	    // Return an empty Page with a 200 OK status
 	    return ResponseEntity.ok(Page.empty());
 	}
@@ -281,6 +293,7 @@ public ResponseEntity<Page<MuserDto>> searchTrainer( String username, String ema
 	}catch (Exception e) {
 	    e.printStackTrace();
 	    // Return an empty Page with a 200 OK status
+	    logger.error("", e);
 	    return ResponseEntity.ok(Page.empty());
 	}
 }
@@ -302,6 +315,7 @@ return ResponseEntity.ok(Uniquestudents);
 	 }
 }catch (Exception e) {
     e.printStackTrace();
+    logger.error("", e);
     // Return an empty Page with a 200 OK status
     return ResponseEntity.ok(Page.empty());
 }
@@ -338,6 +352,7 @@ public ResponseEntity<Page<MuserDto>> searchTrainerByAdmin( String username, Str
 			 }
 		}catch (Exception e) {
 		    e.printStackTrace();
+		    logger.error("", e);
 		    // Return an empty Page with a 200 OK status
 		    return ResponseEntity.ok(Page.empty());
 		}
@@ -371,6 +386,7 @@ public ResponseEntity<Page<MuserDto>> searchUserByAdminorTrainer( String usernam
 			 }
 		}catch (Exception e) {
 		    e.printStackTrace();
+		    logger.error("", e);
 		    // Return an empty Page with a 200 OK status
 		    return ResponseEntity.ok(Page.empty());
 		}
@@ -403,6 +419,7 @@ public ResponseEntity<Page<MuserDto>> searchStudentsOfTrainer( String username, 
 			 }
 		}catch (Exception e) {
 		    e.printStackTrace();
+		    logger.error("", e);
 		    // Return an empty Page with a 200 OK status
 		    return ResponseEntity.ok(Page.empty());
 		}

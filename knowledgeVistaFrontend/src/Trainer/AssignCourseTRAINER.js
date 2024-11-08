@@ -40,8 +40,10 @@ const navigate=useNavigate();
         } catch (error) {
           if(error.response && error.response.status===401){
             window.location.href="/unauthorized"
-          }
+          }else{
             console.error('Error fetching user data:', error);
+            throw error
+          }
         }
     };
 
@@ -105,6 +107,9 @@ const handleAssignCourse = async () => {
           icon: "error",
           confirmButtonText: "OK",
         });
+      }
+      else{
+        throw error
       }
     }
   }

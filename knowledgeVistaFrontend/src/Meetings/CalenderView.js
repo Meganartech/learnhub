@@ -53,6 +53,7 @@ const CalenderView = () => {
       }
       } catch (error) {
         console.error(error);
+        throw error
       }
     };
 
@@ -110,7 +111,8 @@ const CalenderView = () => {
     } catch (error) {
       console.error(error);
       // Optionally, show an error message
-      MySwal.fire('Error!', 'An error occurred while deleting the meeting.', 'error');
+      // MySwal.fire('Error!', 'An error occurred while deleting the meeting.', 'error');
+      throw error
     }
   };
   

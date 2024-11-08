@@ -13,6 +13,7 @@ const token=sessionStorage.getItem("token")
         setShowInLandingPage(response.data); // Assuming the response contains the boolean value directly
       } catch (error) {
         console.error('Error fetching the show in landing page status:', error);
+        throw error
       }
     };
 
@@ -33,6 +34,7 @@ const token=sessionStorage.getItem("token")
     } catch (error) {
       
       console.error('Error updating the show in landing page status:', error);
+      throw error
   
     }
   };

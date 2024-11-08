@@ -28,6 +28,7 @@ const About_Us = () => {
         setIsDataList(data.dataList);
       } catch (error) {
         console.error('Error fetching data:', error);
+        throw error
       }
     };
   

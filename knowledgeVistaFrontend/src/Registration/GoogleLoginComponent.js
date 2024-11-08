@@ -57,11 +57,12 @@ const GoogleLoginComponent = ({clientId}) => {
           });
         }
       } else {
-        MySwal.fire({
-          title: "Error Occurred!",
-          text: "An error occurred while logging in. Please try again later.",
-          icon: "error",
-        });
+        // MySwal.fire({
+        //   title: "Error Occurred!",
+        //   text: "An error occurred while logging in. Please try again later.",
+        //   icon: "error",
+        // });
+        throw error
       }
     }
   };

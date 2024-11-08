@@ -55,6 +55,7 @@ const ViewStudentList = () => {
       }
     } catch (error) {
       console.error("Error fetching users:", error);
+      throw error
     }
   };
 
@@ -121,8 +122,10 @@ const ViewStudentList = () => {
       } catch (error) {
         if (error.response && error.response.status === 401) {
           window.location.href = "/unauthorized";
-        }
+        }else{
         console.error("Error fetching data:", error);
+        throw error
+        }
       }
     };
 
@@ -148,8 +151,10 @@ const ViewStudentList = () => {
     } catch (error) {
       if (error.response && error.response.status === 401) {
         window.location.href = "/unauthorized";
-      }
+      }else{
       console.error("Error fetching data:", error);
+      throw error
+      }
     }
   };
 
@@ -265,15 +270,16 @@ const ViewStudentList = () => {
               } not found`,
             });
           } else {
-            MySwal.fire({
-              icon: "error",
-              title: "ERROR",
-              text: `Error Deactivating ${
-                displayname && displayname.student_name
-                  ? displayname.student_name
-                  : "Student"
-              }`,
-            });
+            // MySwal.fire({
+            //   icon: "error",
+            //   title: "ERROR",
+            //   text: `Error Deactivating ${
+            //     displayname && displayname.student_name
+            //       ? displayname.student_name
+            //       : "Student"
+            //   }`,
+            // });
+            throw error
             console.error("Error during deactivation:", error); // Log detailed error for debugging
           }
         }
@@ -342,15 +348,16 @@ const ViewStudentList = () => {
               });
             }
           } else {
-            MySwal.fire({
-              icon: "error",
-              title: "ERROR",
-              text: `Error Activating ${
-                displayname && displayname.student_name
-                  ? displayname.student_name
-                  : "Student"
-              }`,
-            });
+            // MySwal.fire({
+            //   icon: "error",
+            //   title: "ERROR",
+            //   text: `Error Activating ${
+            //     displayname && displayname.student_name
+            //       ? displayname.student_name
+            //       : "Student"
+            //   }`,
+            // });
+            throw error
           }
         }
       }

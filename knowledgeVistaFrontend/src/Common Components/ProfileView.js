@@ -71,12 +71,13 @@ const ProfileView = () => {
         {
           window.location.href="/unauthorized";
         }else{
-          MySwal.fire({
-            title: "Error!",
-            text: error.response,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: error.response,
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
+          throw error
         }
       }
     };
@@ -141,6 +142,7 @@ const ProfileView = () => {
       setDefaultCountry(newCountryCode);
     } catch (error) {
       console.error("Error fetching country dialing code: ", error);
+      throw error
     }
   };
   const handleChange = (e) => {
@@ -203,12 +205,13 @@ const ProfileView = () => {
         }));
       })
       .catch((error) => { 
-        MySwal.fire({
-        title: "Error!",
-        text: error ,
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      //   MySwal.fire({
+      //   title: "Error!",
+      //   text: error ,
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // });
+      throw error
       });
   };
   
@@ -274,12 +277,13 @@ const ProfileView = () => {
           });
         }else {
             
-          MySwal.fire({
-            title: "Error!",
-            text: error.response,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: error.response,
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
+          throw error
         }
       }
   };

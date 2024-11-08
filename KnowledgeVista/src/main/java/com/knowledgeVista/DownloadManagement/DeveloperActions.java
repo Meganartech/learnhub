@@ -1,6 +1,8 @@
 package com.knowledgeVista.DownloadManagement;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.knowledgeVista.Email.EmailController;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +32,8 @@ public class DeveloperActions {
 	    @Autowired
 	    private CustomerLeadsRepo customerleadRepo;
 	    
+	  	 private static final Logger logger = LoggerFactory.getLogger(DeveloperActions.class);
+
 	   
 	 @PostMapping("/CustomerDownloads")
 	    public ResponseEntity<?> saveCustomerDownloads(@RequestBody Customer_downloads customerdownloads) {
@@ -50,7 +57,7 @@ public class DeveloperActions {
 
 	        } catch (Exception e) {
 	            // Log any other exceptions for debugging purposes
-	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 	            // Return an internal server error response
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
@@ -83,7 +90,7 @@ public class DeveloperActions {
 
 	     } catch (Exception e) {
 	         // Log any other exceptions for debugging purposes
-	         e.printStackTrace();
+	         e.printStackTrace();    logger.error("", e);;
 	         // Return an internal server error response
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	     }
@@ -96,7 +103,7 @@ public class DeveloperActions {
 	            return ResponseEntity.ok(customerdownloads);
 	        } catch (Exception e) {
 	            // Log any other exceptions for debugging purposes
-	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 	            // Return an internal server error response
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
@@ -114,7 +121,7 @@ public class DeveloperActions {
 	            }
 	        } catch (Exception e) {
 	            // Log any other exceptions for debugging purposes
-	            e.printStackTrace(); // You can replace this with a logging framework like Log4j
+	            e.printStackTrace();    logger.error("", e);; // You can replace this with a logging framework like Log4j
 	            // Return an internal server error response
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
@@ -148,7 +155,7 @@ public class DeveloperActions {
 
 	        } catch (Exception e) {
 	            // Log any other exceptions for debugging purposes
-	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 	            // Return an internal server error response
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
@@ -188,7 +195,7 @@ public class DeveloperActions {
 
 	     } catch (Exception e) {
 	         // Log any other exceptions for debugging purposes
-	         e.printStackTrace();
+	         e.printStackTrace();    logger.error("", e);;
 	         // Return an internal server error response
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	     }
@@ -202,7 +209,7 @@ public class DeveloperActions {
 	            return ResponseEntity.ok(customerLeads);
 	        } catch (Exception e) {
 	            // Log any other exceptions for debugging purposes
-	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 	            // Return an internal server error response
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
@@ -219,7 +226,7 @@ public class DeveloperActions {
 	            }
 	        } catch (Exception e) {
 	            // Log any other exceptions for debugging purposes
-	            e.printStackTrace(); // You can replace this with a logging framework like Log4j
+	            e.printStackTrace();    logger.error("", e);; // You can replace this with a logging framework like Log4j
 	            // Return an internal server error response
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }

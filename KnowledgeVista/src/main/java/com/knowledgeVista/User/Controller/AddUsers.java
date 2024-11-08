@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,9 @@ public class AddUsers {
 	
 	 @Autowired
 	private NotificationService notiservice;
+	 
+
+	 private static final Logger logger = LoggerFactory.getLogger(AddUsers.class);
 	 
 	 public ResponseEntity<?> addTrainer( String username, String psw,String email,
 	          LocalDate dob, String phone, String skills, MultipartFile profile, Boolean isActive, String countryCode,String token) {
@@ -78,6 +83,7 @@ public class AddUsers {
 	                      trainer.setProfile(profile.getBytes());
 	                  } catch (IOException e) {
 	                      e.printStackTrace();
+	                      logger.error("", e);
 	                  }
 	                  }
 	                muserrepositories.save(trainer);
@@ -96,11 +102,13 @@ public class AddUsers {
 	      } catch (DecodingException ex) {
 	          // Log the decoding exception
 	          ex.printStackTrace(); // You can replace this with logging framework like Log4j
+	          logger.error("", ex);
 	          // Return an error response indicating invalid token
 	          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	      } catch (Exception e) {
 	          // Log any other exceptions for debugging purposes
-	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	    	  logger.error("", e);
+	    	  e.printStackTrace(); // You can replace this with logging framework like Log4j
 	          // Return an internal server error response
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	      }
@@ -163,6 +171,7 @@ public class AddUsers {
 	                     user.setProfile(profile.getBytes());
 	                  } catch (IOException e) {
 	                      e.printStackTrace();
+	                      logger.error("", e);
 	                  }
 	                  }
 	                 Muser saveduser= muserrepositories.save(user);
@@ -187,6 +196,7 @@ public class AddUsers {
 	      } catch (DecodingException ex) {
 	          // Log the decoding exception
 	          ex.printStackTrace(); // You can replace this with logging framework like Log4j
+	          logger.error("", ex);
 	          // Return an error response indicating invalid token
 
               System.out.println("catch ");
@@ -194,6 +204,7 @@ public class AddUsers {
 	      } catch (Exception e) {
 	          // Log any other exceptions for debugging purposes
 	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          logger.error("", e);
 	          // Return an internal server error response
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	      }
@@ -233,6 +244,7 @@ public class AddUsers {
 	      } catch (Exception e) {
 	          // Log any other exceptions for debugging purposes
 	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          logger.error("", e);
 	          // Return an internal server error response
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	      }
@@ -270,6 +282,7 @@ public class AddUsers {
 	      } catch (Exception e) {
 	          // Log any other exceptions for debugging purposes
 	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          logger.error("", e);
 	          // Return an internal server error response
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	      }
@@ -312,6 +325,7 @@ public class AddUsers {
 	      } catch (Exception e) {
 	          // Log any other exceptions for debugging purposes
 	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          logger.error("", e);
 	          // Return an internal server error response
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	      }
@@ -354,6 +368,7 @@ public class AddUsers {
 	      } catch (Exception e) {
 	          // Log any other exceptions for debugging purposes
 	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          logger.error("", e);
 	          // Return an internal server error response
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	      }

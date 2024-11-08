@@ -41,8 +41,10 @@ const AssignCourse = () => {
         } catch (error) {
           if(error.response && error.response.status===401){
             window.location.href="/unauthorized"
-          }
+          }else{
             console.error('Error fetching user data:', error);
+            throw error
+          }
         }
     };
 
@@ -94,12 +96,13 @@ const handleAssignCourse = async () => {
             confirmButtonText: "OK"
         });
       }else{
-        MySwal.fire({
-          icon: 'error',
-          title: 'An unexpected error occurred!',
-          text: "Try Again After Some Time",
-          confirmButtonText: "OK"
-      });
+      //   MySwal.fire({
+      //     icon: 'error',
+      //     title: 'An unexpected error occurred!',
+      //     text: "Try Again After Some Time",
+      //     confirmButtonText: "OK"
+      // });
+      throw error
       }
        // window.location.reload()
     }

@@ -45,12 +45,13 @@ const ViewVideo = () => {
         } else if (error.response && error.response.status === 404) {
           window.location.href = "/missing";
         } else {
-          await MySwal.fire({
-            icon: "error",
-            title: "Some Error Occurred",
-            text: "Please Try Again Later",
-            confirmButtonText: "OK",
-          }).then((result) => {
+          // await MySwal.fire({
+          //   icon: "error",
+          //   title: "Some Error Occurred",
+          //   text: "Please Try Again Later",
+          //   confirmButtonText: "OK",
+          // })
+          throw error.then((result) => {
             if (result.isConfirmed) {
               navigate(-1);
             }

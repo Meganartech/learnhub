@@ -4,12 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,9 +23,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
-import com.knowledgeVista.Course.DocsDetails;
 import com.knowledgeVista.Course.Controller.CheckAccess;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Controller.CourseControllerSecond;
@@ -45,8 +46,8 @@ import com.knowledgeVista.Meeting.zoomclass.MeetingRequest;
 import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Payments.PaymentIntegration;
 import com.knowledgeVista.Payments.PaymentListController;
-import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.PaymentSettingsController;
+import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.Controller.SettingsController;
 import com.knowledgeVista.SocialLogin.SocialLoginKeys;
@@ -150,6 +151,8 @@ public class FrontController {
 	
 	@Autowired
 	private GoogleAuthController googleauth;
+	
+	 private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
 	
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
@@ -1149,6 +1152,7 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
             		   }
             	   }catch(Exception e) {
             		   e.printStackTrace();
+            		   logger.error("", e);
             		   return null;
             	   }
             	   
@@ -1163,6 +1167,7 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
             		   }
             	   }catch(Exception e) {
             		   e.printStackTrace();
+            		   logger.error("", e);
             		   return null;
             	   }
                }
@@ -1176,6 +1181,7 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
             		   }
             	   }catch(Exception e) {
             		   e.printStackTrace();
+            		   logger.error("", e);
             		   return null;
             	   }
                }
@@ -1189,6 +1195,7 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
             		   }
             	   }catch(Exception e) {
             		   e.printStackTrace();
+            		   logger.error("", e);
             		   return null;
             	   }
                }
@@ -1214,6 +1221,27 @@ public ResponseEntity<?> getMethodNameSYS(@RequestHeader("Authorization") String
                public ResponseEntity<?> postMethodName(@RequestBody SocialLoginKeys loginkeys,@RequestHeader("Authorization") String token) {
                   return googleauth.saveOrUpdateSocialLoginKeys(loginkeys,token);
                }
+               
+               @GetMapping("/triggerError")
+   		    public ResponseEntity<String> triggerError() {
+   		        try {
+   		            // Intentionally cause an exception
+   		            causeException();
+   		            System.out.println("trigger errors");
+   		            return ResponseEntity.ok("No error occurred on try");
+   		        } catch (Exception e) {
+//   		            // Log the exception
+//   		            logger.error("", e);
+   		        	e.printStackTrace();
+   		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(""+e);
+//   		        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ER)
+   		        }
+   		    }
+
+   		    // Method that intentionally throws an exception
+   		    private void causeException() throws Exception {
+   		        throw new Exception("This is a simulated exception for testing purposes.");
+   		    }
                
 }
 

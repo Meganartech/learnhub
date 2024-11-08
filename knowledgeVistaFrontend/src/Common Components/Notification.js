@@ -17,6 +17,7 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
           "Error parsing notifications from sessionStorage:",
           error
         );
+        throw error
       }
     }
     return [];
@@ -69,6 +70,7 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
       }
     } catch (error) {
       console.error("Error fetching notification images:", error);
+      throw error
     }
   };
 
@@ -92,6 +94,7 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      throw error
     }
   };
   useEffect(() => {
@@ -166,6 +169,7 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
         }
       } catch (error) {
         console.error("Error fetching notifications:", error);
+        throw error
       }
     };
 

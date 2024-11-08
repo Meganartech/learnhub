@@ -55,6 +55,7 @@ const Mystudents = () => {
     }
   } catch (error) {
     console.error('Error fetching users:', error);
+    throw error
   }
 };
 
@@ -123,6 +124,8 @@ const handleChange = (e) => {
           } catch (error) {
             if(error.response && error.response.status===401){
               window.location.href="/unauthorized"
+            }else{
+              throw error
             }
             console.error('Error fetching data:', error);
           }
@@ -149,6 +152,8 @@ const handleChange = (e) => {
         } catch (error) {
           if (error.response && error.response.status === 401) {
             window.location.href = "/unauthorized";
+          }else{
+            throw error
           }
           console.error('Error fetching data:', error);
         }
@@ -236,14 +241,15 @@ const handleChange = (e) => {
             });
             }
           }else{
-          MySwal.fire({
-            icon: 'error',
-            title: 'ERROR',
-            text: `Error DeActivating ${displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        }`
-        });
+        //   MySwal.fire({
+        //     icon: 'error',
+        //     title: 'ERROR',
+        //     text: `Error DeActivating ${displayname && displayname.student_name 
+        //   ? displayname.student_name 
+        //   : "Student" 
+        // }`
+        // });
+        throw error
         }
       }
       }  
@@ -304,14 +310,15 @@ const handleChange = (e) => {
             });
             }
           }else{
-          MySwal.fire({
-            icon: 'error',
-            title: 'ERROR',
-            text: `Error Activating ${displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        }`
-        });
+        //   MySwal.fire({
+        //     icon: 'error',
+        //     title: 'ERROR',
+        //     text: `Error Activating ${displayname && displayname.student_name 
+        //   ? displayname.student_name 
+        //   : "Student" 
+        // }`
+        // });
+        throw error
         }
       }
       }  

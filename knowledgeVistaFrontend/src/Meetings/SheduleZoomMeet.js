@@ -298,6 +298,7 @@ const SheduleZoomMeet = () => {
         setUsers(filteredUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
+        throw error
       }
     } else {
       setUsers([]);
@@ -460,14 +461,16 @@ const updateStartTime = (event) => {
           icon: "error",
           confirmButtonText: "OK",
         });
-      }
+      }else{
       // Handle network errors or other exceptions
-      MySwal.fire({
-        title: "Error!",
-        text: "Some Unexpected Error occurred. Please try again later.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      // MySwal.fire({
+      //   title: "Error!",
+      //   text: "Some Unexpected Error occurred. Please try again later.",
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // });
+      throw error
+      }
     }
   };
   

@@ -178,12 +178,13 @@ const AddMoreQuestion = () => {
                     window.location.href = "/unauthorized"; // Redirect to previous page
                
                 }else{
-                MySwal.fire({
-                    title: "Error",
-                    text: error,
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
+                // MySwal.fire({
+                //     title: "Error",
+                //     text: error,
+                //     icon: "error",
+                //     confirmButtonText: "OK"
+                // });
+                throw error
             }
         }
         }

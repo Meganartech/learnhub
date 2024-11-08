@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGlobalException(Exception ex, WebRequest request) {
         // Log the error
    	 ex.printStackTrace();
-
+   	log.error("", ex);
         // Return a generic error response
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
     }

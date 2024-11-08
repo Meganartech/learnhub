@@ -70,12 +70,13 @@ const EditCourse = ({filteredCourses}) => {
             {
               window.location.href="/unauthorized";
             }else{
-              MySwal.fire({
-                title: "Error!",
-                text: error.response.data ? error.response.data : "error occured",
-                icon: "error",
-                confirmButtonText: "OK",
-              });
+              // MySwal.fire({
+              //   title: "Error!",
+              //   text: error.response.data ? error.response.data : "error occured",
+              //   icon: "error",
+              //   confirmButtonText: "OK",
+              // });
+              throw error
             }
           
         });

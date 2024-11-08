@@ -182,7 +182,7 @@ public class LicenseController {
 	    			}
 	    			 }
 	    			 catch(Exception e) {
-		                 e.printStackTrace();
+		                 e.printStackTrace();    logger.error("", e);;
 		             }
 	    			
 	    		valid=this.getallSAS(institution, madmin ,license);
@@ -273,7 +273,7 @@ public class LicenseController {
 	    			}
 	    			 }
 	    			 catch(Exception e) {
-		                 e.printStackTrace();
+		                 e.printStackTrace();    logger.error("", e);;
 		             }
 	    			
 		    UserListWithStatus userListWithStatus = new UserListWithStatus(isEmpty, valid,type, dataList,Productversion);
@@ -388,7 +388,7 @@ public class LicenseController {
 	
 				             }
 				             catch (Exception e) {
-				                 e.printStackTrace();
+				                 e.printStackTrace();    logger.error("", e);;
 				                 this.valu="123344";
 				             }
 		    	 boolean valid = false; // Initialize valid to false
@@ -483,7 +483,7 @@ public class LicenseController {
 
 				             }
 				             catch (Exception e) {
-				                 e.printStackTrace();
+				                 e.printStackTrace();    logger.error("", e);;
 				                 this.valu="123344";
 				             }
 		    	
@@ -563,7 +563,7 @@ public class LicenseController {
 	            try {
 	                localDateTime = LocalDateTime.parse(lastModifiedDate, formatter);
 	            } catch (DateTimeParseException e) {
-	            	e.printStackTrace();
+	            	e.printStackTrace();    logger.error("", e);;
 	                System.err.println("Error parsing date string: " + e.getMessage());
 	                return ResponseEntity.badRequest().build();
 	            }
@@ -681,7 +681,7 @@ public class LicenseController {
 	            	   return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	               }
 	        } catch (ParserConfigurationException | SAXException | IOException e) {
-	            e.printStackTrace();
+	            e.printStackTrace();    logger.error("", e);;
 	            return ResponseEntity.badRequest().build();
 	        }
 	    }
@@ -797,7 +797,7 @@ public class LicenseController {
 		            return ResponseEntity.ok().build();
 		         
 		        } catch (ParserConfigurationException | SAXException | IOException e) {
-		            e.printStackTrace();
+		            e.printStackTrace();    logger.error("", e);;
 		            return ResponseEntity.badRequest().build();
 		        }
 		    }
@@ -990,7 +990,7 @@ public class LicenseController {
 		            return ResponseEntity.ok().body("saved");
 
 		        } catch (ParserConfigurationException | SAXException | IOException e) {
-		            e.printStackTrace();
+		            e.printStackTrace();    logger.error("", e);;
 		            return ResponseEntity.badRequest().build();
 		        }
 		    }

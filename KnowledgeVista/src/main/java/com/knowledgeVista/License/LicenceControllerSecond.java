@@ -2,12 +2,15 @@ package com.knowledgeVista.License;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.knowledgeVista.Meeting.ZoomTokenService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -40,6 +43,8 @@ public class LicenceControllerSecond {
 	    @Value("${upload.standard.licence.directory}")
 	    private String standardlicencedir;
 	    
+	   	 private static final Logger logger = LoggerFactory.getLogger(LicenceControllerSecond.class);
+
 	    public ResponseEntity<?>GetLicenseDetails(String token){
 	    	try {
 	    		if (!jwtUtil.validateToken(token)) {
@@ -64,7 +69,7 @@ public class LicenceControllerSecond {
 	            }
 
 	    	}catch(Exception e) {
-	    		e.printStackTrace();
+	    		e.printStackTrace();    logger.error("", e);;
 	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    	}
 	    }
@@ -96,7 +101,7 @@ public class LicenceControllerSecond {
 	    			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    		}
 	    	}catch(Exception e) {
-	    		e.printStackTrace();
+	    		e.printStackTrace();    logger.error("", e);;
 	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    	}
 	    }

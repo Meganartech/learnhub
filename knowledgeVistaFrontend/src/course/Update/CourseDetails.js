@@ -44,12 +44,13 @@ const CourseDetails = () => {
        
         setCourseEdit(data);
       } catch (error) {
-        MySwal.fire({
-          title: "Error!",
-          text: "An error occurred while Fetching course. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        // MySwal.fire({
+        //   title: "Error!",
+        //   text: "An error occurred while Fetching course. Please try again later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
+        throw error
       }
     };
     fetchcourse();

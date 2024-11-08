@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,9 @@ public class Edituser {
 	private MuserRepositories muserrepositories;
 	 @Autowired
 	 private JwtUtil jwtUtil;
+	 
+	 private static final Logger logger = LoggerFactory.getLogger(Edituser.class);
+
 	
 	 public ResponseEntity<?> updateStudent( String originalEmail, String username, String newEmail, LocalDate dob,
 	     String phone, String skills,MultipartFile profile, Boolean isActive,String countryCode, String token
@@ -95,7 +100,7 @@ public class Edituser {
 	     } catch (Exception e) {
 	         // Log any exceptions for debugging purposes
 	         e.printStackTrace(); // Use a logging framework like Log4j in production
-
+	         logger.error("", e);
 	         // Return an internal server error response
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"An error occurred while updating the student\"}");
 	     }
@@ -171,7 +176,7 @@ public class Edituser {
 	     } catch (Exception e) {
 	         // Log any exceptions for debugging purposes
 	         e.printStackTrace(); // Use a logging framework like Log4j in production
-
+	         logger.error("", e);
 	         // Return an internal server error response
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"An error occurred while updating the Trainer\"}");
 	     }
@@ -233,7 +238,7 @@ public class Edituser {
 	     } catch (Exception e) {
 	         // Log any exceptions for debugging purposes
 	         e.printStackTrace(); // Use a logging framework like Log4j in production
-
+	         logger.error("", e);
 	         // Return an internal server error response
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"An error occurred while updating your profile please try again later\"}");
 	     }

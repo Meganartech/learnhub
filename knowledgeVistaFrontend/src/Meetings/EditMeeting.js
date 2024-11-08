@@ -250,6 +250,7 @@ const EditMeeting = () => {
         }
       } catch (error) {
         console.error(error);
+        throw error
       }
     };
 
@@ -350,6 +351,7 @@ const EditMeeting = () => {
         setUsers(filteredUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
+        throw error
       }
     } else {
       setUsers([]);
@@ -501,14 +503,16 @@ const EditMeeting = () => {
           icon: "error",
           confirmButtonText: "OK",
         });
-      }
+      }else{
       // Handle network errors or other exceptions
-      MySwal.fire({
-        title: "Error!",
-        text: "Some Unexpected Error occurred. Please try again later.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      // MySwal.fire({
+      //   title: "Error!",
+      //   text: "Some Unexpected Error occurred. Please try again later.",
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // });
+      throw error
+      }
     }
   };
 

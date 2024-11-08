@@ -54,6 +54,7 @@ const ViewTrainers = () => {
         setTotalPages(response.data.totalPages);
         }
       } catch (error) {
+        throw error
         console.error('Error fetching users:', error);
       }
     };
@@ -124,9 +125,12 @@ const ViewTrainers = () => {
           } catch (error) {
             if(error.response && error.response.status===401){
               window.location.href="/unauthorized"
-            }
+            }else{
             console.error('Error fetching data:', error);
+            throw error
+            }
           }
+
         };
     
         fetchData();
@@ -149,8 +153,10 @@ const ViewTrainers = () => {
         } catch (error) {
           if (error.response && error.response.status === 401) {
             window.location.href = "/unauthorized";
-          }
+          }else{
           console.error('Error fetching data:', error);
+          throw error
+          }
         }
       };
     
@@ -219,11 +225,12 @@ const ViewTrainers = () => {
                     text: 'Trainer not found'
                 });
                 }else{
-                MySwal.fire({
-                  icon: 'error',
-                  title: 'ERROR',
-                  text: 'Error Deleting Trainer'
-              });
+              //   MySwal.fire({
+              //     icon: 'error',
+              //     title: 'ERROR',
+              //     text: 'Error Deleting Trainer'
+              // });
+              throw error
               }
             }
             } 
@@ -296,11 +303,12 @@ const ViewTrainers = () => {
                   text: 'Traier not found'
                 });
               } else {
-                MySwal.fire({
-                  icon: 'error',
-                  title: 'ERROR',
-                  text: 'Error Deactivating trainer'
-                });
+                // MySwal.fire({
+                //   icon: 'error',
+                //   title: 'ERROR',
+                //   text: 'Error Deactivating trainer'
+                // });
+                throw error
                 console.error('Error during deactivation:', error); // Log detailed error for debugging
               }
             }
@@ -348,11 +356,12 @@ const ViewTrainers = () => {
                   text: 'Trainer not found'
               });
               }else{
-              MySwal.fire({
-                icon: 'error',
-                title: 'ERROR',
-                text: 'Error  Activated Trainer'
-            });
+            //   MySwal.fire({
+            //     icon: 'error',
+            //     title: 'ERROR',
+            //     text: 'Error  Activated Trainer'
+            // });
+            throw error
             }
           }
           } 

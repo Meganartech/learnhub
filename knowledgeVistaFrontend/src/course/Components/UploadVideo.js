@@ -210,12 +210,13 @@ const UploadVideo = () => {
         });
       } else {
         // Handle network errors or other exceptions
-        MySwal.fire({
-          title: "Error!",
-          text: "Some Unexpected Error occured . Please try again ....later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        // MySwal.fire({
+        //   title: "Error!",
+        //   text: "Some Unexpected Error occured . Please try again ....later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
+        throw error
       }
     }
   };

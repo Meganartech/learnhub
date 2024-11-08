@@ -94,12 +94,13 @@ const EditStudent = () => {
         if (error.response && error.response.status === 404) {
           setNotFound(true);
         } else {
-          MySwal.fire({
-            title: "Error!",
-            text: error.response.data.message,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: error.response.data.message,
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
+          throw error
         }
       }
     };
@@ -338,12 +339,13 @@ setErrors((prevErrors) => ({
         });
       }
     }else{
-        MySwal.fire({
-          title: "Error!",
-          text: "An error occurred while Updating STUDENT. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        // MySwal.fire({
+        //   title: "Error!",
+        //   text: "An error occurred while Updating STUDENT. Please try again later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
+        throw error
       }
     }
   };

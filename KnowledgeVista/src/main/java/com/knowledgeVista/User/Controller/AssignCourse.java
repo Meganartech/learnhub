@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,8 @@ public class AssignCourse {
 	 private JwtUtil jwtUtil;
 	 @Autowired
 		private NotificationService notiservice;
+	 
+	 private static final Logger logger = LoggerFactory.getLogger(AssignCourse.class);
 //````````````````````````````Assign Course to Student Admin function ```````````````````````````````````	
 	
 	public ResponseEntity<String> assignCoursesToUser( Long userId,  Map<String, List<Long>> data, String token) {
@@ -150,6 +154,7 @@ public class AssignCourse {
 	    } catch (Exception e) {
 	        // If an error occurs, return 500
 	    	e.printStackTrace();
+	    	 logger.error("", e);
 	    	  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	    	            .body("{\"error\": \"An error occurred while processing the request.\"}");
 	    	     }

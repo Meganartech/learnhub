@@ -17,6 +17,7 @@ const RedirectComponent = ({ vpsonly, admincount, children, sasonly, checkvisibl
                 setShowInLandingPage(response.data); 
             } catch (error) {
                 console.error(error);
+                throw error
             } finally {
                 setLoading(false);
             }
@@ -34,6 +35,7 @@ const RedirectComponent = ({ vpsonly, admincount, children, sasonly, checkvisibl
                 setActiveProfile(active.data);
             } catch (error) {
                 console.error(error);
+                throw error
             }
         };
 
@@ -50,6 +52,7 @@ const RedirectComponent = ({ vpsonly, admincount, children, sasonly, checkvisibl
                 setAdminCount(count.data); // Set the admin count in state
             } catch (error) {
                 console.log(error);
+                throw error
             }
         };
 

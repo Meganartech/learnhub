@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -61,6 +63,8 @@ public class ZoomMeetingService {
         @Autowired
 		 private ZoomMethods zoomMethod;
         
+   	 private static final Logger logger = LoggerFactory.getLogger(ZoomMeetingService.class);
+
 	    public ZoomMeetingService(ZoomTokenService zoomTokenService) {
 	        
 	        this.objectMapper = new ObjectMapper();
@@ -98,7 +102,7 @@ public class ZoomMeetingService {
 	         }
 	         
 		  } catch (Exception e) {
-			  e.printStackTrace();
+			  e.printStackTrace();    logger.error("", e);;
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		        		
 		                .body("An error occurred while creating the meeting: " + e.getMessage() );
@@ -147,7 +151,7 @@ public class ZoomMeetingService {
   	         }
   	         
   		  } catch (Exception e) {
-  			e.printStackTrace();
+  			e.printStackTrace();    logger.error("", e);;
   		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
   		                .body("An error occurred while updating the certificate: " + e.getMessage() );
   		    }
@@ -357,7 +361,7 @@ public class ZoomMeetingService {
 	        	 }
 			}catch(Exception e) {
 				
-				e.printStackTrace();
+				e.printStackTrace();    logger.error("", e);;
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
@@ -401,7 +405,7 @@ public class ZoomMeetingService {
 	        		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	        	 }
 			}catch(Exception e) {
-				e.printStackTrace();
+				e.printStackTrace();    logger.error("", e);;
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
@@ -459,7 +463,7 @@ public class ZoomMeetingService {
 	  		  	  
 	  	         }
 			}catch(Exception e) {
-				e.printStackTrace();
+				e.printStackTrace();    logger.error("", e);;
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 			

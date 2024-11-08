@@ -83,12 +83,13 @@ const EditTrainer = () => {
           {
             window.location.href="/unauthorized";
           }else{
-            MySwal.fire({
-              title: "Error!",
-              text: error.response,
-              icon: "error",
-              confirmButtonText: "OK",
-            });
+            // MySwal.fire({
+            //   title: "Error!",
+            //   text: error.response,
+            //   icon: "error",
+            //   confirmButtonText: "OK",
+            // });
+            throw error
           }
            }
       };
@@ -335,14 +336,15 @@ setErrors((prevErrors) => ({
             }
           }else{
       
-          MySwal.fire({
-            title: "Error!",
-            text: `An error occurred while adding ${displayname && displayname.trainer_name
-                    ? displayname.trainer_name
-                    : "Trainer"}. Please try again later.`,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: `An error occurred while adding ${displayname && displayname.trainer_name
+          //           ? displayname.trainer_name
+          //           : "Trainer"}. Please try again later.`,
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
+          throw error
         }
       }
     };

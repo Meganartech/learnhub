@@ -13,6 +13,7 @@ const DisplaysocialLogin = () => {
             setshowSocialLogin(response.data); // Assuming the response contains the boolean value directly
           } catch (error) {
             console.error('Error fetching the show in landing page status:', error);
+            throw error
           }
         };
     
@@ -33,6 +34,7 @@ const DisplaysocialLogin = () => {
         } catch (error) {
           
           console.error('Error updating the show in landing page status:', error);
+          throw error
       
         }
       };

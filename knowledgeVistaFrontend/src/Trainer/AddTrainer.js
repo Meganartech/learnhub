@@ -330,15 +330,16 @@ setErrors((prevErrors) => ({
         }
       }else{
 
-          MySwal.fire({
-            title: "Error!",
-            text: `An error occurred while Adding  ${displayname && displayname.trainer_name
-                    ? displayname.trainer_name
-                    : "Trainer"}
-        . Please try again later.`,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+        //   MySwal.fire({
+        //     title: "Error!",
+        //     text: `An error occurred while Adding  ${displayname && displayname.trainer_name
+        //             ? displayname.trainer_name
+        //             : "Trainer"}
+        // . Please try again later.`,
+        //     icon: "error",
+        //     confirmButtonText: "OK",
+        //   });
+        throw error
         }
       }
       };

@@ -43,12 +43,13 @@ const EditCourseForm = ({}) => {
         setimg(`data:image/jpeg;base64,${data.courseImage}`);
         setCourseEdit(data);
       } catch (error) {
-        MySwal.fire({
-          title: "Error!",
-          text: "An error occurred while Fetching course in Edit Form. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        // MySwal.fire({
+        //   title: "Error!",
+        //   text: "An error occurred while Fetching course in Edit Form. Please try again later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
+        throw error
       }
     };
     fetchcourse();
@@ -176,12 +177,13 @@ const EditCourseForm = ({}) => {
       }
     } catch (error) {
       // Handle network errors or other exceptions
-      MySwal.fire({
-        title: "Error!",
-        text: "An error occurred . Please try again later.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      // MySwal.fire({
+      //   title: "Error!",
+      //   text: "An error occurred . Please try again later.",
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // });
+      throw error
     }
   };
   return (

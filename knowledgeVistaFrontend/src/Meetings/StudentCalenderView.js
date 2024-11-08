@@ -40,6 +40,7 @@ const StudentCalenderView = () => {
         setEvents(fetchedEvents);
       } catch (error) {
         console.error(error);
+        throw error
       }
     };
 

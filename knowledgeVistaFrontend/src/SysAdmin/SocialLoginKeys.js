@@ -52,6 +52,8 @@ const SocialLoginKeys = () => {
               setisnotFound(true);
             } else if (error.response.status === 401) {
               window.location.href = "/unauthorized";
+            }else{
+              throw error
             }
           }
         }
@@ -126,11 +128,12 @@ const SocialLoginKeys = () => {
             setisnotFound(false)
           } 
     }catch(error){
-      MySwal.fire({
-        icon: 'error',
-        title: 'Some Error Occurred',
-        text: "error occured"
-      });
+      // MySwal.fire({
+      //   icon: 'error',
+      //   title: 'Some Error Occurred',
+      //   text: "error occured"
+      // });
+      throw error
     }
        
       

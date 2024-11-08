@@ -55,6 +55,7 @@ const ViewAdmin = () => {
         }
       } catch (error) {
         console.error('Error fetching users:', error);
+        throw error
       }
     };
   
@@ -124,8 +125,10 @@ const ViewAdmin = () => {
           } catch (error) {
             if(error.response && error.response.status===401){
               window.location.href="/unauthorized"
-            }
+            }else{
             console.error('Error fetching data:', error);
+            throw error
+            }
           }
         };
     
@@ -150,8 +153,10 @@ const ViewAdmin = () => {
         } catch (error) {
           if (error.response && error.response.status === 401) {
             window.location.href = "/unauthorized";
-          }
+          }else{
           console.error('Error fetching data:', error);
+          throw error
+          }
         }
       };
     
@@ -249,12 +254,13 @@ const ViewAdmin = () => {
                   text: 'Admin not found'
                 });
               } else {
-                MySwal.fire({
-                  icon: 'error',
-                  title: 'ERROR',
-                  text: 'Error Deactivating Admin'
-                });
+                // MySwal.fire({
+                //   icon: 'error',
+                //   title: 'ERROR',
+                //   text: 'Error Deactivating Admin'
+                // });
                 console.error('Error during deactivation:', error); // Log detailed error for debugging
+                throw error
               }
             }
           }
@@ -302,11 +308,12 @@ const ViewAdmin = () => {
                   text: 'Admin not found'
               });
               }else{
-              MySwal.fire({
-                icon: 'error',
-                title: 'ERROR',
-                text: 'Error  Activated Admin'
-            });
+            //   MySwal.fire({
+            //     icon: 'error',
+            //     title: 'ERROR',
+            //     text: 'Error  Activated Admin'
+            // });
+            throw error
             }
           }
           } 

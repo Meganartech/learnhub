@@ -54,6 +54,7 @@ const NavBar = ({ setSearchQuery,searchQuery,handleSearchChange ,handleSidebarTo
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+        throw error
       }
     };
 
@@ -76,6 +77,7 @@ const fetchUnreadCount = async () => {
   }
   } catch (error) {
     console.error("Error fetching unread count:", error);
+    throw error
   }
 };
 useEffect(() => {
@@ -101,6 +103,7 @@ const handlemarkallasRead =async (notificationIds)=>{
     }
   }catch (error) {
     console.error("Error fetching unread count:", error);
+    throw error
   }
  }
 
@@ -138,12 +141,13 @@ const handlemarkallasRead =async (notificationIds)=>{
           }
          
         } catch (error) {
-          MySwal.fire({
-            title: "Error!",
-            text: "An error occurred while logging out. Please try again later.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: "An error occurred while logging out. Please try again later.",
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
+          throw error
         }
       }
     });

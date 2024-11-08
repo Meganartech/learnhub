@@ -44,6 +44,7 @@ const Dashboard = () => {
         setIsvalid(data.valid);
       } catch (error) {
         console.error("Error fetching data:", error);
+        throw error
       }
     };
 
@@ -53,7 +54,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/course/countcourse`, {
+        const response = await axios.get(`${baseUrl}/triggerError`, {
           headers: {
             Authorization: token,
           },
@@ -69,11 +70,12 @@ const Dashboard = () => {
           window.location.href = "/unauthorized";
           return;
         }
-        MySwal.fire({
-          icon: "error",
-          title: "Some Error Occurred",
-          text: error.message,
-        });
+        // MySwal.fire({
+        //   icon: "error",
+        //   title: "Some Error Occurred",
+        //   text: error.message,
+        // });
+        throw error
       }
     };
     const fetchpopularcourse = async () => {
@@ -96,11 +98,12 @@ const Dashboard = () => {
           window.location.href = "/unauthorized";
           return;
         }
-        MySwal.fire({
-          icon: "error",
-          title: "Some Error Occurred",
-          text: error.message,
-        });
+        // MySwal.fire({
+        //   icon: "error",
+        //   title: "Some Error Occurred",
+        //   text: error.message,
+        // });
+        throw error
       }
     };
 

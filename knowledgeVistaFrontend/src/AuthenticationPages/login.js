@@ -30,6 +30,7 @@ const Login = () => {
         }
       } catch (error) {
         console.log(error);
+        throw error
       }
     };
   
@@ -44,6 +45,7 @@ const Login = () => {
         }
       } catch (error) {
         console.error(error);
+        throw error
       }
     };
   
@@ -55,6 +57,7 @@ const Login = () => {
         setclient_id(client.data);
       } catch (error) {
         console.log(error);
+        throw error
       }
     };
   
@@ -125,11 +128,12 @@ const Login = () => {
         window.location.href = "/RegisterInstitute";
       }
     } catch (error) {
-      MySwal.fire({
-        icon: "error",
-        title: "Some Error Occurred",
-        text: error.message,
-      });
+      // MySwal.fire({
+      //   icon: "error",
+      //   title: "Some Error Occurred",
+      //   text: error.message,
+      // });
+      throw error
     }
   };
 
@@ -231,11 +235,12 @@ const Login = () => {
           });
         }
       } else {
-        MySwal.fire({
-          title: "Error Occured!",
-          text: "An error occurred while logging in. Please try again later.",
-          icon: "error",
-        });
+        // MySwal.fire({
+        //   title: "Error Occured!",
+        //   text: "An error occurred while logging in. Please try again later.",
+        //   icon: "error",
+        // });
+        throw error
       }
     }
   };

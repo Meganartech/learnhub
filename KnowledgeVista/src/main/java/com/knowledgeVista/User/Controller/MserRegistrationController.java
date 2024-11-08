@@ -13,6 +13,9 @@ import com.knowledgeVista.User.Repository.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -47,6 +50,9 @@ public class MserRegistrationController {
 	    private String activeProfile;
 	 @Value("${base.url}")
 	    private String baseUrl;
+	 
+	 private static final Logger logger = LoggerFactory.getLogger(MserRegistrationController.class);
+
 	
 	 public Long countadmin() {
 		 return muserrepositories.countByRoleName("ADMIN");
@@ -92,6 +98,7 @@ public class MserRegistrationController {
 	                
 	            } catch (IOException e) {
 	                e.printStackTrace();
+	                logger.error("", e);
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 	            }
 	            }
@@ -137,6 +144,7 @@ public class MserRegistrationController {
 	            }
 	    } catch (Exception e) {
 	        e.printStackTrace();
+	        logger.error("", e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
 	    }
 	}
@@ -187,6 +195,7 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	                
 	            } catch (IOException e) {
 	                e.printStackTrace();
+	                logger.error("", e);
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 	            }
 	            }
@@ -199,6 +208,7 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 		
 	 } catch (Exception e) {
 	        e.printStackTrace();
+	        logger.error("", e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
 	    }
 }
@@ -250,6 +260,7 @@ user.setProfile(profile.getBytes());
 
 } catch (IOException e) {
 e.printStackTrace();
+logger.error("", e);
 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 }
 }
@@ -262,6 +273,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
 
 } catch (Exception e) {
 e.printStackTrace();
+logger.error("", e);
 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
 }
 }
@@ -304,7 +316,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
 	    } catch (Exception e) {
 	        // Log the exception for debugging and auditing purposes
 	        e.printStackTrace(); // Consider using a proper logging framework in production code
-
+	        logger.error("", e);
 	        // Return a 500 internal server error response
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .contentType(MediaType.APPLICATION_JSON)
@@ -351,6 +363,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
 	        } catch (Exception e) {
 	            // Log any other exceptions for debugging purposes
 	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            logger.error("", e);
 	            // Return an internal server error response
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
@@ -397,6 +410,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
 	            }
 	        } catch (Exception e) {
 	            e.printStackTrace(); 
+	            logger.error("", e);
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
@@ -443,6 +457,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
     }
 } catch (Exception e) {
     e.printStackTrace(); 
+    logger.error("", e);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 }
 	 
@@ -484,6 +499,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
         } catch (Exception e) {
             // Log any other exceptions for debugging purposes
             e.printStackTrace(); // You can replace this with logging framework like Log4j
+            logger.error("", e);
             // Return an internal server error response
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

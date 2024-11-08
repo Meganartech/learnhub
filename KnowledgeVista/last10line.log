@@ -1,0 +1,791 @@
+2024-11-08 15:39:27 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-11-08 15:39:27 [Thread-39] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:39:27 [Thread-39] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-10 - Shutdown initiated...
+2024-11-08 15:39:27 [Thread-39] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-10 - Shutdown completed.
+2024-11-08 15:39:27 [restartedMain] INFO  c.k.ElearningApplication - Starting ElearningApplication using Java 17.0.12 with PID 1464 (E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista\target\classes started by User in E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista)
+2024-11-08 15:39:27 [restartedMain] INFO  c.k.ElearningApplication - No active profile set, falling back to 1 default profile: "default"
+2024-11-08 15:39:27 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-08 15:39:27 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 98 ms. Found 31 JPA repository interfaces.
+2024-11-08 15:39:28 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2024-11-08 15:39:28 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-11-08 15:39:28 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2024-11-08 15:39:28 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-11-08 15:39:28 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 606 ms
+2024-11-08 15:39:28 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-08 15:39:28 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-11-08 15:39:28 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-08 15:39:28 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-11 - Starting...
+2024-11-08 15:39:28 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-11 - Added connection org.postgresql.jdbc.PgConnection@63af2272
+2024-11-08 15:39:28 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-11 - Start completed.
+2024-11-08 15:39:28 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-08 15:39:28 [restartedMain] INFO  o.h.m.i.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: com.knowledgeVista.Settings.Feedback (class must be instantiated by Interceptor)
+2024-11-08 15:39:28 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-08 15:39:28 [restartedMain] INFO  o.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@174f863a] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2024-11-08 15:39:28 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:39:29 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-08 15:39:30 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-11-08 15:39:30 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2024-11-08 15:39:30 [restartedMain] INFO  c.k.ElearningApplication - Started ElearningApplication in 2.783 seconds (process running for 1822.072)
+2024-11-08 15:39:30 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2024-11-08 15:39:35 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-08 15:39:35 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-11-08 15:39:35 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 9 ms
+2024-11-08 15:39:35 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:39:35 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-4] ERROR com.knowledgeVista.FrontController - 
+java.lang.Exception: This is a simulated exception for testing purposes.
+	at com.knowledgeVista.FrontController.causeException(FrontController.java:1243) ~[classes/:na]
+	at com.knowledgeVista.FrontController.triggerError(FrontController.java:1229) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:351) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor.invoke(AfterReturningAdviceInterceptor.java:57) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke(MethodBeforeAdviceInterceptor.java:58) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:717) ~[spring-aop-6.1.3.jar:6.1.3]
+	at com.knowledgeVista.FrontController$$SpringCGLIB$$0.triggerError(<generated>) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:261) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:189) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:917) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:829) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.18.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.18.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+2024-11-08 15:39:35 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-3] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:35 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@2273d724,[]>
+2024-11-08 15:39:35 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:39:35 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:39:35 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:39:35 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:39:35 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:39:35 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:39:35 [http-nio-8080-exec-10] ERROR com.knowledgeVista.FrontController - 
+java.lang.Exception: This is a simulated exception for testing purposes.
+	at com.knowledgeVista.FrontController.causeException(FrontController.java:1243) ~[classes/:na]
+	at com.knowledgeVista.FrontController.triggerError(FrontController.java:1229) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:351) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor.invoke(AfterReturningAdviceInterceptor.java:57) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke(MethodBeforeAdviceInterceptor.java:58) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:717) ~[spring-aop-6.1.3.jar:6.1.3]
+	at com.knowledgeVista.FrontController$$SpringCGLIB$$0.triggerError(<generated>) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:261) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:189) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:917) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:829) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.18.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.18.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+2024-11-08 15:39:35 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:39:35 [http-nio-8080-exec-8] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:35 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@8cc459e,[]>
+2024-11-08 15:39:35 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:39:35 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:39:35 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-5] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:35 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@4b3fe030,[]>
+2024-11-08 15:39:35 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-1] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:35 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@7eafa0b9,[]>
+2024-11-08 15:39:35 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-3] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:35 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@45c25e80,[]>
+2024-11-08 15:39:35 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:35 [http-nio-8080-exec-2] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:35 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@779a63b1,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-2] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:55 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@672f4f7d,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:39:55 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-9] ERROR com.knowledgeVista.FrontController - 
+java.lang.Exception: This is a simulated exception for testing purposes.
+	at com.knowledgeVista.FrontController.causeException(FrontController.java:1243) ~[classes/:na]
+	at com.knowledgeVista.FrontController.triggerError(FrontController.java:1229) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:351) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor.invoke(AfterReturningAdviceInterceptor.java:57) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke(MethodBeforeAdviceInterceptor.java:58) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:717) ~[spring-aop-6.1.3.jar:6.1.3]
+	at com.knowledgeVista.FrontController$$SpringCGLIB$$0.triggerError(<generated>) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:261) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:189) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:917) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:829) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.18.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.18.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+2024-11-08 15:39:55 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:39:55 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:39:55 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-5] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:55 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@533784,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:39:55 [http-nio-8080-exec-10] ERROR com.knowledgeVista.FrontController - 
+java.lang.Exception: This is a simulated exception for testing purposes.
+	at com.knowledgeVista.FrontController.causeException(FrontController.java:1243) ~[classes/:na]
+	at com.knowledgeVista.FrontController.triggerError(FrontController.java:1229) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:351) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor.invoke(AfterReturningAdviceInterceptor.java:57) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke(MethodBeforeAdviceInterceptor.java:58) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.3.jar:6.1.3]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:717) ~[spring-aop-6.1.3.jar:6.1.3]
+	at com.knowledgeVista.FrontController$$SpringCGLIB$$0.triggerError(<generated>) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:261) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:189) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:917) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:829) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.18.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.3.jar:6.1.3]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.18.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.3.jar:6.1.3]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.18.jar:10.1.18]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+2024-11-08 15:39:55 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:39:55 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:39:55 [http-nio-8080-exec-2] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:55 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@6ada4f98,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-1] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:55 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@61aa5c7e,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-7] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:55 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@3d4dd09c,[]>
+2024-11-08 15:39:55 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:39:55 [http-nio-8080-exec-9] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:39:55 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@86263fc,[]>
+2024-11-08 15:40:47 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-11-08 15:40:47 [Thread-43] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:40:47 [Thread-43] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-11 - Shutdown initiated...
+2024-11-08 15:40:47 [Thread-43] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-11 - Shutdown completed.
+2024-11-08 15:40:48 [restartedMain] INFO  c.k.ElearningApplication - Starting ElearningApplication using Java 17.0.12 with PID 1464 (E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista\target\classes started by User in E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista)
+2024-11-08 15:40:48 [restartedMain] INFO  c.k.ElearningApplication - No active profile set, falling back to 1 default profile: "default"
+2024-11-08 15:40:48 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-08 15:40:48 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 81 ms. Found 31 JPA repository interfaces.
+2024-11-08 15:40:48 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2024-11-08 15:40:48 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-11-08 15:40:48 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2024-11-08 15:40:48 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-11-08 15:40:48 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 616 ms
+2024-11-08 15:40:48 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-08 15:40:48 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-11-08 15:40:48 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-08 15:40:48 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-12 - Starting...
+2024-11-08 15:40:48 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-12 - Added connection org.postgresql.jdbc.PgConnection@2536c4d7
+2024-11-08 15:40:48 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-12 - Start completed.
+2024-11-08 15:40:48 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-08 15:40:48 [restartedMain] INFO  o.h.m.i.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: com.knowledgeVista.Settings.Feedback (class must be instantiated by Interceptor)
+2024-11-08 15:40:49 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-08 15:40:49 [restartedMain] INFO  o.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@669cbf9b] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2024-11-08 15:40:49 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:40:50 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-08 15:40:50 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-11-08 15:40:50 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2024-11-08 15:40:50 [restartedMain] INFO  c.k.ElearningApplication - Started ElearningApplication in 2.748 seconds (process running for 1902.541)
+2024-11-08 15:40:50 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2024-11-08 15:40:59 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-08 15:40:59 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-11-08 15:41:00 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 9 ms
+2024-11-08 15:41:00 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:41:00 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:41:00 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:41:00 [http-nio-8080-exec-1] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:41:00 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@2cf29ce0,[]>
+2024-11-08 15:41:00 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:41:00 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:41:00 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:41:00 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:41:00 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:41:00 [http-nio-8080-exec-8] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:41:00 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@40336a97,[]>
+2024-11-08 15:41:00 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:41:00 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:41:00 [http-nio-8080-exec-3] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:41:00 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@663e7a2,[]>
+2024-11-08 15:41:00 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-5] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:41:00 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@4eaea9bc,[]>
+2024-11-08 15:41:00 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-1] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:41:00 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@41727eb4,[]>
+2024-11-08 15:41:00 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:41:00 [http-nio-8080-exec-2] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:41:00 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@4e0d90e5,[]>
+2024-11-08 15:43:51 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-11-08 15:43:51 [Thread-47] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:43:51 [Thread-47] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-12 - Shutdown initiated...
+2024-11-08 15:43:51 [Thread-47] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-12 - Shutdown completed.
+2024-11-08 15:43:51 [restartedMain] INFO  c.k.ElearningApplication - Starting ElearningApplication using Java 17.0.12 with PID 1464 (E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista\target\classes started by User in E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista)
+2024-11-08 15:43:51 [restartedMain] INFO  c.k.ElearningApplication - No active profile set, falling back to 1 default profile: "default"
+2024-11-08 15:43:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-08 15:43:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 71 ms. Found 31 JPA repository interfaces.
+2024-11-08 15:43:51 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2024-11-08 15:43:51 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-11-08 15:43:51 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2024-11-08 15:43:51 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-11-08 15:43:51 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 572 ms
+2024-11-08 15:43:51 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-08 15:43:51 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-11-08 15:43:51 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-08 15:43:51 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-13 - Starting...
+2024-11-08 15:43:51 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-13 - Added connection org.postgresql.jdbc.PgConnection@299b8c5f
+2024-11-08 15:43:51 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-13 - Start completed.
+2024-11-08 15:43:51 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-08 15:43:52 [restartedMain] INFO  o.h.m.i.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: com.knowledgeVista.Settings.Feedback (class must be instantiated by Interceptor)
+2024-11-08 15:43:52 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-08 15:43:52 [restartedMain] INFO  o.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@592cb2bd] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2024-11-08 15:43:52 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:43:53 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-08 15:43:53 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-11-08 15:43:53 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2024-11-08 15:43:53 [restartedMain] INFO  c.k.ElearningApplication - Started ElearningApplication in 2.564 seconds (process running for 2085.521)
+2024-11-08 15:43:53 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2024-11-08 15:44:12 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-11-08 15:44:12 [Thread-51] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:44:12 [Thread-51] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-13 - Shutdown initiated...
+2024-11-08 15:44:12 [Thread-51] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-13 - Shutdown completed.
+2024-11-08 15:44:12 [restartedMain] INFO  c.k.ElearningApplication - Starting ElearningApplication using Java 17.0.12 with PID 1464 (E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista\target\classes started by User in E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista)
+2024-11-08 15:44:12 [restartedMain] INFO  c.k.ElearningApplication - No active profile set, falling back to 1 default profile: "default"
+2024-11-08 15:44:13 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-08 15:44:13 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 71 ms. Found 31 JPA repository interfaces.
+2024-11-08 15:44:13 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2024-11-08 15:44:13 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-11-08 15:44:13 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2024-11-08 15:44:13 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-11-08 15:44:13 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 524 ms
+2024-11-08 15:44:13 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-08 15:44:13 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-11-08 15:44:13 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-08 15:44:13 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-14 - Starting...
+2024-11-08 15:44:13 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-14 - Added connection org.postgresql.jdbc.PgConnection@6afbc71a
+2024-11-08 15:44:13 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-14 - Start completed.
+2024-11-08 15:44:13 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-08 15:44:13 [restartedMain] INFO  o.h.m.i.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: com.knowledgeVista.Settings.Feedback (class must be instantiated by Interceptor)
+2024-11-08 15:44:13 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-08 15:44:13 [restartedMain] INFO  o.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@66e18e14] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2024-11-08 15:44:14 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:44:15 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-08 15:44:15 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-11-08 15:44:15 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2024-11-08 15:44:15 [restartedMain] INFO  c.k.ElearningApplication - Started ElearningApplication in 2.693 seconds (process running for 2107.207)
+2024-11-08 15:44:15 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2024-11-08 15:44:24 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-08 15:44:24 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-11-08 15:44:24 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 5 ms
+2024-11-08 15:44:24 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:44:24 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:44:24 [http-nio-8080-exec-2] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:44:24 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:44:24 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:44:24 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@c8fc601,[]>
+2024-11-08 15:44:24 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:44:24 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:44:24 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:44:24 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:44:24 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:44:24 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:44:24 [http-nio-8080-exec-10] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:44:24 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@489f3c4d,[]>
+2024-11-08 15:44:24 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-4] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:44:24 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@19d2ad1d,[]>
+2024-11-08 15:44:24 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-5] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:44:24 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@4f167f14,[]>
+2024-11-08 15:44:24 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-6] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:44:24 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@7948b11f,[]>
+2024-11-08 15:44:24 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:44:24 [http-nio-8080-exec-1] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:44:24 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@412ba777,[]>
+2024-11-08 15:46:56 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-11-08 15:46:56 [Thread-55] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:46:56 [Thread-55] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-14 - Shutdown initiated...
+2024-11-08 15:46:56 [Thread-55] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-14 - Shutdown completed.
+2024-11-08 15:46:56 [restartedMain] INFO  c.k.ElearningApplication - Starting ElearningApplication using Java 17.0.12 with PID 1464 (E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista\target\classes started by User in E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista)
+2024-11-08 15:46:56 [restartedMain] INFO  c.k.ElearningApplication - No active profile set, falling back to 1 default profile: "default"
+2024-11-08 15:46:56 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-08 15:46:56 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 76 ms. Found 31 JPA repository interfaces.
+2024-11-08 15:46:56 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2024-11-08 15:46:56 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-11-08 15:46:56 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2024-11-08 15:46:56 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-11-08 15:46:56 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 507 ms
+2024-11-08 15:46:56 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-08 15:46:56 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-11-08 15:46:56 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-08 15:46:56 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-15 - Starting...
+2024-11-08 15:46:56 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-15 - Added connection org.postgresql.jdbc.PgConnection@360137bc
+2024-11-08 15:46:56 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-15 - Start completed.
+2024-11-08 15:46:57 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-08 15:46:57 [restartedMain] INFO  o.h.m.i.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: com.knowledgeVista.Settings.Feedback (class must be instantiated by Interceptor)
+2024-11-08 15:46:57 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-08 15:46:57 [restartedMain] INFO  o.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@7774b2fe] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2024-11-08 15:46:57 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:46:58 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-08 15:46:58 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-11-08 15:46:58 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2024-11-08 15:46:58 [restartedMain] INFO  c.k.ElearningApplication - Started ElearningApplication in 2.346 seconds (process running for 2270.478)
+2024-11-08 15:46:58 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2024-11-08 15:47:07 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-08 15:47:07 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-11-08 15:47:07 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2024-11-08 15:47:07 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:47:07 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:47:07 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:47:07 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:47:07 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:47:07 [http-nio-8080-exec-2] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:47:07 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:47:07 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@41cc1ede,[]>
+2024-11-08 15:47:07 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:47:07 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:47:07 [http-nio-8080-exec-10] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:47:07 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@5e09455a,[]>
+2024-11-08 15:47:07 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:47:07 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:47:07 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-4] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:47:07 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@117e12c8,[]>
+2024-11-08 15:47:07 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-5] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:47:07 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@5018c730,[]>
+2024-11-08 15:47:07 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-3] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:47:07 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@112dc6cb,[]>
+2024-11-08 15:47:07 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:47:07 [http-nio-8080-exec-6] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:47:07 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@4a491f97,[]>
+2024-11-08 15:47:55 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-11-08 15:47:55 [Thread-59] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:47:55 [Thread-59] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-15 - Shutdown initiated...
+2024-11-08 15:47:55 [Thread-59] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-15 - Shutdown completed.
+2024-11-08 15:47:55 [restartedMain] INFO  c.k.ElearningApplication - Starting ElearningApplication using Java 17.0.12 with PID 1464 (E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista\target\classes started by User in E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista)
+2024-11-08 15:47:55 [restartedMain] INFO  c.k.ElearningApplication - No active profile set, falling back to 1 default profile: "default"
+2024-11-08 15:47:55 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-08 15:47:56 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 81 ms. Found 31 JPA repository interfaces.
+2024-11-08 15:47:56 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2024-11-08 15:47:56 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-11-08 15:47:56 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2024-11-08 15:47:56 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-11-08 15:47:56 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 540 ms
+2024-11-08 15:47:56 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-08 15:47:56 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-11-08 15:47:56 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-08 15:47:56 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-16 - Starting...
+2024-11-08 15:47:56 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-16 - Added connection org.postgresql.jdbc.PgConnection@70d30751
+2024-11-08 15:47:56 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-16 - Start completed.
+2024-11-08 15:47:56 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-08 15:47:56 [restartedMain] INFO  o.h.m.i.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: com.knowledgeVista.Settings.Feedback (class must be instantiated by Interceptor)
+2024-11-08 15:47:56 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-08 15:47:56 [restartedMain] INFO  o.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@4b7ffe34] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2024-11-08 15:47:56 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:47:57 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-08 15:47:58 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-11-08 15:47:58 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2024-11-08 15:47:58 [restartedMain] INFO  c.k.ElearningApplication - Started ElearningApplication in 2.447 seconds (process running for 2329.898)
+2024-11-08 15:47:58 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2024-11-08 15:48:05 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-08 15:48:05 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-11-08 15:48:05 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 5 ms
+2024-11-08 15:48:05 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:48:05 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:48:05 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:48:05 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:48:05 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:48:05 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:48:05 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:48:05 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-1] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:48:05 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:48:05 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:48:05 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@58af8fe1,[]>
+2024-11-08 15:48:05 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:48:05 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-10] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:48:05 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@74f9b829,[]>
+2024-11-08 15:48:05 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-4] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:48:05 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@42009729,[]>
+2024-11-08 15:48:05 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-5] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:48:05 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@3285b2dc,[]>
+2024-11-08 15:48:05 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-2] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:48:05 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@779bfa18,[]>
+2024-11-08 15:48:05 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:48:05 [http-nio-8080-exec-3] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:48:05 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@25ef0544,[]>
+2024-11-08 15:49:31 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2024-11-08 15:49:32 [Thread-63] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:49:32 [Thread-63] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-16 - Shutdown initiated...
+2024-11-08 15:49:32 [Thread-63] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-16 - Shutdown completed.
+2024-11-08 15:49:32 [restartedMain] INFO  c.k.ElearningApplication - Starting ElearningApplication using Java 17.0.12 with PID 1464 (E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista\target\classes started by User in E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista)
+2024-11-08 15:49:32 [restartedMain] INFO  c.k.ElearningApplication - No active profile set, falling back to 1 default profile: "default"
+2024-11-08 15:49:32 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-08 15:49:32 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 80 ms. Found 31 JPA repository interfaces.
+2024-11-08 15:49:32 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2024-11-08 15:49:32 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-11-08 15:49:32 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2024-11-08 15:49:32 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-11-08 15:49:32 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 547 ms
+2024-11-08 15:49:32 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-08 15:49:32 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-11-08 15:49:32 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-08 15:49:32 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-17 - Starting...
+2024-11-08 15:49:32 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-17 - Added connection org.postgresql.jdbc.PgConnection@6536073d
+2024-11-08 15:49:32 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-17 - Start completed.
+2024-11-08 15:49:32 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-08 15:49:33 [restartedMain] INFO  o.h.m.i.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: com.knowledgeVista.Settings.Feedback (class must be instantiated by Interceptor)
+2024-11-08 15:49:33 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-08 15:49:33 [restartedMain] INFO  o.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@617b2024] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2024-11-08 15:49:33 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 15:49:34 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-08 15:49:34 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-11-08 15:49:34 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2024-11-08 15:49:34 [restartedMain] INFO  c.k.ElearningApplication - Started ElearningApplication in 2.629 seconds (process running for 2426.504)
+2024-11-08 15:49:34 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:49:41 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:49:41 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:49:41 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Entering method: triggerError with arguments: []
+2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:49:41 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-2] INFO  com.knowledgeVista.LoggingAspect - Exiting method: triggerError with result: <500 INTERNAL_SERVER_ERROR Internal Server Error,java.lang.Exception: This is a simulated exception for testing purposes.,[]>
+2024-11-08 15:49:41 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-3] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:49:41 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Entering method: UreadCount with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Entering method: popular with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-3] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@2dc79486,[]>
+2024-11-08 15:49:41 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Entering method: viewCourse with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-7] INFO  com.knowledgeVista.LoggingAspect - Exiting method: UreadCount with result: <200 OK OK,0,[]>
+2024-11-08 15:49:41 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-9] INFO  com.knowledgeVista.LoggingAspect - Exiting method: viewCourse with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:49:41 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-8] INFO  com.knowledgeVista.LoggingAspect - Exiting method: popular with result: <200 OK OK,[],[Content-Type:"application/json"]>
+2024-11-08 15:49:41 [http-nio-8080-exec-10] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:49:41 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-10] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@3b94c7c2,[]>
+2024-11-08 15:49:41 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-4] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:49:41 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-4] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@16addaed,[]>
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-1] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@7fc6d5ad,[]>
+2024-11-08 15:49:41 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-6] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:49:41 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-6] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@314cd3c8,[]>
+2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - AOP-before
+2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Entering method: getAllUserforLicencecheck with arguments: [eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTczMTEzMDg5N30.lk6kwSV4EQeLQWOLz0Cb03hFkszUBE79VAsLiDeUGBQ]
+2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  c.k.License.LicenseController - License is Validtrue
+2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - AOP- after
+2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@5f394c0b,[]>

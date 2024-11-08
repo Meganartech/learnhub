@@ -36,6 +36,7 @@ import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.DocsDetailRepo;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
+import com.knowledgeVista.Course.Test.controller.QuestionController;
 import com.knowledgeVista.FileService.PPTReader;
 import com.knowledgeVista.FileService.VideoFileService;
 import com.knowledgeVista.License.licenseRepository;
@@ -48,8 +49,9 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 @CrossOrigin
 public class videolessonController {
+	
+	 private static final Logger logger = LoggerFactory.getLogger(videolessonController.class);
 
-	private Logger logger = LoggerFactory.getLogger(videolessonController.class);
 	@Autowired
 	private MuserRepositories muserRepo;
 
@@ -212,7 +214,7 @@ public class videolessonController {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("{\"error\": \"Failed to save note: " + e.getMessage() + "\"}");
 		}
@@ -376,7 +378,7 @@ public class videolessonController {
 	                return ResponseEntity.notFound().build();
 	            }
 	        } catch (Exception e) {
-	            e.printStackTrace();
+	            e.printStackTrace();    logger.error("", e);;
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    } else {
@@ -426,7 +428,7 @@ public ResponseEntity<?>getDocFile(String fileName, int slideNumber,String token
 
 	} catch (Exception e) {
 		// Log the exception (you can use a proper logging library)
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
 		// Return an internal server error response
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
@@ -453,7 +455,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 		}
 	}catch (Exception e) {
 		// Log the exception (you can use a proper logging library)
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
 		// Return an internal server error response
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
@@ -491,7 +493,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 
 		} catch (Exception e) {
 			// Log the exception (you can use a proper logging library)
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			// Return an internal server error response
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -637,7 +639,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 					}
 				} catch (Exception e) {
 					// Handle exceptions
-					e.printStackTrace();
+					e.printStackTrace();    logger.error("", e);;
 				}
 
 				// Return a 404 Not Found response if the file does not exist
@@ -648,7 +650,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 			}
 		} catch (Exception e) {
 			// Log the exception (you can use a proper logging library)
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			// Return an internal server error response
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -695,7 +697,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -749,7 +751,7 @@ public ResponseEntity<?>getDocsName(Long lessonId , String token){
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user Not Found");
 		}
 	}catch (Exception e) {
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
@@ -802,7 +804,7 @@ public ResponseEntity<?>getMiniatureDetails(Long lessonId,Long Id , String token
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user Not Found");
 		}
 	}catch (Exception e) {
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
@@ -868,7 +870,7 @@ public ResponseEntity<?>getMiniatureDetails(Long lessonId,Long Id , String token
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 

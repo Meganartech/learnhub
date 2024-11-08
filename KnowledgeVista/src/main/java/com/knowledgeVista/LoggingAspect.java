@@ -22,18 +22,22 @@ public class LoggingAspect {
     // Log the request before the method execution
     @Before("frontControllerMethods()")
     public void logBefore(JoinPoint joinPoint) {
+    	logger.info("AOP-before");
         logger.info("Entering method: {} with arguments: {}", joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
     // Log the response after the method execution
     @AfterReturning(pointcut = "frontControllerMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
+    	logger.info("AOP- after");
         logger.info("Exiting method: {} with result: {}", joinPoint.getSignature().getName(), result);
     }
 
     // Log exceptions thrown by the method
     @AfterThrowing(pointcut = "frontControllerMethods()", throwing = "exception")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
+    	logger.info("AOP");
+    	exception.printStackTrace();
         logger.error("Exception in method: {} with message: {}", joinPoint.getSignature().getName(), exception.getMessage(), exception);
     }
 }
