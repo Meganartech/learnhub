@@ -34,6 +34,7 @@ public class EmailController {
 	  	 private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
 
 		 
+
 		 @GetMapping("/logs")
          private ResponseEntity<?> sendlogfile() {
              try {
@@ -50,6 +51,7 @@ public class EmailController {
                  return null;
              }
          }
+
 	  public ResponseEntity<?> sendMail( String token, EmailRequest emailRequest) {
 	      try {
 	    	  if (!jwtUtil.validateToken(token)) {

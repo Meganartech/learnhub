@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from 'axios';
 import baseUrl from '../api/utils';
-
+import googleicon from "../images/google.png"
 const SocialLoginKeysAdmin = () => {
     const MySwal = withReactContent(Swal); 
     const token=sessionStorage.getItem("token")
@@ -145,7 +145,7 @@ const SocialLoginKeysAdmin = () => {
       <div>
        
           <div className='innerFrameforset '>
-         <h4 className='mb-2' style={{ textDecoration: "underline" }}>Google Login Settings</h4>
+         <h4 className='mb-2' style={{ textDecoration: "underline" }}>  Google Login Settings</h4>
         
           <div className='formgroup pt-4' >
            
@@ -203,7 +203,7 @@ const SocialLoginKeysAdmin = () => {
       const EditInputs=(  <div>
        
          <div className='innerFrameforset '>
-        <h4 className='mb-2' style={{ textDecoration: "underline" }}>Google Login Settings</h4>
+        <h4 className='mb-2' style={{ textDecoration: "underline" }}> Google Login Settings</h4>
        
          <div className='formgroup pt-4' >
           

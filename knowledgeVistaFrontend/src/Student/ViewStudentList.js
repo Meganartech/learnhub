@@ -146,8 +146,7 @@ const ViewStudentList = () => {
         start: currentPage * itemsperpage + 1,
         end: currentPage * itemsperpage + itemsperpage,
         total: data.totalElements,
-      })); // Update total pages
-      console.log(data.totalPages);
+      })); 
     } catch (error) {
       if (error.response && error.response.status === 401) {
         window.location.href = "/unauthorized";
@@ -497,17 +496,18 @@ const ViewStudentList = () => {
                   <th scope="row">
                     {currentPage * itemsperpage + (index + 1)}
                   </th>
-                  <td className="py-2"> {user.username}</td>
-                  <Link
-                    to={`/view/Student/profile/${user.email}`}
-                    state={{ user }} // Pass user details in state
-                  >
+                  <td className="py-2"> {user.username}</td>{" "}
+                  <td className="py-2">
                     {" "}
-                    <td className="py-2">{user.email}</td>
-                  </Link>
+                    <Link
+                      to={`/view/Student/profile/${user.email}`}
+                      state={{ user }} // Pass user details in state
+                    >
+                      {user.email}{" "}
+                    </Link>
+                  </td>
                   <td className="py-2">{user.phone}</td>
                   <td className="py-2">{user.skills}</td>
-
                   <td className="py-2">{user.dob}</td>
                   <td className="py-2">
                     {user.isActive === true ? (
@@ -529,7 +529,6 @@ const ViewStudentList = () => {
                       <i className="fas fa-edit"></i>
                     </Link>
                   </td>
-
                   <td className="text-center">
                     <Link
                       to={`/assignCourse/Student/${user.userId}`}

@@ -4,12 +4,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-/* Set default font family and size */
-body {
-  font-family: Arial, sans-serif; /* Example font family */
-  font-size: 1.125rem;
-  color: rgb(0, 0, 0); /* Example font size */
-}
+
 input::placeholder {
   font-size: 1.125rem; /* e.g., 14px, 1rem */
 }
@@ -105,7 +100,7 @@ border-right: 1px solid white
 }
 .mybtn{
   min-width:100px;
-  max-width: 125px;
+  max-width: 150px;
   height: 40px;
 }
 .tableheader{
@@ -383,11 +378,7 @@ height: 70vh;
 
 @media screen and (max-width: 480px) {
 
-body {
-  font-family: Arial, sans-serif; /* Example font family */
-  font-size: 0.9rem;
-  color: rgb(0, 0, 0); /* Example font size */
-}
+
 .outermini{
   display: none;
 }

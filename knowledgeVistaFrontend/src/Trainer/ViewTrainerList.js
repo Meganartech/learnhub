@@ -112,7 +112,6 @@ const handleChange = (e) => {
               }
             });
             const data = response.data;
-            console.log("page data",data)
             setUsers(data.content); 
              setTotalPages(data.totalPages);
             setdatacounts((prev)=>({

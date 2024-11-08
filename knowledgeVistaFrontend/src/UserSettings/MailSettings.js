@@ -6,7 +6,7 @@ import baseUrl from "../api/utils"
 import axios from 'axios';
 
 const MailSettings = () => {
- 
+ const navigate=useNavigate();
 const[initialsave,setinitialsave]=useState(false);
   const MySwal = withReactContent(Swal); 
   const token=sessionStorage.getItem("token")
@@ -152,10 +152,15 @@ setsettings((prev)=>({
   }
 
   const getinputs=(
-  <div>
+    <div>
+    <div className='navigateheaders'>
+     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+     <div></div>
+     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+     </div>
    
      <div className='innerFrameforset '>
- <h4 className='mb-2' style={{ textDecoration: "underline" }}>Mail Settings</h4>
+ <h2 className='mb-5' style={{ textDecoration: "underline" }}>Mail Settings</h2>
    
      <div className='formgroup pt-4' >
       
@@ -244,10 +249,14 @@ setsettings((prev)=>({
  </div>
  </div>) 
    const defaultinputs=(
-   <div>
-  
+    <div>
+    <div className='navigateheaders'>
+     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+     <div></div>
+     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+     </div>
      <div className='innerFrameforset '>
- <h4 className='mb-2' style={{ textDecoration: "underline" }} >Mail Settings</h4>
+ <h2 className='mb-5' style={{ textDecoration: "underline" }} >Mail Settings</h2>
    
      <div className='formgroup pt-4' >
       
@@ -315,9 +324,11 @@ setsettings((prev)=>({
  </div>
  )
   return (
-   <>
+    <div className="contentbackground">
+      <div className="contentinner">
     {isnotFound ? getinputs: defaultinputs }
-    </>
+    </div>
+    </div>
   
 
   )
