@@ -75,7 +75,7 @@ public class CheckAccess {
 
 	     } catch (Exception e) {
 	         // Handle any exceptions
-	    	 e.printStackTrace();    logger.error("", e);;
+//	    	 e.printStackTrace();    logger.error("", e);;
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	     }
 	 }

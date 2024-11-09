@@ -12527,3 +12527,38 @@ java.lang.Exception: This is a simulated exception for testing purposes.
 2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  c.k.License.LicenseController - License is Validtrue
 2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - AOP- after
 2024-11-08 15:49:41 [http-nio-8080-exec-5] INFO  com.knowledgeVista.LoggingAspect - Exiting method: getAllUserforLicencecheck with result: <200 OK OK,com.knowledgeVista.License.UserListWithStatus@5f394c0b,[]>
+2024-11-08 16:17:27 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 3 class path changes (0 additions, 0 deletions, 3 modifications)
+2024-11-08 16:17:28 [Thread-67] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 16:17:28 [Thread-67] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-17 - Shutdown initiated...
+2024-11-08 16:17:28 [Thread-67] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-17 - Shutdown completed.
+2024-11-08 16:17:31 [restartedMain] INFO  c.k.ElearningApplication - Starting ElearningApplication using Java 17.0.12 with PID 1464 (E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista\target\classes started by User in E:\elearn\Elearning_v1_25_10_2024\Elearning_v1\KnowledgeVista)
+2024-11-08 16:17:31 [restartedMain] INFO  c.k.ElearningApplication - No active profile set, falling back to 1 default profile: "default"
+2024-11-08 16:17:33 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-08 16:17:33 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 163 ms. Found 31 JPA repository interfaces.
+2024-11-08 16:17:33 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2024-11-08 16:17:33 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-11-08 16:17:33 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.18]
+2024-11-08 16:17:33 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-11-08 16:17:33 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1741 ms
+2024-11-08 16:17:33 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-08 16:17:33 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-11-08 16:17:33 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-08 16:17:33 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-18 - Starting...
+2024-11-08 16:17:33 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-18 - Added connection org.postgresql.jdbc.PgConnection@21fa33a5
+2024-11-08 16:17:33 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-18 - Start completed.
+2024-11-08 16:17:33 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-08 16:17:34 [restartedMain] INFO  o.h.m.i.EntityInstantiatorPojoStandard - HHH000182: No default (no-argument) constructor for class: com.knowledgeVista.Settings.Feedback (class must be instantiated by Interceptor)
+2024-11-08 16:17:34 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-08 16:17:34 [restartedMain] INFO  o.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@ef50bd9] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2024-11-08 16:17:34 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 16:17:35 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-08 16:17:36 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-11-08 16:17:36 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2024-11-08 16:17:36 [restartedMain] INFO  c.k.ElearningApplication - Started ElearningApplication in 4.488 seconds (process running for 4107.953)
+2024-11-08 16:17:36 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2024-11-08 16:31:30 [HikariPool-18 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-18 - Thread starvation or clock leap detected (housekeeper delta=56s59ms380µs800ns).
+2024-11-08 17:16:15 [HikariPool-18 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-18 - Thread starvation or clock leap detected (housekeeper delta=3m44s438ms864µs300ns).
+2024-11-08 17:28:02 [RMI TCP Connection(137)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2024-11-08 17:28:02 [RMI TCP Connection(137)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-08 17:28:02 [RMI TCP Connection(137)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-18 - Shutdown initiated...
+2024-11-08 17:28:02 [RMI TCP Connection(137)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-18 - Shutdown completed.

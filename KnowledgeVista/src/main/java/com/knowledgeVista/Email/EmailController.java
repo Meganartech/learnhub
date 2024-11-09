@@ -35,22 +35,22 @@ public class EmailController {
 
 		 
 
-		 @GetMapping("/logs")
-         private ResponseEntity<?> sendlogfile() {
-             try {
-          	   List<String> to = Arrays.asList("akshayalatha786@gmail.com");
-     	        List<String> cc = new ArrayList<>(); // No CC
-     	        List<String> bcc = new ArrayList<>(); // No BCC
-     	        String subject = "Log";
-     	        String body = "Please find the attached log file.";
+		//  @GetMapping("/logs")
+        //  private ResponseEntity<?> sendlogfile() {
+        //      try {
+        //   	   List<String> to = Arrays.asList("akshayalatha786@gmail.com");
+     	//         List<String> cc = new ArrayList<>(); // No CC
+     	//         List<String> bcc = new ArrayList<>(); // No BCC
+     	//         String subject = "Log";
+     	//         String body = "Please find the attached log file.";
    	        
-     	        return emailService.sendHtmlEmail("Aks", to, cc, bcc, subject, body);
+     	//         return emailService.sendHtmlEmail("Aks", to, cc, bcc, subject, body);
    	          
-             } catch (Exception e) {
-            	 e.printStackTrace();    logger.error("", e);;
-                 return null;
-             }
-         }
+        //      } catch (Exception e) {
+        //     	 e.printStackTrace();    logger.error("", e);;
+        //          return null;
+        //      }
+        //  }
 
 	  public ResponseEntity<?> sendMail( String token, EmailRequest emailRequest) {
 	      try {

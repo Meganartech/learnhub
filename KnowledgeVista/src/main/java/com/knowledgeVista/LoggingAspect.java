@@ -36,7 +36,7 @@ public class LoggingAspect {
     // Log exceptions thrown by the method
     @AfterThrowing(pointcut = "frontControllerMethods()", throwing = "exception")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
-    	logger.info("AOP");
+    	logger.info("");
     	exception.printStackTrace();
         logger.error("Exception in method: {} with message: {}", joinPoint.getSignature().getName(), exception.getMessage(), exception);
     }
