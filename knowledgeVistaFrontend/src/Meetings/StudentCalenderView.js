@@ -56,11 +56,26 @@ const StudentCalenderView = () => {
       };
     }
   };
+  const handleEventClick = (event) => {
+    if (event.joinUrl) {
+        window.open(event.joinUrl, '_blank');
+    } else {
+        MySwal.fire({
+            title: 'No Join URL Available',
+            text: 'This event does not have a join URL associated with it.',
+            icon: 'info',
+        });
+    }
+};
 
   return (
-    <div className='contentbackground'>
-      <div className='contentinner'>
-        <div className="navigateheaders mb-3">
+    <div>
+    <div className="page-header"></div>
+    <div className='row'>
+      <div className='col-sm-12'>
+        <div className='card'>
+          <div className='card-header'>
+        <div className="navigateheaders ">
           <div onClick={() => navigate(-1)}>
             <i className="fa-solid fa-arrow-left"></i>
           </div>
@@ -69,6 +84,8 @@ const StudentCalenderView = () => {
             <i className="fa-solid fa-xmark"></i>
           </div>
         </div>
+        </div>
+        <div className='card-body'>
         <Calendar
           events={events}
           localizer={localizer}
@@ -76,8 +93,12 @@ const StudentCalenderView = () => {
           endAccessor="end"
           style={{ height: 500 }}
           eventPropGetter={eventStyleGetter}
+          onSelectEvent={handleEventClick}
         />
       </div>
+      </div>
+    </div>
+    </div>
     </div>
   );
 };

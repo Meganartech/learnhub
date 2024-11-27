@@ -44,7 +44,7 @@ const AddStudent = () => {
   const confirmPswRef = useRef(null);
   const skillsRef = useRef(null);
   const phoneRef = useRef(null);
-  
+
   const [defaultCountry, setDefaultCountry] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const fetchUserCountryCode = async () => {
@@ -129,7 +129,7 @@ const AddStudent = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
+
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
@@ -138,7 +138,6 @@ const AddStudent = () => {
     let error = "";
 
     switch (name) {
-     
       case "email":
         // This is a basic email validation, you can add more advanced validation if needed
         error = /^[^\s@]+@[^\s@]+\.com$/.test(value)
@@ -163,10 +162,12 @@ const AddStudent = () => {
             ? ""
             : "Please enter a valid date of birth";
         break;
-        case "psw":
-        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      case "psw":
+        const passwordRegex =
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(value)) {
-          error = "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+          error =
+            "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
         }
         break;
       case "confirm_password":
@@ -277,7 +278,7 @@ const AddStudent = () => {
         block: "nearest",
         inline: "start",
       });
-    } 
+    }
   };
 
   useEffect(() => {
@@ -319,7 +320,7 @@ const AddStudent = () => {
     formDataToSend.append("profile", formData.profile);
     formDataToSend.append("skills", formData.skills);
     formDataToSend.append("countryCode", formData.countryCode);
-     console.log("dob",formData.dob)
+    console.log("dob", formData.dob);
     try {
       const response = await axios.post(
         `${baseUrl}/admin/addStudent`,
@@ -336,10 +337,11 @@ const AddStudent = () => {
       if (response.status === 200) {
         MySwal.fire({
           title: "Added !",
-          text: `New ${displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        } Added successfully!`,
+          text: `New ${
+            displayname && displayname.student_name
+              ? displayname.student_name
+              : "Student"
+          } Added successfully!`,
           icon: "success",
           confirmButtonText: "OK",
         }).then((result) => {
@@ -357,7 +359,7 @@ const AddStudent = () => {
               ...prevErrors,
               email: "This email is already registered.",
             }));
-          } 
+          }
         } else if (errorData.status === 500) {
           MySwal.fire({
             title: "Server Error!",
@@ -368,10 +370,11 @@ const AddStudent = () => {
         } else if (errorData.status === 401) {
           MySwal.fire({
             title: "Un Authorized!",
-            text: `you are unable to Add a ${displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        }`,
+            text: `you are unable to Add a ${
+              displayname && displayname.student_name
+                ? displayname.student_name
+                : "Student"
+            }`,
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -388,228 +391,270 @@ const AddStudent = () => {
   };
 
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
-        <div className="innerFrame">
-          <h2 style={{ textDecoration: "underline" }}>Add {displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        }</h2>
-          <div className="mainform">
-            <div className="profile-picture">
-              <div className="image-group">
-                {formData.base64Image ? (
-                  <img
-                    src={formData.base64Image}
-                    alt="Selected Image"
-                    className="profile-picture"
-                  />
-                ) : (
-                  <img
-                    src={profile}
-                    alt="Default Profile Picture"
-                    className="prof"
-                  />
-                )}
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <label htmlFor="fileInput" className="file-upload-btn">
-                  Upload
-                </label>
-                <div className="text-danger"> {errors.profile}</div>
-                <input
-                  type="file"
-                  name="fileInput"
-                  id="fileInput"
-                  style={{ display: "none" }}
-                  className={`file-upload ${errors.fileInput && "is-invalid"}`}
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-              </div>
-            </div>
+    <div>
+      <div className="page-header"></div>
+      <div className="card">
+        <div className="card-body">
+          <div className="row">
+            <div className="col-12">
+              <div className="innerFrame">
+                <h4>
+                  Add{" "}
+                  {displayname && displayname.student_name
+                    ? displayname.student_name
+                    : "Student"}
+                </h4>
+                <div className="mainform">
+                  <div className="profile-picture">
+                    <div className="image-group">
+                      {formData.base64Image ? (
+                        <img
+                          src={formData.base64Image}
+                          alt="Selected Image"
+                          className="profile-picture"
+                        />
+                      ) : (
+                        <img
+                          src={profile}
+                          alt="Default Profile Picture"
+                          className="prof"
+                        />
+                      )}
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      <label htmlFor="fileInput" className="file-upload-btn">
+                        Upload
+                      </label>
+                      <div className="text-danger"> {errors.profile}</div>
+                      <input
+                        type="file"
+                        name="fileInput"
+                        id="fileInput"
+                        style={{ display: "none" }}
+                        className={`file-upload ${
+                          errors.fileInput && "is-invalid"
+                        }`}
+                        accept="image/*"
+                        onChange={handleFileChange}
+                      />
+                    </div>
+                  </div>
 
-            <div className="formgroup">
-              <div className="inputgrp" ref={nameRef}>
-                <label htmlFor="Name">
-                  {" "}
-                  Name <span className="text-danger">*</span>
-                </label>
-                <span>:</span>
-                <div>
-                  {" "}
-                  <input
-                    type="text"
-                    id="Name"
-                    value={formData.username}
-                    onChange={handleChange}
-                    name="username"
-                    className={`form-control .form-control-sm  mt-1 ${
-                      errors.username && "is-invalid"
-                    }`}
-                    placeholder="Full Name"
-                    autoFocus
-                    required
-                  />
-                  <div className="invalid-feedback">{errors.username}</div>
-                </div>
-              </div>
-              <div className="inputgrp" ref={emailRef}>
-                <label htmlFor="email">
-                  {" "}
-                  Email<span className="text-danger">*</span>
-                </label>
-                <span>:</span>
-                <div>
-                  {" "}
-                  <input
-                    type="email"
-                    autoComplete="off"
-                    className={`form-control .form-control-sm  ${
-                      errors.email && "is-invalid"
-                    }`}
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Email Address"
-                    required
-                  />
-                  <div className="invalid-feedback">{errors.email}</div>
-                </div>
-              </div>
-
-              <div className="inputgrp">
-  <label htmlFor="Password">
-    Password
-    <span className="text-danger" ref={pswRef}>*</span>
-  </label>
-  <span>:</span>
-  <div>
-  <div className={`inputpsw form-control .form-control-sm  p-1  ${errors.psw && "is-invalid"}`} >
-    <input
-      type={showPassword ? "text" : "password"}
-      name="psw"
-      style={{outline:"none"}}
-      value={formData.psw}
-      onChange={handleChange}
-      placeholder="Password"
-       id="pswinp"
-      autoComplete="new-password"
-      required
-    />
-    <i className={showPassword ?"fa fa-eye-slash  ":"fa fa-eye "}  style={{display:"flex",alignItems:"center"}} onClick={togglePasswordVisibility}></i>
-   
-    </div>
-    <div className="invalid-feedback">{errors.psw}</div>
-    
-  </div>
-</div>
-
-<div className="inputgrp">
-  <label htmlFor="confirm_password">
-    Re-type password
-    <span className="text-danger" ref={confirmPswRef}>*</span>
-  </label>
-  <span>:</span>
-  <div>
-  <div className={`inputpsw form-control .form-control-sm  p-1 ${errors.confirm_password && "is-invalid"}`}>
-    <input
-      type={showConfirmPassword ? "text" : "password"}
-      name="confirm_password"
-      value={formData.confirm_password}
-      style={{outline:"none"}}
-      id="pswinp"
-      onChange={handleChange}
-      autoComplete="new-password"
-      placeholder="Repeat Password"
-      required
-    />
-    <i
-      className={showConfirmPassword ? "fa fa-eye-slash":"fa fa-eye"}
-      style={{display:"flex",alignItems:"center"}}
-      onClick={toggleConfirmPasswordVisibility}
-    >
-    </i>
-    </div>
-    <div className="invalid-feedback">{errors.confirm_password}</div>
-  </div>
-</div>
-              <div className="inputgrp " ref={phoneRef}>
-                <label htmlFor="Phone">
-                  {" "}
-                  Phone
-                  <span className="text-danger">
-                    *
-                  </span>
-                </label>
-                <span>:</span>
-                <div>
                   <div>
-                    <PhoneInput
-                      placeholder="Enter phone number"
-                      id="phone"
-                      value={phoneNumber || ""}
-                      onChange={handlePhoneChange}
-                      className={`form-control .form-control-sm  ${
-                        errors.phone && "is-invalid"
-                      }`}
-                  
-                      defaultCountry={defaultCountry}
-                      international
-                      countryCallingCodeEditable={true}
-                      onCountryChange={fetchCountryDialingCode}
-                    />
+                    <div className="form-group row" ref={nameRef}>
+                      <label htmlFor="Name" className="col-sm-3 col-form-label">
+                        {" "}
+                        Name <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        {" "}
+                        <input
+                          type="text"
+                          id="Name"
+                          value={formData.username}
+                          onChange={handleChange}
+                          name="username"
+                          className={`form-control   mt-1 ${
+                            errors.username && "is-invalid"
+                          }`}
+                          placeholder="Full Name"
+                          autoFocus
+                          required
+                        />
+                        <div className="invalid-feedback">
+                          {errors.username}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-group row" ref={emailRef}>
+                      <label
+                        htmlFor="email"
+                        className="col-sm-3 col-form-label"
+                      >
+                        {" "}
+                        Email<span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        {" "}
+                        <input
+                          type="email"
+                          autoComplete="off"
+                          className={`form-control   ${
+                            errors.email && "is-invalid"
+                          }`}
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="Email Address"
+                          required
+                        />
+                        <div className="invalid-feedback">{errors.email}</div>
+                      </div>
+                    </div>
 
-                    <div className="invalid-feedback">{errors.phone}</div>
+                    <div className="form-group row">
+                      <label
+                        htmlFor="Password"
+                        className="col-sm-3 col-form-label"
+                      >
+                        Password
+                        <span className="text-danger" ref={pswRef}>
+                          *
+                        </span>
+                      </label>
+                      <div className="col-sm-9 ">
+                        <div
+                          className={`inputpsw inputlikeeffect form-control   ${
+                            errors.psw && "is-invalid"
+                          }`}
+                        >
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            name="psw"
+                            style={{ outline: "none" }}
+                            value={formData.psw}
+                            onChange={handleChange}
+                            placeholder="Password"
+                            id="pswinp"
+                            autoComplete="new-password"
+                            required
+                          />
+                          <i
+                            className={
+                              showPassword ? "fa fa-eye-slash  " : "fa fa-eye "
+                            }
+                            style={{ display: "flex", alignItems: "center" }}
+                            onClick={togglePasswordVisibility}
+                          ></i>
+                        </div>
+                        <div className="invalid-feedback">{errors.psw}</div>
+                      </div>
+                    </div>
+
+                    <div className="form-group row">
+                      <label
+                        htmlFor="confirm_password"
+                        className="col-sm-3 col-form-label"
+                      >
+                        Re-type password
+                        <span className="text-danger" ref={confirmPswRef}>
+                          *
+                        </span>
+                      </label>
+                      <div className="col-sm-9">
+                        <div
+                          className={`inputpsw inputlikeeffect  form-control${
+                            errors.confirm_password && "is-invalid"
+                          }`}
+                        >
+                          <input
+                            type={showConfirmPassword ? "text" : "password"}
+                            name="confirm_password"
+                            value={formData.confirm_password}
+                            style={{ outline: "none" }}
+                            id="pswinp"
+                            onChange={handleChange}
+                            autoComplete="new-password"
+                            placeholder="Repeat Password"
+                            required
+                          />
+                          <i
+                            className={
+                              showConfirmPassword
+                                ? "fa fa-eye-slash"
+                                : "fa fa-eye"
+                            }
+                            style={{ display: "flex", alignItems: "center" }}
+                            onClick={toggleConfirmPasswordVisibility}
+                          ></i>
+                        </div>
+                        <div className="invalid-feedback">
+                          {errors.confirm_password}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-group row " ref={phoneRef}>
+                      <label
+                        htmlFor="Phone"
+                        className="col-sm-3 col-form-label"
+                      >
+                        {" "}
+                        Phone
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        <div className="inputlikeeffect">
+                          <PhoneInput
+                            placeholder="Enter phone number"
+                            id="phone"
+                            value={phoneNumber || ""}
+                            onChange={handlePhoneChange}
+                            className={`form-control   ${
+                              errors.phone && "is-invalid"
+                            }`}
+                            defaultCountry={defaultCountry}
+                            international
+                            countryCallingCodeEditable={true}
+                            onCountryChange={fetchCountryDialingCode}
+                          />
+
+                          <div className="invalid-feedback">{errors.phone}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-group row" ref={dobRef}>
+                      <label htmlFor="dob" className="col-sm-3 col-form-label">
+                        Date of Birth
+                      </label>
+                      <div className="col-sm-9">
+                        <input
+                          type="date"
+                          name="dob"
+                          className={`form-control   ${
+                            errors.dob && "is-invalid"
+                          }`}
+                          placeholder="Starting year"
+                          value={formData.dob}
+                          onChange={handleChange}
+                          required
+                        />
+                        <div className="invalid-feedback">{errors.dob}</div>
+                      </div>
+                    </div>
+                    <div className="form-group row" ref={skillsRef}>
+                      <label
+                        htmlFor="skills"
+                        className="col-sm-3 col-form-label"
+                      >
+                        {" "}
+                        Skills{" "}
+                      </label>
+                      <div className="col-sm-9">
+                        {" "}
+                        <input
+                          type="text"
+                          id="skills"
+                          value={formData.skills}
+                          onChange={handleChange}
+                          name="skills"
+                          className={`form-control    ${
+                            errors.skills && "is-invalid"
+                          }`}
+                          placeholder="skills"
+                          required
+                        />
+                        <div className="invalid-feedback">{errors.skills}</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="inputgrp" ref={dobRef}>
-                <label htmlFor="dob">
-                  Date of Birth
-                </label>
-                <span>:</span>
-                <div>
-                  <input
-                    type="date"
-                    name="dob"
-                    className={`form-control .form-control-sm  ${
-                      errors.dob && "is-invalid"
-                    }`}
-                    placeholder="Starting year"
-                    value={formData.dob}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="invalid-feedback">{errors.dob}</div>
-                </div>
-              </div>
-              <div className="inputgrp" ref={skillsRef}>
-                <label htmlFor="skills"> Skills </label>
-                <span>:</span>
-                <div>
-                  {" "}
-                  <input
-                    type="text"
-                    id="skills"
-                    value={formData.skills}
-                    onChange={handleChange}
-                    name="skills"
-                    className={`form-control .form-control-sm   ${
-                      errors.skills && "is-invalid"
-                    }`}
-                    placeholder="skills"
-                    required
-                  />
-                  <div className="invalid-feedback">{errors.skills}</div>
+                <div className="btngrp">
+                  <button className={`btn btn-primary `} onClick={handleSubmit}>
+                    Add
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="btngrp">
-            <button className={`btn btn-primary `} onClick={handleSubmit}>
-              Add
-            </button>
           </div>
         </div>
       </div>

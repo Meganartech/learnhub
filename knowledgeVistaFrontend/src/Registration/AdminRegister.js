@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import profile from "../images/profile.png";
-import "../css/StudentRegister.css";
-import "../css/certificate.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../api/utils";
@@ -400,10 +398,13 @@ setErrors((prevErrors) => ({
   }, [errors]);
 
   return (
-    <div className="contentbackgroundforfull">
-      <div className="contentinnerforfull">
+    <div
+    style={{ backgroundColor: "transparent", padding: "15px" }}
+  >
+    <div className="card">
+      <div className="card-body">
         <div className="innerFrame">
-          <h2 style={{ textDecoration: "underline" }}>Join with us</h2>
+          <h4>Join with us</h4>
           <div className="mainform">
             <div className="profile-picture">
               <div className="image-group">
@@ -430,15 +431,14 @@ setErrors((prevErrors) => ({
               </div>
             </div>
 
-            <div className="formgroup">
-              <div className="inputgrp">
-                <label htmlFor="Name" ref={nameRef}>
+            <div>
+              <div className="form-group row">
+                <label htmlFor="Name"  className="col-sm-3 col-form-label" ref={nameRef}>
                   {" "}
                   Name{" "}
                  
                 </label>
-                <span>:</span>
-                <div>
+                <div className=" col-sm-9">
                   {" "}
                   <input
                     type="text"
@@ -446,7 +446,7 @@ setErrors((prevErrors) => ({
                     value={formData.username}
                     onChange={handleChange}
                     name="username"
-                    className={`form-control .form-control-sm   mt-1 ${
+                    className={`form-control    mt-1 ${
                       errors.username && "is-invalid"
                     }`}
                     placeholder="Full Name"
@@ -456,18 +456,17 @@ setErrors((prevErrors) => ({
                   <div className="invalid-feedback">{errors.username}</div>
                 </div>
               </div>
-              <div className="inputgrp" ref={emailRef}>
-                <label htmlFor="email">
+              <div className="form-group row" ref={emailRef}>
+                <label htmlFor="email"  className="col-sm-3 col-form-label">
                   {" "}
                   Email<span className="text-danger">*</span>
                 </label>
-                <span>:</span>
-                <div>
+                <div className=" col-sm-9">
                   {" "}
                   <input
                     type="email"
                     autoComplete="off"
-                    className={`form-control .form-control-sm  ${
+                    className={`form-control   ${
                       errors.email && "is-invalid"
                     }`}
                     name="email"
@@ -480,18 +479,17 @@ setErrors((prevErrors) => ({
                 </div>
               </div>
 
-              <div className="inputgrp" ref={institutionRef}>
-                <label htmlFor="institution">
+              <div className="form-group row" ref={institutionRef}>
+                <label htmlFor="institution"  className="col-sm-3 col-form-label">
                   {" "}
                   Institution Name<span className="text-danger">*</span>
                 </label>
-                <span>:</span>
-                <div>
+                <div className=" col-sm-9">
                   {" "}
                   <input
                     type="text"
                     autoComplete="off"
-                    className={`form-control .form-control-sm  ${
+                    className={`form-control   ${
                       errors.institution && "is-invalid"
                     }`}
                     name="institution"
@@ -507,17 +505,17 @@ setErrors((prevErrors) => ({
 
               
 
-              <div className="inputgrp">
-  <label htmlFor="Password">
+              <div className="form-group row">
+  <label htmlFor="Password"  className="col-sm-3 col-form-label">
     Password
     <span className="text-danger" ref={pswRef}>*</span>
   </label>
-  <span>:</span>
-  <div>
-  <div className={`inputpsw form-control .form-control-sm  p-1  ${errors.psw && "is-invalid"}`} >
+  <div className=" col-sm-9">
+  <div className={`inputpsw form-control   p-1  ${errors.psw && "is-invalid"}`} >
     <input
       type={showPassword ? "text" : "password"}
       name="psw"
+      className="form-control"
       style={{outline:"none"}}
       value={formData.psw}
       onChange={handleChange}
@@ -534,17 +532,17 @@ setErrors((prevErrors) => ({
   </div>
 </div>
 
-<div className="inputgrp">
-  <label htmlFor="confirm_password">
+<div className="form-group row">
+  <label htmlFor="confirm_password"  className="col-sm-3 col-form-label">
     Re-type password
     <span className="text-danger" ref={confirmPswRef}>*</span>
   </label>
-  <span>:</span>
-  <div>
-  <div className={`inputpsw form-control .form-control-sm  p-1 ${errors.confirm_password && "is-invalid"}`}>
+  <div className=" col-sm-9">
+  <div className={`inputpsw form-control   p-1 ${errors.confirm_password && "is-invalid"}`}>
     <input
       type={showConfirmPassword ? "text" : "password"}
       name="confirm_password"
+      className="form-control"
       value={formData.confirm_password}
       style={{outline:"none"}}
       id="pswinp"
@@ -565,24 +563,23 @@ setErrors((prevErrors) => ({
 </div>
 
              
-              <div className="inputgrp "  ref={phoneRef}>
-                <label htmlFor="Phone">
+              <div className="form-group row "  ref={phoneRef}>
+                <label htmlFor="Phone"  className="col-sm-3 col-form-label">
                   {" "}
                   Phone
                   <span className="text-danger">
                     *
                   </span>
                 </label>
-                <span>:</span>
-                <div>
-                  <div>
+                <div className=" col-sm-9">
+                  <div className="inputlikeeffect">
                  
       <PhoneInput
         placeholder="Enter phone number"
         id="phone"
         value={phoneNumber||''}
         onChange={handlePhoneChange}
-        className={`form-control .form-control-sm  ${
+        className={`form-control   ${
           errors.phone && "is-invalid"
         }`}
         defaultCountry={defaultCountry}
@@ -595,17 +592,16 @@ setErrors((prevErrors) => ({
                   </div>
                 </div>
               </div>
-              <div className="inputgrp">
-                <label htmlFor="dob" ref={dobRef}>
+              <div className="form-group row">
+                <label htmlFor="dob"  className="col-sm-3 col-form-label" ref={dobRef}>
                   Date of Birth
                  
                 </label>
-                <span>:</span>
-                <div>
+                <div className=" col-sm-9">
                   <input
                     type="date"
                     name="dob"
-                    className={`form-control .form-control-sm  ${
+                    className={`form-control   ${
                       errors.dob && "is-invalid"
                     }`}
                     placeholder="Starting year"
@@ -617,14 +613,13 @@ setErrors((prevErrors) => ({
                 </div>
               </div>
               
-              <div className="inputgrp">
-                <label htmlFor="skills" ref={skillsRef}>
+              <div className="form-group row">
+                <label htmlFor="skills"  className="col-sm-3 col-form-label" ref={skillsRef}>
                   {" "}
                   Skills{" "}
                  
                 </label>
-                <span>:</span>
-                <div>
+                <div className=" col-sm-9">
                   {" "}
                   <input
                     type="text"
@@ -632,7 +627,7 @@ setErrors((prevErrors) => ({
                     value={formData.skills}
                     onChange={handleChange}
                     name="skills"
-                    className={`form-control .form-control-sm  mt-1 ${
+                    className={`form-control   mt-1 ${
                       errors.skills && "is-invalid"
                     }`}
                     placeholder="skills"
@@ -646,7 +641,7 @@ setErrors((prevErrors) => ({
           <div className="btngrp" style={{ display: "inline" }}>
             <div className="cornerbtn">
             <button
-                               className='btn btn-warning'
+                               className='btn btn-secondary'
                                type="button"
                                onClick={() => {
                                   navigate(-1) 
@@ -666,6 +661,7 @@ setErrors((prevErrors) => ({
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
