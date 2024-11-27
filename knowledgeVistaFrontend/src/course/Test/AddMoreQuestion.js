@@ -190,19 +190,26 @@ const AddMoreQuestion = () => {
     };
 
     return (
-        <div className='contentbackground'>
-            <div className='contentinner'>
+        <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-header">
             <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
+      <h4>Add Question to {courseName}</h4>
+      </div>
+      <div className="card-body">
+        <div className="row">
+        <div className="col-12">
                 <div className='atdiv'>
                     <div className='atgrid' >
                         <div>
-                            <h6>Add Question to {courseName}</h6>
+                           
                             <input
-                            className={`form-control .form-control-sm  ${errors.questionText && 'is-invalid'}`}
+                            className={`form-control   ${errors.questionText && 'is-invalid'}`}
                             autoFocus
                             placeholder='Enter Question'
                             value={questionData.questionText}
@@ -223,7 +230,7 @@ const AddMoreQuestion = () => {
                                     />
                                     <div>
                                     <input
-                                        className={`form-control .form-control-sm  ${errors.options[option] && 'is-invalid'}`}
+                                        className={`form-control   ${errors.options[option] && 'is-invalid'}`}
                                         type='text'
                                         placeholder={`Option ${index + 1}`}
                                         value={questionData.options[option]}
@@ -238,16 +245,19 @@ const AddMoreQuestion = () => {
                         {errors.selectedOption && <div className="invalid-feedback">{errors.selectedOption}</div>}
                     </div>
                     <div className='atbtndiv'>
-                        <button className='btn btn-primary' onClick={() => window.history.back()}>Cancel</button>
-                        <div></div>
-                        <button className='btn btn-primary' onClick={handleSave} disabled={
+                       <div> <button className='btn btn-secondary' onClick={() => window.history.back()}>Cancel</button>
+                       </div> <div></div>
+                        <div><button className='btn btn-primary' onClick={handleSave} disabled={
                             questionData.questionText.trim() === '' ||
                             questionData.selectedOption === '' ||
                             Object.values(questionData.options).some(option => option.trim() === '')
-                        }>Save</button>
+                        }>Save</button></div>
                     </div>
 
                 </div>
+            </div>
+            </div>
+            </div>
             </div>
         </div>
     );

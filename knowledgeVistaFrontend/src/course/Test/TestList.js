@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import "../../css/test.css"
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../../api/utils';
 import axios from 'axios';
@@ -187,23 +186,29 @@ const TestList = () => {
   };
 
   return (
-    <div className='contentbackground'>
-      <div className='contentinner'>
-      <div className='navigateheaders'>
+    <div>
+    <div className="page-header"></div>
+    <div className='row'>
+      <div className='col-sm-12'>
+        <div className='card'>
+          <div className='card-header'>
+      <div className='navigateheaders' style={{margin:"2px"}}>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
       </div>
+      <h4 className='text-center 'style={{margin:"0px"}}>{courseName}</h4>
+             
+     </div>
         {notFound ? (
           <div className='centerflex'>
           <div className='enroll'>
-            <h2>No test found for the  course {courseName}</h2>
+            <h4>No test found for the  course {courseName}</h4>
             <a href={`/course/AddTest/${courseName}/${courseId}`} className='btn btn-primary'>Add Test</a>
           </div></div>
         ) : (
           test && (
-            <div>
-              <h3 className='text-center '><b>{test.coursename}</b></h3>
+            <div className='card-body'>
               <div className='singletest'>
                 <span className='edititems'>
                   <b>Test Name:</b>
@@ -289,8 +294,9 @@ const TestList = () => {
                 <Link to={`/test/AddMore/${courseName}/${test.testId}`} className='btn btn-primary mr-2' style={{width:"150px"}}><i className='fa fa-plus'></i> Add more </Link>
                 </div>
                 </span>
+               
               {test.questions && (
-                <div className="table-container">
+                <div className="table-container mt-2">
                   <table className='table table-hover  table-bordered table-sm'>
                     <thead className='thead-dark'>
                       <tr>
@@ -332,11 +338,13 @@ const TestList = () => {
                   </table>
                 </div>
               )}
-            </div>
+              </div>
           )
         )}
-      </div>
-    </div>
+        </div>
+        </div>
+        </div>
+        </div>
   );
 }
 

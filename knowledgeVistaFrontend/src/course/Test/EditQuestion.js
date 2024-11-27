@@ -184,17 +184,23 @@ const EditQuestion = () => {
   };
   
   return (
-    <div className='contentbackground'>
-      <div className='contentinner'>
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+    <div className="card-body">
+        <div className="row">
+        <div className="col-12">
       <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
+     
         <div className='atdiv'  >
           <div className='atgrid' >
-            <div>            <input 
-              className={`form-control .form-control-sm  ${errors.questionText && 'is-invalid'}`}
+            <div>            
+              <input 
+              className={`form-control   ${errors.questionText && 'is-invalid'}`}
               autoFocus
               value={questionText}
               onChange={handleQuestionTextChange}
@@ -217,7 +223,7 @@ const EditQuestion = () => {
                     type='text'
                     value={options[optionKey]}
                     name={optionKey}
-                    className={`form-control .form-control-sm  ${errors[optionKey] && 'is-invalid'}`}
+                    className={`form-control   ${errors[optionKey] && 'is-invalid'}`}
                     onChange={handleInputChange}
                   />
                   {errors[optionKey] && <div className="invalid-feedback">{errors[optionKey]}</div>}
@@ -227,8 +233,11 @@ const EditQuestion = () => {
             </ul>
           </div>
           <div className='atbtndiv'>
-            <button className='btn btn-primary' onClick={() => window.history.back()}>Cancel</button>
+            <div>
+            <button className='btn btn-secondary' onClick={() => window.history.back()}>Cancel</button>
+            </div>
             <div></div>
+            <div>
             <button
               className='btn btn-primary'
               onClick={handleSave}
@@ -236,7 +245,11 @@ const EditQuestion = () => {
             >
               Save
             </button>
+            </div>
           </div>
+        </div>
+        </div>
+        </div>
         </div>
       </div>
     </div>

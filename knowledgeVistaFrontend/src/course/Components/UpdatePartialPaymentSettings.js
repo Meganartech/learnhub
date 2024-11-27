@@ -63,7 +63,7 @@ const navigate=useNavigate();
                 MySwal.fire({
                   title: "Not Found",
                   text: error.response.data ? error.response.data : "error occured",
-                  icon: "error",
+                  icon: "warning",
                 }).then((result) => {
                   if (result.isConfirmed) {
                     navigate(-1);
@@ -99,56 +99,69 @@ const navigate=useNavigate();
 //     }
 //   };
   return (
-    <div className='contentbackground'>
-    <div className='contentinner'>
-       <h2>
-          <span style={{ textDecoration: 'underline' }}>Partial Payment Settings for {courseName}</span>
-        </h2>
+    <div>
+  <div className="page-header"></div>
+  <div className="card">
+    <div className='card-header'>
+       <h4>
+          <span>Partial Payment Settings for {courseName}</span>
+        </h4>
+        </div>
+        <div className="card-body">
+    <div className="row">
+      <div className="col-12">
         <h5>
-          <input type="checkbox" className="m-4" name='check' checked={enablechecked} onChange={()=>{setenablechecked(!enablechecked)}}/>
-          <p htmlFor='check' style={{ display: "inline" }}>
+          <input type="checkbox" readOnly className="m-4" name='check' checked={enablechecked} />
+          <h4 htmlFor='check' style={{ display: "inline" }}>
             Enable Partial Payment
-          </p>
+          </h4>
         </h5>
         {enablechecked && <>
-        <div className='mainform2'>
-          <div className='inputgrp2'>
-            <label>Course Amount</label>
-            <span>:</span>
-            <input type='number'  />
+          <div className="row">
+          <div className="col-md-6">
+          <div className='form-group row'>
+            <label className="col-sm-4 col-form-label">Course Amount</label>
+            <div className="col-sm-8">
+            <input type='number'  className="form-control" />
+            </div>
           </div>
          
-          <div className='inputgrp2'>
-            <label> No of Installments </label>
-            <span>:</span>
-            <input type='number' value={noOfInstallments}  />
+          <div className='form-group row'>
+            <label className="col-sm-4 col-form-label"> No of Installments </label>
+            <div className="col-sm-8">
+            <input type='number'  className="form-control" value={noOfInstallments}  />
+            </div>
+          </div>
           </div>
         </div>
-        <div className='mainform2 mt-3' style={{ height: '320px' }}>
-            <div>
+        <div className='row mt-3' style={{marginBottom:"10px",minHeight:"200px", maxHeight: "250px",overflow:"auto" }}>
+            <div className="col-md-6">
             {installmentData.map((installment) => (
             <div key={installment.id}>
-              <div className='inputgrp2 pt-2'>
-                <label> installment{installment.installmentNumber}</label>
-                <span>:</span>
+              <div className='form-group row pt-2'>
+                <label className="col-sm-4 col-form-label"> installment{installment.installmentNumber}</label>
+               <div className='col-sm-8'>
                 <input
                   type='number'
+                  className='form-control'
                   value={installment.installmentAmount}
                 />
+                </div>
               </div>
                 </div>))}
                 </div>
-                <div className='pt-5'>
+                <div className='pt-5 col-md-6'>
                 {installmentData.map((installment, index) => (
-          <div className='inputgrp2 pt-2' key={index}>
+          <div className='form-group row pt-2' key={index}>
             {installment.durationInDays ===0?<></>:(<>
             <label>
               Duration for {getOrdinalSuffix(index + 1)} installment
             </label>
-            <span>:</span>
+         <div className='col-sm-8'>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <input
                 type='number'
+                className='form-control'
                 value={installment.durationInDays}
                 onChange={(e) => {
                   if(e.target.value>0){
@@ -159,6 +172,7 @@ const navigate=useNavigate();
                 }}
               />
               <label style={{ marginLeft: '5px' }}>Days</label>
+            </div>
             </div></>)}
           </div>
         ))}
@@ -168,9 +182,12 @@ const navigate=useNavigate();
         </div></>
 }
         <div className='atbtndiv'>
-          {/* <button className='btn btn-primary' >cancel</button>
+          {/* <button className='btn btn-secondary' >cancel</button>
           <div></div>
           <button className="btn btn-primary" >Save</button> */}
+        </div>
+        </div>
+        </div>
         </div>
         </div>
     </div>

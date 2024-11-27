@@ -12,6 +12,45 @@ export const GlobalStateProvider = ({ children }) => {
               trainer_name: "",
               student_name: "", 
   });
+  const [siteSettings, setsiteSettings] = useState({
+    siteUrl: "",
+    title:"",
+    sitelogo: null,
+    siteicon: null,
+    titleicon: null,
+  });
+  useEffect(() => {
+    const fetchLabels = async () => {
+      try {
+        // Check if data is already in sessionStorage
+        const cachedSettings = sessionStorage.getItem("siteSettings");
+        if (cachedSettings) {
+          setsiteSettings(JSON.parse(cachedSettings));
+          console.log("Loaded from sessionStorage:", JSON.parse(cachedSettings));
+        } else {
+          let response;
+          if (token) {
+            response = await axios.get(`${baseUrl}/Get/labellings`, {
+              headers: {
+                Authorization: token,
+              },
+            });
+          } else {
+            response = await axios.get(`${baseUrl}/all/get/labellings`);
+          }
+  
+          setsiteSettings(response.data);
+          sessionStorage.setItem("siteSettings", JSON.stringify(response.data)); // Cache data
+          console.log("Fetched from API:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching site settings:", error);
+      }
+    };
+  
+    fetchLabels();
+  }, []); // Dependency on `token`
+  
   const token =  sessionStorage.getItem("token")
 
   useEffect(() => {

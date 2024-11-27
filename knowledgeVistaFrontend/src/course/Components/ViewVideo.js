@@ -220,8 +220,12 @@ const ViewVideo = () => {
   };
 
   return (
-    <div className="contentbackground">
-      <div className="contentinner ">
+    <div>
+  <div className="page-header"></div>
+  <div className="card">
+    <div className="card-body">
+    <div className="row">
+          <div className="col-12">
         <div className="navigateheaders">
           <div
             onClick={() => {
@@ -240,17 +244,17 @@ const ViewVideo = () => {
           </div>
         </div>
         {AllLessons.length > 0 ? (
-          <div className="vdoplusbtn">
-            <div style={{ display: "grid", gridTemplateColumns: "9fr 1fr" }}>
-              <h1 style={{ textAlign: "center" }}>{courseName}</h1>
-              <Link
+          <div>
+            <div className=" headingbtn">
+              <h4 >{courseName}</h4>
+             {role ==="USER" &&<Link
                 to={`/test/start/${courseName}/${courseId}`}
                 className="btn btn-primary mybtn "
               >
                 Start Test
-              </Link>
-            </div>
-            <div>
+              </Link>}
+           </div>
+            
               <div className="main">
                 <div className="VideoFrame">
                   {videoType === "local" ? (
@@ -305,9 +309,9 @@ const ViewVideo = () => {
                   )}
                 </div>
                 <div className="list">
-                  <h3 style={{ color: "black", textDecoration: "underline" }}>
+                  <label className="lessonheading" >
                     Lessons Covered
-                  </h3>
+                  </label>
                   <div className="content" ref={lessonListRef}>
                     {AllLessons.map((lesson, index) => (
                       <div
@@ -320,7 +324,7 @@ const ViewVideo = () => {
                         style={{
                           border:
                             lesson.lessonId === lessonId
-                              ? "3px solid red"
+                              ? "3px solid #4680FE"
                               : "none",
                         }}
                       >
@@ -344,7 +348,6 @@ const ViewVideo = () => {
                   </div>
                 </div>
               </div>
-            </div>
        
             {currentDocs &&
                           currentDocs.length > 0 && (
@@ -365,7 +368,7 @@ const ViewVideo = () => {
                             </li>
                           ))}
                       </ul>)}
-            <div style={{ textAlign: "right" }}>
+            <div style={{ textAlign: "right",marginTop:"10px" }}>
               {AllLessons.length > 1 && currentLessonIndex > 0 && (
                 <button
                   onClick={handlePreviousButtonClick}
@@ -400,12 +403,12 @@ const ViewVideo = () => {
           <div>
             <div style={{ display: "grid", gridTemplateColumns: "9fr 1fr" }}>
               <h1 style={{ textAlign: "center" }}>{courseName}</h1>
-              <Link
+             {role==="USER" && <Link
                 to={`/test/start/${courseName}/${courseId}`}
                 className="btn btn-primary mybtn"
               >
                 Start Test
-              </Link>
+              </Link>}
             </div>
             <div>
               <div className="centerflex">
@@ -421,6 +424,9 @@ const ViewVideo = () => {
           </div>
         )}
       </div>
+    </div>
+    </div>
+    </div>
     </div>
   );
 };

@@ -167,8 +167,12 @@ const SlideViewer = () => {
   };
 
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+      <div className="col-12">
         <div className="navigateheaders">
           <div onClick={() => navigate(-1)}>
             <i className="fa-solid fa-arrow-left"></i>
@@ -290,6 +294,9 @@ const SlideViewer = () => {
           </div>
         </div>
       </div>
+    </div>
+    </div>
+    </div>
     </div>
   );
 };
