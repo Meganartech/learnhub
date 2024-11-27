@@ -289,7 +289,7 @@ const ProfileView = () => {
 
   const profileView = (
     <div className='innerFrame'>
-      <h2 style={{ textDecoration: "underline" }}>Profile</h2>
+      <h4>Profile</h4>
       <div className='mainform'>
         <div className='profile-picture'>
           <div className='image-group'>
@@ -301,54 +301,58 @@ const ProfileView = () => {
           </div>
         </div>
         <div className='formgroup'>
-          <div className='inputgrp'>
-            <label>Name</label>
-            <span>:</span>
+          <div className='form-group row'>
+            <label className="col-sm-3 col-form-label">Name</label>
+            <div className="col-sm-9">
             <input   
-            className='disabledbox'
+            className='form-control'
                 readOnly
                 value={userData.username}/>
+                </div>
+                
           </div>
-          <div className='inputgrp'>
-            <label>Email</label>
-            <span>:</span>
+          <div className='form-group row'>
+            <label className="col-sm-3 col-form-label">Email</label>
+            <div className="col-sm-9">
             <input 
-             className='disabledbox'
+             className='form-control'
                 readOnly
                 value={userData.email}/>
+                </div>
           </div>
-          <div className='inputgrp'>
-            <label>Date of Birth</label>
-            <span>:</span>
+          <div className='form-group row'>
+            <label className="col-sm-3 col-form-label">Date of Birth</label>
+            <div className="col-sm-9">
             <input
-              className='disabledbox'
+              className='form-control'
               readOnly
               value={userData.dob}/>
+              </div>
           </div>
-          <div className='inputgrp'>
-            <label>Skills</label>
-            <span>:</span>
+          <div className='form-group row'>
+            <label className="col-sm-3 col-form-label">Skills</label>
+            <div className="col-sm-9">
             <input
-              className='disabledbox'
+              className='form-control'
               readOnly
               value={userData.skills}/>
+              </div>
           </div>
-          <div className="inputgrp "  >
-                <label htmlFor="Phone">
+          <div className="form-group row "  >
+                <label htmlFor="Phone" className="col-sm-3 col-form-label">
                   {" "}
                   Phone
                   <span className="text-danger">
                     *
                   </span>
                 </label>
-                <span>:</span>
-                <div>
-                  <div>
+                <div className="col-sm-9">
+                  <div className='Readonlyinp '>
                  
       <PhoneInput
         id="phone"
         value={phoneNumber||''}
-        className='disabledbox '
+        className='form-control'
         readOnly
         defaultCountry={defaultCountry}
         international
@@ -362,14 +366,14 @@ const ProfileView = () => {
         </div>
       </div>
       <div className='btngrp'>
-        <button className="btn btn-primary" onClick={handleEditClick}>Edit</button>
+        <button className="btn btn-success" onClick={handleEditClick}>Edit</button>
       </div>
     </div>
   );
 
   const editProfileView = (
     <div className='innerFrame'>
-      <h2 style={{ textDecoration: "underline" }}>Edit Profile</h2>
+      <h4>Edit Profile</h4>
       <div className='mainform'>
         <div className='profile-picture'>
           <div className='image-group'>  
@@ -405,11 +409,10 @@ const ProfileView = () => {
               />
               </div>
         </div>
-        <div className='formgroup'>
-          <div className='inputgrp'>
-            <label htmlFor='Name'>Name</label>
-            <span>:</span>
-            <div> 
+        <div >
+          <div className='form-group row'>
+            <label htmlFor='Name' className="col-sm-3 col-form-label">Name</label>
+            <div className="col-sm-9">
             <input
              type="text"
               id='Name'
@@ -417,23 +420,21 @@ const ProfileView = () => {
               onChange={handleChange}
               name="username"
               
-              className={`form-control .form-control-sm  mt-1 ${errors.username && 'is-invalid'}`}
+              className={`form-control   mt-1 ${errors.username && 'is-invalid'}`}
               placeholder="Full Name"
               autoFocus
-              required
             />
             <div className="invalid-feedback">
               {errors.username}
             </div>
             </div> 
           </div>
-          <div className='inputgrp'>
-            <label htmlFor='email'>Email</label>
-            <span>:</span>
-            <div>              <input
+          <div className='form-group row'>
+            <label htmlFor='email' className="col-sm-3 col-form-label">Email</label>
+            <div className="col-sm-9">             <input
                     type="email"
                     autoComplete="off"
-                    className={`form-control .form-control-sm  ${errors.email && 'is-invalid'}`}
+                    className={`form-control   ${errors.email && 'is-invalid'}`}
                     name="email"
                     value={userData.email}
                     onChange={handleChange}
@@ -444,62 +445,56 @@ const ProfileView = () => {
                     {errors.email}
                   </div></div>
           </div>
-          <div className='inputgrp'>
-            <label htmlFor='dob'>Date of Birth</label>
-            <span>:</span>
-            <div>
+          <div className='form-group row'>
+            <label htmlFor='dob' className="col-sm-3 col-form-label">Date of Birth</label>
+            <div className="col-sm-9">
             <input
               type="date"
                                   name="dob"
-                                  className={`form-control .form-control-sm  ${errors.dob && 'is-invalid'}`}
+                                  className={`form-control   ${errors.dob && 'is-invalid'}`}
                                   placeholder="Starting year"
                                   value={userData.dob}
                                   onChange={handleChange}
-                                  required
                                  
             />
             <div className="invalid-feedback">
               {errors.dob}
             </div></div>
           </div>
-          <div className='inputgrp'>
-            <label htmlFor='skills'>Skills</label>
-            <span>:</span>
-            <div> <input
+          <div className='form-group row'>
+            <label htmlFor='skills' className="col-sm-3 col-form-label">Skills</label>
+            <div className="col-sm-9"> <input
              type="text"
               id='skills'
               value={userData.skills }
               onChange={handleChange}
               name="skills"
               
-              className={`form-control .form-control-sm   ${errors.skills && 'is-invalid'}`}
+              className={`form-control    ${errors.skills && 'is-invalid'}`}
               placeholder="skills"
-           
-              required
             />
             <div className="invalid-feedback">
               {errors.skills}
             </div></div> 
           </div>
          
-          <div className="inputgrp "  >
-                <label htmlFor="Phone">
+          <div className="form-group row "  >
+                <label htmlFor="Phone" className="col-sm-3 col-form-label">
                   {" "}
                   Phone
                   <span className="text-danger">
                     *
                   </span>
                 </label>
-                <span>:</span>
-                <div>
-                  <div>
+                <div className="col-sm-9">
+                  <div className='inputlikeeffect'>
                  
       <PhoneInput
         placeholder="Enter phone number"
         id="phone"
         value={phoneNumber||''}
         onChange={handlePhoneChange}
-        className={`form-control .form-control-sm  ${
+        className={`form-control   ${
           errors.phone && "is-invalid"
         }`}
         defaultCountry={defaultCountry}
@@ -521,8 +516,12 @@ const ProfileView = () => {
   );
 
   return (
-    <div className='contentbackground'>
-      <div className='contentinner'>
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+      <div className="col-12">
       <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
@@ -531,6 +530,9 @@ const ProfileView = () => {
         {/* Render either profile view or edit profile view based on the state */}
         {isEditing ? editProfileView : profileView}
       </div>
+    </div>
+    </div>
+    </div>
     </div>
   );
 }

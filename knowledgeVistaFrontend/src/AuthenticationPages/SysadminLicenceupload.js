@@ -67,19 +67,25 @@ const SysadminLicenceupload = () => {
         }
     }
   return (
-    <div className='contentbackground'>
-        <div className='contentinner'>
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
              <form className='form-container' onSubmit={handleSubmit}>
                  
                   
                      
-                      <div className='inputgrp' >
-                        <label style={{ display:"block"}} >Add New License File </label>
-                        <span>:</span>
-                 
+                      <div className='form-group row' >
+                        <label className='col-sm-3 col-form-label' >Add New License File </label>
+                       <div className='col-sm-9 '>
+                        <div className='custom-file'>
+                       <label className="custom-file-label" 
+                       htmlFor="audioFile" style={{  width: "20rem" }}>
+                    Choose file...
+                  </label>
                         <input
                           type='file'
-                          className=''
+                          className='custom-file-input'
                           placeholder='Choose  File'
                           accept=".xml"
                           name='audioFile'
@@ -88,10 +94,11 @@ const SysadminLicenceupload = () => {
                             setAudioFile(e.target.files[0]);
                             handleFileChange(e);
                           }}
-                          style={{ padding: "0px", width: "20rem" }}
+                          
                         />
+                        </div>
                       </div>
-                 
+                 </div>
                  
                   <div className='modal-footer'>
                     <input
@@ -101,6 +108,7 @@ const SysadminLicenceupload = () => {
                     />
                   </div>
                 </form></div>
+                </div>
     </div>
   )
 }

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import "../../css/CreateApplication.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import axios from "axios";
-import "../../css/Style.css";
 import errorimg from "../../images/errorimg.png";
 import { useNavigate, useParams } from "react-router-dom";
 const EditCourseForm = ({}) => {
@@ -110,6 +108,10 @@ const EditCourseForm = ({}) => {
       .catch((error) => {
         console.error("Error converting image to base64:", error);
       });
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        courseImage: "",
+      }));
   };
 
   const handleSubmit = async (e) => {
@@ -185,8 +187,12 @@ const EditCourseForm = ({}) => {
     }
   };
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className=" card-body">
+      <div className="row">
+      <div className="col-12">
         <div className="navigateheaders">
           <div
             onClick={() => {
@@ -204,21 +210,21 @@ const EditCourseForm = ({}) => {
             <i className="fa-solid fa-xmark"></i>
           </div>
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="outer">
-            <div className="First">
-              <h2 className="heading ">Update Course</h2>
-
-              <div className="form-group">
-                <label htmlFor="courseName">
-                  Course Name <span className="text-danger">*</span>
+        <form onSubmit={handleSubmit} >
+        
+              <h4>Update Course</h4>
+              <hr />
+<div className="col-10"> 
+              <div className="form-group row">
+                <label htmlFor="courseName"  className="col-sm-3 col-form-label">
+                  Course Title <span className="text-danger">*</span>
                 </label>
-                <div>
+                <div className="col-sm-9">
                   <input
                     type="text"
                     name="courseName"
                     id="courseName"
-                    className={`form-control .form-control-sm  ${
+                    className={`form-control   ${
                       errors.courseName && "is-invalid"
                     }`}
                     placeholder="Enter the Course Name"
@@ -229,16 +235,16 @@ const EditCourseForm = ({}) => {
                   <div className="invalid-feedback">{errors.courseName}</div>
                 </div>
               </div>
-              <div className="form-group">
-                <label htmlFor="courseDescription">
+              <div className="form-group row">
+                <label htmlFor="courseDescription" className="col-sm-3 col-form-label">
                   Course Description <span className="text-danger">*</span>
                 </label>
-                <div>
+                <div className="col-sm-9">
                   <textarea
                     name="courseDescription"
                     id="courseDescription"
-                    rows={5}
-                    className={`form-control .form-control-sm  ${
+                    rows={3}
+                    className={`form-control   ${
                       errors.courseDescription && "is-invalid"
                     }`}
                     placeholder="Description about the Course"
@@ -250,16 +256,16 @@ const EditCourseForm = ({}) => {
                   </div>
                 </div>
               </div>
-              <div className="form-group">
-                <label htmlFor="courseCategory">
+              <div className="form-group row">
+                <label htmlFor="courseCategory" className="col-sm-3 col-form-label">
                   Course Category <span className="text-danger">*</span>
                 </label>
-                <div>
+                <div className="col-sm-9">
                   <input
                     type="text"
                     name="courseCategory"
                     id="courseCategory"
-                    className={`form-control .form-control-sm   ${
+                    className={`form-control    ${
                       errors.courseCategory && "is-invalid"
                     }`}
                     placeholder="Category"
@@ -271,52 +277,34 @@ const EditCourseForm = ({}) => {
                   </div>
                 </div>
               </div>
-              <div className="form-group ">
-                <label htmlFor="noofseats">
-                  No of Seats <span className="text-danger">*</span>
+            
+              <div className="form-group row">
+                <label htmlFor="courseImage" className="col-sm-3 col-form-label">
+                 
+                    Course Image<span className="text-danger">*</span>
+               
                 </label>
-                <div>
+                <div className="col-sm-9 ">
+                <div className="custom-file">
                   <input
-                    name="noofseats"
-                    type="number"
-                    id="noofseats"
-                    value={courseEdit.noofseats}
-                    className={`form-control .form-control-sm   ${
-                      errors.noofseats && "is-invalid"
-                    }`}
-                    onChange={handleChange}
+                    type="file"
+                    className={`custom-file-input 
+                      ${errors.courseImage && "is-invalid"}`}
+                    onChange={handleFileChange}
+                    id="courseImage"
+                    name="courseImage"
+                    accept="image/*"
                   />
-                  <div className="invalid-feedback">{errors.noofseats}</div>
-                </div>
+                  <label className="custom-file-label" 
+                  htmlFor="courseImage">
+                    Choose file...
+                  </label>
+                  <div className="invalid-feedback">{errors.courseImage}</div>
+                </div></div>
               </div>
-            </div>
-
-            <div className="second">
-              <div className="form-group">
-                <label htmlFor="courseImage">
-                  <h2>
-                    Course Image <span className="text-danger">*</span>
-                  </h2>
-                </label>
-                <label
-                  htmlFor="courseImage"
-                  style={{ width: "200px" }}
-                  className={`file-upload-btn ${
-                    errors.courseImage && `is-invalid`
-                  }`}
-                >
-                  Upload Image
-                </label>
-                <div className="invalid-feedback">{errors.courseImage}</div>
-                <input
-                  type="file"
-                  name="courseImage"
-                  id="courseImage"
-                  accept="image/jpeg, image/png, image/gif"
-                  placeholder="Upload Image"
-                  className="file-upload"
-                  onChange={handleFileChange}
-                />
+                <div className="form-group row pt-1" >
+                      <label className="col-sm-3 col-form-label"></label>
+                      <div className="col-sm-9">
                 <img
                   src={img}
                   onError={(e) => {
@@ -328,17 +316,66 @@ const EditCourseForm = ({}) => {
                     height: "100px",
                   }}
                 />
-                <br />
-                <div className="form-group mt-1">
-                  <label htmlFor="courseAmount">
-                    Amount <span className="text-danger">*</span>
+                </div>
+                </div>
+            <div className="form-group row p-3">
+            <div className="col-sm-6">
+                  <div className="row">
+                  <label htmlFor="duration" 
+                  className=" col-form-label">
+                     Duration (Hours) <span className="text-danger">*</span>
                   </label>
-                  <div>
+                  <div className="col">
+                    <input
+                      name="duration"
+                      type="number"
+                      id="duration"
+                      className={`form-control   mt-1 ${
+                        errors.duration && "is-invalid"
+                      }`}
+                      value={courseEdit.duration}
+                      onChange={handleChange}
+                    />
+                    <div className="invalid-feedback">{errors.duration}</div>
+                    </div>
+                    </div>
+                </div>
+                
+                <div className="col-sm-6">
+                <div className="row">
+                <label htmlFor="noofseats" 
+                className=" col-form-label">
+                  Number of Seats <span className="text-danger">*</span>
+                </label>
+              <div className="col">
+                  <input
+                    name="noofseats"
+                    type="number"
+                    id="noofseats"
+                    value={courseEdit.noofseats}
+                    className={`form-control    ${
+                      errors.noofseats && "is-invalid"
+                    }`}
+                    onChange={handleChange}
+                  />
+                  <div className="invalid-feedback">{errors.noofseats}</div>
+                  </div>
+               </div>
+              </div>
+             
+               
+                </div>
+                <div className="form-group row">
+                  <label htmlFor="courseAmount"
+                   className=" col-sm-3 col-form-label">
+                     Course Amount  <span className="text-danger">*</span>
+                  </label>
+                 <div className="col-sm-9">
                     <input
                       type="number"
                       name="amount"
                       id="amount"
-                      className={`form-control .form-control-sm  mt-1 ${
+                      className={`form-control   mt-1 ${
                         errors.courseAmount && "is-invalid"
                       }`}
                       placeholder="Amount"
@@ -348,38 +385,40 @@ const EditCourseForm = ({}) => {
                     <div className="invalid-feedback">
                       {errors.courseAmount}
                     </div>
-                  </div>
-                </div>
-                <div className="form-group mt-1">
-                  <label htmlFor="duration">
-                    Course Duration <span className="text-danger">*</span>
+                    </div>
+                    </div>
+                    <div className="form-group row ">
+                    <label htmlFor="courseAmount"
+                   className=" col-sm-3 col-form-label">
+                     Partial Payment Settings  
                   </label>
-                  <div>
-                    <input
-                      name="duration"
-                      type="number"
-                      id="duration"
-                      className={`form-control .form-control-sm  mt-1 ${
-                        errors.duration && "is-invalid"
-                      }`}
-                      value={courseEdit.duration}
-                      onChange={handleChange}
-                    />
-                    <div className="invalid-feedback">{errors.duration}</div>
+                <a className="col-sm-9 col-form-label" href={`/course/update/paymentSettings/${courseEdit.courseName}/${courseEdit.courseId}`}>  Payment Settings</a>
+            
                   </div>
-                </div>
-
-                <div>
-                  <button type="submit" className="btn btn-primary w-100">
-                    Update Course
+                  </div>
+                <div className="cornerbtn">
+                <button
+                  className="btn btn-secondary"
+                  type="button"
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  Cancel
+                </button>
+                
+                  <button type="submit" className="btn btn-primary ">
+                    Update 
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
+              
+        
         </form>
+        </div>
+        </div>
+        </div>
       </div>
-    </div>
+      </div>
   );
 };
 

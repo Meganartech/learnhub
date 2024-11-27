@@ -27,8 +27,12 @@ const MyCertificateList = () => {
     }, []);
 
     return (
-        <div className='contentbackground'>
-            <div className='contentinner'>
+        <div>
+        <div className="page-header"></div>
+        <div className='row'>
+          <div className='col-sm-12'>
+            <div className='card'>
+              <div className='card-header'>
             <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
@@ -36,6 +40,9 @@ const MyCertificateList = () => {
       </div>
         <div className="mt-4">
             <h2>My Certificates</h2>
+            </div>
+            <div className='card-body'>
+            <div className="table-container">
             <table className="table table-hover table-bordered table-sm ">
                 <thead className='thead-dark'>
                     <tr>
@@ -58,6 +65,10 @@ const MyCertificateList = () => {
                     ))}
                 </tbody>
             </table>
+            </div>
+            </div>
+            </div>
+            </div>
         </div>
         </div>
         </div>

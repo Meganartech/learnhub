@@ -1,5 +1,4 @@
 import React, { useState,useEffect } from 'react';
-import "../css/certificate.css";
 import signature from "../images/signature.png"
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -210,14 +209,12 @@ setisnotFound(true);
 };
 
 const certificateInputs=(
-
-  <div className='contentinner'>
+  <div className="col-12">
      <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-    <div className='innerFrame'>
 <h1>Certificate Form</h1>
 <div className='mainform'>
   <div className='profile-picture'>
@@ -232,8 +229,8 @@ const certificateInputs=(
       
     
     </div>
-    <div>
-    <label htmlFor='fileInput' className='file-upload-btn'>
+    <div className='custom-file'>
+    <label htmlFor='fileInput'className="custom-file-label">
       Upload
     </label>
     <div className="text-danger">{errors.authorizedSign}</div>
@@ -249,14 +246,13 @@ const certificateInputs=(
   </div>
 
 
-  <div className='formgroup'>
-    <div className='inputgrp'>
-      <label htmlFor='institutionName'>Institution Name <span className="text-danger">*</span></label>
-      <span>:</span>
-      <div>
+  <div>
+    <div className='form-group row'>
+      <label htmlFor='institutionName'className="col-sm-3 col-form-label">Institution Name <span className="text-danger">*</span></label>
+      <div className="col-sm-9">
       <input
         id='institutionName'
-        className={`form-control .form-control-sm  ${errors.institutionName && 'is-invalid'}`}
+        className={`form-control   ${errors.institutionName && 'is-invalid'}`}
         placeholder='Institution Name'
         value={certificate.institutionName}
         onChange={handleChange}
@@ -268,15 +264,14 @@ const certificateInputs=(
               </div>
     </div>
 
-    <div className='inputgrp'>
-      <label htmlFor='ownerName'>Owner Name <span className="text-danger">*</span></label>
-      <span>:</span>
-      <div>
+    <div className='form-group row'>
+      <label htmlFor='ownerName'className="col-sm-3 col-form-label">Owner Name <span className="text-danger">*</span></label>
+      <div className="col-sm-9">
       <input
         id='ownerName'
         placeholder='Owner Name'
         
-        className={`form-control .form-control-sm  ${errors.ownerName && 'is-invalid'}`}
+        className={`form-control   ${errors.ownerName && 'is-invalid'}`}
         value={certificate.ownerName}
         onChange={handleChange}
         required
@@ -287,14 +282,13 @@ const certificateInputs=(
               </div>
     </div>
 
-    <div className='inputgrp'>
-      <label htmlFor='qualification'>Qualification <span className="text-danger">*</span></label>
-      <span>:</span>
-      <div>
+    <div className='form-group row'>
+      <label htmlFor='qualification'className="col-sm-3 col-form-label">Qualification <span className="text-danger">*</span></label>
+      <div className="col-sm-9">
       <input
       name='qualification'
         id='qualification'
-        className={` form-control .form-control-sm  ${errors.qualification && 'is-invalid'}`}
+        className={` form-control   ${errors.qualification && 'is-invalid'}`}
         placeholder='Qualification'
         value={certificate.qualification}
         onChange={handleChange}
@@ -306,15 +300,14 @@ const certificateInputs=(
               </div>
     </div>
 
-    <div className='inputgrp'>
-      <label htmlFor='address'>Address <span className="text-danger">*</span></label>
-      <span>:</span>
-      <div>
+    <div className='form-group row'>
+      <label htmlFor='address'className="col-sm-3 col-form-label">Address <span className="text-danger">*</span></label>
+      <div className="col-sm-9">
       <input
         id='address'
         placeholder='Address'
         
-        className={`form-control .form-control-sm  ${errors.address && 'is-invalid'}`}
+        className={`form-control   ${errors.address && 'is-invalid'}`}
         value={certificate.address}
         onChange={handleChange}
         required
@@ -332,17 +325,16 @@ const certificateInputs=(
   <button className='btn btn-primary' onClick={handleSave}>Save</button>
 </div>
 </div>
-</div>);
+);
 
 const certificateView=(
-  <div className='contentinner'>
+  <div className="col-12">
      <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-  <div className='innerFrame'>
-        <h3>Certificate Templates</h3>
+        <h4>Certificate Template</h4>
         <div className='mainform'>
           <div className='profile-picture'>
           <div className='image-group'>
@@ -357,70 +349,83 @@ const certificateView=(
           
           </div>
         
-
-          <div className='formgroup'>
-            <div className='inputgrp'>
-              <label htmlFor='institutionName'>Institution Name</label>
-              <span>:</span>
+<div>
+          <div className='form-group row'>
+              <label htmlFor='institutionName'
+              className="col-sm-3 col-form-label">Institution Name</label>
+              <div className="col-sm-9">
               <input
                 id='institutionName'
                 placeholder='Institution Name'
                 value={defaultcerti.institutionName}
-                className='disabledbox'
+                className='form-control'
                 readOnly
               />
+              </div>
             </div>
 
-            <div className='inputgrp'>
-              <label htmlFor='ownerName'>Owner Name</label>
-              <span>:</span>
+            <div className='form-group row'>
+              <label htmlFor='ownerName'
+              className="col-sm-3 col-form-label">Owner Name</label>
+                 <div className="col-sm-9">
               <input
                 id='ownerName'
                 placeholder='Owner Name'
                 value={defaultcerti.ownerName}
-                className='disabledbox'
+                className='form-control'
                 readOnly
               />
+              </div>
             </div>
 
-            <div className='inputgrp'>
-              <label htmlFor='qualification'>Qualification</label>
-              <span>:</span>
+            <div className='form-group row'>
+              <label htmlFor='qualification' className="col-sm-3 col-form-label">Qualification</label>
+              <div className="col-sm-9">
               <input
                 id='qualification'
                 placeholder='Qualification'
                 value={defaultcerti.qualification}
-                className='disabledbox'
+                className='form-control'
                 readOnly
               />
+              </div>
             </div>
 
-            <div className='inputgrp'>
-              <label htmlFor='address'>Address</label>
-              <span>:</span>
+            <div className='form-group row'>
+              <label htmlFor='address'
+              className="col-sm-3 col-form-label">Address</label>
+              <div className="col-sm-9">
               <input
                 id='address'
                 placeholder='Address'
                 value={defaultcerti.address}
-                className='disabledbox'
+                className='form-control'
                 readOnly
                
               />
+              </div>
             </div>
-
+            </div>
            
           </div>
-        </div>
-        <div className='btngrp'>
-  <button className='btn btn-primary' onClick={handleEdit}>Edit</button>
+        <div className='btngrp '>
+  <button className='btn btn-success' onClick={handleEdit}>Edit</button>
 </div>
-      </div>
       </div>
 )
 
   return (
-    <div className='contentbackground'>
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className=" card-body">
+        <div className="row">
+         
       {isnotFound ? certificateInputs : certificateView}
+   
+    </div>
+    </div>
+    </div>
     </div>
   );
 };
