@@ -168,53 +168,6 @@ public ResponseEntity<?> viewTransactionHistory(String token) {
     }
 }
 
-public ResponseEntity<?>ViewMypaymentHistrytrainer(String token){
-	  try {
-	    	
-	    	 if (!jwtUtil.validateToken(token)) {
-	    		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                    .body("Unauthorized access");
-	         }
-	    	 String email=jwtUtil.getUsernameFromToken(token);
-	    	Optional< Muser> opuser = muserRepository.findByEmail(email);
-	    			if(opuser.isPresent()) {
-	    				Muser user=opuser.get();
-	    				String institutionName=user.getInstitutionName();
-	    				 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institutionName);
-	 		   	    	if(!adminIsactive) {
-	 		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	 		   	    	}
-	    				List<CourseDetail> courses =user.getAllotedCourses();
-	    				   
-		              	 List<Object> courseOrderMap = new ArrayList<>();
-	    			        for (CourseDetail course : courses) {
-	    			            Long courseId = course.getCourseId();
-	    			            List<Orderuser> orderUsersForCourse = ordertablerepo.findAllBycourseIdandinstitutionName(courseId, institutionName);
-
-	    			            if (!orderUsersForCourse.isEmpty()) {
-	    			                courseOrderMap.addAll(orderUsersForCourse);
-	    			            }
-	    			        }
-	              	
-	              	   if(courseOrderMap.size()>0) {
-	              		  
-	              		   return ResponseEntity.ok(courseOrderMap);
-	              	   }else {
-	              		   return ResponseEntity.notFound().build();
-	              	   }
-
-	    			}else {
-	    				 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	 		                    .body("Unauthorized access");
-	    			}
-
-	  }catch (Exception e) {
-		  e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("An error occurred : " + e.getMessage() );
-	    }
-}
-
 
 
 }

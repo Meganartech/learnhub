@@ -717,7 +717,7 @@ public ResponseEntity<?>getDocsName(Long lessonId , String token){
 		if (opuser.isPresent()) {
 			Muser user = opuser.get();
 			if(user.getRole().getRoleName().equals("USER")) {
-			Optional<CourseDetail> opcourse= docsDetailsRepository.FindCourseBylessonId(lessonId);
+			Optional<CourseDetail> opcourse= lessonrepo.FindbyCourseByLessonId(lessonId);
 			if(opcourse.isPresent()) {
 				CourseDetail course=opcourse.get();
 				
@@ -730,7 +730,7 @@ public ResponseEntity<?>getDocsName(Long lessonId , String token){
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found");
 			}
 			}else if(user.getRole().getRoleName().equals("TRAINER")) {
-				Optional<CourseDetail> opcourse= docsDetailsRepository.FindCourseBylessonId(lessonId);
+				Optional<CourseDetail> opcourse= lessonrepo.FindbyCourseByLessonId(lessonId);
 				if(opcourse.isPresent()) {
 					CourseDetail course=opcourse.get();
 					

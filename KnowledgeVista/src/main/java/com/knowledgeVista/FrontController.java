@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
-import com.knowledgeVista.Course.DocsDetails;
 import com.knowledgeVista.Course.Controller.CheckAccess;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Controller.CourseControllerSecond;
@@ -49,8 +47,6 @@ import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.PaymentSettingsController;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.Controller.SettingsController;
-import com.knowledgeVista.SocialLogin.SocialLoginKeys;
-import com.knowledgeVista.SysAdminPackage.SysadminController;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Controller.AddUsers;
 import com.knowledgeVista.User.Controller.AssignCourse;
@@ -59,6 +55,7 @@ import com.knowledgeVista.User.Controller.Edituser;
 import com.knowledgeVista.User.Controller.GoogleAuthController;
 import com.knowledgeVista.User.Controller.Listview;
 import com.knowledgeVista.User.Controller.MserRegistrationController;
+import com.knowledgeVista.User.LabellingItems.controller.LadellingitemController;
 import com.knowledgeVista.User.Usersettings.RoleDisplayController;
 import com.knowledgeVista.User.Usersettings.Role_display_name;
 
@@ -147,6 +144,8 @@ public class FrontController {
 	@Autowired
 	private GoogleAuthController googleauth;
 	
+	@Autowired
+	private LadellingitemController labelingctrl;
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
 	public String getActiEnvironment() {
@@ -259,12 +258,22 @@ public class FrontController {
 			 return courseController.getLessonList(courseId,token);
 		 }
 //----------------------------COURSE CONTROLLER SECOND-----------------------------------
-
+		 @GetMapping("/dashboard/storage")
+		 public ResponseEntity<?> getstorageDetails(@RequestHeader("Authorization") String token) {
+			 return coursesec.getstoragedetails(token);
+		 }
 		 @GetMapping("/courseControl/popularCourse")
 		 public ResponseEntity<List<CourseDetail>> popular(@RequestHeader("Authorization") String token) {
 			 return coursesec.popular(token);
 		 }
-		 
+		 @GetMapping("/dashboard/trainerSats")
+		 public ResponseEntity<?>getAllTrainerhandlingUsersAndCourses(@RequestHeader("Authorization") String token){
+			 return coursesec.getAllTrainerhandlingUsersAndCourses(token);
+		 }
+		 @GetMapping("/dashboard/StudentSats")
+		 public ResponseEntity<?>getAllStudentCourseDetails(@RequestHeader("Authorization") String token){
+			 return coursesec.getAllStudentCourseDetails(token);
+		 }
 //----------------------------videolessonController-------------------------------
 		 @GetMapping("/getDocs/{lessonId}")
 		 public ResponseEntity<?>getDocsName( @PathVariable Long lessonId,@RequestHeader("Authorization") String token){
@@ -471,17 +480,7 @@ public class FrontController {
             	   }
                }
             	   
-           @GetMapping("/viewAllTransactionHistoryForTrainer")
-           public ResponseEntity<?>ViewMypaymentHistrytrainer(@RequestHeader("Authorization") String token){
-        	   if (paylist != null && activeProfile.equals("demo")) {
-
-          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-        	 
-        	   }
-        	   else {
-        		   return paylist.ViewMypaymentHistrytrainer(token); 
-        	   }
-           }
+        
                
 //-------------------------LicenseController-----------------------
                @GetMapping("/api/v2/GetAllUser")
@@ -759,6 +758,21 @@ public class FrontController {
                          @RequestParam(defaultValue = "10") int pageSize){
     		    	return listview.GetStudentsOfTrainer(token,pageNumber, pageSize);
     		    }
+    		    @GetMapping("/view/Approvals")
+    		    public ResponseEntity<Page<MuserDto>>getallApprovals(@RequestHeader("Authorization") String token,
+   		    		 @RequestParam(defaultValue = "0") int pageNumber, 
+                     @RequestParam(defaultValue = "10") int pageSize){
+    		    	return listview.getallApprovals(token, pageNumber, pageSize);
+}
+    		    @PostMapping("/Reject/User/{id}")
+    		    public ResponseEntity<?> RejectUser(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+    		    	return listview.RejectUser(id, token);
+    		    }
+    		    @PostMapping("/approve/User/{id}")
+    		    public ResponseEntity<?> approveUser(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+    		    	return listview.ApproveUser(id, token);
+    		    }
+    		        
     		    @GetMapping("/search/users")
     		    public  ResponseEntity<List<String>> getusersSearch(@RequestHeader("Authorization") String token, @RequestParam("query") String query){
     		   return listview.SearchEmail(token, query);
@@ -808,7 +822,21 @@ public class FrontController {
    	    		     @RequestHeader("Authorization") String token) {
     		    	return listview.searchUser(username, email, phone, dob, institutionName, skills, page, size, token);
     		    }
-    		    
+    		    @GetMapping("/Institution/search/Approvals")
+    		    public ResponseEntity<Page<MuserDto>> searchApproval(
+    		            @RequestParam(value = "username", required = false) String username,
+    		            @RequestParam(value = "email", required = false) String email,
+    		            @RequestParam(value = "phone", required = false) String phone,
+    		            @RequestParam(value = "dob", required = false)   @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dob,
+    		            
+    		            @RequestParam(value = "skills", required = false) String skills,
+    		            @RequestParam(value = "role", required = false) String roleName,
+    		            @RequestParam(value = "page", defaultValue = "0") int page,
+    		            @RequestParam(value = "size", defaultValue = "10") int size,
+    		            @RequestHeader("Authorization") String token
+    		            ) {
+    		    	return listview.searchApprovalByAdmin(username, email, phone, dob, skills,roleName, page, size,token);
+    		    }
     		    @GetMapping("/Institution/search/Trainer")
     		    public ResponseEntity<Page<MuserDto>> searchTrainerByadmin(
     		            @RequestParam(value = "username", required = false) String username,
@@ -1142,15 +1170,83 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
 
                @PostMapping("/api/auth/google")
                public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> tokenMap) {
+            	   try {
+            		   if(environment.equals("VPS")) {
             	   return googleauth.googleLogin(tokenMap);
+            		   }else {
+            			   return null;
+            		   }
+            	   }catch(Exception e) {
+            		   e.printStackTrace();
+            		   return null;
+            	   }
                }
                
                @GetMapping("/getgoogleclient")
                public String getClientid(@RequestParam(required = false) String institution,@RequestParam String Provider){
-            	   return googleauth.getClientidforgoogle(institution, Provider);
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return googleauth.getClientidforgoogle(institution, Provider);
+            			   }else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
+               }
+     
+  //===========================================Labelling===========================================
+               
+               @PostMapping("/save/labellings")
+               public ResponseEntity<?>SaveLabellingitems(@RequestHeader("Authorization") String token ,
+            		   @RequestParam(required = false) String siteUrl,
+            		   @RequestParam(required=false)String title,
+            		   @RequestParam(required = false) MultipartFile sitelogo, 
+            		   @RequestParam(required = false) MultipartFile siteicon,
+            		   @RequestParam(required = false) MultipartFile titleicon){
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return labelingctrl.SaveLabellingitems(token,siteUrl,title,sitelogo,siteicon,titleicon);
+            		   }
+            	   else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
                }
                
-             
                
+               @GetMapping("/Get/labellings")
+               public ResponseEntity<?>getLabelingitems(@RequestHeader("Authorization") String token ){
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return labelingctrl.getLabelingitems(token);
+            		   }
+            	   else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
+               }
+               
+               @GetMapping("/all/get/labellings")
+               public ResponseEntity<?>getLabelingitemsforall( ){
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return labelingctrl.getLabelingitemsforall();
+            		   }
+            	   else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
+               }
 }
 

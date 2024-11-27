@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
+import com.knowledgeVista.User.Approvals.MuserApprovalPageable;
+import com.knowledgeVista.User.Approvals.MuserApprovalRepo;
+import com.knowledgeVista.User.Approvals.MuserApprovals;
 import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -28,7 +31,10 @@ public class Listview {
 	 @Autowired 
 	 private MuserRepoPageable muserPageRepo;
 	
-	
+	 @Autowired
+	 private MuserApprovalRepo MuserApproval;
+	@Autowired
+	private MuserApprovalPageable approvalpage;
 //```````````````WORKING````````````````````````````````````
 
     public ResponseEntity<Page<MuserDto>> getUsersByRoleName(String token ,int pageNumber,int pageSize) {
@@ -149,7 +155,43 @@ public class Listview {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+//``````````````````````````Approvals`````````````````````````````````
+    public ResponseEntity<Page<MuserDto>>getallApprovals( String token ,int pageNumber,int pageSize){
+    	 try {
+    	    	if (!jwtUtil.validateToken(token)) {
+    		         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    		     }
 
+    		     String role = jwtUtil.getRoleFromToken(token);
+    	   	     String email=jwtUtil.getUsernameFromToken(token);
+    	   	     Optional<Muser>opreq=muserrepositories.findByEmail(email);
+    	   	     String institution="";
+    	   	     if(opreq.isPresent()) {
+    	   	    	 Muser requser=opreq.get();
+    	   	    	institution=requser.getInstitutionName();
+    	   	    	boolean adminIsactive=muserrepositories.getactiveResultByInstitutionName("ADMIN", institution);
+    	   	    	if(!adminIsactive) {
+    	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    	   	    	}
+    	   	     }else {
+    	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+    	   	     }
+    		     if("ADMIN".equals(role)){
+    		    	 Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    		    		 Page<MuserDto> users = approvalpage.findAllUsers(pageable);
+    	       
+    	       
+    	        return ResponseEntity.ok(users);
+    	        
+    		     }else {
+    		    	  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    		     }
+    	    } catch (Exception e) {
+    	    	e.printStackTrace();
+    	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    	    }
+
+    }
 //```````````````WORKING````````````````````````````````````
 public ResponseEntity<Page<MuserDto>> getTrainerByRoleName( String token ,int pageNumber,int pageSize) {
 	
@@ -310,6 +352,116 @@ return ResponseEntity.ok(Uniquestudents);
 //===============================SYSADMIN==============================
 
 //=================================ADMIN SEARCH============================
+public ResponseEntity<Page<MuserDto>> searchApprovalByAdmin( String username, String email, String phone, LocalDate dob,
+	       String skills, String roleName,int page, int size,String token
+	        ) {
+		try{
+			if (!jwtUtil.validateToken(token)) {
+				  return ResponseEntity.ok(Page.empty());
+		    }
+			 String adminemail=jwtUtil.getUsernameFromToken(token);
+			 Optional<Muser>opmuser=muserrepositories.findByEmail(adminemail);
+			 if(opmuser.isPresent()) {
+				 Muser user= opmuser.get();
+				 String role=user.getRole().getRoleName();
+			 if(role.equals("ADMIN")) {
+				 String institutionName= user.getInstitutionName();
+		    Pageable pageable = PageRequest.of(page, size);
+		Page<MuserDto> Uniquestudents=approvalpage.CustomeApprovalsearchForAdmin(username, email, phone, dob, institutionName,  skills, pageable);
+		return ResponseEntity.ok(Uniquestudents);
+			 }else {
+
+				  return ResponseEntity.ok(Page.empty());
+			 }
+			 }else {
+				  return ResponseEntity.ok(Page.empty());
+			 }
+		}catch (Exception e) {
+		    e.printStackTrace();
+		    // Return an empty Page with a 200 OK status
+		    return ResponseEntity.ok(Page.empty());
+		}
+	}
+public ResponseEntity<?>RejectUser(Long id,String token){
+	try{
+		if (!jwtUtil.validateToken(token)) {
+			  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    }
+		 String adminemail=jwtUtil.getUsernameFromToken(token);
+		 Optional<Muser>opmuser=muserrepositories.findByEmail(adminemail);
+		 if(opmuser.isPresent()) {
+			 Muser user= opmuser.get();
+			 String role=user.getRole().getRoleName();
+		 
+		 if(role.equals("ADMIN")) {
+			Optional<MuserApprovals> opapproval=MuserApproval.findById(id);
+			if(opapproval.isPresent()) {
+				
+				MuserApproval.deleteById(id);
+				return ResponseEntity.ok("user Rejected Successfully");
+			}else {
+				return ResponseEntity.status(HttpStatus.CREATED).build();
+			}
+		 }else {
+
+			  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		 }
+		 }else {
+			  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		 }
+	}catch (Exception e) {
+	    e.printStackTrace();
+	    // Return an empty Page with a 200 OK status
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+}
+public ResponseEntity<?>ApproveUser(Long id,String token){
+	try{
+		if (!jwtUtil.validateToken(token)) {
+			  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    }
+		 String adminemail=jwtUtil.getUsernameFromToken(token);
+		 Optional<Muser>opmuser=muserrepositories.findByEmail(adminemail);
+		 if(opmuser.isPresent()) {
+			 Muser user= opmuser.get();
+			 String role=user.getRole().getRoleName();
+		 
+		 if(role.equals("ADMIN")) {
+			Optional<MuserApprovals> opapproval=MuserApproval.findById(id);
+			if(opapproval.isPresent()) {
+				MuserApprovals approval=opapproval.get();
+				Muser muser=new Muser();
+				muser.setUsername(approval.getUsername());
+				muser.setEmail(approval.getEmail());
+				muser.setPhone(approval.getPhone());
+				muser.setDob(approval.getDob());
+				muser.setInstitutionName(approval.getInstitutionName());
+				muser.setProfile(approval.getProfile());
+				muser.setPsw(approval.getPsw());
+				muser.setRole(approval.getRole());
+				muser.setIsActive(true);
+				muser.setInactiveDescription("");
+				muser.setSkills(approval.getSkills());
+				muser.setCountryCode(approval.getCountryCode());
+				muserrepositories.save(muser);
+				MuserApproval.deleteById(id);
+				return ResponseEntity.ok("user Approved Successfully");
+			}else {
+				 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+			}
+		 }else {
+
+			  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		 }
+		 }else {
+			  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		 }
+	}catch (Exception e) {
+	    e.printStackTrace();
+	    // Return an empty Page with a 200 OK status
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+}
 
 public ResponseEntity<Page<MuserDto>> searchTrainerByAdmin( String username, String email, String phone, LocalDate dob,
 	       String skills, int page, int size,String token

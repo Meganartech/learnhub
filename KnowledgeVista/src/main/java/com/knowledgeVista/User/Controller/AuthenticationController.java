@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.User.Muser;
-
-
+import com.knowledgeVista.User.Approvals.MuserApprovalRepo;
+import com.knowledgeVista.User.Approvals.MuserApprovals;
 import com.knowledgeVista.User.Repository.*;
 
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -26,7 +26,8 @@ import com.knowledgeVista.User.SecurityConfiguration.TokenBlacklist;
 public class AuthenticationController {
 	 @Autowired
 	    private MuserRepositories muserRepositories;
-
+@Autowired
+private MuserApprovalRepo muserapprovals;
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	 @Autowired
@@ -115,8 +116,16 @@ public class AuthenticationController {
            	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
 	            }
 	        } else {
-	            // User with the provided username doesn't exist
+	        	Optional<MuserApprovals> opmuser=muserapprovals.findByEmail(username);
+	        	if(opmuser.isPresent()) {
+	        		
+	        		 Map<String, Object> responseBody = new HashMap<>();
+               	  responseBody.put("message", "Not Approved");
+               	  responseBody.put("Description","Your login has not been approved yet.Please contact the administrator.");
+               	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+	        	}else {
 	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"User not found\"}");
+	        	}
 	        }
 	    }
 		
