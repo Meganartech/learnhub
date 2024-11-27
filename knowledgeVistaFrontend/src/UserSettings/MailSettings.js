@@ -1,49 +1,48 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import baseUrl from "../api/utils"
-import axios from 'axios';
+import baseUrl from "../api/utils";
+import axios from "axios";
 
 const MailSettings = () => {
- const navigate=useNavigate();
-const[initialsave,setinitialsave]=useState(false);
-  const MySwal = withReactContent(Swal); 
-  const token=sessionStorage.getItem("token")
-  const [isnotFound,setisnotFound]=useState(false);
-  const[settings,setsettings]=useState({
-    hostname:"",
-    port:"587",
-    emailid:"",
-    password:""
-  })
-  const[defaultsettings,setdefaultsettings]=useState({
-    hostname:"",
-    port:"",
-    emailid:"",
-    password:""
-  })
-  const[errors,seterrors]=useState({
-    hostname:"",
-    emailid:"",
-    password:""
-  })
+  const navigate = useNavigate();
+  const [initialsave, setinitialsave] = useState(false);
+  const MySwal = withReactContent(Swal);
+  const token = sessionStorage.getItem("token");
+  const [isnotFound, setisnotFound] = useState(false);
+  const [settings, setsettings] = useState({
+    hostname: "",
+    port: "587",
+    emailid: "",
+    password: "",
+  });
+  const [defaultsettings, setdefaultsettings] = useState({
+    hostname: "",
+    port: "",
+    emailid: "",
+    password: "",
+  });
+  const [errors, seterrors] = useState({
+    hostname: "",
+    emailid: "",
+    password: "",
+  });
   useEffect(() => {
-    if(token){
+    if (token) {
       const fetchMailAccountSettings = async () => {
         try {
           const response = await axios.get(`${baseUrl}/get/mailkeys`, {
             headers: {
-              "Authorization": token
-            }
+              Authorization: token,
+            },
           });
           if (response.status === 200) {
             const data = response.data;
-            
+
             setdefaultsettings(data);
             setsettings(data);
-            
-        } 
+          }
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {
@@ -55,279 +54,317 @@ const[initialsave,setinitialsave]=useState(false);
           }
         }
       };
-    
+
       fetchMailAccountSettings();
     }
-    }, []); 
-    const save =async (e) => {
-      e.preventDefault();
-      console.log("hi in save",initialsave);
+  }, []);
+  const save = async (e) => {
+    e.preventDefault();
+    console.log("hi in save", initialsave);
 
-      if(initialsave){
-        console.log("hi in initial save");
-  try{
-      const response=await axios.post(`${baseUrl}/save/mailkeys`, settings, {
-          headers: {
-            'Authorization': token
+    if (initialsave) {
+      console.log("hi in initial save");
+      try {
+        const response = await axios.post(
+          `${baseUrl}/save/mailkeys`,
+          settings,
+          {
+            headers: {
+              Authorization: token,
+            },
           }
-        })
-      
+        );
+
         if (response.status === 200) {
           MySwal.fire({
             title: "Saved !",
-            text: "Email Details Saved Sucessfully" ,
+            text: "Email Details Saved Sucessfully",
             icon: "success",
             confirmButtonText: "OK",
           }).then((result) => {
             if (result.isConfirmed) {
               window.location.reload();
-            }   });
-          setisnotFound(false)
-        } 
-  }catch(error){
-    console.log(error)
-    MySwal.fire({
-      icon: 'error',
-      title: 'Some Error Occurred',
-      text: "error occured"
-    });
-  }
-     
-    }else{ 
-      if(defaultsettings.id){
-        console.log("hi in default");
-      axios.patch(`${baseUrl}/Edit/mailkeys`,settings ,{
-      headers:{
-        "Authorization":token
+            }
+          });
+          setisnotFound(false);
         }
-    })
-    .then(response => {
-      if (response.status=== 200) {
+      } catch (error) {
+        console.log(error);
         MySwal.fire({
-          title: "Updated",
-          text: "Email Details Saved Sucessfully" ,
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }   });
-        setisnotFound(false)
+          icon: "error",
+          title: "Some Error Occurred",
+          text: "error occured",
+        });
       }
-      
-    })
-    .catch(error => {
-     if(error.response.status===401){
-      window.location.href="/unauthorized"
-     } else{
-      MySwal.fire({
-        icon: 'error',
-        title: 'Some Error Occurred',
-        text: error.data
-      });
-     } 
-    });
-      
+    } else {
+      if (defaultsettings.id) {
+        console.log("hi in default");
+        axios
+          .patch(`${baseUrl}/Edit/mailkeys`, settings, {
+            headers: {
+              Authorization: token,
+            },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              MySwal.fire({
+                title: "Updated",
+                text: "Email Details Saved Sucessfully",
+                icon: "success",
+                confirmButtonText: "OK",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.reload();
+                }
+              });
+              setisnotFound(false);
+            }
+          })
+          .catch((error) => {
+            if (error.response.status === 401) {
+              window.location.href = "/unauthorized";
+            } else {
+              MySwal.fire({
+                icon: "error",
+                title: "Some Error Occurred",
+                text: error.data,
+              });
+            }
+          });
+      }
     }
-  
-  }
-      
-    };
+  };
 
-
-  const handleInputsChange=(e)=>{
-const {name,value}=e.target;
-setsettings((prev)=>({
-    ...prev,
-    [name]:value
-}))
-  }
-  const Edit=(e)=>{
+  const handleInputsChange = (e) => {
+    const { name, value } = e.target;
+    setsettings((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const Edit = (e) => {
     e.preventDefault();
     setisnotFound(true);
-  }
+  };
 
-  const getinputs=(
+  const getinputs = (
     <div>
-    <div className='navigateheaders'>
-     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
-     <div></div>
-     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
-     </div>
-   
-     <div className='innerFrameforset '>
- <h2 className='mb-5' style={{ textDecoration: "underline" }}>Mail Settings</h2>
-   
-     <div className='formgroup pt-4' >
-      
-         <div className='inputgrp'>
-           <label htmlFor='hostname'>Mail Host Name<span className="text-danger">*</span></label>
-           <span>:</span>
-           <div>
-           <input
-             id='hostname'
-             name='hostname'
-             placeholder='Email Host Name'
-             value={settings.hostname}
-             className={`form-control .form-control-sm  ${errors.hostname && 'is-invalid'}`}
-             onChange={handleInputsChange}
-           />
-           <div className="invalid-feedback">
-             {errors.hostname}
-           </div>
-           </div>
-         </div>
+      <div className="page-header"></div>
+      <div className="card">
+        <div className=" card-body">
+          <div className="row">
+            <div className="col-12">
+              <div className="navigateheaders">
+                <div
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <i className="fa-solid fa-arrow-left"></i>
+                </div>
+                <div></div>
+                <div
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </div>
+              </div>
 
-         <div className='inputgrp'>
-           <label htmlFor='port'>Mail port Name<span className="text-danger">*</span></label>
-           <span>:</span>
-           <div>
-           <input
-             id='port'
-             name='port'
-             placeholder='Email port Name'
-             value={settings.port}
-             className={`form-control .form-control-sm  ${errors.port && 'is-invalid'}`}
-             onChange={handleInputsChange}
-           />
-           <div className="invalid-feedback">
-             {errors.port}
-           </div>
-           </div>
-         </div>
-         <div className='inputgrp'>
-           <label htmlFor='emailid'>Email Id <span className="text-danger">*</span></label>
-           <span>:</span>
-           <div>
-            <input
-            name='emailid'
-             id='emailid'
-             placeholder='Email Id'
-           value={settings.emailid}
-           className={`form-control .form-control-sm  ${errors.emailid && 'is-invalid'}`}
-           onChange={handleInputsChange}
-           />
-           <div className="invalid-feedback">
-            {errors.emailid}
-           </div>
-           </div>
+              <h4>Mail Settings</h4>
 
-         </div>
-         <div className='inputgrp'>
-           <label htmlFor='password'>Password<span className="text-danger">*</span></label>
-           <span>:</span>
-           <div>
-            <input
-             id='password'
-             name='password'
-             placeholder='password '
-             className={`form-control .form-control-sm  ${errors.password && 'is-invalid'}`}
-             value={settings.password}
-            onChange={handleInputsChange}
-           />
-           <div className="invalid-feedback">
-             {errors.password}
-           </div>
-           </div>
+              <div className="form-group row">
+                <label htmlFor="hostname" className="col-sm-3 col-form-label">
+                  Mail Host Name<span className="text-danger">*</span>
+                </label>
+                <div className="col-sm-9">
+                  <input
+                    id="hostname"
+                    name="hostname"
+                    placeholder="Email Host Name"
+                    value={settings.hostname}
+                    className={`form-control   ${
+                      errors.hostname && "is-invalid"
+                    }`}
+                    onChange={handleInputsChange}
+                  />
+                  <div className="invalid-feedback">{errors.hostname}</div>
+                </div>
+              </div>
 
-         </div>
-      
-     </div>
-  
- 
-     <div className='btngrp'>
-       <button className='btn btn-primary' 
-       onClick={save}
-        >
-         Save</button>
-     </div>
-   
- </div>
- </div>) 
-   const defaultinputs=(
+              <div className="form-group row">
+                <label htmlFor="port" 
+                className="col-sm-3 col-form-label">
+                  Mail port Name<span className="text-danger">*</span>
+                </label>
+                <div className="col-sm-9">
+                  <input
+                    id="port"
+                    name="port"
+                    placeholder="Email port Name"
+                    value={settings.port}
+                    className={`form-control   ${
+                      errors.port && "is-invalid"
+                    }`}
+                    onChange={handleInputsChange}
+                  />
+                  <div className="invalid-feedback">{errors.port}</div>
+                </div>
+              </div>
+              <div className="form-group row">
+                <label htmlFor="emailid" className="col-sm-3 col-form-label">
+                  Email Id <span className="text-danger">*</span>
+                </label>
+                <div className="col-sm-9">
+                  <input
+                    name="emailid"
+                    id="emailid"
+                    placeholder="Email Id"
+                    value={settings.emailid}
+                    className={`form-control   ${
+                      errors.emailid && "is-invalid"
+                    }`}
+                    onChange={handleInputsChange}
+                  />
+                  <div className="invalid-feedback">{errors.emailid}</div>
+                </div>
+              </div>
+              <div className="form-group row">
+                <label htmlFor="password" className="col-sm-3 col-form-label">
+                  Password<span className="text-danger">*</span>
+                </label>
+                <div className="col-sm-9">
+                  <input
+                    id="password"
+                    name="password"
+                    placeholder="password "
+                    className={`form-control   ${
+                      errors.password && "is-invalid"
+                    }`}
+                    value={settings.password}
+                    onChange={handleInputsChange}
+                  />
+                  <div className="invalid-feedback">{errors.password}</div>
+                </div>
+              </div>
+         
+
+            <div className="btngrp">
+              <button className="btn btn-primary" onClick={save}>
+                Save
+              </button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  const defaultinputs = (
     <div>
-    <div className='navigateheaders'>
-     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
-     <div></div>
-     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
-     </div>
-     <div className='innerFrameforset '>
- <h2 className='mb-5' style={{ textDecoration: "underline" }} >Mail Settings</h2>
-   
-     <div className='formgroup pt-4' >
-      
-         <div className='inputgrp'>
-           <label htmlFor='hostname'>Mail Host Name <span className="text-danger">*</span></label>
-           <span>:</span>
-           
-           <input
-             id='hostname'
-             placeholder='Host Name'
-             value={defaultsettings.hostname}
-             readOnly
-            className='disabledbox'
-           />
-         </div>
+      <div className="page-header"></div>
+      <div className="card">
+        <div className=" card-body">
+          <div className="row">
+            <div className="col-12">
+              <div className="navigateheaders">
+                <div
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <i className="fa-solid fa-arrow-left"></i>
+                </div>
+                <div></div>
+                <div
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </div>
+              </div>
+              <h4>Mail Settings</h4>
 
-         <div className='inputgrp'>
-           <label htmlFor='port'>Mail port Name <span className="text-danger">*</span></label>
-           <span>:</span>
-           
-           <input
-             id='port'
-             placeholder='port Name'
-             value={defaultsettings.port}
-             readOnly
-            className='disabledbox'
-           />
-         </div>
-         <div className='inputgrp'>
-           <label htmlFor='emailid'>Email Id <span className="text-danger">*</span></label>
-           <span>:</span>
-           
-            <input
-             id='emailid'
-             placeholder='Email Id'
-             className='disabledbox'
-             readOnly
-             value={defaultsettings.emailid}
-           />
-          
+              <div className="form-group row">
+                <label
+                  htmlFor="hostname"
+                  className="col-sm-3 col-form-label
+           "
+                >
+                  Mail Host Name <span className="text-danger">*</span>
+                </label>
+                <div className="col-sm-9">
+                  <input
+                    id="hostname"
+                    placeholder="Host Name"
+                    value={defaultsettings.hostname}
+                    readOnly
+                    className="form-control"
+                  />
+                </div>
+              </div>
 
-         </div>
-         <div className='inputgrp'>
-           <label htmlFor='password'>Password<span className="text-danger">*</span></label>
-           <span>:</span>
-            <input
-             id='password'
-              placeholder='password '
-             value={defaultsettings.password}
-             className='disabledbox'
-             readOnly
-           />
-          
+              <div className="form-group row">
+                <label htmlFor="port" className="col-sm-3 col-form-label">
+                  Mail port Name <span className="text-danger">*</span>
+                </label>
+                <div className="col-sm-9">
+                  <input
+                    id="port"
+                    placeholder="port Name"
+                    value={defaultsettings.port}
+                    readOnly
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="form-group row">
+                <label htmlFor="emailid" className="col-sm-3 col-form-label">
+                  Email Id <span className="text-danger">*</span>
+                </label>
+                <div className="col-sm-9">
+                  <input
+                    id="emailid"
+                    placeholder="Email Id"
+                    className="form-control"
+                    readOnly
+                    value={defaultsettings.emailid}
+                  />
+                </div>
+              </div>
+              <div className="form-group row">
+                <label htmlFor="password" className="col-sm-3 col-form-label">
+                  Password<span className="text-danger">*</span>
+                </label>
+                <div className="col-sm-9">
+                  <input
+                    id="password"
+                    placeholder="password "
+                    value={defaultsettings.password}
+                    className="form-control"
+                    readOnly
+                  />
+                </div>
+              </div>
+            </div>
 
-         </div>
-      
-     </div>
-  
-  
-     <div className='btngrp' >
-       <button className='btn btn-primary' onClick={Edit}>Edit</button>
-     </div>
-     
- </div>
- </div>
- )
+            <div className="btngrp">
+              <button className="btn btn-success" onClick={Edit}>
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
-    {isnotFound ? getinputs: defaultinputs }
-    </div>
-    </div>
-  
+   <div>
+        {isnotFound ? getinputs : defaultinputs}
+        </div>
+  );
+};
 
-  )
-}
-
-export default MailSettings
+export default MailSettings;

@@ -3,10 +3,11 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../api/utils"
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const CreateCourseTrainer = () => {
   const token = sessionStorage.getItem("token");
   const MySwal = withReactContent(Swal);
-  
+  const navigate=useNavigate();
   // Initial state for form errors
   const [errors, setErrors] = useState({
       courseName: "",
@@ -92,11 +93,12 @@ const CreateCourseTrainer = () => {
     const allowedImageTypes = ['image/jpeg', 'image/png'];
 
     // Check file type (MIME type)
-    if (!allowedImageTypes.includes(file.type)) {
+    if (file &&  !allowedImageTypes.includes(file.type)) {
         setErrors((prevErrors) => ({
             ...prevErrors,
             courseImage: 'Please select an image of type JPG or PNG',
         }));
+        console.log("ERROR",errors.courseImage)
         return;
     }
 
@@ -106,6 +108,7 @@ const CreateCourseTrainer = () => {
             ...prevErrors,
             courseImage: 'Image size must be 50kb or smaller',
         }));
+        console.log("ERROR333",errors.courseImage)
         return;
     }
 
@@ -203,25 +206,37 @@ const CreateCourseTrainer = () => {
   };
 
   return (
-    <div className='contentbackground'>
-            <div className='contentinner p-3'>
-                <div className='divider ml-2'>
-                    <h1 style={{ textDecoration: "underline" }}>Setting up a Course</h1>
-                    <form >
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+          <div className="col-12">
+            <div className="navigateheaders">
+              <div onClick={() => { navigate(-1); }}>
+                <i className="fa-solid fa-arrow-left"></i>
+              </div>
+              <div></div>
+              <div onClick={() => { navigate("/dashboard/course"); }}>
+                <i className="fa-solid fa-xmark"></i>
+              </div>
+            </div>
+                    <h4>Setting up a Course</h4>
+                    <form className='col-10'>
                         {/* Form fields */}
-                        <div className='formgroup mt-2 maxheight '>
+                        <div >
                             {/* Course Title */}
-                            <div className='inputgrp'>
-                                <label htmlFor='courseName'>Course Title <span className="text-danger">*</span></label>
-                                <span>:</span>
-                                <div>
+                            <div className='form-group row'>
+                                <label htmlFor='courseName'className="col-sm-3 col-form-label"
+                                >Course Title <span className="text-danger">*</span></label>
+                                <div className='col-sm-9'>
                                     <input
                                         type="text"
                                        
                                         id='courseName'
                                         name="courseName"
                                         value={formData.courseName}
-                                        className={`form-control .form-control-sm  mt-2 ${errors.courseName && 'is-invalid'}`}
+                                        className={`form-control   mt-2 ${errors.courseName && 'is-invalid'}`}
                                         placeholder="Course Title"
                                         onChange={handleChange}
                                         autoFocus
@@ -234,10 +249,9 @@ const CreateCourseTrainer = () => {
                             </div>
                             
                             {/* Course Description */}
-                            <div className='inputgrp'>
-                                <label htmlFor='courseDescription'>Course Description <span className="text-danger">*</span></label>
-                                <span>:</span>
-                                <div>
+                            <div className='form-group row'>
+                                <label htmlFor='courseDescription' className="col-sm-3 col-form-label">Course Description <span className="text-danger">*</span></label>
+                                <div className='col-sm-9'>
                                     <textarea
                                         type="text"
                                         rows={3}
@@ -246,7 +260,7 @@ const CreateCourseTrainer = () => {
                                         name="courseDescription"
                                         value={formData.courseDescription}
                                         onChange={handleChange}
-                                        className={`form-control .form-control-sm  ${errors.courseDescription && 'is-invalid'}`}
+                                        className={`form-control   ${errors.courseDescription && 'is-invalid'}`}
                                         placeholder="Course Description"
                                         required
                                     />
@@ -257,17 +271,16 @@ const CreateCourseTrainer = () => {
                             </div>
                             
                             {/* Course Category */}
-                            <div className='inputgrp'>
-                                <label htmlFor='courseCategory'>Course Category <span className="text-danger">*</span></label>
-                                <span>:</span>
-                                <div>
+                            <div className='form-group row'>
+                                <label htmlFor='courseCategory' className="col-sm-3 col-form-label">Course Category <span className="text-danger">*</span></label>
+                                <div className='col-sm-9'>
                                     <input
                                         type="text"
                                        
                                         id='courseCategory'
                                         name="courseCategory"
                                         onChange={handleChange}
-                                        className={`form-control .form-control-sm  mt-1 ${errors.courseCategory && 'is-invalid'}`}
+                                        className={`form-control   mt-1 ${errors.courseCategory && 'is-invalid'}`}
                                         placeholder="Course Category"
                                         value={formData.courseCategory}
                                         required
@@ -279,41 +292,28 @@ const CreateCourseTrainer = () => {
                             </div>
                             
                             {/* Course Image */}
-                            <div className='inputgrp'>
-                                <label htmlFor='courseImage'className='displaynone'>Course Image <span className="text-danger">*</span></label>
-                                <span>:</span>
-                                <div>
-                                    <label
-                                        htmlFor='courseImage'                              
-                                         id='must'
-                                         style={{width:"200px"}}
-                                        className={`file-upload-btn ${errors.courseImage && `is-invalid`}`}
-                                    >
-                                        Upload Image
-                                    </label>
-                                    <div className="invalid-feedback">
-                                        {errors.courseImage}
-                                    </div>
-                                    <input
-                                        type="file"
-                                        style={{display:"none"}}
-                                        onChange={handleFileChange}
-                                        
-                                        id='courseImage'
-                                        name="courseImage"
-                                        accept='image/*'
-                                        className='file-upload'
-                                       
-                                    />
-                                  
-                                </div>
+                            <div className='form-group row'>
+                                <label htmlFor='courseImage'className="col-sm-3 col-form-label">Course Image <span className="text-danger">*</span></label>
+                               <div className='col-sm-9'> <div className=" custom-file">
+                  <input
+                    type="file"
+                    className={`custom-file-input ${errors.courseImage && "is-invalid"}`}
+                    onChange={handleFileChange}
+                    id="courseImage"
+                    name="courseImage"
+                    accept="image/*"
+                  />
+                  <label className="custom-file-label" htmlFor="courseImage">
+                    Choose file...
+                  </label>
+                  <div className="invalid-feedback">{errors.courseImage}</div>
+                </div></div>
                             </div>
                             {/* Displaying Selected Image */}
                             {formData.base64Image && (
-                                <div className='inputgrp'>
-                                    <div></div>
-                                    <div></div>
-                                    <div>
+                                <div className='form-group row'>
+                                    <div className="col-sm-3 col-form-label"></div>
+                                    <div className='col-sm-9'>
                                         <img
                                             src={formData.base64Image}
                                             alt="Selected"
@@ -322,12 +322,11 @@ const CreateCourseTrainer = () => {
                                     </div>
                                 </div>
                             )}
-
-                            {/* Duration */}
-                            <div className='inputgrp'>
-                                <label htmlFor='Duration'>Duration <span className="text-danger">*</span></label>
-                                <span>:</span>
-                                <div>
+ <div className="form-group row p-3">
+    <div className="col-sm-6">
+                            <div className='row'>
+                                <label htmlFor='Duration'className=" col-form-label">Duration (Hours) <span className="text-danger">*</span></label>
+                                <div className='col'>
                                     <input
                                         type="number"
                                         placeholder='Duration'
@@ -335,7 +334,7 @@ const CreateCourseTrainer = () => {
                                         name="Duration"
                                         value={formData.Duration}
                                         onChange={handleChange}
-                                        className={`form-control .form-control-sm  mt-1 ${errors.Duration && 'is-invalid'}`}
+                                        className={`form-control   mt-1 ${errors.Duration && 'is-invalid'}`}
                                         required
                                     />
                                     <div className="invalid-feedback">
@@ -343,18 +342,18 @@ const CreateCourseTrainer = () => {
                                     </div>
                                 </div>
                             </div>
-
+</div>
+<div className="col-sm-6">
                             {/* Number of Seats */}
-                            <div className='inputgrp'>
-                                <label htmlFor='Noofseats'>Number of Seats <span className="text-danger">*</span></label>
-                                <span>:</span>
-                                <div>
+                            <div className='row'>
+                                <label htmlFor='Noofseats' className="col-form-label">Number of Seats <span className="text-danger">*</span></label>
+                                <div className='col'>
                                     <input
                                         type="number"
                                        placeholder='No of Seats'
                                         id='Noofseats'
                                         name="Noofseats"
-                                        className={`form-control .form-control-sm  mt-1 ${errors.Noofseats && 'is-invalid'}`}
+                                        className={`form-control   mt-1 ${errors.Noofseats && 'is-invalid'}`}
                                         value={formData.Noofseats}
                                         onChange={handleChange}
                                         required
@@ -364,12 +363,12 @@ const CreateCourseTrainer = () => {
                                     </div>
                                 </div>
                             </div>
-
+                            </div>
+</div>
                             {/* Course Amount */}
-                            <div className='inputgrp'>
-                                <label htmlFor='courseAmount'>Course Amount <span className="text-danger">*</span></label>
-                                <span>:</span>
-                                <div>
+                            <div className='form-group row'>
+                                <label htmlFor='courseAmount' className="col-sm-3 col-form-label">Course Amount <span className="text-danger">*</span></label>
+                                <div className='col-sm-9'>
                                     <input
                                         type="number"
                                         placeholder='Amount'
@@ -377,7 +376,7 @@ const CreateCourseTrainer = () => {
                                         id='courseAmount'
                                         name="courseAmount"
                                         value={formData.courseAmount}
-                                        className={`form-control .form-control-sm  mt-1 ${errors.courseAmount && 'is-invalid'}`}
+                                        className={`form-control   mt-1 ${errors.courseAmount && 'is-invalid'}`}
                                         onChange={handleChange}
                                         required
                                     />
@@ -394,7 +393,7 @@ const CreateCourseTrainer = () => {
                     <div className='cornerbtn'>
                           
                             <button
-                                className='btn btn-primary'
+                                className='btn btn-secondary'
                                 type="button"
                                 onClick={() => {
                                     // Add cancel logic here if necessary
@@ -411,6 +410,8 @@ const CreateCourseTrainer = () => {
                                 Save
                             </button>
                         </div>
+                </div>
+                </div>
                 </div>
             </div>
         </div>

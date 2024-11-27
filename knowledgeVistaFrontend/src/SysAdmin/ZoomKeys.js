@@ -174,88 +174,81 @@ const ZoomKeys = () => {
       e.preventDefault();
       setisnotFound(true);
     }
-    const oldinputs=(<div>
+    const oldinputs=(<div className='col-12'>
        <div className='navigateheaders'>
         <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
         <div></div>
         <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
         </div>
-        <div className='innerFrameforset '>
-    <h2 className='mb-5'>Zoom Meet Settings</h2>
+    <h4>Zoom Meet Settings</h4>
       
-        <div className='formgroup pt-4' >
+        <div className=' pt-4' >
          
-            <div className='inputgrp'>
-              <label htmlFor='clientid'>Zoom Client Id <span className="text-danger">*</span></label>
-              <span>:</span>
-              
+            <div className='form-group row'>
+              <label htmlFor='clientid'  className="col-sm-3 col-form-label">Zoom Client Id <span className="text-danger">*</span></label>
+              <div className="col-sm-9">
               <input
                 id='clientid'
                 placeholder='Client Id'
                 value={defaultZoomset.client_id}
                 readOnly
-               className='disabledbox'
+               className='form-control'
               />
+              </div>
             </div>
-            <div className='inputgrp'>
-              <label htmlFor='clientSecret'>zoom client Secret <span className="text-danger">*</span></label>
-              <span>:</span>
-              
+            <div className='form-group row'>
+              <label htmlFor='clientSecret'  className="col-sm-3 col-form-label">zoom client Secret <span className="text-danger">*</span></label>
+              <div className="col-sm-9">
                <input
                 id='clientSecret'
                 placeholder='Client Secet' 
-                className='disabledbox'
+                className='form-control'
                 readOnly
                 value={defaultZoomset.client_secret}
               />
-             
-  
+             </div>
             </div>
-            <div className='inputgrp'>
-              <label htmlFor='accountid'>Account Id<span className="text-danger">*</span></label>
-              <span>:</span>
+            <div className='form-group row'>
+              <label htmlFor='accountid'  className="col-sm-3 col-form-label">Account Id<span className="text-danger">*</span></label>
+              <div className="col-sm-9">
                <input
                 id='accountid'
                 value={defaultZoomset.account_id}
                 placeholder='Account Id'
-                className='disabledbox'
+                className='form-control'
                 readOnly
               />
-             
-  
+  </div>
             </div>
          
         </div>
      
     
         <div className='btngrp' >
-          <button className='btn btn-primary' onClick={Edit}>Edit</button>
+          <button className='btn btn-success' onClick={Edit}>Edit</button>
         </div>
         
-    </div>
     </div>)
   
-   const EditInputs=(<div>
+   const EditInputs=(<div className='col-12'>
       <div className='navigateheaders'>
        <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
        <div></div>
        <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
        </div>
-       <div className='innerFrameforset '>
-   <h2 className='mb-5'>Zoom Meet Settings</h2>
+   <h4>Zoom Meet Settings</h4>
      
-       <div className='formgroup pt-4' >
+       <div className=' pt-4' >
         
-           <div className='inputgrp'>
-             <label htmlFor='clientid'>Zoom Client Id <span className="text-danger">*</span></label>
-             <span>:</span>
-             <div>
+           <div className='form-group row'>
+             <label htmlFor='clientid'  className="col-sm-3 col-form-label">Zoom Client Id <span className="text-danger">*</span></label>
+             <div className="col-sm-9">
              <input
                id='clientid'
                name='client_id'
                placeholder='Client Id'
                value={oldzoomset.client_id}
-               className={`form-control .form-control-sm  ${errors.client_id && 'is-invalid'}`}
+               className={`form-control   ${errors.client_id && 'is-invalid'}`}
                onChange={handleInputsChange}
              />
              <div className="invalid-feedback">
@@ -263,16 +256,15 @@ const ZoomKeys = () => {
              </div>
              </div>
            </div>
-           <div className='inputgrp'>
-             <label htmlFor='clientSecret'>zoom client Secret <span className="text-danger">*</span></label>
-             <span>:</span>
-             <div>
+           <div className='form-group row'>
+             <label htmlFor='clientSecret'  className="col-sm-3 col-form-label">zoom client Secret <span className="text-danger">*</span></label>
+             <div className="col-sm-9">
               <input
               name='client_secret'
                id='clientSecret'
                placeholder='Client Secet'
              value={oldzoomset.client_secret}
-             className={`form-control .form-control-sm  ${errors.client_secret && 'is-invalid'}`}
+             className={`form-control   ${errors.client_secret && 'is-invalid'}`}
              onChange={handleInputsChange}
              />
              <div className="invalid-feedback">
@@ -281,15 +273,14 @@ const ZoomKeys = () => {
              </div>
   
            </div>
-           <div className='inputgrp'>
-             <label htmlFor='accountid'>Account Id<span className="text-danger">*</span></label>
-             <span>:</span>
-             <div>
+           <div className='form-group row'>
+             <label htmlFor='accountid'  className="col-sm-3 col-form-label">Account Id<span className="text-danger">*</span></label>
+             <div className="col-sm-9">
               <input
                id='accountid'
                name='account_id'
                placeholder='Account Id'
-               className={`form-control .form-control-sm  ${errors.account_id && 'is-invalid'}`}
+               className={`form-control   ${errors.account_id && 'is-invalid'}`}
                value={oldzoomset.account_id}
                onChange={handleInputsChange}
              />
@@ -310,14 +301,17 @@ const ZoomKeys = () => {
            Save</button>
        </div>
      
-   </div>
    </div>)   
     return (
-      <div className="contentbackground">
-          <div className='contentinner'>
+      <div>
+      <div className="page-header"></div>
+      <div className="card">
+        <div className="card-body">
+        <div className="row">
           {isnotFound ?EditInputs: oldinputs  }
           </div>
-        
+        </div>
+        </div>
       </div>
     )
   }
