@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
-import "./css/StudentRegister.css";
 import ForgetPassword from "./AuthenticationPages/forgetpassword";
 import Login from "./AuthenticationPages/login";
 import React from "react";
@@ -50,7 +49,6 @@ import RefreshToken from "./AuthenticationPages/RefreshToken.js";
 import MyPayments from "./Student/MyPayments.js";
 import UpdatePartialPaymentSettings from "./course/Components/UpdatePartialPaymentSettings.js";
 import Paymenttransactions from "./course/Components/Paymenttransactions.js";
-import TransactionHistoryTrainer from "./Trainer/TransactionHistoryTrainer.js";
 import Mystudents from "./Trainer/Mystudents.js";
 import AdminRegister from "./Registration/AdminRegister.js";
 import LicenceExpired from "./AuthenticationPages/LicenceExpired.js";
@@ -79,9 +77,16 @@ import SettingsComponent from "./UserSettings/SettingsComponent.js";
 import DisplayName from "./UserSettings/DisplayName.js";
 import SocialLoginKeys from "./SysAdmin/SocialLoginKeys.js";
 import MailSettings from "./UserSettings/MailSettings.js";
-import NavBar from "./Common Components/NavBar.js";
-
+import "./assets/css/style.css";
+import $ from "jquery";
+import pcoded from "./assets/js/pcoded.js";
+import Approvals from "./Registration/Approvals.js";
+import SocialLoginKeysAdmin from "./UserSettings/SocialLoginKeysAdmin.js";
 function App() {
+  useEffect(() => {
+    console.log("in useeffect pcoded");
+    pcoded();
+  }, []);
   const isAuthenticated = sessionStorage.getItem("token") !== null;
   const MySwal = withReactContent(Swal);
   const [searchQuery, setSearchQuery] = useState("");
@@ -98,14 +103,47 @@ function App() {
       Noofseats: "",
     },
   ]);
+  const [filter, setFilter] = useState({ paid: true, unpaid: true }); // Filter state
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
+  const handleFilterChange = (name) => {
+    console.log(`Before update:`, filter); // Debug log to see filter state before update
+    setFilter((prev) => {
+      const updatedFilter = {
+        ...prev,
+        [name]: !prev[name], // Toggle the selected filter state
+      };
+      console.log(`After update:`, updatedFilter); // Debug log to see filter state after update
+      return updatedFilter;
+    });
+  };
+  
   const filteredCourses = course.filter((item) => {
     const name = item.courseName ? item.courseName.toLowerCase() : "";
-    return name.includes(searchQuery.toLowerCase());
+    const matchesSearchQuery = name.includes(searchQuery.toLowerCase());
+  
+    // If both paid and unpaid filters are selected, show all courses that match the search query
+    if (filter.paid && filter.unpaid) {
+      return matchesSearchQuery;  // No amount filtering, just search query match
+    }
+  
+    // Condition for Paid courses (if filter.paid is selected)
+    const matchesPaidCondition = filter.paid ? item.amount > 0 : true;
+  
+    // Condition for Unpaid courses (if filter.unpaid is selected)
+    const matchesUnpaidCondition = filter.unpaid ? item.amount == 0 : true;
+  
+    // Return courses that match the search query and the appropriate paid/unpaid condition
+    return matchesSearchQuery && matchesPaidCondition && matchesUnpaidCondition;
   });
+  
+  
+  // const filteredCourses = course.filter((item) => {
+  //   const name = item.courseName ? item.courseName.toLowerCase() : "";
+  //   return name.includes(searchQuery.toLowerCase());
+  // });
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -141,13 +179,15 @@ function App() {
                 searchQuery={searchQuery}
                 handleSearchChange={handleSearchChange}
                 setSearchQuery={setSearchQuery}
+                filter={filter}
+                handleFilterChange={handleFilterChange}
               />
             }
           >
             <Route
               path="/admin/dashboard"
               element={
-                <ErrorBoundary>
+                // <ErrorBoundary>
                   <PrivateRoute
                     onlyadmin={true}
                     authenticationRequired={true}
@@ -156,7 +196,7 @@ function App() {
                   >
                     <Dashboard />
                   </PrivateRoute>
-                </ErrorBoundary>
+                // </ErrorBoundary>
               }
             />
             <Route
@@ -480,6 +520,19 @@ function App() {
               }
             />
             <Route
+              path="/view/Approvals"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <Approvals />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
               path="/payment/keys"
               element={
                 <ErrorBoundary>
@@ -611,20 +664,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
-            <Route
-              path="/payment/trainer/transactionHitory"
-              element={
-                <ErrorBoundary>
-                  <PrivateRoute
-                    onlytrainer={true}
-                    authenticationRequired={true}
-                    authorizationRequired={true}
-                  >
-                    <TransactionHistoryTrainer />
-                  </PrivateRoute>
-                </ErrorBoundary>
-              }
-            />
+           
             <Route
               path="/course/update/paymentSettings/:courseName/:courseId"
               element={
@@ -739,6 +779,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
+            <Route path="/settings/socialLogins" element={<ErrorBoundary><PrivateRoute authenticationRequired={true} onlyadmin={true}><SocialLoginKeysAdmin/></PrivateRoute></ErrorBoundary>}/>
             <Route
               path="/viewDocument/:documentPath/:lessonId/:docid"
               element={
@@ -780,7 +821,6 @@ function App() {
               element={
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true} sysadmin={true}>
-                    \
                     <ViewAdmin />
                   </PrivateRoute>
                 </ErrorBoundary>
@@ -961,7 +1001,6 @@ function App() {
             }
           />
         </Routes>
-
         <Footer />
       </div>
     </Router>
