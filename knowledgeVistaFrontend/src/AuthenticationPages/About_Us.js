@@ -37,65 +37,70 @@ const About_Us = () => {
 
  
   return (
-    <div className="contentbackground" >
-      <div className="contentinner p-4"  >
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+      <div className="col-12">
       <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-              <h2 style={{ textDecoration: "underline", textAlign: "center" }}>Product Info</h2>
+              <h4 style={{ textAlign: "center" }}>Product Info</h4>
 
            <div className='twosplit'>
               
-                    <div className='inputgrp2'>
-                      <label >Product name </label>
-                      <span>:</span>
-                      <label >{isDataList && isDataList.length > 0?isDataList[0].ProductName:""}</label>
+                    <div className='form-group row'>
+                      <label className="col-sm-6 col-form-label"><b>Product name :</b> </label>
+                    
+                      <label className="col-sm-6 col-form-label">{isDataList && isDataList.length > 0?isDataList[0].ProductName:""}</label>
                     </div>
                  
-                    <div className='inputgrp2'>
-                      <label   >HotFix Installed (if any) </label>
-                      <span>:</span>
-                      <label  >NO </label>
+                    <div className='form-group row'>
+                      <label   className="col-sm-6 col-form-label"><b>HotFix Installed (if any) :</b> </label>
+                    
+                      <label  className="col-sm-6 col-form-label">NO </label>
                     </div>
                 
-                    <div className='inputgrp2'>
-                      <label  >Company Name </label>
-                      <span>:</span>
-                      <label  >{isDataList && isDataList.length > 0?isDataList[0].CompanyName:""}</label>
+                    <div className='form-group row'>
+                      <label  className="col-sm-6 col-form-label"><b>Company Name :</b> </label>
+                    
+                      <label  className="col-sm-6 col-form-label">{isDataList && isDataList.length > 0?isDataList[0].CompanyName:""}</label>
                     </div>
                
-                    <div className='inputgrp2'>
-                      <label  >Contact Support No </label>
-                      <span>:</span>
-                      <label >{isDataList && isDataList.length> 0?isDataList[0].Contact:""} </label>
+                    <div className='form-group row'>
+                      <label  className="col-sm-6 col-form-label"><b>Contact Support No :</b> </label>
+                 
+                      <label className="col-sm-6 col-form-label">{isDataList && isDataList.length> 0?isDataList[0].Contact:""} </label>
                     </div>
                  
                 
-                    <div className='inputgrp2'>
-                      <label   >Product Version </label>
-                      <span>:</span>
-                      <label >{isDataList && isDataList.length> 0?isDataList[0].version:""} </label>
+                    <div className='form-group row'>
+                      <label  className="col-sm-6 col-form-label" ><b>Product Version :</b> </label>
+                      
+                      <label className="col-sm-6 col-form-label">{isDataList && isDataList.length> 0?isDataList[0].version:""} </label>
                     </div>
                  
-                    <div className='inputgrp2'>
-                      <label  >Contact E-Mail </label>
-                      <span>:</span>
-                      <label >{isDataList && isDataList.length > 0?isDataList[0].Email:""}</label>
+                    <div className='form-group row'>
+                      <label className="col-sm-6 col-form-label" ><b>Contact E-Mail :</b> </label>
+                      
+                      <label className="col-sm-6 col-form-label">{isDataList && isDataList.length > 0?isDataList[0].Email:""}</label>
                     </div>
                 
                          
                
                
-                      <div className='inputgrp2'>
-                        <label  > Feedback</label>
-                        <span>:</span>
+                      <div className='form-group row'>
+                        <label  className="col-sm-6 col-form-label"> <b>Feedback :</b></label>
+                   
+                        <div className="col-sm-6 col-form-label">
                         <input
-                        style={{width:"100%"}}
-                          className='disabledbox'
+                          className='form-control'
                           readOnly
                           value=" " />
+                          </div>
                       </div>
                   
                  
@@ -108,7 +113,9 @@ const About_Us = () => {
                     > Send</button>
                   </div>
               </div>
-
+</div>
+</div>
+</div>
           </div>
   
      

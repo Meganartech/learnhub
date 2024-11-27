@@ -107,8 +107,11 @@ const handleAssignCourse = async () => {
 
   return (
     <div>
-      <div className='contentbackground'>
-        <div className='contentinner'>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+      <div className="col-12">
         <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
@@ -123,18 +126,22 @@ const handleAssignCourse = async () => {
                       }} 
                       alt='profile' />
               </div>
-              <div className=" mt-2 p-3 rounded" style={{ backgroundColor: "#F2E1F5", height: "100px" }}>
-                <div className='inputgrp2'>
-                  <label htmlFor='Name'> Name</label>
-                  <span>:</span>
-                  <label>
+              <div className=" p-2 rounded" style={{width:"100%", backgroundColor: "#F2E1F5" }}>
+                <div className='form-group row'>
+                  <label htmlFor='Name'
+                  className="col-sm-4 col-form-label"> <b>Name:</b></label>
+                  <div className="col-sm-8">
+                  <label className="col-form-label">
                     {userData.username}</label>
+                    </div>
                 </div>
-                <div className='inputgrp2'>
-                  <label htmlFor='Name'> Email</label>
-                  <span>:</span>
-                  <label>
+                <div className='form-group row'>
+                  <label htmlFor='Name'
+                  className="col-sm-4 col-form-label"><b> Email:</b></label>
+                  <div className="col-sm-8">
+                  <label className="col-form-label">
                     {userData.email}</label>
+                    </div>
                 </div>
               </div>
             </div>
@@ -161,6 +168,8 @@ const handleAssignCourse = async () => {
             <button className='btn btn-primary' onClick={handleAssignCourse} >Save</button>
           </div>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   );
