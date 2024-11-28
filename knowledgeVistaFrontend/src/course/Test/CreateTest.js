@@ -271,32 +271,42 @@ const handleOptionChange = (e, index) => {
 
 
   return (
-    <div className="contentbackground">
+    <div>
+    <div className="page-header"></div>
+   
+      
       {showCriteria ? (
-        <div className="contentinner p-5">
+         <div className="card">
+        <div className="card-header">
+       
           <div className='navigateheaders'>
       <div onClick={()=>{setShowCriteria(false)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-          <h1  style={{textDecoration:"underline"}}>Test Criteria</h1>
+      <h4>Test Criteria</h4>
+      </div>
+      <div className="card-body">
+          <div className="row">
+          <div className="col-12">
+        
           <p className="text-danger"><span>*</span> By default, each question carries one mark</p>
           
-          <div className="inputgrp2 mt-3">
-            <label>Number of Questions</label>
-            <span>:</span>
-            <input value={savedQuestions.length} readOnly />
+          <div className="form-group row">
+               <label className="col-sm-3 col-form-label">Number of Questions</label>
+               <div className="col-sm-9">
+            <input className="form-control" value={savedQuestions.length} readOnly />
+            </div>
           </div>
           
-          <div className="inputgrp2 mt-5">
-            <label>Number of Attempt</label>
-            <span>:</span>
-            <div>
+          <div className="form-group row">
+               <label className="col-sm-3 col-form-label">Number of Attempt</label>
+               <div className="col-sm-9">
             <input
               type="number"
               value={noofattempt}
               name="noofattempt"
-              className={errors.noofattempt && "is-invalid"}
+              className={`form-control ${errors.noofattempt && "is-invalid"}`}
               onChange={handleCriteriaChange}
             />
             {errors.noofattempt && (
@@ -304,15 +314,14 @@ const handleOptionChange = (e, index) => {
             )}</div>
           </div>
           
-          <div className="inputgrp2 mt-5">
-            <label>Pass Percentage</label>
-            <span>:</span>
-            <div>
+          <div className="form-group row">
+               <label className="col-sm-3 col-form-label">Pass Percentage</label>
+               <div className="col-sm-9">
             <input
               type="number"
               value={passPercentage}
               name="passPercentage"
-              className={errors.passPercentage && "is-invalid"}
+              className={`form-control ${errors.passPercentage && "is-invalid"}`}
               onChange={handleCriteriaChange}
             />
             {errors.passPercentage && (
@@ -322,8 +331,10 @@ const handleOptionChange = (e, index) => {
           </div>
 
           <div className="atbtndiv mt-5">
+            <div>
             <button  className="btn btn-primary" onClick={()=>{setShowCriteria(false)}}>Back</button>
-            <div></div>
+           </div> <div></div>
+           <div>
             <button
               className="btn btn-primary"
               onClick={submitTest}
@@ -336,25 +347,36 @@ const handleOptionChange = (e, index) => {
             >
               Save
             </button>
+            </div>
+          </div>
+          </div>
           </div>
         </div>
+        </div>
       ) : (
-        <div className="contentinner">
+        <div className="card">
+      <div className="card-header">
           <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
       </div>
+      <h4 > Create Test For {courseName}</h4>  
+             
+      </div>
+      <div className="card-body">
+        <div className="row">
+        <div className="col-12">
          <div className="atdiv" >
               
               <div className='atgrid ' >
              <div>
-             <h4 style={{textDecoration:"underline"}}> Create Test For {courseName}</h4>   {errors.selectedOption && (
+            {errors.selectedOption && (
               <div className="text-danger">{errors.selectedOption}</div>
             )}
               <div className="mb-3" > 
               <input
-                className={`form-control .form-control-sm   ${errors.testName && 'is-invalid'}`}
+                className={`form-control    ${errors.testName && 'is-invalid'}`}
                 value={testName}
                 placeholder="Test Name"
                 onChange={handleTestNameChange}
@@ -369,7 +391,7 @@ const handleOptionChange = (e, index) => {
                       ></i>)}
      
               <input 
-              className={`form-control .form-control-sm  ${errors.questionText && 'is-invalid'}`}       
+              className={`form-control   ${errors.questionText && 'is-invalid'}`}       
               type="text"  
               value={questionText}
                 placeholder="Add Question here"
@@ -395,7 +417,7 @@ const handleOptionChange = (e, index) => {
     /> 
     <div>
     <input
-    className={`form-control .form-control-sm  ${errors.options[index] && 'is-invalid'}`}
+    className={`form-control   ${errors.options[index] && 'is-invalid'}`}
     type="text"
     value={option}
     placeholder={`Option ${index + 1}`}
@@ -416,6 +438,7 @@ const handleOptionChange = (e, index) => {
                
                     </div>            
 <div className="atbtndiv">
+  <div>
               <button
                 onClick={addQuestion}
                 className="btn btn-primary mt-4"
@@ -423,7 +446,7 @@ const handleOptionChange = (e, index) => {
                 {selectedQuestionIndex === savedQuestions.length ? "Add " : "update "}
               </button>
            
-
+</div>
             <div className="atbtndiv">
             <div>
             {selectedQuestionIndex !==0 &&(    <button 
@@ -459,7 +482,9 @@ const handleOptionChange = (e, index) => {
       </div>  
      
                       </div> 
-                    
+                    </div>
+                    </div>
+                    </div>
             </div>
       
       )}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
 import axios from 'axios';
 import baseUrl from '../../api/utils';
 import { useNavigate } from 'react-router-dom';
@@ -75,15 +74,19 @@ const Paymenttransactions = () => {
         fetchData();
       }, []);
   return (
-    <div className='contentbackground'>
-    <div className='contentinner'> 
+    <div>
+      <div className="page-header"></div>
+      <div className='row'>
+        <div className='col-sm-12'>
+          <div className='card'>
+            <div className='card-header'>
     <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
       </div>
     <div className="tableheader3">
-       <h1>Payment History</h1>
+       <h4>Payment History</h4>
        <div style={{display:'grid',gridTemplateColumns:"10fr 6fr"}}>
        <input
         className="form-control tabinp"
@@ -109,6 +112,9 @@ const Paymenttransactions = () => {
         {/* <a href="/addStudent" className='btn btn-primary'><i className="fa-solid fa-plus"></i> Add Student</a> */}
       </div>
       </div>
+      
+      </div>
+      <div className='card-body'>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">
           <thead className='thead-dark'>
@@ -141,6 +147,9 @@ const Paymenttransactions = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      </div>
+      </div>
       </div>
     </div>
   </div>

@@ -70,7 +70,12 @@ public class AddUsers {
 	      	   	    	Muser adding=addingadmin.get();
 	      	   	    	
 	                    trainer.setInstitutionName(adding.getInstitutionName());
-	                 
+	                    if (username == null || username.trim().isEmpty()) {
+	                        // Extract the part before '@' from the email
+	                        if (email != null && email.contains("@")) {
+	                            username = email.substring(0, email.indexOf("@"));
+	                        }
+	                    }
 	                  trainer.setUsername(username);
 	                  trainer.setEmail(email);
 	                  trainer.setIsActive(isActive);
@@ -157,6 +162,12 @@ public class AddUsers {
 	                  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
 	              } else {
 	                  MuserRoles roletrainer = muserrolerepository.findByroleName("USER");
+	                  if (username == null || username.trim().isEmpty()) {
+	                	    // Extract the part before '@' from the email
+	                	    if (email != null && email.contains("@")) {
+	                	        username = email.substring(0, email.indexOf("@"));
+	                	    }
+	                	}
 	                  Muser user = new Muser();
 	                  user.setUsername(username);
 	                  user.setEmail(email);

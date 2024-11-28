@@ -4,12 +4,17 @@ import { useNavigate } from "react-router-dom";
 import ErrorBoundary from "../ErrorBoundary";
 import DisplaysocialLogin from "./DisplaysocialLogin";
 import SocialLoginKeysAdmin from "./SocialLoginKeysAdmin";
+import Sitesettings from "./Sitesettings";
 
 const SettingsComponent = () => {
   const navigate = useNavigate();
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className=" card-body">
+      <div className="row">
+      <div className="col-12">
         <div className="navigateheaders">
           <div
             onClick={() => {
@@ -27,18 +32,20 @@ const SettingsComponent = () => {
             <i className="fa-solid fa-xmark"></i>
           </div>
         </div>
-        <h2 style={{ textDecoration: "underline" }}>Settings</h2>
+        <h4 >Settings</h4>
         <ErrorBoundary>
           <DisplayCourses />
         </ErrorBoundary>
         <ErrorBoundary>
           <DisplaysocialLogin/>
         </ErrorBoundary>
-        <ErrorBoundary>
-          <SocialLoginKeysAdmin/>
-        </ErrorBoundary>
+      <ErrorBoundary>
+        <Sitesettings/>
+      </ErrorBoundary>
        
-        
+        </div>
+        </div>
+        </div>
       </div>
     </div>
   );

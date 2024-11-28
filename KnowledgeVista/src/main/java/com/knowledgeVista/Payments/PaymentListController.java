@@ -63,7 +63,7 @@ public class PaymentListController {
 		    			}
 
 		  }catch (Exception e) {
-			  e.printStackTrace();    logger.error("", e);;
+			  e.printStackTrace();    logger.error("", e);
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred : " + e.getMessage() );
 		    }

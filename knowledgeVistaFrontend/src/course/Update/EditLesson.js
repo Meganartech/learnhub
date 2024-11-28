@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../../css/certificate.css";
-import "../../css/Course.css";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -452,8 +450,10 @@ const EditLesson = () => {
     e.preventDefault();
   };
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-header">
         <div className="navigateheaders">
           <div
             onClick={() => {
@@ -475,22 +475,25 @@ const EditLesson = () => {
           {isSubmitting &&  <div className="outerspinner active">
         <div className="spinner"></div>
       </div>}
-          <div className="divider">
-            <h2 style={{ textDecoration: "underline" }}>
+         
+            <h4>
               Edit Lesson {Lessontitle}{" "}
-            </h2>
+            </h4>
+            <div className="card-body">
+        <div className="row">
+        <div className="col-12">
             <div className="innerdivider">
-              <div className="textinputs">
-                <div className="grp">
-                  <label>Video Title</label>
-                  <div>
+              <div>
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">Video Title</label>
+                  <div className="col-sm-9">
                     <input
                       type="text"
                       placeholder="Video Title"
                       name="lessontitle"
                       value={videodata.lessontitle}
                       onChange={handleChange}
-                      className={`form-control .form-control-sm  mt-1 ${
+                      className={`form-control   mt-1 ${
                         errors.lessontitle && "is-invalid"
                       }`}
                       disabled={isSubmitting}
@@ -498,13 +501,13 @@ const EditLesson = () => {
                     <div className="invalid-feedback">{errors.lessontitle}</div>
                   </div>
                 </div>
-                <div className="grp">
-                  <label>Description</label>
-                  <div>
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">Description</label>
+                  <div className="col-sm-9">
                     <textarea
                       name="lessonDescription"
                       value={videodata.lessonDescription}
-                      className={`form-control .form-control-sm  mt-1 ${
+                      className={`form-control   mt-1 ${
                         errors.lessonDescription && "is-invalid"
                       }`}
                       placeholder="Video Description"
@@ -517,13 +520,13 @@ const EditLesson = () => {
                     </div>
                   </div>
                 </div>
-                <div className="thumb">
-                  <label id="must">Thumbnail</label>
-                  <label
+                <div className="form-group row">
+                  <label  className="col-sm-3 col-form-label">Thumbnail</label>
+                 <div className="col-sm-9"> <div className=" custom-file">
+                    <label
                     htmlFor="thumbnail"
-                    id="must"
-                    style={{ width: "100px", height: "40px" }}
-                    className="file-upload-btn"
+                    
+                    className="custom-file-label"
                   >
                     Upload
                   </label>
@@ -533,10 +536,15 @@ const EditLesson = () => {
                     name="thumbnail"
                     type="file"
                     id="thumbnail"
-                    className="file-upload"
+                    className="custom-file-input"
                     accept="image/*"
                   />
+                  </div></div>
+                  </div>
                   {videodata.base64Image && (
+                     <div className="form-group row">
+                     <label className="col-sm-3 col-form-label"></label>
+                     <div className="col-sm-9">
                     <img
                       src={videodata.base64Image}
                       onError={(e) => {
@@ -545,11 +553,14 @@ const EditLesson = () => {
                       alt="Selected "
                       style={{ width: "100px", height: "100px" }}
                     />
+                      </div>
+                  </div>
                   )}
-                </div>
-                <div className="grp">
-                  <label>Attachments</label>
-
+                
+               
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">Attachments</label>
+                  <div className="col-sm-9">
                   <div
                     className="dropzone"
                     onDrop={handleDocDrop}
@@ -651,6 +662,7 @@ const EditLesson = () => {
                   </div>
                 </div>
                 </div>
+                </div>
               </div>
 
               <div className="videoinputs">
@@ -692,7 +704,7 @@ const EditLesson = () => {
                         placeholder="Enter Youtube URL"
                         value={videodata.normalurl}
                         onChange={handleChange}
-                        className={`form-control .form-control-sm  mt-1 urlinput ${
+                        className={`form-control   mt-1 urlinput ${
                           errors.normalurl && "is-invalid"
                         }`}
                         disabled={isSubmitting}
@@ -706,8 +718,7 @@ const EditLesson = () => {
                               name="fileUrl"
                               value={videodata.fileUrl}
                               onChange={handleChange}
-                              className="disabledbox mt-2"
-                              style={{ height: "20px" }}
+                              className="form-control mt-2"
                               readOnly
                               disabled={isSubmitting}
                               data-toggle="tooltip"
@@ -762,9 +773,11 @@ const EditLesson = () => {
               </div>
             </div>
 
-            <div className="cornerbtn ">
+          </div>
+          </div>
+          <div className="cornerbtn ">
               <button
-                className="btn btn-primary"
+                className="btn btn-secondary"
                 onClick={() => {
                   navigate(-1);
                 }}
@@ -782,8 +795,9 @@ const EditLesson = () => {
             </div>
           </div>
         </form>
+        </div>
+        </div>
       </div>
-    </div>
   );
 };
 

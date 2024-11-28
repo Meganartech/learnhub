@@ -17,6 +17,7 @@ public class MuserDto {
 	    private String skills;
 	    private String institutionName;
 	    private LocalDateTime LastActive;
+	    private String roleName;
 
 	    public MuserDto(Long userId, String username, String email, String phone, Boolean isActive, LocalDate dob, String skills,String institutionName) {
 	        this.userId = userId;
@@ -27,6 +28,17 @@ public class MuserDto {
 	        this.dob = dob;
 	        this.skills = skills;
 	        this.institutionName=institutionName;
+	    }
+	    public MuserDto(Long userId, String username, String email, String phone, Boolean isActive, LocalDate dob, String skills, String institutionName, String roleName) {
+	        this.userId = userId;
+	        this.username = username;
+	        this.email = email;
+	        this.phone = phone;
+	        this.isActive = isActive;
+	        this.dob = dob;
+	        this.skills = skills;
+	        this.institutionName = institutionName;
+	        this.roleName = roleName; // Initialize the roleName field
 	    }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.videoLessons;
 
 public interface videoLessonRepo extends JpaRepository<videoLessons, Long> {
@@ -16,7 +17,12 @@ public interface videoLessonRepo extends JpaRepository<videoLessons, Long> {
    
 	 @Query("SELECT vd FROM videoLessons vd WHERE vd.institutionName = :institutionName ")
 	 List<videoLessons>findAllByInstitutionName(String institutionName);
+	 @Query("SELECT cd.courseDetail FROM videoLessons cd WHERE cd.lessonId = :lessonId ")
+	 Optional<CourseDetail> FindbyCourseByLessonId(Long lessonId);
 	
 //	 @Query("SELECT documentPath FROM videoLessons vd WHERE vd.lessonId = :lessonId ")
 //	 String findDocumetByid(Long lessonId);
+	 
+	 @Query("SELECT SUM(v.size) FROM videoLessons v WHERE v.institutionName = :institutionName")
+	    Long findTotalSizeByInstitution(@Param("institutionName") String institutionName);
 }

@@ -26,6 +26,19 @@ public interface OrderuserRepo extends JpaRepository<Orderuser,Long>{
 	
 	@Query("SELECT o FROM Orderuser o WHERE o.userId = ?1 AND o.courseId = ?2 AND status=?3")
 	List<Orderuser> findAllByUserIDAndCourseID(Long userId, Long courseId,String status);
+   
+	@Query("SELECT SUM(o.amountReceived) FROM Orderuser o WHERE o.institutionName = :institutionName AND o.amountReceived > 0")
+    Long getTotalAmountReceivedByInstitution(@Param("institutionName") String institutionName);
 	
+	@Query("""
+		    SELECT o 
+		    FROM Orderuser o 
+		    WHERE o.userId = :userId 
+		      AND o.courseId = :courseId 
+		      AND o.amountReceived > 0
+		""")
+		List<Orderuser> findByUserIdAndCourseIdAndAmountReceivedGreaterThanzero(@Param("userId") Long userId, 
+		                                                                    @Param("courseId") Long courseId);
+		                                                                   
 	
 }

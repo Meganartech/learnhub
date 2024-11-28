@@ -4,15 +4,19 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import errorimg from "../../images/errorimg.png";
-import NavBar from "../../Common Components/NavBar";
+import Header from "../../Common Components/Header";
+import pcoded from "../../assets/js/pcoded.js"
+import Sidebar from "../../Common Components/Sidebar.js";
 const ViewCourseVps = () => {
-  
+  useEffect(() => {
+      pcoded();  
+      },[]);
   const MySwal = withReactContent(Swal);
   const [searchQuery, setSearchQuery] = useState("");
   const [course, setCourse] = useState([]);  
   const [submitting,setsubmitting]=useState(false);
   const[notfound,setnotfound]=useState(false);
- 
+  const islogedin=sessionStorage.getItem("token")!==null;
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -252,111 +256,102 @@ if(amount===0){
 }
 };
 
-  return (
-    <>
-   
-      <NavBar setSearchQuery={setSearchQuery} searchQuery={searchQuery} handleSearchChange={handleSearchChange}/>
-      <div className="contentbackground">
-        <div className="contentinner">
-           {submitting &&  <div className="outerspinner active">
-        <div className="spinner"></div>
-      </div>}
-          <div className="supercontainernew">
-            
-            {filteredCourses && filteredCourses.length > 0 &&
-              <>
-              <h4>Courses For You</h4>
-           
-              <ul className="maincontainernew" style={{ height: "65vh" }}>
-                {filteredCourses
-                  .slice()
-                  .reverse()
-                  .map((item) => (
-                    <li key={item.courseId}>
-                      <div className="containersnew">
-                        <div className="imagedivnew">
-                          <img
-                            src={`data:image/jpeg;base64,${item.courseImage}`}
-                            onError={(e) => {
-                              e.target.src = errorimg; // Use the imported error image
-                            }}
-                            alt="Course"
-                          />
-                        </div>
+return (
+  <>
+    {islogedin && <Sidebar/>}
+    <Header searchQuery={searchQuery}
+        handleSearchChange={handleSearchChange}
+        setSearchQuery={setSearchQuery} />
+  
+    
+     <div className="pcoded-main-container"   
+     style={{ marginLeft: islogedin ? undefined : '0px' }}>
+     <div className="pcoded-content" >
+    <div className="page-header"></div>
+    
+    {filteredCourses && filteredCourses.length > 0 ? (
+      <div>
+        <h4 style={{color:"white"}}>Courses For You</h4>
+        < div className="row">
+          {filteredCourses
+            .slice()
+            .reverse()
+            .map((item) => (
+              <div className="col-6 col-md-4 col-lg-2 col-xl-2 course" key={item.courseId}>
+                <div className="card mb-3">
+                  <img
+                    className="img-fluid card-img-top"
+                    src={`data:image/jpeg;base64,${item.courseImage}`}
+                    onError={(e) => {
+                      e.target.src = errorimg; // Use the imported error image
+                    }}
+                    alt="Course"
+                  />
 
-                        <div className="contentnew">
-                          <h4>
-                            <button
-                              className="anchorlike"
-                              onClick={(e)=>{handleClick(e,item.courseId,item.amount,item.courseUrl)}}
-                            >
-                              {item.courseName.length > 15
-                                ? item.courseName.slice(0, 15) + "..."
-                                : item.courseName}
-                            </button>
-                          </h4>
-                          <p>
-                            {item.courseDescription.length > 40
-                              ? item.courseDescription.slice(0, 40) + "..."
-                              : item.courseDescription}
-                          </p>
-                          <h6>
-                            {item.amount === 0 ? (
-                              <a
-                                href={item.courseUrl}
-                                className=" btn btn-outline-success w-100"
-
-                              >
-                                Enroll for Free
-                              </a>
-                            ) : (
-                              <div
-                                style={{
-                                  display: "grid",
-                                  gridTemplateColumns: "1fr 2fr",
-                                }}
-                              >
-                                <div>
-                                  <i className="fa-solid fa-indian-rupee-sign"></i>
-                                  <label className="mt-3 blockquote">
-                                    {item.amount}
-                                  </label>
-                                </div>
-                                <a
-                                  className="btn btn-outline-primary"
-                                  style={{ maxHeight: "50px", padding: "5px" }}
-                                  onClick={() => handlepaytype(item.courseId, userId,item.paytype)}
-                                >
-                                  Enroll Now
-                                </a>
-                              </div>
-                            )}
-                          </h6>
+                  <div className="card-body">
+                      <h5
+                        className="card-title"
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) =>
+                          handleClick(
+                            e,
+                            item.courseId,
+                            item.amount,
+                            item.courseUrl
+                          )
+                        }
+                      >
+                        {item.courseName.length > 15
+                          ? item.courseName.slice(0, 15) + "..."
+                          : item.courseName}
+                      </h5>
+                   
+                    <div className="card-text">
+                      {item.amount === 0 ? (
+                        <a href={item.courseUrl} 
+                        style={{ width:"100%" ,maxHeight: "50px", padding: "5px" }}
+                        className="btn btn-outline-success">
+                          Enroll for Free
+                        </a>
+                      ) : (
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 2fr",
+                          }}
+                        >
+                          <div>
+                            <i className="fa-solid fa-indian-rupee-sign"></i>
+                            <span className="mt-3 blockquote">
+                              {item.amount}
+                            </span>
+                          </div>
+                          <button
+                            className="btn btn-outline-primary"
+                            style={{ maxHeight: "50px", padding: "5px" }}
+                            onClick={() =>
+                              handlepaytype(item.courseId, userId, item.paytype)
+                            }
+                          >
+                            Enroll Now
+                          </button>
                         </div>
-                      </div>
-                    </li>
-                  ))}
-              </ul>
-              </>
-          
-                }
-              {notfound && <div
-                className="maincontainernew"
-                style={{
-                  borderRadius: "10px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <h1>No Course Found </h1>
-              </div>}
-          
-          </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
-    </>
-  );
+    ) : notfound ? (
+      <h1>No Course Found</h1>
+    ) : null}
+    </div>
+    </div>
+  </>
+);
+
 };
 
 export default ViewCourseVps;

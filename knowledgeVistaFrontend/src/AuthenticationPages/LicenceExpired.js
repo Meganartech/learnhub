@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom'
 const LicenceExpired = () => {
   const navigate=useNavigate();
   return (
-    <div className='contentbackground' style={{height:"100vh"}}>
-  <div className='contentinner' style={{height:"88vh"}}>
+    <div className='vh-100' style={{backgroundColor:"transparent",padding:"50px"}}>
+    <div className="card" >
+      <div className="card-header">
   <div className='navigateheaders'>
       <div onClick={()=>{navigate(-2)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
@@ -19,7 +20,7 @@ const LicenceExpired = () => {
           </div>
       </div>
       </div>
-      
+     </div> 
   )
 }
 

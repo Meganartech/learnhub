@@ -91,8 +91,12 @@ const StudentProfile = () => {
     
 
   return (
-    <div className='contentbackground'>
-    <div className='contentinner'>
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+      <div className="col-12">
     <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
@@ -104,10 +108,10 @@ const StudentProfile = () => {
           : "Student" 
         } found with the email</h1>) : (
             <div className='innerFrame '>
-              <h2 style={{textDecoration:"underline"}}> {displayname && displayname.student_name 
+              <h4> {displayname && displayname.student_name 
           ? displayname.student_name 
           : "Student" 
-        } Profile</h2>
+        } Profile</h4>
               <div className='mainform'>
                 <div className='profile-picture'>
                   <div className='image-group' >
@@ -119,44 +123,49 @@ const StudentProfile = () => {
                   </div>
                 </div>
 
-      <div className='formgroup' style={{backgroundColor:"#F2E1F5",padding:"10px",paddingLeft:"20px",borderRadius:"20px" }} >
-        <div className='inputgrp2' >
-          <label htmlFor='Name'> Name</label>
-          <span>:</span>
-          <label>
+      <div  style={{backgroundColor:"#F2E1F5",padding:"10px",paddingLeft:"20px",borderRadius:"20px" }} >
+        <div className='form-group row' >
+          <label htmlFor='Name'className="col-sm-3 col-form-label"><b> Name :</b></label>
+          <div className="col-sm-9">
+          <label className="col-form-label">
            {userData.username}</label>
+           </div>
         </div>
-        <div className='inputgrp2'>
-          <label htmlFor='email'> Email</label>
-          <span>:</span>
-          <label>
+        <div className='form-group row'>
+          <label htmlFor='email'className="col-sm-3 col-form-label"> <b>Email :</b></label>
+          <div className="col-sm-9">
+          <label className="col-form-label">
          {userData.email}</label>
+         </div>
         </div>
 
-        <div className='inputgrp2'>
-          <label htmlFor='dob'>Date of Birth</label>
-          <span>:</span>
-          <label>{userData.dob}</label>
+        <div className='form-group row'>
+          <label htmlFor='dob'className="col-sm-3 col-form-label"><b>Date of Birth :</b></label>
+          <div className="col-sm-9">
+          <label className="col-form-label">{userData.dob}</label>
+          </div>
         </div>
-        <div className='inputgrp2'>
-          <label htmlFor='skills'>Skills</label>
-          <span>:</span>
-          <label>{userData.skills}</label>
+        <div className='form-group row'>
+          <label htmlFor='skills'className="col-sm-3 col-form-label"><b>Skills :</b></label>
+          <div className="col-sm-9">
+          <label className="col-form-label">{userData.skills}</label>
+          </div>
         </div>
 
-        <div className='inputgrp2'>
-                  <label htmlFor='Phone'>Phone</label>
-                  <span>:</span>
-                  <label>{userData.countryCode}{userData.phone}</label>
-                </div>
+        <div className='form-group row'>
+                  <label htmlFor='Phone'className="col-sm-3 col-form-label"><b>Phone :</b></label>
+                  <div className="col-sm-9">
+                  <label className="col-form-label">{userData.countryCode}{userData.phone}</label>
+                </div></div>
        
-        <div className='inputgrp2'>
-          <label htmlFor='role'>RoleName</label>
-          <span>:</span>
-         <label>{displayname && displayname.student_name 
+        <div className='form-group row'>
+          <label htmlFor='role'className="col-sm-3 col-form-label"><b>RoleName :</b></label>
+          <div className="col-sm-9">
+         <label className="col-form-label">{displayname && displayname.student_name 
           ? displayname.student_name 
           : "Student" 
         }</label> 
+        </div>
 
 
         </div>
@@ -164,6 +173,9 @@ const StudentProfile = () => {
     </div>
     
   </div>)}
+  </div>
+  </div>
+  </div>
   </div>
 </div>
 

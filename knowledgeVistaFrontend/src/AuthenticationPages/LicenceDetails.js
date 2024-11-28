@@ -160,83 +160,82 @@ const navigate=useNavigate();
 
 
   return (
-    <div className="contentbackground" >
-      <div className="contentinner p-4 pb-4">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+      <div className="col-12">
       <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-              <h2 style={{ textDecoration: "underline", textAlign: "center" }}>Licence Info</h2>
+              <h4 style={{  textAlign: "center" }}>Licence Info</h4>
   
-              <div className='twosplit' style={{marginBottom:"10px" ,gap:"20px"}}>
-                    <div className="inputgrp2">
-                      <label >Product name </label>
-                      <span>:</span>
-                      <label>{licenceDetails.ProductName || 'NA'}</label>
+              <div className='twosplit'>
+                    <div className="form-group row">
+                      <label className="col-sm-6 col-form-label" ><b>Product name :</b> </label>
+                
+                      <label className="col-sm-6 col-form-label">{licenceDetails.ProductName || 'NA'}</label>
                     </div>
                  
-                    {/* <div className="inputgrp2">
-                      <label >Company Name </label>
-                      <span>:</span>
-                      <label>{licenceDetails.CompanyName || 'NA'}</label>
-                    </div>
-                  */}
+                    
               
-                    <div className="inputgrp2">
-                      <label >Trainers </label>
-                      <span>:</span>
-                      <label>{licenceDetails.trainer || 'NA'}</label>
+                    <div className="form-group row">
+                      <label className="col-sm-6 col-form-label"><b>Trainers :</b> </label>
+                      
+                      <label className="col-sm-6 col-form-label">{licenceDetails.trainer || 'NA'}</label>
                     </div>
                  
-                    <div className="inputgrp2">
-                      <label >Students </label>
-                      <span>:</span>
-                      <label>{licenceDetails.student || 'NA'}</label>
+                    <div className="form-group row">
+                      <label className="col-sm-6 col-form-label" ><b>Students :</b> </label>
+                     
+                      <label className="col-sm-6 col-form-label">{licenceDetails.student || 'NA'}</label>
                     </div>
                   
                
-                    <div className="inputgrp2">
-                      <label >Course </label>
-                      <span>:</span>
-                      <label>{licenceDetails.course || 'NA'}</label>
+                    <div className="form-group row">
+                      <label className="col-sm-6 col-form-label"><b>Course :</b> </label>
+                     
+                      <label className="col-sm-6 col-form-label">{licenceDetails.course || 'NA'}</label>
                     </div>
                 
-                    <div className="inputgrp2">
-                      <label >Type </label>
-                      <span>:</span>
-                      <label>{licenceDetails.Type || 'NA'}</label>
+                    <div className="form-group row">
+                      <label className="col-sm-6 col-form-label"><b>Type :</b> </label>
+                    
+                      <label className="col-sm-6 col-form-label">{licenceDetails.Type || 'NA'}</label>
                     </div>
                  
-                
-                    <div className="inputgrp2">
-                      <label >Start Date </label>
-                      <span>:</span>
-                      <label>{licenceDetails.StartDate}</label>
+                    <div className="form-group row">
+                      <label className="col-sm-6 col-form-label"><b>Storage Size :</b> </label>
+                     
+                      <label className="col-sm-6 col-form-label">{licenceDetails.StorageSize}</label>
+                    </div>
+                    <div className="form-group row">
+                      <label className="col-sm-6 col-form-label" ><b>Start Date :</b> </label>
+                      
+                      <label className="col-sm-6 col-form-label">{licenceDetails.StartDate}</label>
                     </div>
                   
-                    <div className="inputgrp2">
-                      <label >End Date </label>
-                      <span>:</span>
-                      <label>{licenceDetails.EndDate}</label>
+                    <div className="form-group row">
+                      <label className="col-sm-6 col-form-label"><b>End Date :</b> </label>
+                    
+                      <label className="col-sm-6  col-form-label">{licenceDetails.EndDate}</label>
                     </div>
               
-                    <div className="inputgrp2">
-                      <label >Storage Size </label>
-                      <span>:</span>
-                      <label>{licenceDetails.StorageSize}</label>
-                    </div>
+                    
 
                  
              
                
                 {Activeprofile!=="SAS" &&(
                 <form onSubmit={handleSubmit}>
-                      <div className='inputgrp2' style={{height:"80px",alignItems:"flex-start"}} >
-                        <label >Add New License </label>
-                        <span>:</span>
-                  <div>         
-                  <div>
+                      <div className='form-group row' style={{height:"80px",alignItems:"flex-start"}} >
+                        <label className="col-sm-6 col-form-label"><b>Add New License :</b> </label>
+                       
+                         
+                  <div className="col-sm-6">
                    <label htmlFor='audioFile' 
                    style={{width:"200px"}} 
                    className='file-upload-btn'>  upload file</label>
@@ -245,7 +244,7 @@ const navigate=useNavigate();
             <div className="text-danger" >
             {errors.audioFile}
           </div>
-             </div>
+            
                         <input
                           type='file'
                           className={`file-upload ${errors.audioFile && 'is-invalid'}`}
@@ -273,9 +272,12 @@ const navigate=useNavigate();
           <input
             onClick={() => window.open('https://learnhub.vsmartengine.com/', '_blank')}
             value='Upgrade Licence here'
-            className='btn btn-warning'
+            className='btn btn-secondary'
             readOnly
           />
+        </div>
+        </div>
+        </div>
         </div>
   </div>
   </div>     

@@ -29,6 +29,7 @@ import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.Payments.Course_PartPayment_Structure;
 import com.knowledgeVista.Payments.InstallmentDetails;
+import com.knowledgeVista.Payments.OrderuserRepo;
 import com.knowledgeVista.Payments.installmentdetilsrepo;
 import com.knowledgeVista.Payments.partpayrepo;
 import com.knowledgeVista.User.Muser;
@@ -59,6 +60,9 @@ public class CourseController {
 	 
 	 @Autowired
 	 private licenseRepository licencerepo;
+	 @Autowired
+	 private OrderuserRepo orderuser;
+	 
 	 
 	 @Value("${spring.environment}")
 	    private String environment;
@@ -94,13 +98,15 @@ public class CourseController {
 	            Long usercount = muserRepository.countByRoleNameandInstitutionName("USER", institution);
 	            
 	            Long  totalAvailableSeats = coursedetailrepository.countTotalAvailableSeats(institution);
-	            
-
+	            Long amountRecived=orderuser.getTotalAmountReceivedByInstitution(institution);
+                Long paidcourse=coursedetailrepository.countPaidCoursesByInstitution(institution);
 	 	       Map<String, Long> response = new HashMap<>();
 	 	       response.put("coursecount",count);
 	 	       response.put("trainercount",trainercount);
 	 	       response.put("usercount", usercount);
 	 	       response.put("availableseats", totalAvailableSeats);
+	 	       response.put("paidcourse", paidcourse);
+	 	       response.put("amountRecived", amountRecived);
 	 	       
 	         return ResponseEntity.ok().body(response);
 	     } catch (DecodingException ex) {
@@ -684,12 +690,8 @@ public class CourseController {
 	        	   Optional<CourseDetail> opcourse=coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
 	        	   if(opcourse.isPresent()) {
 	        		   CourseDetail course=opcourse.get();
-	        		   if(course.getAmount()== 0) {
-	        			   return getVideoLessonsResponse(courseId); 
-	        		   }
-	        	   }else {
-	        		   return ResponseEntity.notFound().build();
-	        	   }
+	        		
+	        	   
 	               String email = jwtUtil.getUsernameFromToken(token);
 	               Optional<Muser> opuser = muserRepository.findByEmail(email);
 	               if (!opuser.isPresent()) {
@@ -698,15 +700,33 @@ public class CourseController {
 	               Muser user = opuser.get();
 	               
 	               if ("TRAINER".equals(role)) {
-	                   if (user.getAllotedCourses().stream().anyMatch(course -> course.getCourseId().equals(courseId))) {
+	            	   if(course.getAmount()== 0) {
+	        			   return getVideoLessonsResponse(courseId); 
+	        		   }
+	                //   if (user.getAllotedCourses().stream().anyMatch(course -> course.getCourseId().equals(courseId))) {
+	            	   if(muserRepository.existsByTrainerIdAndCourseId(user.getUserId(), courseId)) {
 	                       return getVideoLessonsResponse(courseId);
 	                   }
+	            	  
 	               } else if ("USER".equals(role)) {
+	            	   if(course.getAmount()== 0) {
+	            		   Boolean enrolled=muserRepository.existsByuserIdAndCourseId(user.getUserId(), courseId);
+	            		   if(!enrolled) {
+	            			   user.getCourses().add(course);
+	            			   muserRepository.save(user);
+	            			   return getVideoLessonsResponse(courseId); 
+	            		   }
+	        			   return getVideoLessonsResponse(courseId); 
+	        		   }
 	            	   
-	                   if (user.getCourses().stream().anyMatch(course -> course.getCourseId().equals(courseId))) {
+	                 //  if (user.getCourses().stream().anyMatch(course -> course.getCourseId().equals(courseId))) {
+	            	   if(muserRepository.existsByuserIdAndCourseId(user.getUserId(), courseId)) {
 	                       return getVideoLessonsResponse(courseId);
 	                   }
 	               }
+	        	   }else {
+	        		   return ResponseEntity.notFound().build();
+	        	   }
 	               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	           } else {
 	        	   Optional<CourseDetail> opcourse=coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);

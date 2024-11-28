@@ -220,7 +220,12 @@ System.out.println("access"+AccessToken);
 		                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(responseBody);
                 }else {
                 String name = googleResponse.get("name").toString();
-
+                if (name == null || name.trim().isEmpty()) {
+                    // Extract the part before '@' from the email
+                    if (email != null && email.contains("@")) {
+                    	name = email.substring(0, email.indexOf("@"));
+                    }
+                }
                 
                 Muser muser = new Muser();
                 muser.setIsActive(true);

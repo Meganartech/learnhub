@@ -168,23 +168,22 @@ const ViewAdmin = () => {
         setCurrentPage(newPage);
       };
     
-     const renderPaginationButtons = () => {
+      const renderPaginationButtons = () => {
         const buttons = [];
         for (let i = 0; i < totalPages; i++) {
           buttons.push(
-            <a
-              href='#'
-              key={i}
-              
-              onClick={() => handlePageChange(i)}
-              disabled={i === currentPage}
-              className={i === currentPage ? 'active ' : ''}
-            >
-              {i + 1}
-            </a>
+            <li className={`page-item ${i === currentPage ? "active" : ""}`} key={i}>
+              <a
+                className="page-link"
+                href="#"
+                onClick={() => handlePageChange(i)}
+              >
+                {i + 1}
+              </a>
+            </li>
           );
         }
-        return buttons;
+                return buttons;
       };
         
       const handleDeactivate = async (userId, username, email) => {
@@ -323,10 +322,14 @@ const ViewAdmin = () => {
  
     
   return (
-    <div className='contentbackground'>
-    <div className='contentinner'>
+    <div>
+    <div className="page-header"></div>
+    <div className='row'>
+      <div className='col-sm-12'>
+        <div className='card'>
+          <div className='card-header'>
     <div className="tableheader2">
-      <h1>Admin Details</h1>
+      <h4>Admin Details</h4>
      
         <select
             className="selectstyle btn btn-success text-left "
@@ -339,6 +342,9 @@ const ViewAdmin = () => {
          </select>
    
         </div>
+        
+      </div>
+      <div className='card-body'>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">
           <thead className='thead-dark'>
@@ -356,7 +362,7 @@ const ViewAdmin = () => {
             </tr>
             {fullsearch ?  <tr>
           <td></td>
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="username"
@@ -365,7 +371,7 @@ const ViewAdmin = () => {
                 placeholder="Search Username"
               />
             </td>
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="email"
@@ -374,7 +380,7 @@ const ViewAdmin = () => {
                 placeholder="Search Email"
               />
             </td>
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="institutionName"
@@ -384,7 +390,7 @@ const ViewAdmin = () => {
               />
             </td>
             
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="phone"
@@ -393,7 +399,7 @@ const ViewAdmin = () => {
                 placeholder="Search Phone"
               />
             </td>
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="skills"
@@ -402,7 +408,7 @@ const ViewAdmin = () => {
                 placeholder="Search Skills"
               />
             </td>
-           <td><div style={{width:'110px'}}></div></td>
+           <td><div ></div></td>
           </tr> :<></>}
           </thead>
           <tbody>
@@ -444,18 +450,38 @@ const ViewAdmin = () => {
        
       </div>
       <div className='cornerbtn'>
-        <div className="pagination">
+      <ul className="pagination">
            
-            <i className="fa-solid fa-chevron-left text-primary" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}></i>
-           
-            {renderPaginationButtons()}
-            <i className="fa-solid fa-chevron-right text-primary" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage + 1 >= totalPages}>
-              
-            </i>
-          </div>  
-          <div><label className='text-primary'>( {datacounts.start}-{datacounts.end} ) of {datacounts.total}</label></div>
+           <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`} key="prev">
+         <a
+           className="page-link"
+           href="#"
+           aria-label="Previous"
+           onClick={() => handlePageChange(currentPage - 1)}
+         >
+           <span aria-hidden="true">«</span>
+           <span className="sr-only">Previous</span>
+         </a>
+       </li>
+               {renderPaginationButtons()}
+               <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`} key="next">
+         <a
+           className="page-link"
+           href="#"
+           aria-label="Next"
+           onClick={() => handlePageChange(currentPage + 1)}
+         >
+           <span aria-hidden="true">»</span>
+           <span className="sr-only">Next</span>
+         </a>
+       </li>
+             </ul> 
+          <div><label className='text-primary'>( {datacounts.start}- { datacounts.start + users.length-1 }) of {datacounts.total}</label></div>
+          </div>
+          </div>
           </div>
     </div>
+  </div>
   </div>
   
   )

@@ -1,11 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Partialpaymentsetting = ({enablechecked ,setenablechecked,handleSubmit,setnextclick,setDurations,durations,installmentData,setInstallmentData ,courseamount}) => {
+const Partialpaymentsetting = ({
+  enablechecked,
+  setenablechecked,
+  handleSubmit,
+  setnextclick,
+  setDurations,
+  durations,
+  installmentData,
+  setInstallmentData,
+  courseamount,
+}) => {
   const [noOfInstallments, setNoOfInstallments] = useState(2);
-  const [noofDuration,setnoofDuration]=useState(1);
-  
-  const navigate =useNavigate();
+  const [noofDuration, setnoofDuration] = useState(1);
+
+  const navigate = useNavigate();
   // Calculate initial installment data on component mount or noOfInstallments change
   useEffect(() => {
     if (noOfInstallments >= 1) {
@@ -46,9 +56,11 @@ const Partialpaymentsetting = ({enablechecked ,setenablechecked,handleSubmit,set
           remainingAmount -= updatedInstallmentData[i].InstallmentAmount;
         }
         const remainingInstallments = noOfInstallments - index - 1;
-        const remainingInstallmentAmount = remainingAmount / remainingInstallments;
+        const remainingInstallmentAmount =
+          remainingAmount / remainingInstallments;
         for (let i = index + 1; i < noOfInstallments; i++) {
-          updatedInstallmentData[i].InstallmentAmount = remainingInstallmentAmount;
+          updatedInstallmentData[i].InstallmentAmount =
+            remainingInstallmentAmount;
         }
       }
 
@@ -68,163 +80,211 @@ const Partialpaymentsetting = ({enablechecked ,setenablechecked,handleSubmit,set
     const ones = num % 10;
     const tens = Math.floor(num / 10) % 10;
     if (tens === 1) {
-      return num + 'th';
+      return num + "th";
     } else {
       switch (ones) {
         case 1:
-          return num + 'st';
+          return num + "st";
         case 2:
-          return num + 'nd';
+          return num + "nd";
         case 3:
-          return num + 'rd';
+          return num + "rd";
         default:
-          return num + 'th';
+          return num + "th";
       }
     }
   }
   return (
-
-        
-        <div>
-           <div className='navigateheaders'>
-      <div onClick={()=>{setnextclick(false)}}><i className="fa-solid fa-arrow-left"></i></div>
-      <div></div>
-      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
-      </div>
-        <h1>
-          <span style={{ textDecoration: 'underline' }}>Partial Payment Settings</span>
-        </h1>
-        <h5>
-          <input type="checkbox" className="m-4" name='check' checked={enablechecked} onChange={()=>{setenablechecked(!enablechecked)}}/>
-          <p htmlFor='check' style={{ display: "inline" }}>
-            Enable Partial Payment
-          </p>
-        </h5>
-        {enablechecked?(<>
-        <div className='mainform2'>
-          <div className='inputgrp2'>
-            <label>Course Amount</label>
-            <span>:</span>
-            <input type='number' value={courseamount} />
+    <div className="row">
+      <div className="col-12">
+        <div className="navigateheaders">
+          <div
+            onClick={() => {
+              setnextclick(false);
+            }}
+          >
+            <i className="fa-solid fa-arrow-left"></i>
           </div>
-         
-          <div className='inputgrp2'>
-            <label> No of Installments </label>
-            <span>:</span>
-            <input type='number' value={noOfInstallments} onChange={installmentnoChange} />
-          </div>
-        </div>
-        <div className='mainform2 mt-3' style={{ height: '320px' }}>
-            <div>
-            {installmentData.map((installment, index) => (
-            <div key={index}>
-              <div className='inputgrp2 pt-2'>
-                <label> installment{installment.InstallmentNumber}</label>
-                <span>:</span>
-                <input
-                  type='number'
-                  value={installment.InstallmentAmount}
-                  onChange={(e) => installmentChange(e, index)}
-                />
-              </div>
-                </div>))}
-                </div>
-                <div className='pt-5'>
-                {durations.map((duration, index) => (
-          <div className='inputgrp2 pt-2' key={index}>
-            <label>
-              Duration for {getOrdinalSuffix(index + 2)} installment
-            </label>
-            <span>:</span>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <input
-                type='number'
-                value={duration}
-                onChange={(e) => {
-                  const updatedDurations = [...durations];
-                  updatedDurations[index] = parseInt(e.target.value, 10);
-                  if(e.target.value>0){
-                  setDurations(updatedDurations);
-                  const installmentdata=[...installmentData]
-                  installmentdata[index+1].DurationInDays=parseInt(e.target.value, 10);
-                  
-                }
-                }}
-              />
-              <label style={{ marginLeft: '5px' }}>Days</label>
-            </div>
-          </div>
-        ))}
-                </div>
-
-            
-        </div></>
-        ):(<>
-        <div className='mainform2'>
-          <div className='inputgrp2'>
-            <label>Course Amount</label>
-            <span>:</span>
-            <input type='number' value={courseamount} />
-          </div>
-         
-          <div className='inputgrp2'>
-            <label> No of Installments </label>
-            <span>:</span>
-            <input type='number' className='disabledbox'    value=" "  readOnly/>
-          </div>
-        </div>
-        <div className='mainform2 mt-3' style={{ height: '320px' }}>
-            
-            <div>
-              <div className='inputgrp2 pt-2'>
-                <label> Installment 1</label>
-                <span>:</span>
-                <input
-                  type='number'
-                  className='disabledbox'
-                  readOnly
-                />
-              </div>
-              <div className='inputgrp2 pt-2'>
-                <label> Installment 2</label>
-                <span>:</span>
-                <input
-                  type='number'
-                  className='disabledbox'
-                  readOnly
-                />
-              </div>
-                </div>
-                
-                <div>
-          <div className='inputgrp2 pt-5' >
-            <label>
-              Duration for 2 nd installment
-            </label>
-            <span>:</span>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <input
-                type='number'
-                className='disabledbox'
-                readOnly
-              />
-              <label style={{ marginLeft: '5px' }}>Days</label>
-            </div>
-          </div>
-      
-                </div>
-
-            
-        </div>
-        
-        </>)}
-        <div className='atbtndiv'>
-          <button className='btn btn-primary' onClick={()=>{setnextclick(false)}}>cancel</button>
           <div></div>
-          <button className="btn btn-primary" onClick={(e)=>{handleSubmit(e)}}>Save</button>
+          <div
+            onClick={() => {
+              navigate("/dashboard/course");
+            }}
+          >
+            <i className="fa-solid fa-xmark"></i>
+          </div>
         </div>
+        <h2>Setting up a Course</h2>
+
+        <hr />
+        <h5>
+          <input
+            type="checkbox"
+            className="m-4"
+            name="check"
+            checked={enablechecked}
+            onChange={() => {
+              setenablechecked(!enablechecked);
+            }}
+          />
+          <h4 htmlFor="check" style={{ display: "inline" }}>
+            Enable Partial Payment
+          </h4>
+        </h5>
+        {enablechecked ? (
+          <>
+  <div className="row">
+    <div className="col-md-6">
+      <div className="form-group row">
+        <label className="col-sm-4 col-form-label">Course Amount</label>
+        <div className="col-sm-8">
+          <input type="number" className="form-control" value={courseamount} />
         </div>
-    
+      </div>
+    </div>
+
+    <div className="col-md-6">
+      <div className="form-group row">
+        <label className="col-sm-4 col-form-label">No of Installments</label>
+        <div className="col-sm-8">
+          <input
+            type="number"
+            className="form-control"
+            value={noOfInstallments}
+            onChange={installmentnoChange}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+            <div className="row mt-3" style={{marginBottom:"10px",minHeight:"200px", maxHeight: "250px",overflow:"auto" }}>
+              <div className="col-md-6">
+                {installmentData.map((installment, index) => (
+                  <div key={index}>
+                    <div className="form-group row pt-2">
+                      <label  className="col-sm-4 col-form-label"> installment{installment.InstallmentNumber}</label>
+                      <div className="col-sm-8">
+                      <input
+                        type="number"
+                          className="form-control"
+                        value={installment.InstallmentAmount}
+                        onChange={(e) => installmentChange(e, index)}
+                      />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="pt-5 col-md-6">
+                {durations.map((duration, index) => (
+                  <div className="form-group row pt-2" key={index}>
+                    <label  className="col-sm-4 col-form-label">
+                      Duration for {getOrdinalSuffix(index + 2)} installment
+                    </label>
+                    <div className="col-sm-8">
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <input
+                        type="number"
+                          className="form-control"
+                        value={duration}
+                        onChange={(e) => {
+                          const updatedDurations = [...durations];
+                          updatedDurations[index] = parseInt(
+                            e.target.value,
+                            10
+                          );
+                          if (e.target.value > 0) {
+                            setDurations(updatedDurations);
+                            const installmentdata = [...installmentData];
+                            installmentdata[index + 1].DurationInDays =
+                              parseInt(e.target.value, 10);
+                          }
+                        }}
+                      />
+                      <label style={{ marginLeft: "5px" }}>Days</label>
+                    </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="row">
+    <div className="col-md-6">
+      <div className="form-group row">
+                <label  className="col-sm-4 col-form-label">Course Amount</label>
+                <div className="col-sm-8">
+                <input type="number" className="form-control" value={courseamount} />
+                </div>
+                </div>
+              </div>
+              <div className="col-md-6">
+              <div className="form-group row">
+                <label  className="col-sm-4 col-form-label"> No of Installments </label>
+                <div className="col-sm-8">
+                <input
+                  type="number"
+                  className="form-control"
+                  value=" "
+                  readOnly
+                />
+                </div>
+              </div>
+            </div>
+            </div>
+            <div className="row mt-3" style={{marginBottom:"10px",minHeight:"200px", maxHeight: "250px",overflow:"auto" }}>
+            <div className="col-md-6">
+                <div className="form-group row pt-2">
+                  <label  className="col-sm-4 col-form-label"> Installment 1</label>
+                  <div className="col-sm-8">
+                  <input type="number" className="form-control" readOnly />
+                </div>
+                </div>
+                <div className="form-group row pt-2">
+                <label  className="col-sm-4 col-form-label"> Installment 2</label>
+                  <div className="col-sm-8">
+                  <input type="number" className="form-control" readOnly />
+                </div>
+                </div>
+              </div>
+
+              <div className="pt-5 col-md-6">
+                <div className="form-group row pt-5">
+                  <label  className="col-sm-4 col-form-label">Duration for 2 nd installment</label>
+                  <div className="col-sm-8">
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <input type="number" className="form-control" readOnly />
+                    <label style={{ marginLeft: "5px" }}>Days</label>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+        <div className="cornerbtn">
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              setnextclick(false);
+            }}
+          >
+            cancel
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={(e) => {
+              handleSubmit(e);
+            }}
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

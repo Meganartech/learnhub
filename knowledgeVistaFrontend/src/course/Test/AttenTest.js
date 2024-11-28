@@ -142,14 +142,21 @@ const AttenTest = () => {
     setProceedClicked(true);
 };
     return (
-        <div className='contentbackground'>
+        <div>
+    <div className="page-header"></div>
+  
           {attemplimit?(
-            <div className='contentinner'>
+              <div className="card">
+            <div className="card-header">
                 <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
+      </div>
+       <div className="card-body">
+       <div className="row">
+       <div className="col-12">
             <div className='centerflex'>
             <div className='enroll ' > 
         <h2 className='mt-2'>Your Attempt Limit Exceeded for this test </h2>
@@ -157,27 +164,37 @@ const AttenTest = () => {
         <button className='btn btn-primary' onClick={()=>{navigate(-1)}}>Go Back</button>
         </div>
             </div>
+            </div>
+            </div>
+            </div>
             </div>):(  
                 <>
               {notFound ? (  
 
        
-        <div className='contentinner'>
+<div className="card">
+<div className="card-body">
+        <div className="row">
+        <div className="col-12">
             <div className='centerflex'>
         <div className='enroll'> 
         <h2>No test found for this course.</h2>
         
       <button onClick={()=>{navigate(-1)}} className='btn btn-primary'>Go Back</button>
-        </div></div>
         </div>
-      
-          
+        </div>
+        </div>
+      </div>
+      </div>
+          </div>
        ) : (<>
             {!proceedClicked && (
-            <div className='contentinner'>
-            
+            <div className='card'>
+             <div className="card-body">
+        <div className="row">
+        <div className="col-12">
                 <div className='div3'>
-                    <h2 style={{textDecoration:"underline"}}>Test Instructions</h2>
+                    <h4 style={{textDecoration:"underline"}}>Test Instructions</h4>
                    <div className='instruction'>
                     <h2 style={{textAlign:"center"}}><i className="fa-solid fa-triangle-exclamation"></i></h2>
                     <h3 style={{textAlign:"center"}}>Notice</h3>
@@ -212,16 +229,25 @@ const AttenTest = () => {
                      <h5 className='font-weight-bold' style={{textAlign:"center"}}>Good Luck !</h5>
                    </div>
                    <div className='atbtndiv' >
-                    <Link to={`/courses/${courseName}/${courseId}`} className='btn btn-primary'>cancel</Link><div>
+                    <div>
+                    <Link to={`/courses/${courseName}/${courseId}`} className='btn btn-secondary'>cancel</Link>
+                    </div><div>
 
                     </div>
-                    <button onClick={handleProceedClick} className='btn btn-primary'>Proceed</button>
+                    <div>
+                    <button onClick={handleProceedClick} className='btn btn-primary'>Proceed</button></div>
                     </div>
+            </div>
+            </div>
+            </div>
             </div>
             </div>)}
             
             {proceedClicked && questions.length > 0 && currentQuestionIndex < questions.length ? (
-                <div className='contentinner'>
+               <div className='card'>
+               <div className="card-body">
+          <div className="row">
+          <div className="col-12">
                 <div className='atdiv'>
                   <div className='atgrid'>
                     <h3>{questions[currentQuestionIndex].questionText}</h3>
@@ -247,38 +273,49 @@ const AttenTest = () => {
                 <div className='atbtndiv'>
                  
                     {currentQuestionIndex > 0 ? (
-                        <button className='btn btn-primary' onClick={handlePrevQuestion}>Previous</button>
+                       <div> <button className='btn btn-primary' onClick={handlePrevQuestion}>Previous</button></div>
                             ) : (
                         <div></div>
                     )}
 
                     <div></div>
+                    <div>
                  <button
                  onClick={handleNextQuestion}
                  disabled={!selectedAnswers[currentQuestionIndex]}
                  className='btn btn-primary'
              >
                  Next
-             </button></div>
+             </button>
+             </div></div>
              
+                </div>
+                </div>
+                </div>
                 </div>
            </div>
 
             ) : proceedClicked && Object.keys(selectedAnswers).length === testdetails.noOfQuestions ? (
                 // Render submission section if questions are answered
-                <div className='contentinner'>
+                <div className='card'>
+                <div className="card-body">
+           <div className="row">
+           <div className="col-12">
                     <div className='atdiv'>
                         <div className="text-center mt-5">
                             <h3>All questions answered. You can preview your responses if needed, otherwise submit the test.</h3>
                             <h1 className="display-1"><i className="fas fa-check-circle text-success me-2"></i> All the best!!</h1>
                         </div>
                         <div className='atbtndiv'>
-                            <button onClick={handlePrevQuestion} className='btn btn-primary' 
-                 disabled={isSubmitting}>Previous</button>
+                           <div> <button onClick={handlePrevQuestion} className='btn btn-primary' 
+                 disabled={isSubmitting}>Previous</button></div>
                             <div></div>
-                            <button onClick={handleSubmit} className='btn btn-primary' 
-                 disabled={isSubmitting}>Submit</button>
+                           <div> <button onClick={handleSubmit} className='btn btn-primary' 
+                 disabled={isSubmitting}>Submit</button></div>
                         </div>
+                    </div>
+                    </div>
+                    </div>
                     </div>
                 </div>
             ) : null} </>)}

@@ -135,9 +135,13 @@ const CalenderView = () => {
   
 
   return (
-    <div className='contentbackground'>
-      <div className='contentinner'>
-        <div className="navigateheaders mb-3">
+    <div>
+    <div className="page-header"></div>
+    <div className='row'>
+      <div className='col-sm-12'>
+        <div className='card'>
+          <div className='card-header'>
+        <div className="navigateheaders ">
           <div onClick={() => navigate(-1)}>
             <i className="fa-solid fa-arrow-left"></i>
           </div>
@@ -146,8 +150,10 @@ const CalenderView = () => {
             <i className="fa-solid fa-xmark"></i>
           </div>
         </div>
+        </div>
+        <div className='card-body'>
         <div className='calenderheadergrp'>
-          <h3>Calendar</h3>
+          <h4>Calendar</h4>
           <input
         type="text"
         className="form-control tabinp"
@@ -169,6 +175,9 @@ const CalenderView = () => {
           }}
           eventPropGetter={eventStyleGetter}
         />
+        </div>
+      </div>
+      </div>
       </div>
     </div>
   );

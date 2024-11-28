@@ -30,14 +30,20 @@ const Affiliates = () => {
     fetchData();
   }, []);
   return (
-    <div className='contentbackground'>
-    <div className='contentinner'>
+    <div>
+      <div className="page-header"></div>
+      <div className='row'>
+        <div className='col-sm-12'>
+          <div className='card'>
+            <div className='card-header'>
     <div className="tableheader2">
-      <h1>Affiliates Details</h1>
+      <h4>Affiliates Details</h4>
      
        
    
         </div>
+        </div>
+        <div className='card-body'>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">
           <thead className='thead-dark'>
@@ -122,18 +128,9 @@ const Affiliates = () => {
         </table>
        
       </div>
-      <div className='cornerbtn'>
-        {/* <div className="pagination">
-           
-            <i className="fa-solid fa-chevron-left text-primary" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}></i>
-           
-            {renderPaginationButtons()}
-            <i className="fa-solid fa-chevron-right text-primary" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage + 1 >= totalPages}>
-              
-            </i>
-          </div>  
-          <div><label className='text-primary'>( {datacounts.start}-{datacounts.end} ) of {datacounts.total}</label></div>*/}
-          </div> 
+  </div>
+  </div>
+  </div>
     </div>
   </div>
   )

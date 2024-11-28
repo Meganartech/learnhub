@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Settings.ViewSettings;
 import com.knowledgeVista.Settings.Repo.ViewSettingsRepo;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -23,10 +24,16 @@ public class SettingsController {
 	
 	 @Autowired
 	 private JwtUtil jwtUtil;
+	 @Autowired
+	 private CourseDetailRepository courserepo;
 	public Boolean isViewCourseinLandingPageEnabled() {
 		try {
+			if(courserepo.count()>0) {
 		 Optional<ViewSettings> setting = settingsrepo.findBySettingName("viewCourseInLanding");
 	        return setting.map(s -> s.getSettingValue()).orElse(true);
+			}else {
+				return false;
+			}
 		}catch(Exception e) {
 			e.printStackTrace();    logger.error("", e);;
 			return true;

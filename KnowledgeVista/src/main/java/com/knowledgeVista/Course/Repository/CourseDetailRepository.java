@@ -25,8 +25,9 @@ public interface CourseDetailRepository  extends JpaRepository<CourseDetail,Long
 	@Query("SELECT COUNT(cd) FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
 	Long countCourseByInstitutionName(@Param("institutionName") String institutionName);
 
-	 @Query("SELECT COALESCE(SUM(cd.Noofseats - SIZE(cd.users)), 0) FROM CourseDetail cd")
-	    Long countTotalAvailableSeats();
+
+    @Query("SELECT COUNT(cd) FROM CourseDetail cd WHERE cd.amount > 0 AND cd.institutionName = :institution")
+    Long countPaidCoursesByInstitution(@Param("institution") String institution);
 	 
 	 @Query("SELECT cd FROM CourseDetail cd WHERE cd.id = :courseId AND cd.institutionName = :institutionName")
 	 Optional<CourseDetail> findByCourseIdAndInstitutionName(@Param("courseId") Long courseId, @Param("institutionName") String institutionName);

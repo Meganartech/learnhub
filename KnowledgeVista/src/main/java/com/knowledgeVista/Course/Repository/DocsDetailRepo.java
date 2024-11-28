@@ -26,6 +26,7 @@ public interface DocsDetailRepo  extends JpaRepository<DocsDetails, Long>{
 	 @Query("SELECT d.miniatureDetails FROM DocsDetails d WHERE d.Id = :Id")
 	    List<MiniatureDetail> findMiniatureById(@Param("Id") Long Id);
 	 
-	 @Query("SELECT d.VideoLessons.courseDetail  FROM DocsDetails d WHERE d.VideoLessons.lessonId = :lessonId")
-	 Optional<CourseDetail>FindCourseBylessonId(Long lessonId );
+	 @Query("SELECT d.VideoLessons.courseDetail FROM DocsDetails d WHERE d.VideoLessons.lessonId = :lessonId")
+	 Optional<CourseDetail> FindCourseBylessonId(@Param("lessonId") Long lessonId);
+
 }

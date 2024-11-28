@@ -22,6 +22,8 @@ import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.MuserProfileDTO;
 import com.knowledgeVista.User.MuserRequiredDto;
 import com.knowledgeVista.User.MuserRoles;
+import com.knowledgeVista.User.Approvals.MuserApprovalRepo;
+import com.knowledgeVista.User.Approvals.MuserApprovals;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -37,7 +39,8 @@ public class MserRegistrationController {
 	
 	@Autowired
 	private LicenseController licencecontrol;
-
+@Autowired
+private MuserApprovalRepo MuserApproval;
 	@Autowired
 	private mAdminLicenceRepo madminrepo;
 	
@@ -77,7 +80,12 @@ public class MserRegistrationController {
 	            Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName("ADMIN");
 	            if(oproleUser.isPresent()) {
 	            	MuserRoles roleuser=oproleUser.get();
-	            	  
+	            	if (username == null || username.trim().isEmpty()) {
+	            	    // Extract the part before '@' from the email
+	            	    if (email != null && email.contains("@")) {
+	            	        username = email.substring(0, email.indexOf("@"));
+	            	    }
+	            	}
 	            Muser user = new Muser();
 	            user.setUsername(username);
 	            user.setEmail(email);
@@ -175,12 +183,16 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	            Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName("USER");
 	            if(oproleUser.isPresent()) {
 	            	MuserRoles roleuser=oproleUser.get();
-	            	  
+	            	if (username == null || username.trim().isEmpty()) {
+	            	    // Extract the part before '@' from the email
+	            	    if (email != null && email.contains("@")) {
+	            	        username = email.substring(0, email.indexOf("@"));
+	            	    }
+	            	}  
 	            Muser user = new Muser();
 	            user.setUsername(username);
 	            user.setEmail(email);
-	            user.setIsActive(isActive);
-	            user.setPsw(psw);
+	           user.setPsw(psw);
 	            user.setPhone(phone);
 	            user.setDob(dob);
 	            user.setSkills(skills);
@@ -198,7 +210,7 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 	            }
 	            }
-	          muserrepositories.save(user);
+	            muserrepositories.save(user);
 	          return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	            }else {
 	            	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error getting role\"}");
@@ -240,8 +252,13 @@ return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
 Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName("TRAINER");
 if(oproleUser.isPresent()) {
 MuserRoles roleuser=oproleUser.get();
-
-Muser user = new Muser();
+if (username == null || username.trim().isEmpty()) {
+    // Extract the part before '@' from the email
+    if (email != null && email.contains("@")) {
+        username = email.substring(0, email.indexOf("@"));
+    }
+}
+MuserApprovals user = new MuserApprovals();
 user.setUsername(username);
 user.setEmail(email);
 user.setIsActive(isActive);
@@ -263,7 +280,7 @@ logger.error("", e);
 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 }
 }
- muserrepositories.save(user);
+MuserApproval.save(user);
 return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 }else {
 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error getting role\"}");

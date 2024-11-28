@@ -242,8 +242,12 @@ const CustomViewvideo = () => {
   }, [currentLessonIndex]);
 
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
+    <div>
+  <div className="page-header"></div>
+  <div className="card">
+    <div className="card-body">
+    <div className="row">
+          <div className="col-12">
         <div className="navigateheaders">
           <div
             onClick={() => {
@@ -262,20 +266,12 @@ const CustomViewvideo = () => {
           </div>
         </div>
         {AllLessons.length > 0 ? (
-          <div className="vdoplusbtn">
+          <div>
             <div className="headingbtn">
-              <h1 style={{ textAlign: "center", flex: "3" }}>{courseName}</h1>
-              <>
-                <Link
-                  to={`/test/start/${courseName}/${courseId}`}
-                  className="btn btn-primary"
-                  style={{ maxWidth: "100px", flex: "1" }}
-                >
-                  Start Test
-                </Link>
-              </>
+              <h4>{courseName}</h4>
+             
             </div>
-            <div>
+            
               <div className="main">
                 <div className="VideoFrame">
                   {videoType === "local" ? (
@@ -327,22 +323,20 @@ const CustomViewvideo = () => {
                   )}
                 </div>
                 <div className="list">
-                  <h3 style={{ color: "black", textDecoration: "underline" }}>
+                <label className="lessonheading" >
                     Lessons Covered
-                  </h3>
+                  </label>
                   <div className="content" ref={lessonListRef}>
                     {AllLessons.map((lesson, index) => (
                       <div
                         key={index}
                         data-index={index}
-                        className={`notes ${
-                          lesson.lessonId === lessonId ? "current-lesson" : ""
-                        }`}
+                        className= "notes"
                         onClick={() => handleNoteClick(lesson.lessonId)}
                         style={{
                           border:
                             lesson.lessonId === lessonId
-                              ? "3px solid red"
+                              ? "3px solid #4680FE"
                               : "none",
                         }}
                       >
@@ -366,7 +360,6 @@ const CustomViewvideo = () => {
                   </div>
                 </div>
               </div>
-            </div>
            
             {currentDocs &&
                           currentDocs.length > 0 && (
@@ -389,7 +382,7 @@ const CustomViewvideo = () => {
                       </ul>)}
 
            
-            <div style={{ textAlign: "right" }}>
+            <div style={{ textAlign: "right",marginTop:"10px"  }}>
               {AllLessons.length > 1 && currentLessonIndex > 0 && (
                 <button
                   onClick={handlePreviousButtonClick}
@@ -431,6 +424,9 @@ const CustomViewvideo = () => {
           </div>
         )}
       </div>
+      </div>
+    </div>
+    </div>
     </div>
   );
 };

@@ -1,197 +1,200 @@
 import React from "react";
-import errorimg  from "../../images/errorimg.png"
+import errorimg from "../../images/errorimg.png";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import axios from "axios";
-const EditCourse = ({filteredCourses}) => {
+const EditCourse = ({ filteredCourses }) => {
   const MySwal = withReactContent(Swal);
- const role=sessionStorage.getItem("role");
- const token=sessionStorage.getItem("token");
- const createCourse = async () => {
-  try {
- const response = await axios.get(`${baseUrl}/api/v2/count`,{
-  headers:{
-    "Authorization":token,
-    }
-  });
-
-    if (response.status===200) {
-      window.location.href = "/course/addcourse";
-    }
-   
-  } catch (error) {
-    Swal.fire({
-      title: "Course Limit is Reached",
-      text: "Need to upgrade your lisense",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "ok",
-    })
-
-    console.error('Error ', error);
-  }
-};
- const handleDelete = (e, courseId) => {
-  e.preventDefault();
-  MySwal.fire({
-    title: "Delete Course?",
-    text: "Are you sure you want to delete this course ?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    confirmButtonText: "Delete",
-    cancelButtonText: "Cancel",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // If the user clicked "Delete"
-      axios.delete(`${baseUrl}/course/${courseId}`,{
+  const token = sessionStorage.getItem("token");
+  const createCourse = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/api/v2/count`, {
         headers: {
           Authorization: token,
         },
-      })
-        .then((response) => {
-          if (response.status===200) {
-          
-            MySwal.fire({
-              title: "Deleted!",
-              text: "Your course has been deleted.",
-              icon: "success",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.reload();
-              }
-            });
-          } 
-        })
-        .catch((error) => {
-          if(error.response && error.response.status===401)
-            {
-              window.location.href="/unauthorized";
-            }else{
+      });
+
+      if (response.status === 200) {
+        window.location.href = "/course/addcourse";
+      }
+    } catch (error) {
+      if (response.status === 429) {
+      Swal.fire({
+        title: "Course Limit is Reached",
+        text: "Need to upgrade your lisense",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ok",
+      });
+    }
+    else{
+throw error
+    }
+
+      console.error("Error ", error);
+    }
+  };
+  const handleDelete = (e, courseId) => {
+    e.preventDefault();
+    MySwal.fire({
+      title: "Delete Course?",
+      text: "Are you sure you want to delete this course ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If the user clicked "Delete"
+        axios
+          .delete(`${baseUrl}/course/${courseId}`, {
+            headers: {
+              Authorization: token,
+            },
+          })
+          .then((response) => {
+            if (response.status === 200) {
+              MySwal.fire({
+                title: "Deleted!",
+                text: "Your course has been deleted.",
+                icon: "success",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.reload();
+                }
+              });
+            }
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              window.location.href = "/unauthorized";
+            } else {
               // MySwal.fire({
               //   title: "Error!",
-              //   text: error.response.data ? error.response.data : "error occured",
+              //   text: error.response.data
+              //     ? error.response.data
+              //     : "error occured",
               //   icon: "error",
               //   confirmButtonText: "OK",
               // });
               throw error
             }
-          
-        });
-    } 
-  });
-};
+          });
+      }
+    });
+  };
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
-    <div className="supercontainernew">
-      <div className="createbtn">
-      {(role === "ADMIN" || role==="TRAINER") && (    
-     
-        <a href="#" onClick={(e) => createCourse()}>
-          <button type="button" className="btn btn-primary ">
-          <i className="fa-solid fa-plus"></i>  Create Course
-          </button>
-        </a> 
-      )}
-      </div>
-     
+    <>
+      <div className="page-header"></div>
       {filteredCourses.length > 0 ? (
-        <ul className="maincontainernew" style={{height:"65vh"}}>
+        <div className="row">
           {filteredCourses
             .slice()
             .reverse()
             .map((item) => (
-              <li key={item.courseId}>
-                <div className="containersnew">
-                  <div className="imagedivnew">
-                    <img
-                      src={`data:image/jpeg;base64,${item.courseImage}`}
-                      onError={(e) => {
-                        e.target.src = errorimg; // Use the imported error image
-                      }}
-                      alt="Course"
-                    />
-                  </div>
-                  <div className="contentnew">
-                    <div className="editicons">
-                      {" "}
-                      <h4>
-                        <a href={item.courseUrl}>{item.courseName.length > 10 ? item.courseName.slice(0, 10) + "..." : item.courseName}</a>{" "}
-                      </h4>
-                   <h5 className="dropdown no-arrow">
-                    <a className="dropdown-toggle" 
-                    href="#"
-                    id="userDropdown"
-                     role="button"
-                     data-toggle="dropdown"
-                     aria-haspopup="true"
-                     aria-expanded="false">
-                   <i className="fa-solid fa-plus"></i></a>
-                   <div
-                  className="dropdown-menu dropdown-menu-left shadow animated--grow-in"
-                  aria-labelledby="userDropdown"
-                        >
-                    <Link to={`/lessonList/${item.courseName}/${item.courseId}`}
-                      className="dropdown-item"
-                      data-toggle="modal"
-                      data-target="#logoutModal"   
-                    >
-                     Lessons
-                    </Link>
-                    <div className="dropdown-divider"></div>
-                    <Link to={`/course/testlist/${item.courseName}/${item.courseId}`}
-                      className="dropdown-item"
-                      data-toggle="modal"
-                      data-target="#logoutModal"   
-                    >
-                     Test
-                    </Link>
-
-                  </div>
-                      </h5>
-                      <h5>
-                         <Link to={`/course/edit/${item.courseId}`}>
+              <div className="col-md-6 col-xl-3 course" key={item.courseId}>
+                <div className="card mb-3">
+                  <img
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                      window.location.href = item.courseUrl;
+                    }}
+                    className="img-fluid card-img-top"
+                    src={`data:image/jpeg;base64,${item.courseImage}`}
+                    onError={(e) => {
+                      e.target.src = errorimg; // Use the imported error image
+                    }}
+                    alt="Course"
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title flexWithPadding">
+                      <div
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) => {
+                          window.location.href = item.courseUrl;
+                        }}
+                      >
+                        {item.courseName.length > 15
+                          ? item.courseName.slice(0, 15) + "..."
+                          : item.courseName}
+                      </div>
+                      <div className="gap-10">
+                        <div className="dropdown">
+                          <a
+                            className="dropdown-toggle"
+                            href="#"
+                            data-toggle="dropdown"
+                          >
+                            <i className="fa-solid fa-plus"></i>
+                          </a>
+                          <div className="dropdown-menu dropdown-menu-right  dropdown-menu-top  dropdown-menu-top shadow animated--grow-in">
+                            <Link
+                              to={`/lessonList/${item.courseName}/${item.courseId}`}
+                              className="dropdown-item"
+                            >
+                              Lessons
+                            </Link>
+                            <div className="dropdown-divider"></div>
+                            <Link
+                              to={`/course/testlist/${item.courseName}/${item.courseId}`}
+                              className="dropdown-item"
+                            >
+                              Test
+                            </Link>
+                          </div>
+                        </div>
+                        <Link to={`/course/edit/${item.courseId}`}>
                           <i className="fa-solid fa-edit"></i>
                         </Link>
-                      </h5>
-                      <h5>
+
                         <a
                           href="#"
                           onClick={(e) => handleDelete(e, item.courseId)}
                         >
-                          <i className="fas fa-trash "></i>
+                          <i className="fas fa-trash"></i>
                         </a>
-                      </h5>
-                    </div>
-
-                    <p> {item.courseDescription.length > 40
-                        ? item.courseDescription.slice(0, 40) + "..."
-                        : item.courseDescription}</p>
-              
-                    <h6>{item.amount === 0 ? <a href={item.courseUrl} className=" btn btn-outline-success w-100"> Free</a> : 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-                      <div><i className="fa-solid fa-indian-rupee-sign"></i><label className="mt-3 blockquote">{item.amount}</label>
                       </div>
-
-        
-        
-                    </div>}</h6>
+                    </h5>
+                    <div className="card-text">
+                      {item.amount === 0 ? (
+                        <a
+                          href={item.courseUrl}
+                          className=" btn btn-outline-success w-100"
+                        >
+                          {" "}
+                          Free
+                        </a>
+                      ) : (
+                        <a className="btn btn-outline-primary w-100">
+                          <i className="fa-solid fa-indian-rupee-sign mr-2"></i>
+                          <label>{item.amount}</label>
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </li>
+              </div>
             ))}
-        </ul>
+        </div>
       ) : (
-        <div className="maincontainernew" style={{borderBottomLeftRadius:"10px",borderBottomRightRadius:"10px", height:"70vh",display:"flex",justifyContent:"center",alignItems:"center"}}>
-             <h1>No Course Found </h1>
+        <div
+          className="maincontainernew"
+          style={{
+            borderBottomLeftRadius: "10px",
+            borderBottomRightRadius: "10px",
+            height: "70vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h1>No Course Found</h1>
         </div>
       )}
-    </div>
-    </div>
-    </div>
+    </>
   );
 };
 

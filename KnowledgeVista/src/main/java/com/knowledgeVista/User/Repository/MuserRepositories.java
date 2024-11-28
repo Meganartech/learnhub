@@ -13,6 +13,7 @@ import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.MuserProfileDTO;
 import com.knowledgeVista.User.MuserRequiredDto;
+import com.knowledgeVista.User.UserStats;
 
 
 @Repository
@@ -112,9 +113,58 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	            "GROUP BY u2.userId, u2.username, u2.email, u2.phone, u2.isActive, u2.dob, u2.skills,u2.institutionName")
 	     List<MuserDto> findStudentsOfTrainer(@Param("email") String email);
 	    
+	    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END " +
+	            "FROM Muser u " +
+	            "JOIN u.allotedCourses c " +
+	            "WHERE u.userId = :userId AND c.courseId = :courseId")
+	     boolean existsByTrainerIdAndCourseId(@Param("userId") Long userId, @Param("courseId") Long courseId);
+	    
+	    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END " +
+	            "FROM Muser u " +
+	            "JOIN u.courses c " +
+	            "WHERE u.userId = :userId AND c.courseId = :courseId")
+	     boolean existsByuserIdAndCourseId(@Param("userId") Long userId, @Param("courseId") Long courseId);
+	    
+	    
+	    @Query("""
+	    	    SELECT new com.knowledgeVista.User.UserStats(
+	    	        m.userId, 
+	    	        m.username,
+	    	        m.profile,
+	    	        COALESCE(SUM(CASE WHEN c.amount = 0 THEN 1 ELSE 0 END), 0) AS freeCourses,
+	    	        COALESCE(SUM(CASE WHEN c.amount > 0 THEN 1 ELSE 0 END), 0) AS paidCourses,
+	    	        COALESCE(SUM(CASE 
+	    	            WHEN c.users IS NOT EMPTY THEN (SELECT COUNT(u.id) FROM c.users u)
+	    	            ELSE 0 
+	    	        END), 0) AS totalStudents
+	    	    )
+	    	    FROM Muser m
+	    	    LEFT JOIN m.allotedCourses c
+	    	    WHERE m.role.roleName = 'TRAINER'
+	    	      AND m.institutionName = :institutionName
+	    	    GROUP BY m.userId, m.username, m.profile
+	    	""")
+	    	List<UserStats> findTrainerStatsByInstitutionName(String institutionName);
+	    
+	    @Query("""
+	    	    SELECT new com.knowledgeVista.User.UserStats(
+	    	        m.userId, 
+	    	        m.username,
+	    	        m.profile,
+	    	        COALESCE(SUM(CASE WHEN c.amount = 0 THEN 1 ELSE 0 END), 0) AS freeCourses,
+	    	        COALESCE(SUM(CASE WHEN c.amount > 0 THEN 1 ELSE 0 END), 0) AS paidCourses
+	    	        
+	    	    )
+	    	    FROM Muser m
+	    	    LEFT JOIN m.courses c
+	    	    WHERE m.role.roleName = 'USER'
+	    	      AND m.institutionName = :institutionName
+	    	    GROUP BY m.userId, m.username, m.profile
+	    	""")
+	    	List<UserStats> findStudentStatsByInstitutionName(String institutionName);
+
 	    @Query("SELECT u FROM Muser u WHERE u.role.roleId = ?1")
 		  Optional<Muser> findByroleid(Long roleId);
-
 }
 
 

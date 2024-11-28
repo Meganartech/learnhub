@@ -344,8 +344,12 @@ setErrors((prevErrors) => ({
   };
  
   return (
-    <div className='contentbackground'>
-    <div className='contentinner'>
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+      <div className="col-12">
     <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
@@ -363,10 +367,10 @@ setErrors((prevErrors) => ({
           </div>
         ) : (
   <div className='innerFrame'>
-    <h2  style={{textDecoration:"underline"}}>Edit {displayname && displayname.student_name 
+    <h4>Edit {displayname && displayname.student_name 
           ? displayname.student_name 
           : "Student" 
-        }</h2>
+        }</h4>
     <div className='mainform'>
         <div className='profile-picture'>
           <div className='image-group'>
@@ -404,12 +408,10 @@ setErrors((prevErrors) => ({
               />
   </div>
         </div>
-
-        <div className='formgroup'>
-          <div className='inputgrp' ref={nameRef}>
-            <label htmlFor='Name'> Name </label>
-            <span>:</span>
-          <div> 
+<div>
+          <div className='form-group row' ref={nameRef}>
+            <label htmlFor='Name'className="col-sm-3 col-form-label"> Name </label>
+            <div className="col-sm-9">
             <input
              type="text"
               id='Name'
@@ -417,7 +419,7 @@ setErrors((prevErrors) => ({
               onChange={handleChange}
               name="username"
               
-              className={`form-control .form-control-sm  mt-1 ${errors.username && 'is-invalid'}`}
+              className={`form-control   mt-1 ${errors.username && 'is-invalid'}`}
               placeholder="Full Name"
               autoFocus
               required
@@ -427,14 +429,13 @@ setErrors((prevErrors) => ({
             </div>
             </div> 
           </div>
-          <div className='inputgrp' ref={emailRef}>
+          <div className='form-group row' ref={emailRef}>
           
-            <label htmlFor='email'> Email<span className="text-danger">*</span></label>
-            <span>:</span>
-            <div>              <input
+            <label htmlFor='email'className="col-sm-3 col-form-label"> Email<span className="text-danger">*</span></label>
+            <div className="col-sm-9">             <input
                     type="email"
                     autoComplete="off"
-                    className={`form-control .form-control-sm  ${errors.email && 'is-invalid'}`}
+                    className={`form-control   ${errors.email && 'is-invalid'}`}
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -451,24 +452,23 @@ setErrors((prevErrors) => ({
        
       
        
-          <div className="inputgrp "  ref={phoneRef} >
-                <label htmlFor="Phone">
+          <div className="form-group row "  ref={phoneRef} >
+                <label htmlFor="Phone"className="col-sm-3 col-form-label">
                   {" "}
                   Phone
                   <span className="text-danger">
                     *
                   </span>
                 </label>
-                <span>:</span>
-                <div>
-                  <div>
+                <div className="col-sm-9">
+                <div className="phone-input-container inputlikeeffect">
                  
       <PhoneInput
         placeholder="Enter phone number"
         id="phone"
         value={phoneNumber||''}
         onChange={handlePhoneChange}
-        className={`form-control .form-control-sm  ${
+        className={`form-control   ${
           errors.phone && "is-invalid"
         }`}
         defaultCountry={defaultCountry}
@@ -481,14 +481,13 @@ setErrors((prevErrors) => ({
                   </div>
                 </div>
               </div>
-              <div className='inputgrp' ref={dobRef}>
-            <label htmlFor='dob'>Date of Birth</label>
-            <span>:</span>
-            <div>
+              <div className='form-group row' ref={dobRef}>
+            <label htmlFor='dob'className="col-sm-3 col-form-label">Date of Birth</label>
+            <div className="col-sm-9">
             <input
               type="date"
                                   name="dob"
-                                  className={`form-control .form-control-sm  ${errors.dob && 'is-invalid'}`}
+                                  className={`form-control   ${errors.dob && 'is-invalid'}`}
                                   placeholder="Starting year"
                                   value={formData.dob}
                                   onChange={handleChange}
@@ -499,17 +498,16 @@ setErrors((prevErrors) => ({
               {errors.dob}
             </div></div>
           </div>
-        <div className='inputgrp' ref={skillsRef}>
-            <label htmlFor='skills'> Skills</label>
-            <span>:</span>
-          <div> <input
+        <div className='form-group row' ref={skillsRef}>
+            <label htmlFor='skills'className="col-sm-3 col-form-label"> Skills</label>
+            <div className="col-sm-9"> <input
              type="text"
               id='skills'
               value={formData.skills}
               onChange={handleChange}
               name="skills"
               
-              className={`form-control .form-control-sm   ${errors.skills && 'is-invalid'}`}
+              className={`form-control    ${errors.skills && 'is-invalid'}`}
               placeholder="skills"
            
               required
@@ -518,14 +516,18 @@ setErrors((prevErrors) => ({
               {errors.skills}
             </div></div> 
 </div>
-        </div>
+       
         
+      </div>
       </div>
       <div className='btngrp'>
       <button className= "btn btn-primary" id='submitbtn' onClick={handleSubmit}>Save</button>
 
       </div>
   </div>     )}
+  </div>
+  </div>
+  </div>
   </div>
 </div>
 

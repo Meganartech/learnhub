@@ -152,25 +152,24 @@ setdisplayname((prev)=>({
 }
 
 const getinputs=(
-    <div>
+  <div className="col-12">
       <div className='navigateheaders'>
     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
     <div></div>
     <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
     </div>
     <div className='innerFrameforset '>
- <h2 className='mb-5'style={{ textDecoration: "underline" }}>Role Display Name</h2>
- <div className='formgroup pt-4' >
- <div className='inputgrp'>
-           <label htmlFor='admin_name'> Admin Name<span className="text-danger">*</span></label>
-           <span>:</span>
-           <div>
+ <h4>Role Display Name</h4>
+
+ <div className='form-group row'>
+           <label htmlFor='admin_name'className="col-sm-3 col-form-label"> Admin Name<span className="text-danger">*</span></label>
+           <div className="col-sm-9">
            <input
              id='admin_name'
              name='admin_name'
              placeholder='Admin Name'
              value={displayname.admin_name}
-             className={`form-control .form-control-sm  ${errors.admin_name && 'is-invalid'}`}
+             className={`form-control   ${errors.admin_name && 'is-invalid'}`}
              onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -179,16 +178,15 @@ const getinputs=(
            </div>
          </div>
 
-         <div className='inputgrp'>
-           <label htmlFor='trainer_name'> Trainer Name<span className="text-danger">*</span></label>
-           <span>:</span>
-           <div>
+         <div className='form-group row'>
+           <label htmlFor='trainer_name'className="col-sm-3 col-form-label"> Trainer Name<span className="text-danger">*</span></label>
+           <div className="col-sm-9">
            <input
              id='trainer_name'
              name='trainer_name'
              placeholder='Trainer Name'
              value={displayname.trainer_name}
-             className={`form-control .form-control-sm  ${errors.trainer_name && 'is-invalid'}`}
+             className={`form-control   ${errors.trainer_name && 'is-invalid'}`}
              onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -197,16 +195,15 @@ const getinputs=(
            </div>
          </div>
 
-         <div className='inputgrp'>
-           <label htmlFor='student_name'> Student Name<span className="text-danger">*</span></label>
-           <span>:</span>
-           <div>
+         <div className='form-group row'>
+           <label htmlFor='student_name'className="col-sm-3 col-form-label"> Student Name<span className="text-danger">*</span></label>
+           <div className="col-sm-9">
            <input
              id='student_name'
              name='student_name'
              placeholder='Student Name'
              value={displayname.student_name}
-             className={`form-control .form-control-sm  ${errors.student_name && 'is-invalid'}`}
+             className={`form-control   ${errors.student_name && 'is-invalid'}`}
              onChange={handleInputsChange}
            />
            <div className="invalid-feedback">
@@ -222,67 +219,73 @@ const getinputs=(
          Save</button>
      </div>
      </div>
-    </div>
     );
     const Edit=(e)=>{
       e.preventDefault();
       setisnotFound(true);
     }
-  const defaultinputs=(  <div>
+  const defaultinputs=(  <div className="col-12">
     <div className='navigateheaders'>
      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
      <div></div>
      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
      </div>
-     <div className='innerFrameforset '>
-     <h2 className='mb-5'style={{ textDecoration: "underline" }}>Role Display Name</h2>
+     
+     <h4>Role Display Name</h4>
      <div className='formgroup pt-4' >
-         <div className='inputgrp'>
-           <label htmlFor='admin_name'>Admin Name <span className="text-danger">*</span></label>
-           <span>:</span> 
+         <div className='form-group row'>
+           <label htmlFor='admin_name' className="col-sm-3 col-form-label">Admin Name <span className="text-danger">*</span></label>
+           <div className="col-sm-9">
            <input
              id='admin_name'
              placeholder='Admin Name'
              value={defaultname.admin_name}
              readOnly
-            className='disabledbox'
+            className='form-control'
            />
+           </div>
          </div>
-         <div className='inputgrp'>
-           <label htmlFor='trainer_name'>Trainer Name <span className="text-danger">*</span></label>
-           <span>:</span>          
+         <div className='form-group row'>
+           <label htmlFor='trainer_name' className="col-sm-3 col-form-label">Trainer Name <span className="text-danger">*</span></label>
+           <div className="col-sm-9">         
            <input
              id='trainer_name'
              placeholder='Trainer Name'
              value={defaultname.trainer_name}
              readOnly
-            className='disabledbox'
+            className='form-control'
            />
+           </div>
          </div>
-         <div className='inputgrp'>
-           <label htmlFor='student_name'>Student Name<span className="text-danger">*</span></label>
-           <span>:</span>
+         <div className='form-group row'>
+           <label htmlFor='student_name' className="col-sm-3 col-form-label">Student Name<span className="text-danger">*</span></label>
+           <div className="col-sm-9">
             <input
              id='student_name'
              placeholder='Student Name'
-             className='disabledbox'
+             className='form-control'
              readOnly
              value={defaultname.student_name}
            />
+           </div>
          </div> 
      </div>
      <div className='btngrp' >
-       <button className='btn btn-primary' onClick={Edit}>Edit</button>
+       <button className='btn btn-success' onClick={Edit}>Edit</button>
      </div>
      
  </div>
- </div>
  )
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className=" card-body">
+        <div className="row">
       {isnotFound ? getinputs :defaultinputs }
       </div>
+    </div>
+    </div>
     </div>
   );
 };

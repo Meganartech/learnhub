@@ -236,8 +236,12 @@ TimeZone: ${meetingData.timezone}`,
   };
 
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+      <div className="col-12">
       <div className={`outerspinner ${issubmitting? 'active' : ''}`}>
         <div className="spinner"></div>
       </div>
@@ -261,6 +265,7 @@ TimeZone: ${meetingData.timezone}`,
             type="search"
             id="customeinpu"
             name="to"
+            className="form-control"
             placeholder="To"
             value={searchQuery.to}
             onChange={(e) => handleSearch("to", e.target.value)}
@@ -302,6 +307,7 @@ TimeZone: ${meetingData.timezone}`,
             type="search"
             id="customeinpu"
             name="cc"
+            className="form-control"
             placeholder="CC"
             value={searchQuery.cc}
             onChange={(e) => handleSearch("cc", e.target.value)}
@@ -343,6 +349,7 @@ TimeZone: ${meetingData.timezone}`,
             type="search"
             id="customeinpu"
             name="bcc"
+            className="form-control"
             placeholder="BCC"
             value={searchQuery.bcc}
             onChange={(e) => handleSearch("bcc", e.target.value)}
@@ -368,7 +375,7 @@ TimeZone: ${meetingData.timezone}`,
           type="text"
           id="subject"
           name="subject"
-          className="form-control .form-control-sm  mb-2 inputlike"
+          className="form-control  mb-2 inputlike"
           placeholder="Subject"
           value={mailvalues.subject}
           onChange={handleChange}
@@ -387,7 +394,7 @@ TimeZone: ${meetingData.timezone}`,
         </div>
         <div className="cornerbtn">
           <button
-            className="btn btn-warning"
+            className="btn btn-secondary"
             type="button"
             onClick={() => {
               navigate(-1);
@@ -402,6 +409,9 @@ TimeZone: ${meetingData.timezone}`,
           >
             Send
           </button>
+        </div>
+        </div>
+        </div>
         </div>
       </div>
     </div>

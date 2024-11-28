@@ -517,12 +517,15 @@ const EditMeeting = () => {
   };
 
   return (
-    <div className="contentbackground">
-      <div className="contentinner p-3">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      <div className="row">
+      <div className="col-12">
       <div className={`outerspinner ${issubmitting? 'active' : ''}`}>
         <div className="spinner"></div>
       </div>
-        <div className="divider">
           <div className="navigateheaders">
             <div
               onClick={() => {
@@ -540,54 +543,51 @@ const EditMeeting = () => {
               <i className="fa-solid fa-xmark"></i>
             </div>
           </div>
-          <h2 style={{ textDecoration: "underline" }}>Edit a Meeting</h2>
-          <div className="formgroup pt-1 maxheight">
-            <div className="inputgrp">
-              <label htmlFor="topic">
+          <h4>Edit a Meeting</h4>
+         
+            <div className="form-group row">
+              <label htmlFor="topic"  className="col-sm-3 col-form-label">
                 Meeting Title <span className="text-danger">*</span>
               </label>
-              <span>:</span>
-              <div>
+              <div className=" col-sm-9">
                 <input
                   type="text"
                   id="topic"
                   value={zoomrequest.topic}
                   name="topic"
                   onChange={handleChangeFields}
-                  className="form-control .form-control-sm  "
+                  className="form-control   "
                   placeholder="Title"
                   autoFocus
                   required
                 />
               </div>
             </div>
-            <div className="inputgrp">
-              <label htmlFor="agenda">
+            <div className="form-group row">
+              <label htmlFor="agenda" className="col-sm-3 col-form-label">
                 Meeting Descrition <span className="text-danger">*</span>
               </label>
-              <span>:</span>
-              <div>
+              <div className=" col-sm-9">
                 <input
                   type="text"
                   id="agenda"
                   name="agenda"
                   onChange={handleChangeFields}
                   value={zoomrequest.agenda === null ? "" : zoomrequest.agenda}
-                  className="form-control .form-control-sm  "
+                  className="form-control   "
                   placeholder="Description"
                   required
                 />
               </div>
             </div>
-            <div className="inputgrp">
-              <label htmlFor="timezone">
+            <div className="form-group row">
+              <label htmlFor="timezone" className="col-sm-3 col-form-label">
                 Time Zone <span className="text-danger">*</span>
               </label>
-              <span>:</span>
-              <div>
+              <div className=" col-sm-9">
                 <select
                   id="timezone"
-                  className="form-control .form-control-sm "
+                  className="form-control  "
                   name="timezone"
                   value={zoomrequest.timezone}
                   onChange={handleChangeFields}
@@ -602,12 +602,12 @@ const EditMeeting = () => {
               </div>
             </div>
 
-            <div className="inputgrp">
-              <label htmlFor="when">
+            <div className="form-group row">
+              <label htmlFor="when" className="col-sm-3 col-form-label">
                 When <span className="text-danger">*</span>
               </label>
-              <span>:</span>
-              <div className="datetimegrp">
+             
+              <div className="datetimegrp col-sm-9">
                 <input
                   type="date"
                   id="date"
@@ -615,7 +615,7 @@ const EditMeeting = () => {
                   min={formattedDate}
                   value={formData.date}
                   onChange={updateStartTime}
-                  className="form-control .form-control-sm "
+                  className="form-control  "
                   required
                 />
                 <select
@@ -623,7 +623,7 @@ const EditMeeting = () => {
                   name="time"
                   value={formData.time}
                   onChange={updateStartTime}
-                  className="form-control .form-control-sm "
+                  className="form-control  "
                 >
                   {timeOptions.map((option, index) => (
                     <option key={index} value={option}>
@@ -636,7 +636,7 @@ const EditMeeting = () => {
                   name="ampm"
                   value={formData.ampm}
                   onChange={updateStartTime}
-                  className="form-control .form-control-sm "
+                  className="form-control  "
                 >
                   <option value="AM">AM</option>
                   <option value="PM">PM</option>
@@ -645,14 +645,13 @@ const EditMeeting = () => {
             </div>
 
             {Productversion != null && Productversion === "FREE" ? (
-              <div className="inputgrp">
-                <label htmlFor="duration">
+              <div className="form-group row">
+                <label htmlFor="duration" className="col-sm-3 col-form-label">
                   Duration <span className="text-danger">*</span>
                 </label>
-                <span>:</span>
-                <div>
+                <div className="col-sm-9">
                   <input
-                    className="disabledbox"
+                    className="form-control"
                     readOnly
                     style={{ width: "90%" }}
                     value={zoomrequest.duration}
@@ -661,18 +660,18 @@ const EditMeeting = () => {
                 </div>
               </div>
             ) : (
-              <div className="inputgrp">
-                <label htmlFor="duration">
+              <div className="form-group row">
+                <label htmlFor="duration" className="col-sm-3 col-form-label">
                   Duration <span className="text-danger">*</span>
                 </label>
-                <span>:</span>
-                <div className="datetimegrp">
+                
+                <div className="datetimegrp col-sm-9">
                   <select
                     id="hrs"
                     value={formData.hours}
                     name="hrs"
                     onChange={handleTimeChange}
-                    className="form-control .form-control-sm  "
+                    className="form-control   "
                   >
                     <option value="0">0</option>
                     <option value="1">1</option>
@@ -688,7 +687,7 @@ const EditMeeting = () => {
                     name="min"
                     value={formData.minutes}
                     onChange={handleTimeChange}
-                    className="form-control .form-control-sm  "
+                    className="form-control   "
                   >
                     <option value="0">0</option>
                     <option value="15">15</option>
@@ -700,13 +699,12 @@ const EditMeeting = () => {
               </div>
             )}
 
-            <div className="inputgrp">
-              <label htmlFor="invitees">
+            <div className="form-group row">
+              <label htmlFor="invitees" className="col-sm-3 col-form-label">
                 Invitees
                 <span className="text-danger">*</span>
               </label>
-              <span>:</span>
-              <div>
+              <div className="col-sm-9">
                 <div className="inputlike">
                   {selectedEmails.length > 0 && (
                     <div className="listemail">
@@ -727,6 +725,7 @@ const EditMeeting = () => {
                     type="input"
                     id="customeinpu"
                     placeholder="search member..."
+                    className="form-control"
                     value={searchQuery}
                     onChange={(e) => handleSearch(e.target.value)}
                   />
@@ -750,12 +749,11 @@ const EditMeeting = () => {
               </div>
             </div>
 
-            <div className="inputgrp">
-              <label htmlFor="video">
+            <div className="form-group row">
+              <label htmlFor="video" className="col-sm-3 col-form-label">
                 Video <span className="text-danger">*</span>
               </label>
-              <span>:</span>
-              <div>
+              <div className="col-sm-9">
                 <div className="zoomset">
                   <p>Host</p>
                   <input
@@ -828,12 +826,11 @@ const EditMeeting = () => {
                 </div>
               </div>
             </div>
-            <div className="inputgrp">
-              <label htmlFor="options">
+            <div className="form-group row">
+              <label htmlFor="options" className="col-sm-3 col-form-label">
                 Options <span className="text-danger">*</span>
               </label>
-              <span>:</span>
-              <div>
+              <div className="col-sm-9">
                 <div className="zoomopt">
                   <input
                     type="checkbox"
@@ -864,10 +861,10 @@ const EditMeeting = () => {
                 </div>
               </div>
             </div>
-          </div>
+         
           <div className="cornerbtn">
             <button
-              className="btn btn-warning"
+              className="btn btn-secondary"
               type="button"
               onClick={() => {
                 navigate(-1);
@@ -883,6 +880,8 @@ const EditMeeting = () => {
               Update
             </button>
           </div>
+          </div>
+        </div>
         </div>
       </div>
     </div>

@@ -138,8 +138,11 @@ const AdminProfileView = () => {
     fetchlicencedetailsforadmin();
   }, []);
   return (
-    <div className="contentbackground">
-      <div className="contentinner">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+  
         <div className="navigateheaders">
           <div
             onClick={() => {
@@ -163,7 +166,7 @@ const AdminProfileView = () => {
           </h1>
         ) : (
           <div className="innerFrame">
-            <h2 style={{ textDecoration: "underline" }}>Admin Profile</h2>
+            <h4>Admin Profile</h4>
             <div className="mainform">
               <div className="profile-picture">
                 <div className="image-group">
@@ -176,7 +179,6 @@ const AdminProfileView = () => {
                 </div>
               </div>
               <div
-                className="formgroup"
                 style={{
                   backgroundColor: "#F2E1F5",
                   padding: "10px",
@@ -207,40 +209,42 @@ const AdminProfileView = () => {
 </div>
 </div>}
 
-                <div className="inputgrp2">
-                  <label htmlFor="Name">Name</label>
-                  <span>:</span>
-                  <label>{userData.username}</label>
-                </div>
-                <div className="inputgrp2">
-                  <label htmlFor="email">Email</label>
-                  <span>:</span>
-                  <label>{userData.email}</label>
-                </div>
-                <div className="inputgrp2">
-                  <label htmlFor="dob">Date of Birth</label>
-                  <span>:</span>
-                  <label>{userData.dob}</label>
-                </div>
-                <div className="inputgrp2">
-                  <label htmlFor="skills">Skills</label>
-                  <span>:</span>
-                  <label>{userData.skills}</label>
-                </div>
+                <div className="form-group row">
+                  <label htmlFor="Name" className="col-sm-3 col-form-label"><b>Name :</b></label>
+                  <div className="col-sm-9">
+                  <label className="col-form-label">{userData.username}</label>
+               </div> 
+               </div>
+                <div className="form-group row">
+                  <label htmlFor="email" className="col-sm-3 col-form-label"><b>Email :</b></label>
+                  <div className="col-sm-9">
+                  <label className="col-form-label">{userData.email}</label>
+               </div> </div>
+                <div className="form-group row">
+                  <label htmlFor="dob" className="col-sm-3 col-form-label"><b>Date of Birth :</b></label>
+                  <div className="col-sm-9">
+          <label className="col-form-label">{userData.dob}</label>
+              </div>  </div>
+                <div className="form-group row">
+                  <label htmlFor="skills" className="col-sm-3 col-form-label"><b>Skills :</b></label>
+                  <div className="col-sm-9">
+          <label className="col-form-label">{userData.skills}</label>
+              </div>  </div>
 
-                <div className="inputgrp2">
-                  <label htmlFor="Phone">Phone</label>
-                  <span>:</span>
-                  <label>
+                <div className="form-group row">
+                  <label htmlFor="Phone" className="col-sm-3 col-form-label"><b>Phone :</b></label>
+                  <div className="col-sm-9">
+          <label className="col-form-label">
                     {userData.countryCode}
                     {userData.phone}
                   </label>
+                  </div>
                 </div>
-                <div className="inputgrp2">
-                  <label htmlFor="role">RoleName</label>
-                  <span>:</span>
-                  <label>Admin</label>
-                </div>
+                <div className="form-group row">
+                  <label htmlFor="role" className="col-sm-3 col-form-label"><b>RoleName :</b></label>
+                  <div className="col-sm-9">
+          <label className="col-form-label">Admin</label>
+                </div></div>
               </div>
             </div>
             {LicenceNotfound ? (
@@ -259,52 +263,54 @@ const AdminProfileView = () => {
                   className="twosplit"
                   style={{ marginBottom: "10px", gap: "20px" }}
                 >
-                  <div className="inputgrp2">
-                    <label>Product name </label>
-                    <span>:</span>
-                    <label>{licenceDetails.ProductName || "NA"}</label>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label"><b>Product name :</b> </label>
+                    <div className="col-sm-9">
+          <label className="col-form-label">{licenceDetails.ProductName || "NA"}</label>
+                  </div></div>
+
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label"><b>Trainers :</b> </label>
+                    <div className="col-sm-9">
+                    <label className="col-form-label">{licenceDetails.trainer || "NA"}</label>
+                 </div>
                   </div>
 
-                  <div className="inputgrp2">
-                    <label>Trainers </label>
-                    <span>:</span>
-                    <label>{licenceDetails.trainer || "NA"}</label>
-                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label"><b>Students :</b> </label>
+                    <div className="col-sm-9">
+                    <label className="col-form-label">{licenceDetails.student || "NA"}</label>
+                 </div> </div>
 
-                  <div className="inputgrp2">
-                    <label>Students </label>
-                    <span>:</span>
-                    <label>{licenceDetails.student || "NA"}</label>
-                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label"><b>Course :</b> </label>
+                    <div className="col-sm-9">
+                    <label className="col-form-label">{licenceDetails.course || "NA"}</label>
+                  </div></div>
 
-                  <div className="inputgrp2">
-                    <label>Course </label>
-                    <span>:</span>
-                    <label>{licenceDetails.course || "NA"}</label>
-                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label"><b>Type :</b> </label>
+                    <div className="col-sm-9">
+          <label className="col-form-label">{licenceDetails.Type || "NA"}</label>
+                 </div> </div>
 
-                  <div className="inputgrp2">
-                    <label>Type </label>
-                    <span>:</span>
-                    <label>{licenceDetails.Type || "NA"}</label>
-                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label"><b>Start Date  :</b></label>
+                    <div className="col-sm-9">
+          <label className="col-form-label">{licenceDetails.StartDate}</label>
+                </div>  </div>
 
-                  <div className="inputgrp2">
-                    <label>Start Date </label>
-                    <span>:</span>
-                    <label>{licenceDetails.StartDate}</label>
-                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label"><b>End Date :</b> </label>
+                    <div className="col-sm-9">
+                    <label className="col-form-label">{licenceDetails.EndDate}</label>
+                  </div></div>
 
-                  <div className="inputgrp2">
-                    <label>End Date </label>
-                    <span>:</span>
-                    <label>{licenceDetails.EndDate}</label>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label"><b>Storage Size :</b> </label>
+                    <div className="col-sm-9">
+          <label className="col-form-label">{licenceDetails.StorageSize}</label>
                   </div>
-
-                  <div className="inputgrp2">
-                    <label>Storage Size </label>
-                    <span>:</span>
-                    <label>{licenceDetails.StorageSize}</label>
                   </div>
                 </div>
               </div>
@@ -312,6 +318,7 @@ const AdminProfileView = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

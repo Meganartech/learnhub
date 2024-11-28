@@ -147,7 +147,7 @@ const ForgetPassword = () => {
           type="text"
           name="email"
           id="username"
-          className="form-control .form-control-sm "
+          className="form-control  "
           placeholder="Username"
           value={email}
           autoComplete="username"
@@ -159,7 +159,7 @@ const ForgetPassword = () => {
           type="password"
           name="password"
           id="password"
-          className={`form-control .form-control-sm  ${passwordError && 'is-invalid'}`}
+          className={`form-control   ${passwordError && 'is-invalid'}`}
           placeholder="New Password"
           autoComplete="new-password"
           value={formData.password}
@@ -173,7 +173,7 @@ const ForgetPassword = () => {
           type="password"
           name="confirmPassword"
           id="confirmPassword"
-          className={`form-control .form-control-sm  ${confirmPasswordError && 'is-invalid'}`}
+          className={`form-control   ${confirmPasswordError && 'is-invalid'}`}
           placeholder="Confirm Password"
           autoComplete="new-password"
           value={formData.confirmPassword}
@@ -185,7 +185,7 @@ const ForgetPassword = () => {
       <button className="btn btn-primary btn-lg btn-block" type="submit" disabled={isResetButtonDisabled}>
         Reset Password
       </button>
-      <button className="btn btn-warning btn-lg btn-block" onClick={()=>{navigate("/login")}}>Cancel</button>
+      <button className="btn btn-secondary btn-lg btn-block" onClick={()=>{navigate("/login")}}>Cancel</button>
       <hr className="my-4" />
     </form>
   );
@@ -198,7 +198,7 @@ const ForgetPassword = () => {
           type="text"
           name="email"
           id="username"
-          className={`form-control .form-control-sm  ${emailError ? 'is-invalid' : ''}`}
+          className={`form-control   ${emailError ? 'is-invalid' : ''}`}
           placeholder="Enter Email Address..."
           autoComplete="username"
           autoFocus
@@ -211,7 +211,7 @@ const ForgetPassword = () => {
       <button className="btn btn-primary btn-lg btn-block" type="submit" disabled={isForgetButtonDisabled}>
         Verify 
       </button>
-      <button className="btn btn-warning btn-lg btn-block" onClick={()=>{navigate("/login")}}>
+      <button className="btn btn-secondary btn-lg btn-block" onClick={()=>{navigate("/login")}}>
         Cancel
       </button>
       <hr className="my-4" />
@@ -219,15 +219,16 @@ const ForgetPassword = () => {
   );
 
   return (
-    <div className="login-container d-flex flex-wrap justify-content-center align-items-center"> 
-      <div className=" image-section card-body  text-center ">
+    <div className="login-container ">
+      <div className="image-section ">
         <img 
-          style={{ width: "100%", height: "100%" }}
           src={login} 
           alt='boy-pic'
         />
       </div>
-      <div className="form-section card-body text-center ">
+      <div className="card-center" >
+      <div className="card card-login" >
+      <div className="card-header  text-center ">
       <img style={{width:"200px",height:"200px"}} src={logo}/>
         {isResetPassword ? resetPasswordForm : forgetPasswordForm}
         {!isResetPassword && (
@@ -237,6 +238,8 @@ const ForgetPassword = () => {
             </Link>
           </div>
         )}
+      </div>
+      </div>
       </div>
     </div>
   );

@@ -214,19 +214,18 @@ const ViewStudents = () => {
         const buttons = [];
         for (let i = 0; i < totalPages; i++) {
           buttons.push(
-            <a
-              href='#'
-              key={i}
-              
-              onClick={() => handlePageChange(i)}
-              disabled={i === currentPage}
-              className={i === currentPage ? 'active ' : ''}
-            >
-              {i + 1}
-            </a>
+            <li className={`page-item ${i === currentPage ? "active" : ""}`} key={i}>
+              <a
+                className="page-link"
+                href="#"
+                onClick={() => handlePageChange(i)}
+              >
+                {i + 1}
+              </a>
+            </li>
           );
         }
-        return buttons;
+                return buttons;
       };
       const handleDeactivate = async (userId, username, email) => {
         const formData = new FormData();
@@ -363,13 +362,14 @@ const ViewStudents = () => {
  
     
   return (
-    <div className='contentbackground'>
-    <div className='contentinner'>
+    <div>
+    <div className="page-header"></div>
+    <div className='row'>
+      <div className='col-sm-12'>
+        <div className='card'>
+          <div className='card-header'>
     <div className="tableheader2">
-      <h1>Student Details</h1>
-      
-    
-   
+      <h4>Student Details</h4>
         <select
                     className="selectstyle btn btn-success text-left "
                    
@@ -383,6 +383,8 @@ const ViewStudents = () => {
         
     
       </div>
+      </div>
+      <div className='card-body'>
       <div className="table-container">
         <table className="table table-hover table-bordered table-sm">
           <thead className='thead-dark'>
@@ -401,7 +403,7 @@ const ViewStudents = () => {
          <tr>
             <td></td>
             
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="username"
@@ -410,7 +412,7 @@ const ViewStudents = () => {
                 placeholder="Search Username"
               />
             </td>
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="email"
@@ -419,7 +421,7 @@ const ViewStudents = () => {
                 placeholder="Search Email"
               />
             </td>
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="institutionName"
@@ -429,7 +431,7 @@ const ViewStudents = () => {
               />
             </td>
             
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="phone"
@@ -438,7 +440,7 @@ const ViewStudents = () => {
                 placeholder="Search Phone"
               />
             </td>
-            <td>
+            <td className="padnone">
               <input
                 type="search"
                 name="skills"
@@ -447,7 +449,7 @@ const ViewStudents = () => {
                 placeholder="Search Skills"
               />
             </td>
-           <td><div style={{width:'110px'}}></div></td>
+           <td><div></div></td>
            {/* <td><input
                 type="date"
                 name="dob"
@@ -492,16 +494,37 @@ const ViewStudents = () => {
         
       </div>
       <div className='cornerbtn'>
-        <div className="pagination">
+      <ul className="pagination">
            
-            <i className="fa-solid fa-chevron-left text-primary" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}></i>
-           
-            {renderPaginationButtons()}
-            <i className="fa-solid fa-chevron-right text-primary" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage + 1 >= totalPages}>
-              
-            </i>
-          </div>  
-          <div><label className='text-primary'>( {datacounts.start}-{datacounts.end} ) of {datacounts.total}</label></div>
+           <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`} key="prev">
+         <a
+           className="page-link"
+           href="#"
+           aria-label="Previous"
+           onClick={() => handlePageChange(currentPage - 1)}
+         >
+           <span aria-hidden="true">«</span>
+           <span className="sr-only">Previous</span>
+         </a>
+       </li>
+               {renderPaginationButtons()}
+               <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`} key="next">
+         <a
+           className="page-link"
+           href="#"
+           aria-label="Next"
+           onClick={() => handlePageChange(currentPage + 1)}
+         >
+           <span aria-hidden="true">»</span>
+           <span className="sr-only">Next</span>
+         </a>
+       </li>
+             </ul>  
+          <div>
+            <label className='text-primary'>( {datacounts.start}- { datacounts.start + users.length-1 }) of {datacounts.total}</label></div>
+          </div>
+          </div>
+          </div>
           </div>
     </div>
   </div>

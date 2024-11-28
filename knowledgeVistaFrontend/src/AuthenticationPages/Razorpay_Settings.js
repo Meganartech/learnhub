@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import '../css/certificate.css';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
@@ -190,26 +189,22 @@ const[initialsave,setinitialsave]=useState(false);
 
 
   const getsettings=( 
-  <div className="contentinner">
+  <div className="col-12">
     <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-  <div className='innerFrameforset '>
-  <h2 className='mb-5'>Razorpay Settings</h2>
-    <div >
-      <div className='formgroup pt-4' >
-        <div >
-          <div className='inputgrp'>
-            <label htmlFor='Razorpay_Key'>Razorpay Key <span className="text-danger">*</span></label>
-            <span>:</span>
-            <div>
+  <h4>Razorpay Settings</h4>
+ 
+          <div className='form-group row'>
+            <label htmlFor='Razorpay_Key' className="col-sm-3 col-form-label">Razorpay Key <span className="text-danger">*</span></label>
+            <div className="col-sm-9">
             <input
               id='Razorpay_Key'
               placeholder='Razorpay_Key'
               value={Razorpay_Key}
-              className={`form-control .form-control-sm  ${errors.Razorpay_Key && 'is-invalid'}`}
+              className={`form-control   ${errors.Razorpay_Key && 'is-invalid'}`}
               onChange={changeRazorpay_KeyHandler}
               required
             />
@@ -219,15 +214,14 @@ const[initialsave,setinitialsave]=useState(false);
             </div>
           </div>
           <br></br>
-          <div className='inputgrp'>
-            <label htmlFor='Razorpay_Secret_Key'>Razorpay Secret Key <span className="text-danger">*</span></label>
-            <span>:</span>
-            <div>
+          <div className='form-group row'>
+            <label htmlFor='Razorpay_Secret_Key' className="col-sm-3 col-form-label">Razorpay Secret Key <span className="text-danger">*</span></label>
+            <div className="col-sm-9">
              <input
               id='Razorpay_Secret_Key'
               placeholder='Razorpay Secret Key'
               value={Razorpay_Secret_Key}
-              className={`form-control .form-control-sm  ${errors.Razorpay_Secret_Key && 'is-invalid'}`}
+              className={`form-control   ${errors.Razorpay_Secret_Key && 'is-invalid'}`}
               onChange={changeRazorpay_Secret_KeyHandler}
               required
             />
@@ -238,9 +232,6 @@ const[initialsave,setinitialsave]=useState(false);
 
           </div>
           
-        </div>
-      </div>
-    </div>
     {valid?
       <div className='btngrp'>
         <button className='btn btn-primary' onClick={save}
@@ -252,61 +243,63 @@ const[initialsave,setinitialsave]=useState(false);
           Save</button>
       </div>:<div></div>
     }
-  </div>
+  
 </div>)
 
 
-const oldSettings =(<div className="contentinner">
+const oldSettings =(
+<div className="col-12">
   <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-<div className='innerFrameforset '>
-<h2 className='mb-5'>Razorpay Settings</h2>
-  <div >
-    <div className='formgroup'>
+
+<h4>Razorpay Settings</h4>
+  
+ 
    
-      <div >
-        <div className='inputgrp'>
-          <label htmlFor='Razorpay_Key'>Razorpay Key </label>
-          <span>:</span>
+   
+        <div className='form-group row'>
+          <label htmlFor='Razorpay_Key'className="col-sm-3 col-form-label">Razorpay Key </label>
+          <div className="col-sm-9">
          <input
-          className='disabledbox'
+          className='form-control'
           readOnly
          value={defaultsettings ? defaultsettings.razorpay_key :""}/>
-         
+         </div>
         </div>
         <br></br>
-        <div className='inputgrp'>
-          <label htmlFor='Razorpay_Secret_Key'>Razorpay Secret Key</label>
-          <span>:</span>
-         
+        <div className='form-group row'>
+          <label htmlFor='Razorpay_Secret_Key'className="col-sm-3 col-form-label">Razorpay Secret Key</label>
+          <div className="col-sm-9">
           <input   
-          className='disabledbox'
+          className='form-control'
           readOnly
           value={defaultsettings ? defaultsettings.razorpay_secret_key : ""}
          />
-              
+        </div>
           
-
-         
-
         </div>
        
-      </div>
-    </div>
-  </div>
+   
+ 
   {valid?
       <div className='btngrp' >
-        <button className='btn btn-primary' onClick={Edit}>Edit</button>
+        <button className='btn btn-success' onClick={Edit}>Edit</button>
       </div>:<div></div>
       }
-</div>
 </div>)
   return (
-    <div className="contentbackground">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className=" card-body">
+        <div className="row">
       {isnotFound ? getsettings:oldSettings}
+    </div>
+    </div>
+    </div>
     </div>
   );
 };

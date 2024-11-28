@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import login from "../images/login.png";
 import Swal from "sweetalert2";
@@ -7,7 +7,9 @@ import baseUrl from "../api/utils";
 import axios from "axios";
 import logo from "../images/logo.png";
 import GoogleLoginComponent from "../Registration/GoogleLoginComponent";
+import { GlobalStateContext } from "../Context/GlobalStateProvider";
 const Login = () => {
+  const { siteSettings } = useContext(GlobalStateContext);
   const MySwal = withReactContent(Swal);
   const [formData, setFormData] = useState({ username: "", password: "" });
   const navigate = useNavigate(); // useNavigate hook for navigation
@@ -233,6 +235,12 @@ const Login = () => {
             text: `reason : ${data.Description}`,
             icon: "error",
           });
+        }else if(message ==="Not Approved"){
+          MySwal.fire({
+            title: `${data.message}`,
+            text: `${data.Description}`,
+            icon: "error",
+          });
         }
       } else {
         // MySwal.fire({
@@ -246,28 +254,35 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container d-flex flex-wrap justify-content-center align-items-center">
-      <div className="image-section card-body text-center ">
+    <div className="login-container ">
+      <div className="image-section ">
         <img
           id="boyimage"
-          style={{ width: "90%", height: "95%" }}
           src={login}
           alt="boy-pic"
         />
       </div>
+      <div className="card-center">
+<div className="card card-login" >
+      <div className=" card-header  text-center">
+      <img 
+  src={siteSettings.siteicon 
+    ? `data:image/jpeg;base64,${siteSettings.siteicon}` 
+    : logo} 
+  alt="siteicon" 
+/>
 
-      <div className="form-section card-body  text-center">
-        <img style={{ width: "200px", height: "200px" }} src={logo} />
+        <div className="card-body">
         <h3 className="h4 text-gray-900 mb-3">Sign in</h3>
 
-        <div className="form-outline mb-3">
+        <div className="row mb-3">
           <input
             type="text"
             name="username"
             id="username"
             value={formData.username}
             onChange={handleChange}
-            className={`form-control .form-control-sm  ${
+            className={`form-control   ${
               errors.username && "is-invalid"
             }`}
             placeholder="Email"
@@ -278,14 +293,14 @@ const Login = () => {
           <div className="invalid-feedback">{errors.username}</div>
         </div>
 
-        <div className="form-outline mb-3">
+        <div className="row mb-3">
           <input
             type="password"
             name="password"
             id="password"
             value={formData.password}
             onChange={handleChange}
-            className={`form-control .form-control-sm  ${
+            className={`form-control   ${
               errors.password && "is-invalid"
             }`}
             placeholder="Password"
@@ -317,7 +332,7 @@ const Login = () => {
         >
           Login
         </button>
-        <Link className="btn btn-warning btn-lg btn-block" to="/">
+        <Link className="btn btn-secondary btn-lg btn-block" to="/">
           Cancel
         </Link>
 
@@ -331,7 +346,11 @@ const Login = () => {
           </div>
         
         )}
+        </div>
       </div>
+    </div>
+    
+</div>
     </div>
   );
 };

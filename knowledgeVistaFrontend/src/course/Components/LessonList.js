@@ -112,8 +112,12 @@ const LessonList = () => {
       
       
   return (
-    <div className='contentbackground'>
-    <div className='contentinner'>
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className=" card-body">
+      <div className="row">
+      <div className="col-12">
     <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
@@ -121,12 +125,12 @@ const LessonList = () => {
       </div>
         {lessons.length>0 ?(
         <div className='twodiv'>
-         <div style={{display:"grid",gridTemplateColumns:"9fr 1fr"}}>
-        <h2 style={{textDecoration:"underline"}}>Lessons of {courseName}</h2>
+         <div style={{display:"grid",gridTemplateColumns:"9fr 1fr",marginBottom:"10px"}}>
+        <h4>Lessons of {courseName}</h4>
         <Link to={`/course/Addlesson/${courseName}/${courseId}`} className='btn btn-primary mybtn'> 
                  <i className="fas fa-plus"></i> Add </Link>
         </div>
-        <div className='scrolldiv'>
+        
         <div className='listback'>       
             <div >
             {lessons.map((lesson, index) => (
@@ -141,15 +145,19 @@ const LessonList = () => {
              
             ))}
           </div>
-          </div></div>
+          </div>
  
         </div>):(
+          
 <div className='centerflex'>
         <div className='enroll' >
           <h3 className='mt-4'>No Lessons Found for {courseName}</h3>
           <Link to={`/course/Addlesson/${courseName}/${courseId}`} className='btn btn-primary'>Add Now</Link>
         </div>
         </div>)}
+        </div>
+        </div>
+        </div>
         </div>
         </div>
   )

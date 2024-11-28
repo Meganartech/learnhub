@@ -43,13 +43,14 @@ const RefreshToken = () => {
 
     
   return (
-    <div className='contentbackground' style={{height:"100vh"}}>
-      <div className='contentinner' style={{height:"88vh", paddingTop:"100px" }}>
-      <div className="text-center mt-5">
+    <div className='vh-100' style={{backgroundColor:"transparent",padding:"50px"}}>
+    <div className="card" >
+      <div className="card-header"><div className="text-center mt-5">
       <h1 className="display-1 text-danger">Session Expired</h1>
       <h2 className="display-4">Oops! It seems your session was Expired Try Login again or Refresh your Session .</h2>
       <p className="lead">Refresh Session by Clicking Refresh button..</p>
          <button className='btn btn-primary' onClick={(e)=>{refreshtoken()}}>Refresh</button>
+     </div>
      </div>
      </div>
      </div>

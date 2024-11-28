@@ -3,7 +3,8 @@ import baseUrl from "../api/utils";
 import axios from "axios";
 import message from "../images/message.png";
 
-const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
+const Notification = ({   handlemarkallasRead }) => {
+  
   const [notifications, setnotifications] = useState(() => {
     const storedNotifications = sessionStorage.getItem("notifications");
     if (storedNotifications) {
@@ -25,10 +26,13 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
 
   const [noNotification, setnoNotifications] = useState(false);
   const token = sessionStorage.getItem("token");
-
+const role=sessionStorage.getItem("role")
   // Function to fetch images for specific notification IDs
   const fetchNotificationImages = async (notifyIds) => {
     try {
+      if(role==="SYSADMIN"){
+        return
+      }
       if (notifyIds.length === 0) return;
       console.log("Fetching images for IDs:", notifyIds);
       const response = await axios.post(`${baseUrl}/getImages`, notifyIds, {
@@ -83,6 +87,9 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
 
   const handleclearAll = async () => {
     try {
+      if(role==="SYSADMIN"){
+        return
+      }
       const response = await axios.get(`${baseUrl}/clearAll`, {
         headers: {
           Authorization: token,
@@ -131,6 +138,9 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
+        if(role==="SYSADMIN"){
+          return
+        }
         const response = await axios.get(`${baseUrl}/notifications`, {
           headers: {
             Authorization: token,
@@ -173,10 +183,9 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
       }
     };
 
-    if (isopen) {
       fetchItems();
-    }
-  }, [isopen]);
+    
+  }, []);
 
   const filteredNotifications = React.useMemo(() => {
     if (!notifications.length) return [];
@@ -198,16 +207,13 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
   }, [notifications]);
 
   return (
-    <div
-      id="notipanel"
-      className="notificationPanel dropdown-menu-left shadow animated--grow-in"
-    >
-      <div className="headcontrols">
-        <a href="#" onClick={handleclearAll}>
-          Clear All
-        </a>
+    <>
+    <div className="noti-head">
+      <h6 className="d-inline-block m-b-0">Notifications</h6>
+      <div className="float-right">
         <a
-          href="#"
+          href="#!"
+          className="m-r-10"
           onClick={() => {
             const notificationIds = notifications.map(
               (notification) => notification.notifyId
@@ -215,75 +221,93 @@ const Notification = ({ setisopen, isopen, setcount, handlemarkallasRead }) => {
             handlemarkallasRead(notificationIds);
           }}
         >
-          Mark All As Read
+          mark as read
         </a>
-        <i
-          className="fa-solid fa-xmark p-1 alignright"
-          onClick={() => setisopen(false)}
-        ></i>
-      </div>
-      <div className="scrollclass pr-2">
-        {noNotification ? (
-          <div className="text-center mt-5"> No Notification Found</div>
-        ) : (
-          <>
-            {filteredNotifications.length > 0 &&
-              filteredNotifications.map((group, index) => (
-                <div key={index}>
-                  <h6 className="text-left text-muted">
-                    {group.date === new Date().toLocaleDateString("en-US")
-                      ? "Today"
-                      : group.date ===
-                        new Date(
-                          new Date().getTime() - 1 * 24 * 60 * 60 * 1000
-                        ).toLocaleDateString("en-US")
-                      ? "Yesterday"
-                      : group.date}
-                  </h6>
-                  {group.notifications.map(
-                    (notification, notificationIndex) => (
-                      <div
-                        key={notificationIndex}
-                        id={`notification-${notificationIndex}`}
-                        data-index={notificationIndex} // Store index to map it to the notification
-                        className="notificationElement dropdown-item"
-                        onClick={() => {
-                          window.location.href = `${notification.link}`;
-                        }}
-                      >
-                        <img
-                          src={
-                            notification.notimage &&
-                            notification.notimage !== "no image"
-                              ? `data:image/jpeg;base64,${notification.notimage}`
-                              : message // Fallback message
-                          }
-                          alt="Notification Image"
-                        />
-
-                        <div className="p-1">
-                          <p>
-                            <b>{notification.heading}</b>
-                          </p>
-                          <p className="notificationcontent">
-                            {notification.description.length > 80
-                              ? notification.description.substring(0, 80) +
-                                "..."
-                              : notification.description}
-                          </p>
-                          <small className="text-muted">
-                            Created By {notification.username}
-                          </small>
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-              ))}
-          </>
-        )}
+        <a href="#!" onClick={handleclearAll}>clear all</a>
       </div>
     </div>
+  
+    <ul className="noti-body">
+      {noNotification ? (
+        <li className="n-title">
+          <p className="text-center mt-5 m-b-0">No Notification Found</p>
+        </li>
+      ) : (
+        <>
+          {filteredNotifications.length > 0 &&
+            filteredNotifications.map((group, index) => (
+              <li key={index} className="n-title">
+                <p className="m-b-0">
+                  {group.date === new Date().toLocaleDateString("en-US")
+                    ? "Today"
+                    : group.date ===
+                      new Date(
+                        new Date().getTime() - 1 * 24 * 60 * 60 * 1000
+                      ).toLocaleDateString("en-US")
+                    ? "Yesterday"
+                    : group.date}
+                </p>
+                <ul>
+                {group.notifications.map((notification, notificationIndex) => (
+                  <li
+                    key={notificationIndex}
+                    id={`notification-${notificationIndex}`}
+                    data-index={notificationIndex}
+                    className="notification"
+                    style={{cursor:"pointer"}}
+                    onClick={() => {
+                      if (notification.link && notification.link.startsWith("/")) {
+                        // For internal links (relative paths), open in the same tab
+                        window.location.href = notification.link;
+                      } else {
+                        // For all other URLs, open in a new tab
+                        window.open(notification.link, "_blank");
+                      }
+                    }}
+                  >
+                    <div className="media">
+                      <img
+                        className="img-radius"
+                        src={
+                          notification.notimage &&
+                          notification.notimage !== "no image"
+                            ? `data:image/jpeg;base64,${notification.notimage}`
+                            : message // Fallback message
+                        }
+                        alt="Notification Image"
+                      />
+                      <div className="media-body">
+                        {/* <p>
+                          <strong>{notification.heading}</strong>
+                          <span className="n-time text-muted">
+                            <i className="icon feather icon-clock m-r-10"></i>
+                            {notification.timeAgo || "Just now"}
+                          </span>
+                        </p> */}
+                        <p>
+                          {notification.description.length > 80
+                            ? notification.description.substring(0, 80) + "..."
+                            : notification.description}
+                        </p>
+                        <small className="text-muted">
+                          Created By {notification.username}
+                        </small>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+                </ul>
+              </li>
+            ))}
+        </>
+      )}
+    </ul>
+  
+    {/* <div className="noti-footer">
+      <a href="#!">show all</a>
+    </div> */}
+ </>
+  
   );
 };
 

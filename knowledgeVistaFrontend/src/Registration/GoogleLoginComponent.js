@@ -4,7 +4,7 @@ import baseUrl from "../api/utils";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { LoginSocialGoogle } from "reactjs-social-login";
-import googleicon from "../images/google.png";
+import googleicon from "../images/google-25x25.png";
 
 const GoogleLoginComponent = ({clientId}) => {
   const MySwal = withReactContent(Swal);
@@ -92,7 +92,6 @@ const GoogleLoginComponent = ({clientId}) => {
       }}
     >
       <img
-        style={{ width: "1.875rem", height: "1.875rem" }}
         src={googleicon}
         alt="googlelogin"
       />

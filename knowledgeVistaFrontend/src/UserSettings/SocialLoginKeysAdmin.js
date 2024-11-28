@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from 'axios';
 import baseUrl from '../api/utils';
-import googleicon from "../images/google.png"
+import googleicon from "../images/google-25x25.png"
 const SocialLoginKeysAdmin = () => {
     const MySwal = withReactContent(Swal); 
     const token=sessionStorage.getItem("token")
@@ -144,131 +144,152 @@ const SocialLoginKeysAdmin = () => {
         
       };
       const oldinputs=(
-      <div>
-       
-          <div className='innerFrameforset '>
-         <h4 className='mb-2' style={{ textDecoration: "underline" }}>  Google Login Settings</h4>
+    
+          <div>
+         <h4>  Google Login Settings <img src={googleicon}/></h4>
         
-          <div className='formgroup pt-4' >
+          <div className='form-group row' >
            
-              <div className='inputgrp'>
-                <label htmlFor='clientid'>Google Cloud Client Id <span className="text-danger">*</span></label>
-                <span>:</span>
-                
+                <label htmlFor='clientid'  className="col-sm-3 col-form-label">Google Cloud Client Id <span className="text-danger">*</span></label>
+                <div className="col-sm-9">
                 <input
                   id='clientid'
                   placeholder='Client Id'
                   value={defaultkeys.clientid}
+                  className='form-control'
                   readOnly
-                 className='disabledbox'
                 />
+
               </div>
-              <div className='inputgrp'>
-                <label htmlFor='clientSecret'>Google Cloud client Secret <span className="text-danger">*</span></label>
-                <span>:</span>
-                
+              </div>
+
+              <div className='form-group row'>
+                <label htmlFor='clientSecret' className="col-sm-3 col-form-label">Google Cloud client Secret <span className="text-danger">*</span></label>
+                <div className="col-sm-9">
                  <input
                   id='clientSecret'
                   placeholder='Client Secet' 
-                  className='disabledbox'
                   readOnly
+                   className='form-control'
                   value={defaultkeys.clientSecret}
                 />
-               
+               </div>
     
               </div>
-              <div className='inputgrp'>
-                <label htmlFor='redirectUrl'>Google Cloud RedirectUrl<span className="text-danger">*</span></label>
-                <span>:</span>
+              <div className='form-group row'>
+                <label htmlFor='redirectUrl'
+                 className="col-sm-3 col-form-label"
+                 >Google Cloud RedirectUrl<span className="text-danger">*</span></label>
+  <div className="col-sm-9">
                  <input
                   id='redirectUrl'
                   value={defaultkeys.redirectUrl}
                   placeholder=' RedirectUrl'
-                  className='disabledbox'
+                  className='form-control'
                   readOnly
                 />
-               
+               </div>
     
               </div>
            
-          </div>
+         
        
           
           <div className='btngrp' >
-            <button className='btn btn-primary' onClick={Edit}>Edit</button>
+            <button className='btn btn-success' onClick={Edit}>Edit</button>
           </div>
           
-      </div>
       </div>
       )
 
       const EditInputs=(  <div>
        
-         <div className='innerFrameforset '>
-        <h4 className='mb-2' style={{ textDecoration: "underline" }}> Google Login Settings</h4>
+        <h4> Google Login Settings</h4>
        
-         <div className='formgroup pt-4' >
+         <div className='form-group row' >
           
-             <div className='inputgrp'>
-               <label htmlFor='clientid'>Google Cloud Client Id <span className="text-danger">*</span></label>
-               <span>:</span>
-               <div>
+               <label htmlFor='clientid'
+               className="col-sm-3 col-form-label">Google Cloud Client Id <span className="text-danger">*</span></label>
+             <div className="col-sm-9">
                <input
                  id='clientid'
                  placeholder='Client Id'
                  value={loginkeys.clientid}
                  name='clientid'
                 onChange={handleInputsChange}
-                className={`form-control .form-control-sm  ${errors.clientid && "is-invalid"}`}
+                className={`form-control   ${errors.clientid && "is-invalid"}`}
                />
                <div className="invalid-feedback">{errors.clientid}</div>
                </div>
              </div>
-             <div className='inputgrp'>
-               <label htmlFor='clientSecret'>Google Cloud client Secret <span className="text-danger">*</span></label>
-               <span>:</span>
-               <div>
+             <div className='form-group row'>
+               <label htmlFor='clientSecret'className="col-sm-3 col-form-label">Google Cloud client Secret <span className="text-danger">*</span></label>
+               <div className="col-sm-9">
                 <input
                 name='clientSecret'
                  id='clientSecret'
                  placeholder='Client Secet' 
                  onChange={handleInputsChange}
                  value={loginkeys.clientSecret}
-                 className={`form-control .form-control-sm  ${errors.clientSecret && "is-invalid"}`}
+                 className={`form-control   ${errors.clientSecret && "is-invalid"}`}
                  />
                  <div className="invalid-feedback">{errors.clientSecret}</div>
                  </div>
              </div>
-             <div className='inputgrp'>
-               <label htmlFor='redirectUrl'>Google Cloud RedirectUrl<span className="text-danger">*</span></label>
-               <span>:</span>
-               <div>
+             <div className='form-group row'>
+               <label htmlFor='redirectUrl'className="col-sm-3 col-form-label">Google Cloud RedirectUrl<span className="text-danger">*</span></label>
+               <div className="col-sm-9">
                 <input
                  id='redirectUrl'
                  name='redirectUrl'
                  value={loginkeys.redirectUrl}
                  placeholder=' RedirectUrl'
                  onChange={handleInputsChange}
-                 className={`form-control .form-control-sm  ${errors.redirectUrl && "is-invalid"}`}
+                 className={`form-control   ${errors.redirectUrl && "is-invalid"}`}
                  />
                  <div className="invalid-feedback">{errors.redirectUrl}</div>
                  </div>
    
              </div>
           
-         </div>
+         
       
          
          <div className='btngrp' >
            <button className='btn btn-primary' onClick={save}>Save</button>
          </div>
          
-     </div>
      </div>)
   return (
-   <>
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className=" card-body">
+      <div className="row">
+      <div className="col-12">
+        <div className="navigateheaders">
+          <div
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <i className="fa-solid fa-arrow-left"></i>
+          </div>
+          <div></div>
+          <div
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <i className="fa-solid fa-xmark"></i>
+          </div>
+        </div>
     {isnotFound ?EditInputs: oldinputs  }
-    </>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
   )
 }
 
