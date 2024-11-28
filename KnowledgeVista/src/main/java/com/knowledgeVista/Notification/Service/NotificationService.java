@@ -18,7 +18,6 @@ import com.knowledgeVista.Notification.NotificationUser;
 import com.knowledgeVista.Notification.Repositories.NotificationDetailsRepo;
 import com.knowledgeVista.Notification.Repositories.NotificationTypeRepo;
 import com.knowledgeVista.Notification.Repositories.NotificationUserRepo;
-import com.knowledgeVista.Payments.PaymentSettingsController;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 

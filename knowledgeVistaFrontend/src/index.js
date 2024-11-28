@@ -40,9 +40,9 @@ function handleError(message) {
               
               // Assuming the body contains the message "Mail Sent"
               if (data.statusCodeValue === 200) {
-                MySwal.fire("Mail Sent", data.body, "success");
+                // MySwal.fire("Mail Sent", data.body, "success");
               } else {
-                MySwal.fire("Error", "Failed to send mail.", "error");
+                MySwal.fire("Error", "Failed to send mail."+data.errorMessage , "error");
               }
             } else {
               console.error("Error sending mail:", response.status);
@@ -50,7 +50,7 @@ function handleError(message) {
             }
           } catch (error) {
             console.error("Error sending mail:", error);
-            MySwal.fire("Error", "Failed to send mail.", "error");
+            MySwal.fire("Error", "Failed to send mail.", message);
           }
         };
       

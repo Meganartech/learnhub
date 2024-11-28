@@ -317,13 +317,6 @@ setErrors((prevErrors) => ({
                 ...prevErrors,
                 email: "This email is already registered."
               }));
-            }else if(error.response.status===500){
-              MySwal.fire({
-                title: "Server Error!",
-                text: "Unexpected Error Occured",
-                icon: "error",
-                confirmButtonText: "OK",
-              });
             }else if(error.response.status===401){
               MySwal.fire({
                 title: "Un Authorized!",

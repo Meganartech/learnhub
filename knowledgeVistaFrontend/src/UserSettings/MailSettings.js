@@ -43,7 +43,10 @@ const[initialsave,setinitialsave]=useState(false);
             setdefaultsettings(data);
             setsettings(data);
             
-        } 
+        }else if(response.status === 204){
+          setisnotFound(true);
+          setinitialsave(true);
+        }
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {

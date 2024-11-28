@@ -1,15 +1,4 @@
 package com.knowledgeVista.User.Controller;
-import com.knowledgeVista.DownloadManagement.CustomerLeads;
-import com.knowledgeVista.DownloadManagement.Customer_downloads;
-import com.knowledgeVista.License.LicenseController;
-import com.knowledgeVista.License.Madmin_Licence;
-import com.knowledgeVista.License.mAdminLicenceRepo;
-import com.knowledgeVista.User.Muser;
-import com.knowledgeVista.User.MuserDto;
-import com.knowledgeVista.User.MuserProfileDTO;
-import com.knowledgeVista.User.MuserRequiredDto;
-import com.knowledgeVista.User.MuserRoles;
-import com.knowledgeVista.User.Repository.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -23,9 +12,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.knowledgeVista.License.LicenseController;
+import com.knowledgeVista.License.Madmin_Licence;
+import com.knowledgeVista.License.mAdminLicenceRepo;
+import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.MuserDto;
+import com.knowledgeVista.User.MuserProfileDTO;
+import com.knowledgeVista.User.MuserRequiredDto;
+import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Repository.MuserRepositories;
+import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
@@ -112,33 +110,34 @@ public class MserRegistrationController {
 	     		   licencecontrol.uploadSAS(madmin, savedadmin);
 	     	   }
 	          
-	            RestTemplate restTemplate = new RestTemplate();
+//	            RestTemplate restTemplate = new RestTemplate();
 
 
 	            
-	            String apiUrl = baseUrl +"/Developer/CustomerDownloads";
-	            String apiUrl2 = baseUrl + "/Developer/CustomerLeads";
-
-                
-	            Customer_downloads custDown = new Customer_downloads();
-	            custDown.setName(user.getUsername());
-	            custDown.setEmail(user.getEmail());
-	            custDown.setCountryCode(user.getCountryCode());
-	            custDown.setPhone(user.getPhone());
-	            
-	            CustomerLeads custlead=new CustomerLeads();
-	            custlead.setName(user.getUsername());
-	            custlead.setEmail(user.getEmail());
-	            custlead.setCountryCode(user.getCountryCode());
-	            custlead.setPhone(user.getPhone());
-	            
-	            restTemplate.postForEntity(apiUrl, custDown, String.class);
-
-	            restTemplate.postForEntity(apiUrl2, custlead, String.class);
+//	            String apiUrl = baseUrl +"/Developer/CustomerDownloads";
+//	            String apiUrl2 = baseUrl + "/Developer/CustomerLeads";
+//
+//                
+//	            Customer_downloads custDown = new Customer_downloads();
+//	            custDown.setName(user.getUsername());
+//	            custDown.setEmail(user.getEmail());
+//	            custDown.setCountryCode(user.getCountryCode());
+//	            custDown.setPhone(user.getPhone());
+//	            
+//	            CustomerLeads custlead=new CustomerLeads();
+//	            custlead.setName(user.getUsername());
+//	            custlead.setEmail(user.getEmail());
+//	            custlead.setCountryCode(user.getCountryCode());
+//	            custlead.setPhone(user.getPhone());
+//	            
+//	            restTemplate.postForEntity(apiUrl, custDown, String.class);
+//
+//	            restTemplate.postForEntity(apiUrl2, custlead, String.class);
 	     	  
 	           
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	            }else {
+	            	
 	            	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error getting role\"}");
 	   	            
 	            }

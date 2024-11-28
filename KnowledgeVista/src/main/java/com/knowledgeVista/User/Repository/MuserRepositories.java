@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -112,6 +111,10 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	            "WHERE u1.email = :email " +
 	            "GROUP BY u2.userId, u2.username, u2.email, u2.phone, u2.isActive, u2.dob, u2.skills,u2.institutionName")
 	     List<MuserDto> findStudentsOfTrainer(@Param("email") String email);
+	    
+	    @Query("SELECT u FROM Muser u WHERE u.role.roleId = ?1")
+		  Optional<Muser> findByroleid(Long roleId);
+
 }
 
 

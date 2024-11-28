@@ -1,6 +1,5 @@
 package com.knowledgeVista.Notification.Controller;
 
-import com.knowledgeVista.Notification.dtos.NotificationDetailsDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ import com.knowledgeVista.Notification.NotificationDetails;
 import com.knowledgeVista.Notification.NotificationUser;
 import com.knowledgeVista.Notification.Repositories.NotificationDetailsRepo;
 import com.knowledgeVista.Notification.Repositories.NotificationUserRepo;
-import com.knowledgeVista.Notification.Service.NotificationService;
+import com.knowledgeVista.Notification.dtos.NotificationDetailsDTO;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;

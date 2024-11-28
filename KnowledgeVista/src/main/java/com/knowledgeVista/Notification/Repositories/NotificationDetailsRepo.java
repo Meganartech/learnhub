@@ -1,5 +1,6 @@
 package com.knowledgeVista.Notification.Repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import com.knowledgeVista.Notification.NotificationDetails;
 import com.knowledgeVista.Notification.dtos.NotificationDetailsDTO;
-import java.util.List;
 
 @Repository
 public interface NotificationDetailsRepo extends JpaRepository<NotificationDetails, Long> {

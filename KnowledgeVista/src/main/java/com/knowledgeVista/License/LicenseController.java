@@ -41,6 +41,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.DownloadManagement.CustomerLeads;
 import com.knowledgeVista.DownloadManagement.Customer_downloads;
@@ -48,6 +49,7 @@ import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -636,6 +638,7 @@ public class LicenseController {
     	 		        	  notiservice.LicenceExpitedNotification(NotifyId, notificationDate,institution);
     	 		        	}
     	 		        }
+    	 		        logger.info(email);
 		                String apiurl3 = baseUrl+"/Developer/CustomerLeads/" + email;
 	                CustomerLeads updateData = new CustomerLeads();
 	                updateData.setEmail(user.getEmail());

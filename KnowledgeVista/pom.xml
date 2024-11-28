@@ -145,6 +145,12 @@
 			<artifactId>poi</artifactId>
 			<version>5.2.3</version> <!-- or the latest version -->
 		</dependency>
+		<dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jsr310</artifactId>
+    <version>2.15.2</version> <!-- Use the appropriate version -->
+</dependency>
+
 
 		<!-- For handling OLE2 (used in .ppt files) -->
 		<dependency>
@@ -169,6 +175,24 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.4</version> <!-- or the latest version -->
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+
+<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>6.6.2.Final</version>
+    <type>pom</type>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-tools -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>6.1.3</version> <!-- Or use your project's compatible version -->
+</dependency>
+
 
 
 		<!--<dependency>

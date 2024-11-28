@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
-import com.knowledgeVista.Course.Test.controller.Testcontroller;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;

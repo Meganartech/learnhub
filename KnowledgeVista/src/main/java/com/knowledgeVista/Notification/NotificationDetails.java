@@ -1,7 +1,6 @@
 package com.knowledgeVista.Notification;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

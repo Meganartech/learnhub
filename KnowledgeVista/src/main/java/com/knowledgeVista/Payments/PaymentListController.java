@@ -145,7 +145,7 @@ public ResponseEntity<?> viewTransactionHistory(String token) {
 	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	   	    	}
   	     }else {
-  	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
+  	    	 return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); 
   	     }
         if ("USER".equals(role)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -158,7 +158,7 @@ public ResponseEntity<?> viewTransactionHistory(String token) {
                 if (!orderUsers.isEmpty()) {
                     return ResponseEntity.ok(orderUsers);
                 } else {
-                    return ResponseEntity.notFound().build();
+                    return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); 
                 }
             } else {
                 // Handle case where user with email is not found (log, return appropriate message)

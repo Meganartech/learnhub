@@ -65,7 +65,7 @@ const ProfileView = () => {
         }));
       }
         
-        
+        console.log(img);
       } catch (error) {
         if(error.response && error.response.status===401)
         {
@@ -268,13 +268,13 @@ const ProfileView = () => {
               email: "This email is already registered."
             }));
         
-      }else if(error.response && error.response.status === 500){
-          MySwal.fire({
-            title: "Server Error!",
-            text: "Unexpected Error Occured",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+      // }else if(error.response && error.response.status === 500){
+      //     MySwal.fire({
+      //       title: "Server Error!",
+      //       text: "Unexpected Error Occured",
+      //       icon: "error",
+      //       confirmButtonText: "OK",
+      //     });
         }else {
             
           // MySwal.fire({

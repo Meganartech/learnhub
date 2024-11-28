@@ -20,7 +20,6 @@ import com.knowledgeVista.Meeting.zoomclass.Meetrepo;
 import com.knowledgeVista.Meeting.zoomclass.ZoomMeetingInvitee;
 import com.knowledgeVista.Meeting.zoomclass.ZoomSettings;
 import com.knowledgeVista.Meeting.zoomclass.ZoomsettingRepo;
-import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Notification.Service.NotificationService;
 
 

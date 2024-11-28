@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.knowledgeVista.Course.Controller.videolessonController;
 import com.knowledgeVista.Course.Test.MuserTestActivity;
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.User.Muser;
@@ -202,7 +201,7 @@ public class certificateController {
 	                .body(certi);
 	       
 	    } else {
-	    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	    	 return ResponseEntity.status(HttpStatus.NO_CONTENT)
 	 	            .body("No certificates found");
 	           
 	        }

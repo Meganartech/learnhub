@@ -100,14 +100,6 @@ const handleAssignCourse = async () => {
           confirmButtonText: "OK",
         });
       }
-      else if(error.response.status===500){
-        MySwal.fire({
-          title: "Server Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
       else{
         throw error
       }

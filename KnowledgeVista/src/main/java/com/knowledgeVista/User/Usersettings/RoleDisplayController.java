@@ -41,7 +41,7 @@ public class RoleDisplayController {
           }
           Optional<Role_display_name> opdisplay=Roledisplayrepo.getdisplayname(institution);
           if(opdisplay.isEmpty()) {
-        	  return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        	  return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
           }
         	  Role_display_name display= opdisplay.get();
         	  return ResponseEntity.ok(display);

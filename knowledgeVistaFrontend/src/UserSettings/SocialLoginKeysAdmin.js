@@ -45,7 +45,9 @@ const SocialLoginKeysAdmin = () => {
             const data = response.data;
             setdefaultkeys(data);
             setloginkeys(data)
-        } 
+          }else if(response.status === 204){
+            setisnotFound(true);
+          }
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {

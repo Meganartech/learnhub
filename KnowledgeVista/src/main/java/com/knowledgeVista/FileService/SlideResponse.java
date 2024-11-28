@@ -1,7 +1,5 @@
 package com.knowledgeVista.FileService;
 
-import org.springframework.core.io.InputStreamResource;
-
 import lombok.Setter;
 @Setter
 public class SlideResponse {

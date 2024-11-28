@@ -96,7 +96,7 @@ public class PaymentSettingsController {
 		            return ResponseEntity.ok()
 		                .body(pay);  
 		        }else {
-		        	return ResponseEntity.status(HttpStatus.NOT_FOUND)
+		        	return ResponseEntity.status(HttpStatus.NO_CONTENT)
 				            .body("No payment data found");
 		        }
 		        

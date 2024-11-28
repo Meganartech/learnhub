@@ -54,6 +54,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
+        //  / ===> api to trigger error         course/countcourse
         const response = await axios.get(`${baseUrl}/triggerError`, {
           headers: {
             Authorization: token,

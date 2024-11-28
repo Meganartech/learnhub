@@ -1,7 +1,5 @@
 package com.knowledgeVista.Course.Controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +18,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.DocsDetails;
 import com.knowledgeVista.Course.MiniatureDetail;
@@ -36,7 +31,6 @@ import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.DocsDetailRepo;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
-import com.knowledgeVista.Course.Test.controller.QuestionController;
 import com.knowledgeVista.FileService.PPTReader;
 import com.knowledgeVista.FileService.VideoFileService;
 import com.knowledgeVista.License.licenseRepository;
@@ -44,6 +38,7 @@ import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController

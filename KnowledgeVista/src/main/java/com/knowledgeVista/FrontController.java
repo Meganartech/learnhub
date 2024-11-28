@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,8 +51,6 @@ import com.knowledgeVista.Payments.PaymentSettingsController;
 import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.Controller.SettingsController;
-import com.knowledgeVista.SocialLogin.SocialLoginKeys;
-import com.knowledgeVista.SysAdminPackage.SysadminController;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Controller.AddUsers;
 import com.knowledgeVista.User.Controller.AssignCourse;
@@ -147,6 +146,13 @@ public class FrontController {
 	
 	@Autowired
 	private GoogleAuthController googleauth;
+	
+	@Autowired
+	private LogManagement logmanagement;
+	
+	
+	
+	
 	
 	 private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
 	
@@ -1156,7 +1162,12 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
                public String getClientid(@RequestParam(required = false) String institution,@RequestParam String Provider){
             	   return googleauth.getClientidforgoogle(institution, Provider);
                }
+              
                
+         	  @GetMapping("/log/time/{id}")
+               public ResponseEntity<?> errorSendindToMail(@PathVariable int id){
+            	   return logmanagement.logdetails(id);
+               }
              
                
                @GetMapping("/triggerError")
@@ -1174,11 +1185,17 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
 //   		        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ER)
    		        }
    		    }
+               @RequestMapping("favicon.ico")
+               public void favicon() {
+                   // Respond with nothing or redirect to another resource.
+               }
 
    		    // Method that intentionally throws an exception
    		    private void causeException() throws Exception {
    		        throw new Exception("This is a simulated exception for testing purposes.");
    		    }
+   		    
+   		
                
 }
 

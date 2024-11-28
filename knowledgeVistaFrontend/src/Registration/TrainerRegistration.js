@@ -318,12 +318,7 @@ setErrors((prevErrors) => ({
             email: "This email is already registered.",
           }));
         } else{
-            MySwal.fire({
-                title: "Error!",
-                text: data,
-                icon: "error",
-                confirmButtonText: "OK",
-              });
+          throw error
         }
       } else {
         // MySwal.fire({

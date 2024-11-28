@@ -7,11 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 @RestController
@@ -103,7 +104,7 @@ public class ZoomMeetAccountController {
 	        			 ZoomAccountKeys accountset=opaccountsettings.get();
 	        			 return ResponseEntity.ok(accountset);
 	        		 }else {
-	    	        	 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	    	        	 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	        	 }
 	        	 }else {
 	        		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

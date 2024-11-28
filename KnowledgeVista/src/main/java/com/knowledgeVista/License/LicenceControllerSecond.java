@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.knowledgeVista.Meeting.ZoomTokenService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -62,7 +61,7 @@ public class LicenceControllerSecond {
 	         	    	License licence=oplicence.get();
 	         	    	return ResponseEntity.ok(licence);
 	         	   }else {
-	         		   return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	         		   return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	         	   }
 	            }else {
 	            	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -92,10 +91,10 @@ public class LicenceControllerSecond {
 	         	    	License licence=oplicence.get();
 	         	    	return ResponseEntity.ok(licence);
 	         	   }else {
-	         		   return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Licence Not Found");
+	         		   return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Licence Not Found");
 	         	   }
 	            }else {
-	            	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Admin Not FOund");
+	            	 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Admin Not FOund");
 	            }
 	    		}else {
 	    			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

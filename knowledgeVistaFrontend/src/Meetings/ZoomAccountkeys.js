@@ -45,6 +45,9 @@ const[errors,seterrors]=useState({
           const data = response.data;
           setdefaultZoomset(data);
           setoldzoomset(data);
+       }else if(response.status === 204){
+        setisnotFound(true);
+        setinitialsave(true);
       } 
       } catch (error) {
         if (error.response) {

@@ -1,13 +1,16 @@
 package com.knowledgeVista;
+import java.io.InputStream;
+import java.time.LocalDate;
+
+import javax.annotation.PostConstruct;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -18,10 +21,6 @@ import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.time.LocalDate;
 
 @Service
 public class DataLoaderService {

@@ -2,7 +2,6 @@ package com.knowledgeVista.License;
 
 import java.time.LocalDate;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

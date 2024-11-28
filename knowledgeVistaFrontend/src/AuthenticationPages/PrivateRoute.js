@@ -24,7 +24,7 @@ const PrivateRoute = ({sysadmin, authenticationRequired, authorizationRequired,o
           if (error.response && error.response.status !== 200) {
             console.error('Error fetching data:', error);
           }
-          console.error('Error fetching data:', error);
+          // console.error('Error fetching data:', error);
           throw error
         }
       };

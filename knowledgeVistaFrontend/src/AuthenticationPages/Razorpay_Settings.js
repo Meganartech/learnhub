@@ -35,7 +35,10 @@ const[initialsave,setinitialsave]=useState(false);
           setdefaultsettings(data);
           setRazorpay_Key(data.razorpay_key || ''); // Set default empty string if not found
           setRazorpay_Secret_Key(data.razorpay_secret_key || '');
-        } 
+        }else if(response.status === 204){
+          setisnotFound(true);
+          setinitialsave(true);
+        }
       } catch (error) {
         if (error.response) {
           if (error.response.status === 404) {

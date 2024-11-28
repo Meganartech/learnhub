@@ -2,7 +2,9 @@ package com.knowledgeVista.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
 import com.knowledgeVista.Course.CourseDetail;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

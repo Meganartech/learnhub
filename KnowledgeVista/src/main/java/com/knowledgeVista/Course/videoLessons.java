@@ -2,6 +2,8 @@ package com.knowledgeVista.Course;
 
 
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,7 +22,6 @@ import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.List;
 
 @Entity
 @Getter@Setter@NoArgsConstructor

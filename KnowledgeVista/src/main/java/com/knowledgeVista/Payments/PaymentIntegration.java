@@ -24,7 +24,6 @@ import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-import com.knowledgeVista.secretapis.DeleteApis;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;

@@ -15,13 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.knowledgeVista.FrontController;
-
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.MediaType;
 @Configuration
 public class ZoomMethods {
 	 private static final Logger logger = LoggerFactory.getLogger(ZoomMethods.class);

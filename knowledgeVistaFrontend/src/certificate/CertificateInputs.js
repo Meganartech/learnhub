@@ -57,6 +57,9 @@ useEffect(() => {
         setdefaultcerti(certificateJson);
         setCertificate(certificateJson);
         setisinitial(false);
+      }else if(certificatedata.status === 204){
+        setisnotFound(true);
+
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {

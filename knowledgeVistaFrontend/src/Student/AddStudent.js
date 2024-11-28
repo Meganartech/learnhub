@@ -358,13 +358,6 @@ const AddStudent = () => {
               email: "This email is already registered.",
             }));
           } 
-        } else if (errorData.status === 500) {
-          MySwal.fire({
-            title: "Server Error!",
-            text: "Unexpected Error Occured",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
         } else if (errorData.status === 401) {
           MySwal.fire({
             title: "Un Authorized!",

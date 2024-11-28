@@ -88,14 +88,7 @@ const handleAssignCourse = async () => {
             window.location.href = "/view/Students";
         } 
     } catch (error) {
-      if(error.response && error.response.status===400){
-         MySwal.fire({
-            icon: 'error',
-            title: 'An unexpected error occurred!',
-            text: error.response.data.error,
-            confirmButtonText: "OK"
-        });
-      }else{
+      
       //   MySwal.fire({
       //     icon: 'error',
       //     title: 'An unexpected error occurred!',
@@ -103,7 +96,7 @@ const handleAssignCourse = async () => {
       //     confirmButtonText: "OK"
       // });
       throw error
-      }
+    
        // window.location.reload()
     }
 };
