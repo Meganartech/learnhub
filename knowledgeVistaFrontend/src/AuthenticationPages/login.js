@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import login from "../images/login.png";
 import Swal from "sweetalert2";
@@ -7,7 +7,9 @@ import baseUrl from "../api/utils";
 import axios from "axios";
 import logo from "../images/logo.png";
 import GoogleLoginComponent from "../Registration/GoogleLoginComponent";
+import { GlobalStateContext } from "../Context/GlobalStateProvider";
 const Login = () => {
+  const { siteSettings } = useContext(GlobalStateContext);
   const MySwal = withReactContent(Swal);
   const [formData, setFormData] = useState({ username: "", password: "" });
   const navigate = useNavigate(); // useNavigate hook for navigation
@@ -258,7 +260,13 @@ const Login = () => {
       <div className="card-center">
 <div className="card card-login" >
       <div className=" card-header  text-center">
-        <img src={logo} />
+      <img 
+  src={siteSettings.siteicon 
+    ? `data:image/jpeg;base64,${siteSettings.siteicon}` 
+    : logo} 
+  alt="siteicon" 
+/>
+
         <div className="card-body">
         <h3 className="h4 text-gray-900 mb-3">Sign in</h3>
 

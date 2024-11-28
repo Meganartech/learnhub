@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import baseUrl from '../api/utils';
+import favicon from "../images/favicon.ico"
 
 // Create the context
 export const GlobalStateContext = createContext();
@@ -25,8 +26,10 @@ export const GlobalStateProvider = ({ children }) => {
         // Check if data is already in sessionStorage
         const cachedSettings = sessionStorage.getItem("siteSettings");
         if (cachedSettings) {
-          setsiteSettings(JSON.parse(cachedSettings));
-          console.log("Loaded from sessionStorage:", JSON.parse(cachedSettings));
+          const parsedSettings = JSON.parse(cachedSettings);
+          setsiteSettings(parsedSettings);
+          updateSiteMeta(parsedSettings); // Update favicon and title
+          console.log("Loaded from sessionStorage:", parsedSettings);
         } else {
           let response;
           if (token) {
@@ -38,18 +41,40 @@ export const GlobalStateProvider = ({ children }) => {
           } else {
             response = await axios.get(`${baseUrl}/all/get/labellings`);
           }
-  
+
           setsiteSettings(response.data);
           sessionStorage.setItem("siteSettings", JSON.stringify(response.data)); // Cache data
+          updateSiteMeta(response.data); // Update favicon and title
           console.log("Fetched from API:", response.data);
         }
       } catch (error) {
         console.error("Error fetching site settings:", error);
       }
     };
-  
+
+    const updateSiteMeta = (settings) => {
+      // Update document title
+      document.title = settings.title || "Learn Hub";
+
+      // Update favicon
+      const faviconLink = document.querySelector("link[rel='icon']");
+      const faviconHref = settings.titleicon
+        ? `data:image/x-icon;base64,${settings.titleicon}`
+        : favicon; // Default to imported favicon.ico
+
+      if (faviconLink) {
+        faviconLink.href = faviconHref;
+      } else {
+        const newLink = document.createElement("link");
+        newLink.rel = "icon";
+        newLink.href = faviconHref;
+        document.head.appendChild(newLink);
+      }
+    };
+
     fetchLabels();
-  }, []); // Dependency on `token`
+  }, []);
+
   
   const token =  sessionStorage.getItem("token")
 
@@ -90,7 +115,7 @@ export const GlobalStateProvider = ({ children }) => {
   }, [token]);
 
   return (
-    <GlobalStateContext.Provider value={{ displayname }}>
+    <GlobalStateContext.Provider value={{ displayname ,siteSettings}}>
       {children}
     </GlobalStateContext.Provider>
   );
