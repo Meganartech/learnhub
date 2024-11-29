@@ -307,18 +307,8 @@ const TrainerRegistration = () => {
             ...prevErrors,
             email: "This email is already registered.",
           }));
-<<<<<<< HEAD
         } else{
           throw error
-=======
-        } else {
-          MySwal.fire({
-            title: "Error!",
-            text: data,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
->>>>>>> ae1ca461709f858794f65dea8b73fed4321b5b3c
         }
       } else {
         // MySwal.fire({

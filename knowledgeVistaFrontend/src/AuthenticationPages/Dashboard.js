@@ -72,8 +72,9 @@ const[StudentFest,setStudentFest]=useState([
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        //  / ===> api to trigger error         course/countcourse
-        const response = await axios.get(`${baseUrl}/triggerError`, {
+        //  /triggerError ===> api to trigger error    
+             
+        const response = await axios.get(`${baseUrl}/course/countcourse`, {
           headers: {
             Authorization: token,
           },

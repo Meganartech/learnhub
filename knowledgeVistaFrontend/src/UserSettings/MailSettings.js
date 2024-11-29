@@ -42,15 +42,7 @@ const MailSettings = () => {
 
             setdefaultsettings(data);
             setsettings(data);
-<<<<<<< HEAD
-            
-        }else if(response.status === 204){
-          setisnotFound(true);
-          setinitialsave(true);
-        }
-=======
           }
->>>>>>> ae1ca461709f858794f65dea8b73fed4321b5b3c
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {
@@ -94,39 +86,18 @@ const MailSettings = () => {
           }).then((result) => {
             if (result.isConfirmed) {
               window.location.reload();
-<<<<<<< HEAD
-            }   });
-          setisnotFound(false)
-        } 
-  }catch(error){
-    console.log(error)
-    // MySwal.fire({
-    //   icon: 'error',
-    //   title: 'Some Error Occurred',
-    //   text: "error occured"
-    // });
-    throw error
-  }
-     
-    }else{ 
-      if(defaultsettings.id){
-        console.log("hi in default");
-      axios.patch(`${baseUrl}/Edit/mailkeys`,settings ,{
-      headers:{
-        "Authorization":token
-=======
             }
           });
           setisnotFound(false);
->>>>>>> ae1ca461709f858794f65dea8b73fed4321b5b3c
         }
       } catch (error) {
         console.log(error);
-        MySwal.fire({
-          icon: "error",
-          title: "Some Error Occurred",
-          text: "error occured",
-        });
+        // MySwal.fire({
+        //   icon: "error",
+        //   title: "Some Error Occurred",
+        //   text: "error occured",
+        // });
+        throw error
       }
     } else {
       if (defaultsettings.id) {
@@ -156,32 +127,15 @@ const MailSettings = () => {
             if (error.response.status === 401) {
               window.location.href = "/unauthorized";
             } else {
-              MySwal.fire({
-                icon: "error",
-                title: "Some Error Occurred",
-                text: error.data,
-              });
+              // MySwal.fire({
+              //   icon: "error",
+              //   title: "Some Error Occurred",
+              //   text: error.data,
+              // });
+              throw error;
             }
           });
       }
-<<<<<<< HEAD
-      
-    })
-    .catch(error => {
-     if(error.response.status===401){
-      window.location.href="/unauthorized"
-     } else{
-      // MySwal.fire({
-      //   icon: 'error',
-      //   title: 'Some Error Occurred',
-      //   text: error.data
-      // });
-      throw error
-     } 
-    });
-      
-=======
->>>>>>> ae1ca461709f858794f65dea8b73fed4321b5b3c
     }
   };
 
@@ -418,3 +372,9 @@ const MailSettings = () => {
 };
 
 export default MailSettings;
+
+
+
+       
+      
+

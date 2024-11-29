@@ -83,10 +83,10 @@ import pcoded from "./assets/js/pcoded.js";
 import Approvals from "./Registration/Approvals.js";
 import SocialLoginKeysAdmin from "./UserSettings/SocialLoginKeysAdmin.js";
 function App() {
-  useEffect(() => {
-    console.log("in useeffect pcoded");
-    pcoded();
-  }, []);
+  // useEffect(() => {
+  //   console.log("in useeffect pcoded");
+  //   pcoded();
+  // }, []);
   const isAuthenticated = sessionStorage.getItem("token") !== null;
   const MySwal = withReactContent(Swal);
   const [searchQuery, setSearchQuery] = useState("");

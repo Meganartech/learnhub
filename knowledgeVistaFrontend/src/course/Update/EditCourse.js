@@ -18,20 +18,18 @@ const EditCourse = ({ filteredCourses }) => {
 
       if (response.status === 200) {
         window.location.href = "/course/addcourse";
+      } else if (response.status === 429) {
+        Swal.fire({
+          title: "Course Limit is Reached",
+          text: "Need to upgrade your lisense",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ok",
+        });
+
       }
     } catch (error) {
-      if (response.status === 429) {
-      Swal.fire({
-        title: "Course Limit is Reached",
-        text: "Need to upgrade your lisense",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ok",
-      });
-    }
-    else{
-throw error
-    }
+      throw error
 
       console.error("Error ", error);
     }
