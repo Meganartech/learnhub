@@ -20,7 +20,18 @@ export const GlobalStateProvider = ({ children }) => {
     siteicon: null,
     titleicon: null,
   });
+  const[Activeprofile,setActiveProfile]=useState("")
   useEffect(() => {
+    const fetchactiveprofile=async()=>{
+      try{
+        const active = await axios.get(`${baseUrl}/Active/Environment`);
+       // sessionStorage.setItem("Activeprofile", active.data);
+        setActiveProfile(active.data);
+      }catch(error){
+        console.log(error)
+      }
+    }
+    fetchactiveprofile();
     const fetchLabels = async () => {
       try {
         // Check if data is already in sessionStorage
@@ -126,7 +137,7 @@ export const GlobalStateProvider = ({ children }) => {
   }, [token]);
 
   return (
-    <GlobalStateContext.Provider value={{ displayname ,siteSettings}}>
+    <GlobalStateContext.Provider value={{ displayname ,siteSettings,Activeprofile}}>
       {children}
     </GlobalStateContext.Provider>
   );

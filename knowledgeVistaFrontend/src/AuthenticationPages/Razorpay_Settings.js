@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import baseUrl from '../api/utils';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import baseUrl from "../api/utils";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Razorpay_Settings = () => {
   const MySwal = withReactContent(Swal);
   const [valid, setValid] = useState(true);
-  const data=sessionStorage.getItem("type");
-  const token=sessionStorage.getItem("token")
-const [isnotFound,setisnotFound]=useState();
-const[initialsave,setinitialsave]=useState(false);
-  const[defaultsettings,setdefaultsettings]=useState({
-    id:"",
-    razorpay_key:"",
-    razorpay_secret_key:""
-  })
-  const navigate=useNavigate();
+  const data = sessionStorage.getItem("type");
+  const token = sessionStorage.getItem("token");
+  const [isnotFound, setisnotFound] = useState();
+  const [initialsave, setinitialsave] = useState(false);
+  const [defaultsettings, setdefaultsettings] = useState({
+    id: "",
+    razorpay_key: "",
+    razorpay_secret_key: "",
+  });
+  const navigate = useNavigate();
   useEffect(() => {
     // data === "false" ? setValid(true) : setValid(false);
-  
+
     const fetchpaymentsettings = async () => {
       try {
         const response = await axios.get(`${baseUrl}/api/getPaymentDetails`, {
           headers: {
-            "Authorization": token
-          }
+            Authorization: token,
+          },
         });
-  
+
         if (response.status === 200) {
           const data = response.data;
           setdefaultsettings(data);
@@ -52,65 +52,65 @@ const[initialsave,setinitialsave]=useState(false);
       }
      
     };
-  
+
     fetchpaymentsettings();
-  }, []); 
-  
+  }, []);
+
   const [errors, setErrors] = useState({
     Razorpay_Key: "",
-    Razorpay_Secret_Key: ""
+    Razorpay_Secret_Key: "",
   });
 
-  const [Razorpay_Key, setRazorpay_Key] = useState('');
-  
+  const [Razorpay_Key, setRazorpay_Key] = useState("");
+
   const changeRazorpay_KeyHandler = (event) => {
     const newValue = event.target.value;
-    setRazorpay_Key(newValue); 
-    if (newValue?.trim() !== '') {
-      setErrors(prevErrors => ({
+    setRazorpay_Key(newValue);
+    if (newValue?.trim() !== "") {
+      setErrors((prevErrors) => ({
         ...prevErrors,
-        Razorpay_Key: ""
+        Razorpay_Key: "",
       }));
     } else {
-      setErrors(prevErrors => ({
+      setErrors((prevErrors) => ({
         ...prevErrors,
-        Razorpay_Key: "Please enter a valid Razorpay Key."
+        Razorpay_Key: "Please enter a valid Razorpay Key.",
       }));
     }
   };
 
-  const [Razorpay_Secret_Key, setRazorpay_Secret_Key] = useState('');
+  const [Razorpay_Secret_Key, setRazorpay_Secret_Key] = useState("");
   const changeRazorpay_Secret_KeyHandler = (event) => {
     const newValue = event.target.value;
-    setRazorpay_Secret_Key(newValue); 
-    if (newValue.trim() !== '') {
-      setErrors(prevErrors => ({
+    setRazorpay_Secret_Key(newValue);
+    if (newValue.trim() !== "") {
+      setErrors((prevErrors) => ({
         ...prevErrors,
-        Razorpay_Secret_Key: ""
+        Razorpay_Secret_Key: "",
       }));
     } else {
-      setErrors(prevErrors => ({
+      setErrors((prevErrors) => ({
         ...prevErrors,
-        Razorpay_Secret_Key: "Please enter a valid Razorpay Secret Key."
+        Razorpay_Secret_Key: "Please enter a valid Razorpay Secret Key.",
       }));
     }
   };
-  const Edit=(e)=>{
+  const Edit = (e) => {
     e.preventDefault();
     setisnotFound(true);
-    
-    console.log(isnotFound)
-  }
+
+    console.log(isnotFound);
+  };
 
   const save = (e) => {
     e.preventDefault();
-  
+
     const formData = new FormData();
-    formData.append("razorpay_key",Razorpay_Key);
-    formData.append("razorpay_secret_key",Razorpay_Secret_Key);
+    formData.append("razorpay_key", Razorpay_Key);
+    formData.append("razorpay_secret_key", Razorpay_Secret_Key);
     const data = {
       razorpay_key: Razorpay_Key,
-      razorpay_secret_key: Razorpay_Secret_Key
+      razorpay_secret_key: Razorpay_Secret_Key,
     };
     if(initialsave){
 
@@ -195,111 +195,137 @@ const[initialsave,setinitialsave]=useState(false);
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-  <h4>Razorpay Settings</h4>
- 
-          <div className='form-group row'>
-            <label htmlFor='Razorpay_Key' className="col-sm-3 col-form-label">Razorpay Key <span className="text-danger">*</span></label>
-            <div className="col-sm-9">
-            <input
-              id='Razorpay_Key'
-              placeholder='Razorpay_Key'
-              value={Razorpay_Key}
-              className={`form-control   ${errors.Razorpay_Key && 'is-invalid'}`}
-              onChange={changeRazorpay_KeyHandler}
-              required
-            />
-            <div className="invalid-feedback">
-              {errors.Razorpay_Key}
-            </div>
-            </div>
-          </div>
-          <br></br>
-          <div className='form-group row'>
-            <label htmlFor='Razorpay_Secret_Key' className="col-sm-3 col-form-label">Razorpay Secret Key <span className="text-danger">*</span></label>
-            <div className="col-sm-9">
-             <input
-              id='Razorpay_Secret_Key'
-              placeholder='Razorpay Secret Key'
-              value={Razorpay_Secret_Key}
-              className={`form-control   ${errors.Razorpay_Secret_Key && 'is-invalid'}`}
-              onChange={changeRazorpay_Secret_KeyHandler}
-              required
-            />
-            <div className="invalid-feedback">
-              {errors.Razorpay_Secret_Key}
-            </div>
-            </div>
+      <h4>Razorpay Settings</h4>
 
-          </div>
-          
-    {valid?
-      <div className='btngrp'>
-        <button className='btn btn-primary' onClick={save}
-          disabled={
-            Object.values(errors).some(error => error !== "") || // Check for errors
-            !Razorpay_Key.trim() || // Check if Razorpay_Key is empty
-            !Razorpay_Secret_Key.trim() // Check if Razorpay_Secret_Key is empty
-          }>
-          Save</button>
-      </div>:<div></div>
-    }
-  
-</div>)
-
-
-const oldSettings =(
-<div className="col-12">
-  <div className='navigateheaders'>
-      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
-      <div></div>
-      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      <div className="form-group row">
+        <label htmlFor="Razorpay_Key" className="col-sm-3 col-form-label">
+          Razorpay Key <span className="text-danger">*</span>
+        </label>
+        <div className="col-sm-9">
+          <input
+            id="Razorpay_Key"
+            placeholder="Razorpay_Key"
+            value={Razorpay_Key}
+            className={`form-control   ${errors.Razorpay_Key && "is-invalid"}`}
+            onChange={changeRazorpay_KeyHandler}
+            required
+          />
+          <div className="invalid-feedback">{errors.Razorpay_Key}</div>
+        </div>
+      </div>
+      <br></br>
+      <div className="form-group row">
+        <label
+          htmlFor="Razorpay_Secret_Key"
+          className="col-sm-3 col-form-label"
+        >
+          Razorpay Secret Key <span className="text-danger">*</span>
+        </label>
+        <div className="col-sm-9">
+          <input
+            id="Razorpay_Secret_Key"
+            placeholder="Razorpay Secret Key"
+            value={Razorpay_Secret_Key}
+            className={`form-control   ${
+              errors.Razorpay_Secret_Key && "is-invalid"
+            }`}
+            onChange={changeRazorpay_Secret_KeyHandler}
+            required
+          />
+          <div className="invalid-feedback">{errors.Razorpay_Secret_Key}</div>
+        </div>
       </div>
 
-<h4>Razorpay Settings</h4>
-  
- 
-   
-   
-        <div className='form-group row'>
-          <label htmlFor='Razorpay_Key'className="col-sm-3 col-form-label">Razorpay Key </label>
-          <div className="col-sm-9">
-         <input
-          className='form-control'
-          readOnly
-         value={defaultsettings ? defaultsettings.razorpay_key :""}/>
-         </div>
+      {valid ? (
+        <div className="btngrp">
+          <button
+            className="btn btn-primary"
+            onClick={save}
+            disabled={
+              Object.values(errors).some((error) => error !== "") || // Check for errors
+              !Razorpay_Key.trim() || // Check if Razorpay_Key is empty
+              !Razorpay_Secret_Key.trim() // Check if Razorpay_Secret_Key is empty
+            }
+          >
+            Save
+          </button>
         </div>
-        <br></br>
-        <div className='form-group row'>
-          <label htmlFor='Razorpay_Secret_Key'className="col-sm-3 col-form-label">Razorpay Secret Key</label>
-          <div className="col-sm-9">
-          <input   
-          className='form-control'
-          readOnly
-          value={defaultsettings ? defaultsettings.razorpay_secret_key : ""}
-         />
+      ) : (
+        <div></div>
+      )}
+    </div>
+  );
+
+  const oldSettings = (
+    <div className="col-12">
+      <div className="navigateheaders">
+        <div
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          <i className="fa-solid fa-arrow-left"></i>
         </div>
-          
+        <div></div>
+        <div
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          <i className="fa-solid fa-xmark"></i>
         </div>
-       
-   
- 
-  {valid?
-      <div className='btngrp' >
-        <button className='btn btn-success' onClick={Edit}>Edit</button>
-      </div>:<div></div>
-      }
-</div>)
+      </div>
+
+      <h4>Razorpay Settings</h4>
+
+      <div className="form-group row">
+        <label htmlFor="Razorpay_Key" className="col-sm-3 col-form-label">
+          Razorpay Key{" "}
+        </label>
+        <div className="col-sm-9">
+          <input
+            className="form-control"
+            readOnly
+            value={defaultsettings ? defaultsettings.razorpay_key : ""}
+          />
+        </div>
+      </div>
+      <br></br>
+      <div className="form-group row">
+        <label
+          htmlFor="Razorpay_Secret_Key"
+          className="col-sm-3 col-form-label"
+        >
+          Razorpay Secret Key
+        </label>
+        <div className="col-sm-9">
+          <input
+            className="form-control"
+            readOnly
+            value={defaultsettings ? defaultsettings.razorpay_secret_key : ""}
+          />
+        </div>
+      </div>
+
+      {valid ? (
+        <div className="btngrp">
+          <button className="btn btn-success" onClick={Edit}>
+            Edit
+          </button>
+        </div>
+      ) : (
+        <div></div>
+      )}
+    </div>
+  );
   return (
     <div>
-    <div className="page-header"></div>
-    <div className="card">
-      <div className=" card-body">
-        <div className="row">
-      {isnotFound ? getsettings:oldSettings}
-    </div>
-    </div>
-    </div>
+      <div className="page-header"></div>
+      <div className="card">
+        <div className=" card-body">
+          <div className="row">{isnotFound ? getsettings : oldSettings}</div>
+        </div>
+      </div>
     </div>
   );
 };

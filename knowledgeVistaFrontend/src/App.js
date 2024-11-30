@@ -78,10 +78,11 @@ import DisplayName from "./UserSettings/DisplayName.js";
 import SocialLoginKeys from "./SysAdmin/SocialLoginKeys.js";
 import MailSettings from "./UserSettings/MailSettings.js";
 import "./assets/css/style.css";
-import $ from "jquery";
-import pcoded from "./assets/js/pcoded.js";
 import Approvals from "./Registration/Approvals.js";
 import SocialLoginKeysAdmin from "./UserSettings/SocialLoginKeysAdmin.js";
+import FooterDetails from "./UserSettings/FooterDetails.js";
+import $ from "jquery";
+import pcoded from "./assets/js/pcoded.js";
 function App() {
   useEffect(() => {
     console.log("in useeffect pcoded");
@@ -119,27 +120,26 @@ function App() {
       return updatedFilter;
     });
   };
-  
+
   const filteredCourses = course.filter((item) => {
     const name = item.courseName ? item.courseName.toLowerCase() : "";
     const matchesSearchQuery = name.includes(searchQuery.toLowerCase());
-  
+
     // If both paid and unpaid filters are selected, show all courses that match the search query
     if (filter.paid && filter.unpaid) {
-      return matchesSearchQuery;  // No amount filtering, just search query match
+      return matchesSearchQuery; // No amount filtering, just search query match
     }
-  
+
     // Condition for Paid courses (if filter.paid is selected)
     const matchesPaidCondition = filter.paid ? item.amount > 0 : true;
-  
+
     // Condition for Unpaid courses (if filter.unpaid is selected)
     const matchesUnpaidCondition = filter.unpaid ? item.amount == 0 : true;
-  
+
     // Return courses that match the search query and the appropriate paid/unpaid condition
     return matchesSearchQuery && matchesPaidCondition && matchesUnpaidCondition;
   });
-  
-  
+
   // const filteredCourses = course.filter((item) => {
   //   const name = item.courseName ? item.courseName.toLowerCase() : "";
   //   return name.includes(searchQuery.toLowerCase());
@@ -189,14 +189,14 @@ function App() {
               path="/admin/dashboard"
               element={
                 // <ErrorBoundary>
-                  <PrivateRoute
-                    onlyadmin={true}
-                    authenticationRequired={true}
-                    authorizationRequired={true}
-                    licence={true}
-                  >
-                    <Dashboard />
-                  </PrivateRoute>
+                <PrivateRoute
+                  onlyadmin={true}
+                  authenticationRequired={true}
+                  authorizationRequired={true}
+                  licence={true}
+                >
+                  <Dashboard />
+                </PrivateRoute>
                 // </ErrorBoundary>
               }
             />
@@ -665,7 +665,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
-           
+
             <Route
               path="/course/update/paymentSettings/:courseName/:courseId"
               element={
@@ -780,13 +780,32 @@ function App() {
                 </ErrorBoundary>
               }
             />
-            <Route path="/settings/socialLogins" element={<ErrorBoundary><PrivateRoute authenticationRequired={true} onlyadmin={true}><SocialLoginKeysAdmin/></PrivateRoute></ErrorBoundary>}/>
+            <Route
+              path="/settings/socialLogins"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyadmin={true}>
+                    <SocialLoginKeysAdmin />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
             <Route
               path="/viewDocument/:documentPath/:lessonId/:docid"
               element={
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true}>
                     <SlideViewer />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/settings/footer"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyadmin={true}>
+                    <FooterDetails />
                   </PrivateRoute>
                 </ErrorBoundary>
               }

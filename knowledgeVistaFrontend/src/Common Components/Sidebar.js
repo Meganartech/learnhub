@@ -2,12 +2,19 @@ import React, { useEffect, useState, useContext } from "react";
 import baseUrl from "../api/utils.js";
 import axios from "axios";
 import { GlobalStateContext } from "../Context/GlobalStateProvider.js";
+import { Link, useNavigate } from "react-router-dom";
+import $ from "jquery";
 const Sidebar = ({filter,handleFilterChange}) => {
+ 
   const [isvalid, setIsvalid] = useState();
   const [isEmpty, setIsEmpty] = useState();
+  const[ActiveLink,setActiveLink]=useState()
   const userRole = sessionStorage.getItem("role");
   const token = sessionStorage.getItem("token");
-  const { displayname } = useContext(GlobalStateContext);
+  const Environment=sessionStorage.getItem("Activeprofile");
+  const navigate=useNavigate();
+  const { displayname ,Activeprofile} = useContext(GlobalStateContext);
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,7 +42,42 @@ const Sidebar = ({filter,handleFilterChange}) => {
     };
     fetchData();
   }, []);
+  function updateActiveMenu(routePath) {
 
+$(".pcoded-navbar .active").not(".pcoded-trigger").removeClass("active")
+    // Find the menu item matching the routePath
+    $(".pcoded-navbar .pcoded-inner-navbar a").each(function () {
+        if ($(this).data("path") === routePath) {
+            $(this).parent("li").addClass("active");
+
+            // Handle nested menus
+            if (!$(".pcoded-navbar").hasClass("theme-horizontal")) {
+                $(this)
+                    .parent("li")
+                    .parents(".pcoded-hasmenu")
+                    .addClass("active");
+            }
+            if ($("body").hasClass("layout-7") || $("body").hasClass("layout-6")) {
+                $(".theme-horizontal .pcoded-inner-navbar")
+                    .find("li.pcoded-trigger")
+                    .removeClass("pcoded-trigger");
+                $(this)
+                    .parent("li")
+                    .parents(".pcoded-hasmenu")
+                    .addClass("active ");
+            }
+        }
+    });
+}
+
+
+
+const handleClick=(e,link)=>{
+  e.preventDefault();
+  setActiveLink(link);
+  updateActiveMenu(link);
+  navigate(link);
+}
   // const handleClick = (link) => {
   //   if (userRole === "ADMIN" || userRole === "TRAINER") {
   //     if (
@@ -64,6 +106,7 @@ const Sidebar = ({filter,handleFilterChange}) => {
   //     navigate(link);
   //   }
   // };
+  
 
   return (
     <nav className="pcoded-navbar menu-light  ">
@@ -74,9 +117,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
           {userRole === "ADMIN" && (<>
           <ul className="nav pcoded-inner-navbar ">
           
-            <li className="nav-item pt-2">
-              <a
-                href="/admin/dashboard"
+            <li className="nav-item no-hasmenu pt-2">
+              <a href="#"
+                onClick={(e)=>handleClick(e,"/admin/dashboard")}
                 className="nav-link has-ripple"
               >
                 <span className="pcoded-micon">
@@ -98,8 +141,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
                 <li className="view-course">
                   
                   <a
-                    href="/course/admin/edit"
-                   
+                    href="#"
+                     data-path="/course/admin/edit"
+                   onClick={(e)=>{handleClick(e,"/course/admin/edit")}}
                   ><i className="fa-solid fa-edit pr-2"></i>
                     Edit Courses
                   </a>
@@ -141,7 +185,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
 
                 <li  >
                   <a
-                    href="/course/addcourse"
+                    href="#"
+                     data-path="/course/addcourse"
+                   onClick={(e)=>{handleClick(e,"/course/addcourse")}}
                    
                   >
                     <i className="fa-solid fa-file-circle-plus pr-2"></i>
@@ -151,7 +197,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
 
 
                 <li className="view-course">
-  <a href="/dashboard/course">
+  <a 
+   href="#"
+   data-path="/dashboard/course"
+   onClick={(e)=>{handleClick(e,"/dashboard/course")}}
+  >
     <i className="fa-regular fa-eye pr-2"></i>
     View Course
   </a>
@@ -204,43 +254,67 @@ const Sidebar = ({filter,handleFilterChange}) => {
               <ul className="pcoded-submenu">
                 <li>
                   <a
-                    href="/settings/viewsettings"
+                   data-path="/settings/viewsettings"
+                   onClick={(e)=>{handleClick(e,"/settings/viewsettings")}}
+                    href="#"
                    
                   ><i className="fa-solid fa-gears pr-2"></i>
                     General
                   </a>
+                
                 </li>
                 <li>
                   <a
-                    href="/settings/socialLogins"
-                   
+                    href="#"
+                    data-path="/settings/socialLogins"
+                   onClick={(e)=>{handleClick(e,"/settings/socialLogins")}}
                   ><i className="fa-brands fa-google pr-2"></i>
                     Social Login 
                   </a>
                 </li>
                 <li>
-                  <a href="/certificate" >
+                  <a href="#"
+                    data-path="/certificate"
+                    onClick={(e)=>{handleClick(e,"/certificate")}} >
                   <i className="fa-solid fa-award pr-2"></i> Certificate
                   </a>
                 </li>
 
                 <li>
                   <a
-                    href="/settings/mailSettings"
+                    href="#"
+                    data-path="/settings/mailSettings"
+                    onClick={(e)=>{handleClick(e,"/settings/mailSettings")}}
                   >
                    <i className="fa-solid fa-envelope pr-2"></i> Mail
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/zoom/settings"
+                    href="#"
+                    data-path="/zoom/settings"
+                    onClick={(e)=>{handleClick(e,"/zoom/settings")}}
                   >
                    <i className="fa-solid fa-video pr-2"></i> Zoom
                   </a>
                 </li>
+                {/* {Environment==="VPS" ||Activeprofile==="VPS" && */}
+                 <li>
+                 <a
+                   href="#"
+                   data-path="/settings/footer"
+                   onClick={(e)=>{handleClick(e,"/settings/footer")}}
+                 >
+                  <i className="fa-solid fa-shoe-prints pr-2"></i> Footer
+                 </a>
+               </li>
+{/* }    */}
+                
                 <li>
                   <a
-                    href="/settings/displayname"
+                    href="#"
+                    data-path="/settings/displayname"
+                    onClick={(e)=>{handleClick(e,"/settings/displayname")}}
                   >
                    <i className="fa-solid fa-users-gear"></i> Roles
                   </a>
@@ -257,7 +331,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
               <ul className="pcoded-submenu">
             <li>
               <a
-                href="/view/Trainer"
+                href="#"
+                data-path="/view/Trainer"
+                onClick={(e)=>{handleClick(e,"/view/Trainer")}}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -272,7 +348,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
             </li>
             <li >
               <a
-                href="/view/Students"
+                href="#"
+                data-path="/view/Students"
+                onClick={(e)=>{handleClick(e,"/view/Students")}}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -287,7 +365,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
             </li>
             <li>
               <a
-                href="/view/Approvals"
+                href="#"
+                data-path="/view/Approvals"
+                onClick={(e)=>{handleClick(e,"/view/Approvals")}}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -311,7 +391,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
               <ul className="pcoded-submenu">
             <li >
               <a
-                href="/meeting/calender"
+                href="#"
+                data-path="/meeting/calender"
+                onClick={(e)=>{handleClick(e,"/meeting/calender")}}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -322,7 +404,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
             </li>
             <li >
               <a
-                href="/meeting/Shedule"
+                href="#"
+                data-path="/meeting/Shedule"
+                onClick={(e)=>{handleClick(e,"/meeting/Shedule")}}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -343,7 +427,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
               <ul className="pcoded-submenu">
             <li >
               <a
-                href="/payment/keys"
+                href="#"
+                data-path="/payment/keys"
+                onClick={(e)=>{handleClick(e,"/payment/keys")}}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -354,7 +440,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
             </li>
             <li >
               <a
-                href="/payment/transactionHitory"
+                href="#"
+                data-path="/payment/transactionHitory"
+                onClick={(e)=>{handleClick(e,"/payment/transactionHitory")}}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -366,9 +454,10 @@ const Sidebar = ({filter,handleFilterChange}) => {
           </ul>
           </li>
 
-            <li className="nav-item">
+            <li className="nav-item no-hasmenu">
               <a
-                href="/licenceDetails"
+                href="#"
+                onClick={(e)=>handleClick(e,"/licenceDetails")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -377,9 +466,10 @@ const Sidebar = ({filter,handleFilterChange}) => {
                 <span className="pcoded-mtext">Licence</span>
               </a>
             </li>
-            <li className="nav-item">
+            <li className="nav-item no-hasmenu">
               <a
-                href="/about"
+                href="#"
+                onClick={(e)=>handleClick(e,"/about")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -397,9 +487,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
           {userRole === "SYSADMIN" && (
             <ul className="nav pcoded-inner-navbar ">
           
-              <li className="nav-item pt-2">
+              <li className="nav-item no-hasmenu pt-2">
                 <a
-                  href="/viewAll/Admins"
+                  href="#"
+                   data-path="/viewAll/Admins"
+                  onClick={(e)=>handleClick(e,"/viewAll/Admins")}
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
@@ -410,9 +502,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
                   </span>
                 </a>
               </li>
-              <li className="nav-item">
+              <li className="nav-item no-hasmenu">
                 <a
-                  href="/viewAll/Trainers"
+                  href="#"
+                  data-path="/viewAll/Trainers"
+                  onClick={(e)=>handleClick(e,"/viewAll/Trainers")}
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
@@ -423,9 +517,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
                   </span>
                 </a>
               </li>
-              <li className="nav-item">
+              <li className="nav-item no-hasmenu">
                 <a
-                  href="/viewAll/Students"
+                  href="#"
+                  data-path="/viewAll/Students"
+                  onClick={(e)=>handleClick(e,"/viewAll/Students")}
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
@@ -436,9 +532,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
                   </span>
                 </a>
               </li>
-              <li className="nav-item">
+              <li className="nav-item no-hasmenu">
                 <a
-                  href="/Affiliates"
+                  href="#"
+                  data-path="/Affiliates"
+                  onClick={(e)=>handleClick(e,"/Affiliates")}
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
@@ -450,9 +548,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
                 </a>
               </li>
             
-              <li className="nav-item">
+              <li className="nav-item no-hasmenu">
                 <a
-                  href="/view/SocialLogin"
+                  href="#"
+                  data-path="/view/SocialLogin"
+                  onClick={(e)=>handleClick(e,"/view/SocialLogin")}
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
@@ -464,10 +564,12 @@ const Sidebar = ({filter,handleFilterChange}) => {
                 </a>
               </li>
 
-              <li className="nav-item">
+              <li className="nav-item no-hasmenu">
                 <a
-                  href="/Zoomkeyupload"
+                  href="#"
+                  onClick={(e)=>handleClick(e,"/Zoomkeyupload")}
                   className="nav-link "
+                  data-path="/Zoomkeyupload"
                 >
                   <span className="pcoded-micon">
                     <i className="fa-solid  fa-video"></i>
@@ -479,9 +581,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
               </li>
 
 
-            <li className="nav-item">
+            <li className="nav-item no-hasmenu">
               <a
-                href="/licenceupload"
+                href="#"
+                data-path="/licenceupload"
+                onClick={(e)=>handleClick(e,"/licenceupload")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -497,9 +601,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
            {( userRole === "TRAINER" )&&( 
             <ul className="nav pcoded-inner-navbar ">
           
-            <li className="nav-item pt-2 view-course">
+            <li className="nav-item no-hasmenu pt-2 view-course">
               <a
-                href="/dashboard/course"
+                href="#"
+                data-path="/dashboard/course"
+                onClick={(e)=>handleClick(e,"/dashboard/course")}
                 className="nav-link has-ripple"
               >
                 <span className="pcoded-micon">
@@ -542,9 +648,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
       </li>
   </ul>
             </li>
-            <li className="nav-item ">
+            <li className="nav-item no-hasmenu">
               <a
-                href="/AssignedCourses"
+                href="#"
+                data-path="/AssignedCourses"
+                onClick={(e)=>handleClick(e,"/AssignedCourses")}
                 className="nav-link has-ripple"
               >
                 <span className="pcoded-micon">
@@ -564,7 +672,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
               <ul className="pcoded-submenu">
             <li >
               <a
-                href="/meeting/calender"
+                href="#"
+                data-path="/meeting/calender"
+                onClick={(e)=>handleClick(e,"/meeting/calender")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -575,7 +685,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
             </li>
             <li >
               <a
-                href="/meeting/Shedule"
+                href="#"
+                data-path="/meeting/Shedule"
+                onClick={(e)=>handleClick(e,"/meeting/Shedule")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -587,9 +699,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
 </ul>
 </li>
            
-            <li className="nav-item">
+            <li className="nav-item no-hasmenu">
               <a
-                href="/view/Students"
+                href="#"
+                data-path="/view/Students"
+                onClick={(e)=>handleClick(e,"/view/Students")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -602,17 +716,19 @@ const Sidebar = ({filter,handleFilterChange}) => {
                 </span>
               </a>
             </li>
-            <li className="nav-item">
+            <li className="nav-item no-hasmenu">
               <a
-                href="/myStudents"
+                href="#"
+                data-path="/myStudents"
+                onClick={(e)=>handleClick(e,"/myStudents")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
                   <i className="fa-solid fa-chalkboard-user"></i>
                 </span>
                 <span className="pcoded-mtext">
-                My  {displayname && displayname.student_name
-                    ? displayname.student_name
+                  {displayname && displayname.student_name
+                    ? `My ${displayname.student_name}`
                     : "My Students"}
                 </span>
               </a>
@@ -626,9 +742,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
   {( userRole === "USER" )&&( 
             <ul className="nav pcoded-inner-navbar ">
           
-            <li className="nav-item pt-2 view-course">
+            <li className="nav-item no-hasmenu pt-2 view-course">
               <a
-                href="/dashboard/course"
+                href="#"
+                data-path="/dashboard/course"
+                onClick={(e)=>handleClick(e,"/dashboard/course")}
                 className="nav-link has-ripple"
               >
                 <span className="pcoded-micon">
@@ -671,9 +789,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
       </li>
   </ul>
             </li>
-            <li className="nav-item ">
+            <li className="nav-item no-hasmenu ">
               <a
-                href="/mycourses"
+                href="#"
+                data-path="/mycourses"
+                onClick={(e)=>handleClick(e,"/mycourses")}
                 className="nav-link has-ripple"
               >
                 <span className="pcoded-micon">
@@ -685,9 +805,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
             </li>
           
             
-            <li className="nav-item">
+            <li className="nav-item no-hasmenu">
               <a
-                href="/MyCertificateList"
+                href="#"
+                data-path="/MyCertificateList"
+                onClick={(e)=>handleClick(e,"/MyCertificateList")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -697,9 +819,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
               </a>
             </li>
           
-            <li className="nav-item">
+            <li className="nav-item no-hasmenu">
               <a
-                href="/user/meeting/calender"
+                href="#"
+                data-path="/user/meeting/calender"
+                onClick={(e)=>handleClick(e,"/user/meeting/calender")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">
@@ -709,9 +833,11 @@ const Sidebar = ({filter,handleFilterChange}) => {
               </a>
             </li>
 
-            <li className="nav-item">
+            <li className="nav-item no-hasmenu">
               <a
-                href="/myPayments"
+                href="#"
+                data-path="/myPayments"
+                onClick={(e)=>handleClick(e,"/myPayments")}
                 className="nav-link "
               >
                 <span className="pcoded-micon">

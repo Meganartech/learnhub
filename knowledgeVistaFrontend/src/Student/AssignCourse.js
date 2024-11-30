@@ -40,7 +40,7 @@ const AssignCourse = () => {
             setCourses(data);
         } catch (error) {
           if(error.response && error.response.status===401){
-            window.location.href="/unauthorized"
+            navigate("/unauthorized");
           }else{
             console.error('Error fetching user data:', error);
             throw error
@@ -113,7 +113,7 @@ const handleAssignCourse = async () => {
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-          <h3>Assign Course</h3>
+          <h3>Assign Course </h3>
           <div className='mainform'>
             <div className='profile-picture'>
               <div className='image-group'>

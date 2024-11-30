@@ -86,8 +86,8 @@ const[StudentFest,setStudentFest]=useState([
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          // Check if the error has a response and status 401
-          window.location.href = "/unauthorized";
+         
+          navigate("/unauthorized")
           return;
         }
         // MySwal.fire({
@@ -108,7 +108,7 @@ const fetchstorage=async()=>{
    setStoragedetail(resu.data);
     }catch(error){
         if (error.response && error.response.status === 401) {
-            window.location.href = "/unauthorized";
+            navigate("/unauthorized")
             return;
           }
           MySwal.fire({
@@ -130,7 +130,7 @@ const fetchstorage=async()=>{
            setStudentFest(data)
         } catch (error) {
             if (error.response && error.response.status === 401) {
-              window.location.href = "/unauthorized";
+                navigate("/unauthorized")
               return;
             }
             MySwal.fire({
@@ -152,7 +152,7 @@ const fetchstorage=async()=>{
            settrainerFest(data)
         } catch (error) {
             if (error.response && error.response.status === 401) {
-              window.location.href = "/unauthorized";
+                navigate("/unauthorized")
               return;
             }
             MySwal.fire({
@@ -180,7 +180,7 @@ const fetchstorage=async()=>{
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          window.location.href = "/unauthorized";
+            navigate("/unauthorized")
           return;
         }
         // MySwal.fire({
@@ -227,9 +227,19 @@ const fetchstorage=async()=>{
                             <h5 className="m-b-10">Dashboard </h5>
                         </div>
                         <ul className="breadcrumb">
-                            <li className="breadcrumb-item"><a href="/admin/dashboard"><i className="feather icon-home"></i></a></li>
+                            <li className="breadcrumb-item"><a href="#" onClick={()=>{ navigate("/admin/dashboard")}}><i className="feather icon-home"></i></a></li>
                             <li className="breadcrumb-item"><a href="#">Dashboard </a></li>
                         </ul>
+                        {!isvalid && (
+        <div className="marquee-container">
+          <div className="marquee-content">
+            <a onClick={()=>{ navigate("/licenceDetails")}} href="#" style={{ color: "darkred" }}>
+              License has been expired Need to uploard new License or contact
+              "111111111111"
+            </a>
+          </div>
+        </div>
+      )}
                     </div>
                 </div>
             </div>
@@ -322,7 +332,7 @@ const fetchstorage=async()=>{
                             </div>
                         </div>
                     </div>
-                    <div className="col-sm-6" style={{cursor:"pointer"}} onClick={()=>{window.location.href="/dashboard/course"}}>
+                    <div className="col-sm-6" style={{cursor:"pointer"}} onClick={()=>{navigate("/dashboard/course")}}>
                         <div className="card">
                             <div className="card-body">
                                 <div className="row align-items-center">
@@ -345,7 +355,7 @@ const fetchstorage=async()=>{
                             </div>
                         </div>
                     </div>
-                    <div style={{cursor:"pointer"}} onClick={()=>{window.location.href="/view/Students"}}  className="col-sm-6">
+                    <div style={{cursor:"pointer"}} onClick={()=>{navigate("/view/Students")}}  className="col-sm-6">
                         <div className="card">
                             <div className="card-body">
                                 <div className="row align-items-center">
@@ -372,7 +382,7 @@ const fetchstorage=async()=>{
                             </div>
                         </div>
                     </div>
-                    <div style={{cursor:"pointer"}} onClick={()=>{window.location.href="/view/Trainer"}} className="col-sm-6">
+                    <div style={{cursor:"pointer"}} onClick={()=>{navigate("/view/Trainer")}} className="col-sm-6">
                         <div className="card">
                             <div className="card-body">
                                 <div className="row align-items-center">

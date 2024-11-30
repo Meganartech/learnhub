@@ -22088,7 +22088,7 @@ pre[class*=language-]:before {
 }
 
 .pcoded-navbar.menu-light .pcoded-submenu {
-    background: #fff;
+    background: transparent;
 }
 
 .pcoded-navbar.menu-light a {
@@ -24279,7 +24279,8 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
   }
 
   .cornerbtn{
-    margin-top: 5px;
+    margin-top: 10px;
+    padding: 10px;
     display: flex;
     gap: 20px;
     justify-content: space-between;
@@ -24548,7 +24549,7 @@ ul {
 }
 
 .content {
- 
+ height:100%;
   align-items: center;
   background-color: #e9e9e9;
   border-top: 3px solid #e9e9e9;
@@ -25087,6 +25088,29 @@ background-size: 2px 2px;
     object-fit: cover;
 
   }
+
+  .marquee-container {
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 10s linear infinite;
+    font-size: larger;
+    font-weight: 700;
+  }
+  
+  .marquee-container:hover .marquee-content {
+    animation-play-state: paused;
+  }
+  
+  @keyframes marquee {
+    0% { transform: translateX(200%); }
+    100% { transform: translateX(-100%); }
+  }
+  
   @media screen and (max-width: 480px) {
     .pageshow{
         padding: 5px;
