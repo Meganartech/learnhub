@@ -96,9 +96,18 @@ export const GlobalStateProvider = ({ children }) => {
             const data = response.data;
             setDisplayname(data);
             sessionStorage.setItem("displayname", JSON.stringify(data)); // Save in localStorage
-          }
+        } else if (response.status === 204) {
+          setDisplayname([]);
+        }   
+          // else if(response.status === 204){
+            
+          //     // const data = response.data;
+          //     // setDisplayname("");
+          //     // sessionStorage.setItem("displayname", JSON.stringify(data)); // Save in localStorage
+            
+          // }
         } catch (error) {
-          if (error.response && error.response.status === 404) {
+          if (error.response.status === 404) {
             const emptyData = {
               admin_name: "",
               trainer_name: "",

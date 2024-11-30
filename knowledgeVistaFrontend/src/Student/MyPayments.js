@@ -50,14 +50,19 @@ const MyPayments = () => {
                 Authorization:token
               }
             });
-            const data = response.data;
-            const payhistory =data.reverse();
-            setpaymenthistory(payhistory);
+            if (response.status === 200) {
+              const data = response.data;
+              const payhistory =data.reverse();
+              setpaymenthistory(payhistory);
+
+            } else if (response.status === 204) {
+              setpaymenthistory([]);
+            }           
           } catch (error) {
-            if(error.response && error.response.status===401){
+            if(error.response.status===401){
               window.location.href="/unauthorized"
-            }else{
-            console.error('Error fetching data:', error);
+            }
+           else{
             throw error
             }
           }

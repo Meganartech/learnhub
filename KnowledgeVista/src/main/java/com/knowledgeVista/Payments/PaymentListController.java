@@ -54,11 +54,12 @@ public class PaymentListController {
 		              	   if(orderuser.size()>0) {
 		              		  
 		              		   return ResponseEntity.ok(orderuser);
+		              		   
 		              	   }else {
-		              		   return ResponseEntity.notFound().build();
+		              		   return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Empty");
 		              	   }
 		    			}else {
-		    				 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+		    				 return ResponseEntity.status(HttpStatus.NO_CONTENT)
 		 		                    .body("Unauthorized access");
 		    			}
 

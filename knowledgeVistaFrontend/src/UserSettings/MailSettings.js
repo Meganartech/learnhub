@@ -37,11 +37,17 @@ const MailSettings = () => {
               Authorization: token,
             },
           });
-          if (response.status === 200) {
+
+          
+          if (response.status === 200  ) {
             const data = response.data;
 
             setdefaultsettings(data);
             setsettings(data);
+           
+          }else if(response.status === 204){
+             setisnotFound(true);
+             setinitialsave(true);
           }
         } catch (error) {
           if (error.response) {

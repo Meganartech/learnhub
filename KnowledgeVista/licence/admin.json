@@ -20,6 +20,27 @@
   "lastactive" : [ 2024, 10, 16, 10, 12, 33, 890240000 ],
   "inactiveDescription" : null
 }, {
+  "userId" : 3,
+  "username" : "admin1",
+  "psw" : "Admin1@123",
+  "email" : "admin1@gmail.com",
+  "dob" : [ 2005, 6, 16 ],
+  "phone" : "9876545678",
+  "skills" : "",
+  "institutionName" : "sample",
+  "profile" : null,
+  "role" : {
+    "roleId" : 3,
+    "roleName" : "TRAINER",
+    "isActive" : true
+  },
+  "countryCode" : "+91",
+  "allotedCourses" : [ ],
+  "courses" : [ ],
+  "isActive" : true,
+  "lastactive" : null,
+  "inactiveDescription" : null
+}, {
   "userId" : 2,
   "username" : "admin",
   "psw" : "Admin@123",
@@ -38,6 +59,6 @@
   "allotedCourses" : [ ],
   "courses" : [ ],
   "isActive" : true,
-  "lastactive" : [ 2024, 11, 28, 17, 37, 12, 169513000 ],
+  "lastactive" : [ 2024, 11, 28, 15, 14, 58, 557085000 ],
   "inactiveDescription" : null
 } ]
