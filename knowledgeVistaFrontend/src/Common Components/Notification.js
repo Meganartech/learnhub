@@ -18,6 +18,7 @@ const Notification = ({   handlemarkallasRead }) => {
           "Error parsing notifications from sessionStorage:",
           error
         );
+        throw error
       }
     }
     return [];
@@ -73,6 +74,7 @@ const role=sessionStorage.getItem("role")
       }
     } catch (error) {
       console.error("Error fetching notification images:", error);
+      throw error
     }
   };
 
@@ -99,6 +101,7 @@ const role=sessionStorage.getItem("role")
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      throw error
     }
   };
   useEffect(() => {
@@ -176,6 +179,7 @@ const role=sessionStorage.getItem("role")
         }
       } catch (error) {
         console.error("Error fetching notifications:", error);
+        throw error
       }
     };
 

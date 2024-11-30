@@ -32,8 +32,11 @@ const Razorpay_Settings = () => {
         if (response.status === 200) {
           const data = response.data;
           setdefaultsettings(data);
-          setRazorpay_Key(data.razorpay_key || ""); // Set default empty string if not found
-          setRazorpay_Secret_Key(data.razorpay_secret_key || "");
+          setRazorpay_Key(data.razorpay_key || ''); // Set default empty string if not found
+          setRazorpay_Secret_Key(data.razorpay_secret_key || '');
+        }else if(response.status === 204){
+          setisnotFound(true);
+          setinitialsave(true);
         }
       } catch (error) {
         if (error.response) {
@@ -42,9 +45,12 @@ const Razorpay_Settings = () => {
             setinitialsave(true);
           } else if (error.response.status === 401) {
             window.location.href = "/unauthorized";
+          }else{
+            throw error
           }
         }
       }
+     
     };
 
     fetchpaymentsettings();
@@ -106,96 +112,88 @@ const Razorpay_Settings = () => {
       razorpay_key: Razorpay_Key,
       razorpay_secret_key: Razorpay_Secret_Key,
     };
-    if (initialsave) {
-      axios
-        .post(`${baseUrl}/api/Paymentsettings`, data, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            MySwal.fire({
-              title: "Saved !",
-              text: "Payment Details Saved Sucessfully",
-              icon: "success",
-              confirmButtonText: "OK",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.reload();
-              }
-            });
-            setisnotFound(false);
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 401) {
-            window.location.href = "/unauthorized";
-          } else {
-            MySwal.fire({
-              icon: "error",
-              title: "Some Error Occurred",
-              text: error.data,
-            });
-          }
-        });
-    } else {
-      if (defaultsettings.id) {
-        axios
-          .patch(`${baseUrl}/api/update/${defaultsettings.id}`, formData, {
-            headers: {
-              Authorization: token,
-            },
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              MySwal.fire({
-                title: "Updated",
-                text: "Payment Details Saved Sucessfully",
-                icon: "success",
-                confirmButtonText: "OK",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  window.location.reload();
-                }
-              });
-              setisnotFound(false);
-            }
-          })
-          .catch((error) => {
-            if (error.response.status === 401) {
-              window.location.href = "/unauthorized";
-            } else {
-              MySwal.fire({
-                icon: "error",
-                title: "Some Error Occurred",
-                text: error.data,
-              });
-            }
-          });
+    if(initialsave){
+
+      axios.post(`${baseUrl}/api/Paymentsettings`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      })
+    .then(response => {
+      if (response.status === 200) {
+        MySwal.fire({
+          title: "Saved !",
+          text: "Payment Details Saved Sucessfully" ,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }   });
+        setisnotFound(false)
+      } 
+    })
+    .catch(error => {
+      if(error.response.status===401){
+
+        window.location.href="/unauthorized"
+      }else{
+        // MySwal.fire({
+        //   icon: 'error',
+        //   title: 'Some Error Occurred',
+        //   text: error.data
+        // });
+        throw error
       }
+    });
+  }else{ 
+    if(defaultsettings.id){
+
+    axios.patch(`${baseUrl}/api/update/${defaultsettings.id}`,formData ,{
+    headers:{
+      "Authorization":token
+      }
+  })
+  .then(response => {
+    if (response.status=== 200) {
+      MySwal.fire({
+        title: "Updated",
+        text: "Payment Details Saved Sucessfully" ,
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }   });
+      setisnotFound(false)
     }
+    
+  })
+  .catch(error => {
+   if(error.response.status===401){
+    window.location.href="/unauthorized"
+   } else{
+    // MySwal.fire({
+    //   icon: 'error',
+    //   title: 'Some Error Occurred',
+    //   text: error.data
+    // });
+    throw error
+   } 
+  });
+    
+  }}
+    
   };
 
-  const getsettings = (
-    <div className="col-12">
-      <div className="navigateheaders">
-        <div
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
-          <i className="fa-solid fa-arrow-left"></i>
-        </div>
-        <div></div>
-        <div
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
-          <i className="fa-solid fa-xmark"></i>
-        </div>
+
+  const getsettings=( 
+  <div className="col-12">
+    <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
       <h4>Razorpay Settings</h4>
 

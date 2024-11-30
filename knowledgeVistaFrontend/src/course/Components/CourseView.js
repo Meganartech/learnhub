@@ -118,11 +118,12 @@ const CourseView = ({ filteredCourses }) => {
       pay.open();
     } catch (error) {
       setsubmitting(false);
-      MySwal.fire({
-        icon: "error",
-        title: "Error creating order:",
-        text: error.response.data ? error.response.data : "error occured",
-      });
+      // MySwal.fire({
+      //   icon: "error",
+      //   title: "Error creating order:",
+      //   text: error.response.data ? error.response.data : "error occured",
+      // });
+      throw error
     }
   };
 
@@ -161,11 +162,13 @@ const CourseView = ({ filteredCourses }) => {
       }
     } catch (error) {
       setsubmitting(false);
-      MySwal.fire({
-        icon: "error",
-        title: "Error sending payment ID to server:",
-        text: error.response.data ? error.response.data : "error occured",
-      });
+      // MySwal.fire({
+      //   icon: "error",
+      //   title: "Error sending payment ID to server:",
+      //   text: error.response.data ? error.response.data : "error occured",
+      // });
+
+      throw error
     }
   };
   const handleClick = async (event, id, amount, url) => {
@@ -198,11 +201,12 @@ const CourseView = ({ filteredCourses }) => {
             text: "cannot Access Course ",
           });
         } else {
-          MySwal.fire({
-            icon: "error",
-            title: "Not Found",
-            text: error,
-          });
+          // MySwal.fire({
+          //   icon: "error",
+          //   title: "Not Found",
+          //   text: error,
+          // });
+          throw error
         }
       }
     }

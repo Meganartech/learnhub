@@ -53,6 +53,8 @@ const DisplayName = () => {
               setinitialsave(true);
             } else if (error.response.status === 401) {
               window.location.href = "/unauthorized";
+            }else{
+              throw error
             }
           }
         }
@@ -83,11 +85,18 @@ try{
         setisnotFound(false)
       } 
 }catch(error){
-  MySwal.fire({
-    icon: 'error',
-    title: 'Some Error Occurred',
-    text: "error occured"
-  });
+  // MySwal.fire({
+  //   icon: 'error',
+  //   title: 'Some Error Occurred',
+  //   text: "error occured"
+  // });
+  if (error.response.status === 404) {
+    console.log("notfound")
+  } else if (error.response.status === 401) {
+    window.location.href = "/unauthorized";
+  }else{
+    throw error
+  }
 }  
   }else{ 
     if(displayname.id){
@@ -112,15 +121,21 @@ try{
     } 
   })
   .catch(error => {
-   if(error.response.status===401){
-    window.location.href="/unauthorized"
-   } else{
-    MySwal.fire({
-      icon: 'error',
-      title: 'Some Error Occurred',
-      text: error.data
-    });
-   } 
+  //  if(error.response.status===401){
+  //   window.location.href="/unauthorized"
+  //  } else{
+    // MySwal.fire({
+    //   icon: 'error',
+    //   title: 'Some Error Occurred',
+    //   text: error.data
+    // });
+    if (error.response.status === 404) {
+      console.log("notfound")
+    } else if (error.response.status === 401) {
+      window.location.href = "/unauthorized";
+    }else{
+      throw error
+    }
   });
     
   }

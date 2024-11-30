@@ -1,11 +1,16 @@
 package com.knowledgeVista;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import java.io.InputStream;
+import java.time.LocalDate;
 
 import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -17,13 +22,10 @@ import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.time.LocalDate;
-
 @Service
 public class DataLoaderService {
 
+	  private static final Logger logger = LoggerFactory.getLogger(DataLoaderService.class);
     @Autowired
     private MuserRoleRepository muserRoleRepository;
    @Autowired 
@@ -38,7 +40,8 @@ public class DataLoaderService {
              loadUsers(); 
              loadSocialLoginKeys();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();    logger.error("", e);;
+            
         }
     }
 
@@ -67,7 +70,7 @@ public class DataLoaderService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();    logger.error("", e);;
             // Handle exceptions as per your application's requirements
         }
     }
@@ -120,7 +123,7 @@ public class DataLoaderService {
 
             // Save all valid users at once
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();    logger.error("", e);;
             // Handle exceptions as per your application's requirements
         }
     }
@@ -153,7 +156,7 @@ private void loadSocialLoginKeys() {
              SocialKeysRepo.save(keys);
          }
 	}catch(Exception e) {
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
 	}
 }
 

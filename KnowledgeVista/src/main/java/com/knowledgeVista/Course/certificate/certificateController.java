@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +32,9 @@ public class certificateController {
 		
 		@Autowired
 		private MusertestactivityRepo activityrepo;
+		
+		 private static final Logger logger = LoggerFactory.getLogger(certificateController.class);
+
 	
 	
 	public ResponseEntity<?> addcertificate(  String institutionName, String ownerName, String qualification, String address,
@@ -83,6 +88,7 @@ public class certificateController {
 	        
 	    } catch (Exception e) {
 		    e.printStackTrace();
+		    logger.error("", e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred while updating the certificate: " + e.getMessage() );
 	    }
@@ -154,6 +160,7 @@ public class certificateController {
 	    } catch (Exception e) {
 	        // Handle internal server error and return a JSON response
 		    e.printStackTrace();
+		    logger.error("", e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred while updating the certificate: " + e.getMessage() );
 	    }
@@ -194,7 +201,7 @@ public class certificateController {
 	                .body(certi);
 	       
 	    } else {
-	    	 return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	    	 return ResponseEntity.status(HttpStatus.NO_CONTENT)
 	 	            .body("No certificates found");
 	           
 	        }
@@ -202,7 +209,7 @@ public class certificateController {
 	    
 		 } catch (Exception e) {
 		        // Handle internal server error and return a JSON response
-			 e.printStackTrace();
+			 e.printStackTrace();    logger.error("", e);;
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage() );
 		    }
@@ -247,7 +254,7 @@ public class certificateController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
 		 } catch (Exception e) {
 		        // Handle internal server error and return a JSON response
-			 e.printStackTrace();
+			 e.printStackTrace();    logger.error("", e);;
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		                .body("An error occurred while updating the certificate: " + e.getMessage());
 		    }
@@ -278,7 +285,7 @@ public ResponseEntity<?> getByActivityId( Long activityId, String token) {
     }
 	 } catch (Exception e) {
 	        // Handle internal server error and return a JSON response
-		 e.printStackTrace();
+		 e.printStackTrace();    logger.error("", e);;
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("An error occurred while updating the certificate: " + e.getMessage() );
 	    }

@@ -292,12 +292,12 @@ const CourseCreation = () => {
           confirmButtonText: "OK",
         });
       } else {
-        MySwal.fire({
-          title: "Error!",
-          text: "Some unexpected error occurred. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        // MySwal.fire({
+        //   title: "Error!",
+        //   text: "Some unexpected error occurred. Please try again later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK",});
+        throw error
       }
     }
   };

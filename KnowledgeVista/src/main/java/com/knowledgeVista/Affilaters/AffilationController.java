@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,6 +33,8 @@ public class AffilationController {
 
 	@Autowired
 	private AffilatersRepository AffilatersRepository;
+	private static final Logger logger = LoggerFactory.getLogger(AffilationController.class);
+
 
 	public String generateHtmlContent(String referralid, String coupon10, String coupon20) {
 		String htmlContent = """
@@ -294,7 +298,8 @@ public class AffilationController {
 			sender.send(mimeMessage);
 		} catch (MessagingException e) {
 			// Handle the exception
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
+			
 			// You can log the error or rethrow it as a runtime exception, depending on your
 			// needs
 			throw new RuntimeException("Failed to send email", e);

@@ -56,12 +56,13 @@ const AttenTest = () => {
                     setattemptlimit(true);
                   }else{
                  
-                MySwal.fire({
-                    title: "Error",
-                    text: error.response.data ? error.response.data : "error occured",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
+                // MySwal.fire({
+                //     title: "Error",
+                //     text: error.response.data ? error.response.data : "error occured",
+                //     icon: "error",
+                //     confirmButtonText: "OK"
+                // });
+                throw error
             }
             }
         };
@@ -127,12 +128,13 @@ const AttenTest = () => {
         
         setIsSubmitting(false);
         const message=error.response
-        MySwal.fire({
-            title: "Error",
-            text: message,
-            icon: "error",
-            confirmButtonText: "OK"
-        });
+        // MySwal.fire({
+        //     title: "Error",
+        //     text: message,
+        //     icon: "error",
+        //     confirmButtonText: "OK"
+        // });
+        throw error
       }
   };
   

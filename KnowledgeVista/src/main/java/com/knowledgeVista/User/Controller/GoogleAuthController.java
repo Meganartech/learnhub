@@ -1,6 +1,18 @@
 package com.knowledgeVista.User.Controller;
 
-import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.knowledgeVista.SocialLogin.SocialKeyRepo;
@@ -10,17 +22,6 @@ import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -37,6 +38,9 @@ public class GoogleAuthController {
 		private SocialKeyRepo socialkeysrepo;
 	 
     private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/tokeninfo?id_token=";
+    
+	 private static final Logger logger = LoggerFactory.getLogger(GoogleAuthController.class);
+
 
 public ResponseEntity<?> getSocialLoginKeys(String Provider,String token) {
 	try {
@@ -54,13 +58,13 @@ public ResponseEntity<?> getSocialLoginKeys(String Provider,String token) {
 	         if("SYSADMIN".equals(role)) {
 	        	 SocialLoginKeys keys= socialkeysrepo.findByInstitutionNameAndProvider(institutionName, Provider);
 	        	 if(keys==null) {
-	        		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("keys not found");
+	        		 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("keys not found");
 	        	 }
 	        	 return ResponseEntity.ok(keys);
 	         }else if("ADMIN".equals(role)) {
 	        	 SocialLoginKeys keys= socialkeysrepo.findByInstitutionNameAndProviderforAdmin(institutionName, Provider);
 	        	 if(keys==null) {
-	        		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Keys not Found");
+	        		 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Keys not Found");
 	        	 }
 	        	 return ResponseEntity.ok(keys);
 	         } else {
@@ -71,6 +75,7 @@ public ResponseEntity<?> getSocialLoginKeys(String Provider,String token) {
 	         }
 	}catch(Exception e) {
 		e.printStackTrace();
+		 logger.error("", e);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
  
@@ -130,6 +135,7 @@ Optional<Muser>opuser=muserRepository.findByEmail(email);
     	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }}catch(Exception e) {
 	e.printStackTrace();
+	 logger.error("", e);
 	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 }
 }
@@ -164,6 +170,7 @@ public String getClientidforgoogle(String institution,String Provider) {
        return null;
 	   }catch(Exception e) {
 		   e.printStackTrace();
+		   logger.error("", e);
 		   return null;
 	   }
    }
@@ -255,6 +262,7 @@ System.out.println("access"+AccessToken);
 
         } catch (Exception e) {
         	e.printStackTrace();
+        	 logger.error("", e);
             return ResponseEntity.status(500).body("Error verifying token: " + e.getMessage());
         }
     }

@@ -1,33 +1,43 @@
 package com.knowledgeVista.FileService;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
-import org.apache.poi.hslf.usermodel.HSLFSlideShow;
+
+import javax.imageio.ImageIO;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.poi.hslf.usermodel.HSLFSlide;
+import org.apache.poi.hslf.usermodel.HSLFSlideShow;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.knowledgeVista.Course.MiniatureDetail;
 import com.knowledgeVista.ImageCompressing.ImageResizer;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Base64;
 @Service
 public class PPTReader {
     @Value("${upload.video.directory}")
     private String videoUploadDirectory;
     
+  	 private static final Logger logger = LoggerFactory.getLogger(PPTReader.class);
 
   
     public ResponseEntity<SlideResponse> getSlideImage( String fileName, int slideNumber) {
@@ -98,7 +108,7 @@ public class PPTReader {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(slideResponse);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace();    logger.error("", e);;
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -148,7 +158,7 @@ public class PPTReader {
             SlideResponse response = new SlideResponse(base64Image, document.getNumberOfPages());
             return ResponseEntity.ok(response);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace();    logger.error("", e);;
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

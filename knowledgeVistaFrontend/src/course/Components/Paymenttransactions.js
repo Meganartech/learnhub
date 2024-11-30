@@ -53,8 +53,19 @@ const Paymenttransactions = () => {
             const payhistory =data.reverse();
             setpaymenthistory(payhistory);
           } catch (error) {
-            if(error.response && error.response.status===401){
-              window.location.href="/unauthorized"
+            // if(error.response && error.response.status===401){
+            //   window.location.href="/unauthorized"
+            // }else{
+            //   throw error
+            // }
+            if (error.response) {
+              if (error.response.status === 404) {
+                console.log("notfound")
+              } else if (error.response.status === 401) {
+                window.location.href = "/unauthorized";
+              }else{
+                throw error
+              }
             }
             console.error('Error fetching data:', error);
           }

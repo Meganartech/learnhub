@@ -117,6 +117,8 @@ export const GlobalStateProvider = ({ children }) => {
             };
             setDisplayname(emptyData);
             sessionStorage.setItem("displayname", JSON.stringify(emptyData));
+          }else{
+            throw error
           }
         }
       }

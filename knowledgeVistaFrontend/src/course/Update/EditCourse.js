@@ -18,15 +18,18 @@ const EditCourse = ({ filteredCourses }) => {
 
       if (response.status === 200) {
         window.location.href = "/course/addcourse";
+      } else if (response.status === 429) {
+        Swal.fire({
+          title: "Course Limit is Reached",
+          text: "Need to upgrade your lisense",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ok",
+        });
+
       }
     } catch (error) {
-      Swal.fire({
-        title: "Course Limit is Reached",
-        text: "Need to upgrade your lisense",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ok",
-      });
+      throw error
 
       console.error("Error ", error);
     }
@@ -67,14 +70,15 @@ const EditCourse = ({ filteredCourses }) => {
             if (error.response && error.response.status === 401) {
               window.location.href = "/unauthorized";
             } else {
-              MySwal.fire({
-                title: "Error!",
-                text: error.response.data
-                  ? error.response.data
-                  : "error occured",
-                icon: "error",
-                confirmButtonText: "OK",
-              });
+              // MySwal.fire({
+              //   title: "Error!",
+              //   text: error.response.data
+              //     ? error.response.data
+              //     : "error occured",
+              //   icon: "error",
+              //   confirmButtonText: "OK",
+              // });
+              throw error
             }
           });
       }

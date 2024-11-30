@@ -80,6 +80,7 @@ const SlideViewer = () => {
         return updatedImages;
       });
     } catch (error) {
+      throw error
       console.error("Error fetching slide image:", error);
     }
   };
@@ -118,6 +119,7 @@ const SlideViewer = () => {
         setMiniatures(miniResponse.data);
       } catch (error) {
         console.error("Error fetching miniatures:", error);
+        throw error
       }
     };
 

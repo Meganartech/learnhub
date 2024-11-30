@@ -30,6 +30,7 @@ const ViewCourseVps = () => {
       } catch (error) {
         setnotfound(true)
         console.error('Error fetching courses:', error);
+        throw error
       }
     };
 
@@ -166,11 +167,12 @@ const ViewCourseVps = () => {
         
     } catch (error) {
       setsubmitting(false)
-      MySwal.fire({
-        icon: 'error',
-        title: 'Error creating order:', 
-        text:  error.response.data ? error.response.data :"error occured"
-    });
+    //   MySwal.fire({
+    //     icon: 'error',
+    //     title: 'Error creating order:', 
+    //     text:  error.response.data ? error.response.data :"error occured"
+    // });
+    throw error
     }
 };
 
@@ -206,11 +208,12 @@ const ViewCourseVps = () => {
         }
     } catch (error) {
       setsubmitting(false)
-      MySwal.fire({
-        icon: 'error',
-        title: 'Error sending payment ID to server:', 
-        text: error.response.data ? error.response.data : "error occured"
-    });
+    //   MySwal.fire({
+    //     icon: 'error',
+    //     title: 'Error sending payment ID to server:', 
+    //     text: error.response.data ? error.response.data : "error occured"
+    // });
+    throw error
     }
 };
 const handleClick = async (event, id,amount,url) => {
@@ -242,11 +245,12 @@ if(amount===0){
     
     }else{
     
-    MySwal.fire({
-      icon: 'error',
-      title: 'Not Found',
-      text: error
-  });
+  //   MySwal.fire({
+  //     icon: 'error',
+  //     title: 'Not Found',
+  //     text: error
+  // });
+  throw error
 }
   }
 }

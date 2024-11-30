@@ -25,6 +25,7 @@ const Mycourse = () => {
       } catch (error) {
         console.error("Error fetching courses:", error);
         // Handle error here, for example, show an error message
+        throw error
       }
     };
 

@@ -41,12 +41,13 @@ const TestList = () => {
           }else if(error.response && error.response.status===404){
           setNotFound(true);
         }else{
-        MySwal.fire({
-          title: "Error",
-          text: error.response,
-          icon: "error",
-          confirmButtonText: "OK"
-        });
+        // MySwal.fire({
+        //   title: "Error",
+        //   text: error.response,
+        //   icon: "error",
+        //   confirmButtonText: "OK"
+        // });
+        throw error
       }
       }
     };
@@ -82,6 +83,7 @@ const TestList = () => {
       }
     } catch (error) {
       console.error('Error updating test:', error);
+      throw error
     }
   };
 
@@ -112,12 +114,13 @@ const TestList = () => {
           {
             window.location.href="/unauthorized";
           }else{
-            MySwal.fire({
-              title: "Error!",
-              text: error.response.data ? error.response.data : "error occured",
-              icon: "error",
-              confirmButtonText: "OK",
-            });
+            // MySwal.fire({
+            //   title: "Error!",
+            //   text: error.response.data ? error.response.data : "error occured",
+            //   icon: "error",
+            //   confirmButtonText: "OK",
+            // });
+            throw error
           }
         }
       } 
@@ -148,6 +151,7 @@ const TestList = () => {
           }
         } catch (error) {
           console.error('Error deleting test:', error);
+          throw error
         }
       } 
     });

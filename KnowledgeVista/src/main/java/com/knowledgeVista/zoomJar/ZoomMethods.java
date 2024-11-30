@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -12,14 +14,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.MediaType;
 @Configuration
 public class ZoomMethods {
-	
+	 private static final Logger logger = LoggerFactory.getLogger(ZoomMethods.class);
 	private OkHttpClient client = new OkHttpClient();
 	public String getAccessToken(String clientID, String clientSecret, String accountId) {
 	    RestTemplate restTemplate = new RestTemplate();
@@ -55,6 +58,7 @@ public class ZoomMethods {
 	    } catch (RestClientException e) {
 	        // Log or handle the exception
 	    	e.printStackTrace();
+	    	logger.error("", e);
 	        System.err.println("Error retrieving access token: " + e.getMessage());
 	        return null;
 	    }
@@ -87,6 +91,7 @@ public class ZoomMethods {
 	            }
 	        } catch (Exception e) {
 	            e.printStackTrace();
+	            logger.error("", e);
 	            throw new IOException("Failed to create Zoom meeting", e);
 	        }
 	    }

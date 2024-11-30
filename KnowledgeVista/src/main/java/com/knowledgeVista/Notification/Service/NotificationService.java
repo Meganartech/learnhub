@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +33,8 @@ public class NotificationService {
 	@Autowired
 	private NotificationTypeRepo notitypeRepo;
 	
-	
+	 private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
+
   //Create Notification with Multipart
 	
     public Long  createNotification(String type,String username, String description, String createdBy,String heading,String link ,Optional<MultipartFile> file) {
@@ -52,7 +55,7 @@ public class NotificationService {
             } catch (IOException e) {
             	System.out.println("null image first");
             	notiDetails.setNotimage(null);
-                e.printStackTrace();
+                e.printStackTrace();    logger.error("", e);;
             }
         }
         
@@ -81,7 +84,7 @@ public class NotificationService {
         try {
 			notiDetails.setNotimage(ImageResizer.resizeImage(file, 100, 100));
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			notiDetails.setNotimage(null);
 
 		}

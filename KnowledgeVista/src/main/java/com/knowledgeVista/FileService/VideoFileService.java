@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +17,8 @@ public class VideoFileService {
 	 @Value("${upload.video.directory}")
 	    private String videoUploadDirectory;
 	    
+  	 private static final Logger logger = LoggerFactory.getLogger(VideoFileService.class);
+
 
 	 public String saveVideoFile(MultipartFile videoFile) throws IOException {
 	        // Ensure the upload directory exists
@@ -49,7 +53,7 @@ public boolean deleteVideoFile(String fileName) {
 
         return deleted; // Return the result to the caller
     } catch (IOException e) {
-        e.printStackTrace();
+        e.printStackTrace();    logger.error("", e);;
         System.out.println("Error occurred while deleting the file");
         return false; // Return false in case of an exception
     }
@@ -74,7 +78,7 @@ public long deleteFile(String fileName) {
             return 0; // Return 0 if the file does not exist
         }
     } catch (IOException e) {
-        e.printStackTrace();
+        e.printStackTrace();    logger.error("", e);;
         System.out.println("Error occurred while deleting the file");
         return 0; // Return 0 in case of an exception
     }

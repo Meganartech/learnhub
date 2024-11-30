@@ -1,10 +1,12 @@
 package com.knowledgeVista.Notification.Controller;
 
-import com.knowledgeVista.Notification.dtos.NotificationDetailsDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import com.knowledgeVista.Notification.NotificationDetails;
 import com.knowledgeVista.Notification.NotificationUser;
 import com.knowledgeVista.Notification.Repositories.NotificationDetailsRepo;
 import com.knowledgeVista.Notification.Repositories.NotificationUserRepo;
+import com.knowledgeVista.Notification.dtos.NotificationDetailsDTO;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -30,6 +33,9 @@ public class NotificationController {
 		private NotificationDetailsRepo notidetailRepo;
 		@Autowired
 		private NotificationUserRepo notiuserRepo;
+		
+		 private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
+
 		
 
 	
@@ -62,7 +68,7 @@ public class NotificationController {
 		                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
 		            }
 		        } catch (Exception e) {
-		        	  e.printStackTrace();
+		        	  e.printStackTrace();    logger.error("", e);;
 		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching images.");
 		        }
 		    }
@@ -108,7 +114,7 @@ public class NotificationController {
 		        }
 
 		    } catch (Exception e) {
-		        e.printStackTrace();
+		        e.printStackTrace();    logger.error("", e);;
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 		    }
 		}
@@ -139,7 +145,7 @@ public class NotificationController {
 			
 		}catch (Exception e) {
 		        // If an error occurs, return 500
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 		    	  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		    	            .body("{\"error\": \"An error occurred while processing the request.\"}");
 		    	     }
@@ -168,7 +174,7 @@ public class NotificationController {
 	         
 		
 	}catch (Exception e) {
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
     }
 
@@ -198,7 +204,7 @@ public class NotificationController {
         	 return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); 
          }
 		}catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
          }
 	}

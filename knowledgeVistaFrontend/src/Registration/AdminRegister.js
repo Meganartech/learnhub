@@ -68,6 +68,8 @@ const AdminRegister = () => {
       setDefaultCountry(countryCode);
     } catch (error) {
       console.error("Error fetching country code: ", error);
+    
+      
     }
   };
 
@@ -129,6 +131,7 @@ const AdminRegister = () => {
       setDefaultCountry(newCountryCode);
     } catch (error) {
       console.error("Error fetching country dialing code: ", error);
+      
     }
   };
   const togglePasswordVisibility = () => {
@@ -337,12 +340,13 @@ setErrors((prevErrors) => ({
           });
         }
       } else {
-        MySwal.fire({
-          title: "Error!",
-          text: "An error occurred while registering. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        // MySwal.fire({
+        //   title: "Error!",
+        //   text: "An error occurred while registering. Please try again later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
+        throw error
       }
     }
   };

@@ -1,7 +1,5 @@
 package com.knowledgeVista.Course.Controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +18,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.DocsDetails;
 import com.knowledgeVista.Course.MiniatureDetail;
@@ -43,13 +38,15 @@ import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin
 public class videolessonController {
+	
+	 private static final Logger logger = LoggerFactory.getLogger(videolessonController.class);
 
-	private Logger logger = LoggerFactory.getLogger(videolessonController.class);
 	@Autowired
 	private MuserRepositories muserRepo;
 
@@ -212,7 +209,7 @@ public class videolessonController {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("{\"error\": \"Failed to save note: " + e.getMessage() + "\"}");
 		}
@@ -376,7 +373,7 @@ public class videolessonController {
 	                return ResponseEntity.notFound().build();
 	            }
 	        } catch (Exception e) {
-	            e.printStackTrace();
+	            e.printStackTrace();    logger.error("", e);;
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    } else {
@@ -426,7 +423,7 @@ public ResponseEntity<?>getDocFile(String fileName, int slideNumber,String token
 
 	} catch (Exception e) {
 		// Log the exception (you can use a proper logging library)
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
 		// Return an internal server error response
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
@@ -453,7 +450,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 		}
 	}catch (Exception e) {
 		// Log the exception (you can use a proper logging library)
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
 		// Return an internal server error response
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
@@ -491,7 +488,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 
 		} catch (Exception e) {
 			// Log the exception (you can use a proper logging library)
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			// Return an internal server error response
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -637,7 +634,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 					}
 				} catch (Exception e) {
 					// Handle exceptions
-					e.printStackTrace();
+					e.printStackTrace();    logger.error("", e);;
 				}
 
 				// Return a 404 Not Found response if the file does not exist
@@ -648,7 +645,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 			}
 		} catch (Exception e) {
 			// Log the exception (you can use a proper logging library)
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			// Return an internal server error response
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -695,7 +692,7 @@ public ResponseEntity<?>UserAccessCheck(String fileName, int slideNumber,Muser u
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -749,7 +746,7 @@ public ResponseEntity<?>getDocsName(Long lessonId , String token){
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user Not Found");
 		}
 	}catch (Exception e) {
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
@@ -802,7 +799,7 @@ public ResponseEntity<?>getMiniatureDetails(Long lessonId,Long Id , String token
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user Not Found");
 		}
 	}catch (Exception e) {
-		e.printStackTrace();
+		e.printStackTrace();    logger.error("", e);;
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
@@ -868,7 +865,7 @@ public ResponseEntity<?>getMiniatureDetails(Long lessonId,Long Id , String token
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 

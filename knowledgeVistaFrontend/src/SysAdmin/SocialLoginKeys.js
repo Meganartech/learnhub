@@ -45,14 +45,20 @@ const SocialLoginKeys = () => {
           if (response.status === 200) {
             const data = response.data;
             setdefaultkeys(data);
-            setloginkeys(data)
-        } 
+            setloginkeys(data);
+            console.log(response.status)
+          }else if(response.status === 204){
+            setisnotFound(true);
+            console.log(response.status)
+          } 
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {
               setisnotFound(true);
             } else if (error.response.status === 401) {
               window.location.href = "/unauthorized";
+            }else{
+              throw error
             }
           }
         }
@@ -127,11 +133,12 @@ const SocialLoginKeys = () => {
             setisnotFound(false)
           } 
     }catch(error){
-      MySwal.fire({
-        icon: 'error',
-        title: 'Some Error Occurred',
-        text: "error occured"
-      });
+      // MySwal.fire({
+      //   icon: 'error',
+      //   title: 'Some Error Occurred',
+      //   text: "error occured"
+      // });
+      throw error
     }
        
       

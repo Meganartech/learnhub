@@ -9,9 +9,11 @@ import googleicon from "../images/google-25x25.png";
 const GoogleLoginComponent = ({clientId}) => {
   const MySwal = withReactContent(Swal);
 
+
   const handleLoginSuccess = async (response) => {
     // Access the id_token directly from the response
     const idToken = response; // Ensure this is where you get the ID token
+    console.log(response)
     console.log("ID Token:", response.code);
     console.log("hi here in handleLoginSuccess");
 
@@ -57,11 +59,12 @@ const GoogleLoginComponent = ({clientId}) => {
           });
         }
       } else {
-        MySwal.fire({
-          title: "Error Occurred!",
-          text: "An error occurred while logging in. Please try again later.",
-          icon: "error",
-        });
+        // MySwal.fire({
+        //   title: "Error Occurred!",
+        //   text: "An error occurred while logging in. Please try again later.",
+        //   icon: "error",
+        // });
+        throw error
       }
     }
   };

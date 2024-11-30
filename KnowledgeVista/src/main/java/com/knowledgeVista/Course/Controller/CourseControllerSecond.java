@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,14 +33,16 @@ public class CourseControllerSecond {
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	@Autowired
-	private MuserRepositories muserRepository;
-		
-	@Autowired
+	private MuserRepositories muserRepository;	
+ 	@Autowired
 	private videoLessonRepo lessonrepo;
 	@Autowired
 	private licenseRepository licencerepo;
 	@Autowired
 	private OrderuserRepo orderrepo;
+	
+	private static final Logger logger = LoggerFactory.getLogger(CourseControllerSecond.class);
+	
 	public ResponseEntity<?>getstoragedetails(String token){
 		try {
 		 if (!jwtUtil.validateToken(token)) {
@@ -94,7 +98,7 @@ public class CourseControllerSecond {
 		     }
 
 	} catch (Exception e) {
-	         e.printStackTrace(); // You can replace this with logging framework like Log4j
+	         e.printStackTrace(); logger.error("", e);// You can replace this with logging framework like Log4j
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	     }
 	 
@@ -142,7 +146,7 @@ public class CourseControllerSecond {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
 		  } catch (Exception e) {
-		         e.printStackTrace(); // You can replace this with logging framework like Log4j
+		         e.printStackTrace();logger.error("", e); // You can replace this with logging framework like Log4j
 		         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		     }
 		 }
@@ -168,11 +172,10 @@ public class CourseControllerSecond {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
 		  } catch (Exception e) {
-		         e.printStackTrace(); // You can replace this with logging framework like Log4j
+		         e.printStackTrace();logger.error("", e); // You can replace this with logging framework like Log4j
 		         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		     }
 		 }
-	 
 	
 	 
 	 public ResponseEntity<List<CourseDetail>> popular( String token) {
@@ -213,7 +216,7 @@ public class CourseControllerSecond {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	         }
 	     } catch (Exception e) {
-	         e.printStackTrace(); // You can replace this with logging framework like Log4j
+	         e.printStackTrace();    logger.error("", e); // You can replace this with logging framework like Log4j
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	     }
 	 }

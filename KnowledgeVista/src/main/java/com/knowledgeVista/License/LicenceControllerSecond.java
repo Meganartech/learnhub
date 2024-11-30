@@ -2,6 +2,8 @@ package com.knowledgeVista.License;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -40,6 +42,8 @@ public class LicenceControllerSecond {
 	    @Value("${upload.standard.licence.directory}")
 	    private String standardlicencedir;
 	    
+	   	 private static final Logger logger = LoggerFactory.getLogger(LicenceControllerSecond.class);
+
 	    public ResponseEntity<?>GetLicenseDetails(String token){
 	    	try {
 	    		if (!jwtUtil.validateToken(token)) {
@@ -57,14 +61,14 @@ public class LicenceControllerSecond {
 	         	    	License licence=oplicence.get();
 	         	    	return ResponseEntity.ok(licence);
 	         	   }else {
-	         		   return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	         		   return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	         	   }
 	            }else {
 	            	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	            }
 
 	    	}catch(Exception e) {
-	    		e.printStackTrace();
+	    		e.printStackTrace();    logger.error("", e);;
 	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    	}
 	    }
@@ -87,16 +91,16 @@ public class LicenceControllerSecond {
 	         	    	License licence=oplicence.get();
 	         	    	return ResponseEntity.ok(licence);
 	         	   }else {
-	         		   return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Licence Not Found");
+	         		   return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Licence Not Found");
 	         	   }
 	            }else {
-	            	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Admin Not FOund");
+	            	 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Admin Not FOund");
 	            }
 	    		}else {
 	    			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    		}
 	    	}catch(Exception e) {
-	    		e.printStackTrace();
+	    		e.printStackTrace();    logger.error("", e);;
 	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    	}
 	    }

@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -51,6 +53,9 @@ public class PaymentIntegration {
 	 @Autowired
 	private NotificationService notiservice;
 	 
+	 private static final Logger logger = LoggerFactory.getLogger(PaymentIntegration.class);
+
+	 
 	 public Paymentsettings getpaydetails(String token) {
 		    try {
 		    	String email=jwtUtil.getUsernameFromToken(token);
@@ -69,7 +74,7 @@ public class PaymentIntegration {
 		        }
 		        
 		    } catch (Exception e) {
-		        e.printStackTrace(); // or log the error
+		        e.printStackTrace();    logger.error("", e);; // or log the error
 		        return null; // or throw an exception
 		    }
 		}
@@ -155,10 +160,10 @@ public class PaymentIntegration {
              return ResponseEntity.notFound().build();
          }
      } catch (RazorpayException e) {
-         e.printStackTrace();
+         e.printStackTrace();    logger.error("", e);;
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating order: " + e.getMessage());
      } catch (Exception e) {
-         e.printStackTrace();
+         e.printStackTrace();    logger.error("", e);;
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating order: " + e.getMessage());
      }
  }
@@ -250,10 +255,10 @@ public class PaymentIntegration {
              return ResponseEntity.notFound().build();
          }
      } catch (RazorpayException e) {
-         e.printStackTrace();
+         e.printStackTrace();    logger.error("", e);;
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating order: " + e.getMessage());
      } catch (Exception e) {
-         e.printStackTrace();
+         e.printStackTrace();    logger.error("", e);;
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating order: " + e.getMessage());
      }
  }
@@ -354,7 +359,7 @@ public ResponseEntity<String> updatePaymentId( Map<String, String> requestData ,
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
         }
     } catch (Exception e) {
-        e.printStackTrace();
+        e.printStackTrace();    logger.error("", e);;
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating payment ID: " + e.getMessage());
     }
 }

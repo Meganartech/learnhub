@@ -53,6 +53,8 @@ const[sign,setsign]=useState();
                     setisnotFound(true);
                 }else if(error.response && error.response.status===401){
                     window.location.href="/unauthorized"
+                }else{
+                    throw error
                 }
             }
         };

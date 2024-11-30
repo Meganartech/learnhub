@@ -56,11 +56,17 @@ useEffect(() => {
         setdefaultcerti(certificateJson);
         setCertificate(certificateJson);
         setisinitial(false);
+      }else if(certificatedata.status === 204){
+        setisnotFound(true);
+
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
         setisnotFound(true);
         
+      }
+      else{
+        throw error
       }
     }
   };
@@ -196,13 +202,13 @@ setisnotFound(true);
         }
       } catch (error) {
       
-        MySwal.fire({
-          title: "Error!",
-          text: error.response.data ? error.response.data : "error occured",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      
+        // MySwal.fire({
+        //   title: "Error!",
+        //   text: error.response.data ? error.response.data : "error occured",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
+        throw error
     }
     
          

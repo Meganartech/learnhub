@@ -62,6 +62,7 @@ const[StudentFest,setStudentFest]=useState([
         setIsvalid(data.valid);
       } catch (error) {
         console.error("Error fetching data:", error);
+        throw error
       }
     };
 
@@ -71,6 +72,8 @@ const[StudentFest,setStudentFest]=useState([
   useEffect(() => {
     const fetchCounts = async () => {
       try {
+        //  /triggerError ===> api to trigger error    
+             
         const response = await axios.get(`${baseUrl}/course/countcourse`, {
           headers: {
             Authorization: token,
@@ -87,11 +90,12 @@ const[StudentFest,setStudentFest]=useState([
           navigate("/unauthorized")
           return;
         }
-        MySwal.fire({
-          icon: "error",
-          title: "Some Error Occurred",
-          text: error.message,
-        });
+        // MySwal.fire({
+        //   icon: "error",
+        //   title: "Some Error Occurred",
+        //   text: error.message,
+        // });
+        throw error
       }
     };
 const fetchstorage=async()=>{
@@ -179,11 +183,12 @@ const fetchstorage=async()=>{
             navigate("/unauthorized")
           return;
         }
-        MySwal.fire({
-          icon: "error",
-          title: "Some Error Occurred",
-          text: error.message,
-        });
+        // MySwal.fire({
+        //   icon: "error",
+        //   title: "Some Error Occurred",
+        //   text: error.message,
+        // });
+        throw error
       }
     };
 

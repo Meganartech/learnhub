@@ -1,5 +1,4 @@
 package com.knowledgeVista.Course.Controller;
-import org.springframework.http.MediaType;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,10 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.dao.DataIntegrityViolationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +37,6 @@ import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 import io.jsonwebtoken.io.DecodingException;
-import io.jsonwebtoken.lang.Collections;
 
 @RestController
 public class CourseController {
@@ -65,6 +67,8 @@ public class CourseController {
 	 @Value("${spring.environment}")
 	    private String environment;
 	
+  	 private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+
 //`````````````````````````WORKING``````````````````````````````````
 	
 	 public ResponseEntity<?> countCourse(String token) {
@@ -107,10 +111,10 @@ public class CourseController {
 	         return ResponseEntity.ok().body(response);
 	     } catch (DecodingException ex) {
 	         // Log the decoding exception
-	         ex.printStackTrace(); 
+	         ex.printStackTrace();    logger.error("", ex);; 
 	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	     } catch (Exception e) {
-	         e.printStackTrace(); // You can replace this with logging framework like Log4j
+	         e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	     }
 	 }
@@ -214,7 +218,7 @@ public class CourseController {
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    }
 		     }catch (Exception e) {
-		    	 e.printStackTrace();
+		    	 e.printStackTrace();    logger.error("", e);;
 			        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 		        }
 		     }
@@ -261,7 +265,7 @@ public class CourseController {
 				courseDetail.setCourseImage(file.getBytes());
 			} catch (IOException e) {
 				courseDetail.setCourseImage(null);
-				e.printStackTrace();
+				e.printStackTrace();    logger.error("", e);;
 			}
 	       
 	        
@@ -390,7 +394,7 @@ public class CourseController {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	            }
 	        } catch (IOException e) {
-	            e.printStackTrace();
+	            e.printStackTrace();    logger.error("", e);;
 	            return ResponseEntity.badRequest().body("{\"message\": \"Error occurred while processing the image\"}");
 	        }
 	    }
@@ -655,7 +659,7 @@ public class CourseController {
 	       }catch (DataIntegrityViolationException e) {
 	           // If a foreign key constraint violation occurs
 	           // Return a custom error response with an appropriate status code and message
-	    	   e.printStackTrace();
+	    	   e.printStackTrace();    logger.error("", e);;
 	           return ResponseEntity.status(HttpStatus.FORBIDDEN)
 	                   .body("The course cannot be deleted. Delete all associated lessons, test.");
 	       }
@@ -735,7 +739,7 @@ public class CourseController {
 	        	   }
 	           }
 	       } catch (Exception e) {
-	    	   e.printStackTrace();
+	    	   e.printStackTrace();    logger.error("", e);;
 	           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	       }
 	   }
@@ -812,7 +816,7 @@ public class CourseController {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	          }
        } catch (Exception e) {
-           e.printStackTrace(); // Print the stack trace for debugging
+           e.printStackTrace();    logger.error("", e);; // Print the stack trace for debugging
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body("Error creating test: " + e.getMessage());
        }

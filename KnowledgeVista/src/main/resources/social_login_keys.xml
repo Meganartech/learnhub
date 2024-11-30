@@ -5,4 +5,4 @@
 		<institutionName>Meganartech</institutionName>
 		<clientid>63277612167-5ifumpg63qilb1eii253dfqvk13e85d4.apps.googleusercontent.com</clientid>
 		<clientSecret>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</clientSecret>
-		<RedirectUrl>http://localhost:3000</RedirectUrl></SocialLoginKeys></Socialkeys>
+		<RedirectUrl>https://lhdemo.vsmartengine.com/</RedirectUrl></SocialLoginKeys></Socialkeys>

@@ -54,6 +54,7 @@ const ViewTrainerList = () => {
     }
   } catch (error) {
     console.error('Error fetching users:', error);
+    throw error
   }
 };
 
@@ -127,8 +128,10 @@ const handleChange = (e) => {
           } catch (error) {
             if(error.response && error.response.status===401){
               window.location.href="/unauthorized"
-            }
+            }else{
             console.error('Error fetching data:', error);
+            throw error
+            }
           }
         };
     
@@ -157,8 +160,10 @@ const handleChange = (e) => {
         } catch (error) {
           if (error.response && error.response.status === 401) {
             window.location.href = "/unauthorized";
-          }
+          }else{
           console.error('Error fetching data:', error);
+          throw error
+          }
         }
       };
     
@@ -262,14 +267,16 @@ const handleChange = (e) => {
        not found`
                 });
               } else {
-                MySwal.fire({
-                  icon: 'error',
-                  title: 'ERROR',
-                  text: `Error Deactivating ${displayname && displayname.trainer_name
-                    ? displayname.trainer_name
-                    : "Trainer"}`
-                });
+                // MySwal.fire({
+                //   icon: 'error',
+                //   title: 'ERROR',
+                //   text: `Error Deactivating ${displayname && displayname.trainer_name
+                //     ? displayname.trainer_name
+                //     : "Trainer"}`
+                // });
+                
                 console.error('Error during deactivation:', error); // Log detailed error for debugging
+                throw error
               }
             }
           }
@@ -326,14 +333,15 @@ const handleChange = (e) => {
          not found`
               });
               }else{
-              MySwal.fire({
-                icon: 'error',
-                title: 'ERROR',
-                text: `Error  Activated  ${displayname && displayname.trainer_name
-                    ? displayname.trainer_name
-                    : "Trainer"}`
+            //   MySwal.fire({
+            //     icon: 'error',
+            //     title: 'ERROR',
+            //     text: `Error  Activated  ${displayname && displayname.trainer_name
+            //         ? displayname.trainer_name
+            //         : "Trainer"}`
         
-            });
+            // });
+            throw error
             }
           }
           } 

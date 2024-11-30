@@ -44,7 +44,10 @@ const ZoomKeys = () => {
             const data = response.data;
             setdefaultZoomset(data);
             setoldzoomset(data);
-        } 
+          }else if(response.status === 204){
+            setisnotFound(true);
+            setinitialsave(true);
+          }
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {
@@ -52,6 +55,8 @@ const ZoomKeys = () => {
               setinitialsave(true);
             } else if (error.response.status === 401) {
               window.location.href = "/unauthorized";
+            }else{
+              throw error
             }
           }
         }
@@ -122,11 +127,12 @@ const ZoomKeys = () => {
         } 
   }catch(error){
     console.log(error)
-    MySwal.fire({
-      icon: 'error',
-      title: 'Some Error Occurred',
-      text: "error occured"
-    });
+    // MySwal.fire({
+    //   icon: 'error',
+    //   title: 'Some Error Occurred',
+    //   text: "error occured"
+    // });
+    throw error
   }
      
     }else{ 
@@ -156,11 +162,12 @@ const ZoomKeys = () => {
      if(error.response.status===401){
       window.location.href="/unauthorized"
      } else{
-      MySwal.fire({
-        icon: 'error',
-        title: 'Some Error Occurred',
-        text: error.data
-      });
+      // MySwal.fire({
+      //   icon: 'error',
+      //   title: 'Some Error Occurred',
+      //   text: error.data
+      // });
+      throw error
      } 
     });
       

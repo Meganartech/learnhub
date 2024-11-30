@@ -65,18 +65,19 @@ const ProfileView = () => {
         }));
       }
         
-        
+        console.log(img);
       } catch (error) {
         if(error.response && error.response.status===401)
         {
           window.location.href="/unauthorized";
         }else{
-          MySwal.fire({
-            title: "Error!",
-            text: error.response,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: error.response,
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
+          throw error
         }
       }
     };
@@ -141,6 +142,7 @@ const ProfileView = () => {
       setDefaultCountry(newCountryCode);
     } catch (error) {
       console.error("Error fetching country dialing code: ", error);
+      throw error
     }
   };
   const handleChange = (e) => {
@@ -203,12 +205,13 @@ const ProfileView = () => {
         }));
       })
       .catch((error) => { 
-        MySwal.fire({
-        title: "Error!",
-        text: error ,
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      //   MySwal.fire({
+      //   title: "Error!",
+      //   text: error ,
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // });
+      throw error
       });
   };
   
@@ -265,21 +268,22 @@ const ProfileView = () => {
               email: "This email is already registered."
             }));
         
-      }else if(error.response && error.response.status === 500){
-          MySwal.fire({
-            title: "Server Error!",
-            text: "Unexpected Error Occured",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+      // }else if(error.response && error.response.status === 500){
+      //     MySwal.fire({
+      //       title: "Server Error!",
+      //       text: "Unexpected Error Occured",
+      //       icon: "error",
+      //       confirmButtonText: "OK",
+      //     });
         }else {
             
-          MySwal.fire({
-            title: "Error!",
-            text: error.response,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: error.response,
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
+          throw error
         }
       }
   };

@@ -3,6 +3,8 @@ package com.knowledgeVista.SysAdminPackage;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -44,6 +46,9 @@ public class SysadminController {
 	 
 	 @Autowired 
 	 private MuserRepoPageable muserPageRepo;
+
+
+	 private static final Logger logger = LoggerFactory.getLogger(SysadminController.class);
 	 
 	  @Value("${spring.environment}")
 	    private String environment;
@@ -88,7 +93,7 @@ public class SysadminController {
 	   	     }
 
 		  } catch (Exception e) {
-			  e.printStackTrace();
+			  e.printStackTrace();    logger.error("", e);;
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	        }
 	    }
@@ -114,7 +119,7 @@ public class SysadminController {
 	   	     }
 
 		  } catch (Exception e) {
-			  e.printStackTrace();
+			  e.printStackTrace();    logger.error("", e);;
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	        }
 	    }
@@ -140,7 +145,7 @@ public class SysadminController {
 	   	     }
 
 		  } catch (Exception e) {
-			  e.printStackTrace();
+			  e.printStackTrace();    logger.error("", e);;
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	        }
 	    }
@@ -183,7 +188,7 @@ public class SysadminController {
 	          }
 	      } catch (Exception e) {
 	          // Log any other exceptions for debugging purposes
-	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 	          // Return an internal server error response
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	      }
@@ -227,7 +232,7 @@ public class SysadminController {
 	          }
 	      } catch (Exception e) {
 	          // Log any other exceptions for debugging purposes
-	          e.printStackTrace(); // You can replace this with logging framework like Log4j
+	          e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 	          // Return an internal server error response
 	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	      }

@@ -83,12 +83,13 @@ const EditTrainer = () => {
           {
             window.location.href="/unauthorized";
           }else{
-            MySwal.fire({
-              title: "Error!",
-              text: error.response,
-              icon: "error",
-              confirmButtonText: "OK",
-            });
+            // MySwal.fire({
+            //   title: "Error!",
+            //   text: error.response,
+            //   icon: "error",
+            //   confirmButtonText: "OK",
+            // });
+            throw error
           }
            }
       };
@@ -316,13 +317,6 @@ setErrors((prevErrors) => ({
                 ...prevErrors,
                 email: "This email is already registered."
               }));
-            }else if(error.response.status===500){
-              MySwal.fire({
-                title: "Server Error!",
-                text: "Unexpected Error Occured",
-                icon: "error",
-                confirmButtonText: "OK",
-              });
             }else if(error.response.status===401){
               MySwal.fire({
                 title: "Un Authorized!",
@@ -335,14 +329,15 @@ setErrors((prevErrors) => ({
             }
           }else{
       
-          MySwal.fire({
-            title: "Error!",
-            text: `An error occurred while adding ${displayname && displayname.trainer_name
-                    ? displayname.trainer_name
-                    : "Trainer"}. Please try again later.`,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          // MySwal.fire({
+          //   title: "Error!",
+          //   text: `An error occurred while adding ${displayname && displayname.trainer_name
+          //           ? displayname.trainer_name
+          //           : "Trainer"}. Please try again later.`,
+          //   icon: "error",
+          //   confirmButtonText: "OK",
+          // });
+          throw error
         }
       }
     };

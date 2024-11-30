@@ -197,12 +197,13 @@ const CreateTest = () => {
           {
             window.location.href="/unauthorized";
           }else{
-            MySwal.fire({
-              title: "Error!",
-              text: error.response,
-              icon: "error",
-              confirmButtonText: "OK",
-            });
+            // MySwal.fire({
+            //   title: "Error!",
+            //   text: error.response,
+            //   icon: "error",
+            //   confirmButtonText: "OK",
+            // });
+            throw error
           }
     }
   };

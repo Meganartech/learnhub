@@ -2,7 +2,8 @@ package com.knowledgeVista.User.SecurityConfiguration;
 
 import java.util.Date;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,7 +18,10 @@ public class JwtUtil {
 
 	    @Autowired
 	    private TokenBlacklist tokenBlacklist;
-	 
+
+		 private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
+		
+		
 	 //24hrs
 	 public static final long JWT_EXPIRATION_MS = 86400000;
 	   // public static final long JWT_EXPIRATION_MS = 60000; // 1 minute
@@ -55,6 +59,7 @@ public class JwtUtil {
 	        } catch (Exception e) {
 	            // Token parsing failed or expired
 	        	e.printStackTrace();
+	        	 logger.error("", e);
 	            return false;
 	        }
 	    }
@@ -76,6 +81,7 @@ public class JwtUtil {
 	        } catch (Exception e) {
 	            // Print or log the exception for debugging
 	            e.printStackTrace();
+	            logger.error("", e);
 	            return null;
 	        }
 	    }
@@ -106,6 +112,7 @@ public class JwtUtil {
 	        } catch (Exception e) {
 	            // Token parsing failed
 	            e.printStackTrace();
+	            logger.error("", e);
 	            return null;
 	        }
 	    }

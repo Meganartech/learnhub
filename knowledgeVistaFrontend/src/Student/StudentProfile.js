@@ -73,6 +73,8 @@ const StudentProfile = () => {
                   setnotfound(true);
                 } else if (error.response.status === 401) {
                   window.location.href = '/unauthorized';
+                }else{
+                  throw error
                 }
               }
             }

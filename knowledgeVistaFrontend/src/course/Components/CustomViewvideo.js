@@ -68,12 +68,13 @@ const CustomViewvideo = () => {
         } else if (error.response && error.response.status === 404) {
           window.location.href = "/missing";
         } else {
-          MySwal.fire({
-            icon: "error",
-            title: "Some Error Occurred",
-            text: "Please Try Again Later",
-            confirmButtonText: "OK",
-          }).then((result) => {
+          // MySwal.fire({
+          //   icon: "error",
+          //   title: "Some Error Occurred",
+          //   text: "Please Try Again Later",
+          //   confirmButtonText: "OK",
+          // })
+          throw error.then((result) => {
             if (result.isConfirmed) {
               navigate(-1); // Navigate back after user confirmation
             }
@@ -107,6 +108,7 @@ const CustomViewvideo = () => {
     setcurrentDocs(docResponse.data);
   }catch(error){
     console.error(error)
+    throw error
   }
   };
   useEffect(() => {

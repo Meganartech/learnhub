@@ -79,6 +79,8 @@ const AdminProfileView = () => {
               setNotFound(true);
             } else if (error.response.status === 401) {
               window.location.href = "/unauthorized";
+            }else{
+              throw error
             }
           }
         }
@@ -128,6 +130,7 @@ const AdminProfileView = () => {
             setLicenceNotfound(true);
           } else {
             console.log(error);
+            throw error
           }
         }
       }

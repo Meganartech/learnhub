@@ -2,6 +2,8 @@ package com.knowledgeVista.secretapis;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,8 @@ public class DeleteApis {
 	    @Autowired
 	    private JwtUtil jwtUtil;
 	    
+		 private static final Logger logger = LoggerFactory.getLogger(DeleteApis.class);
+
 	    
 	    @DeleteMapping("/Delete/Trainer/{email}")
 		 public ResponseEntity<?> deleteTrainer(@RequestHeader("Authorization") String token,@PathVariable String email) {
@@ -64,7 +68,7 @@ public class DeleteApis {
 	              }
 		      } catch (Exception e) {
 		          // Log any other exceptions for debugging purposes
-		          e.printStackTrace(); // You can replace this with logging framework like Log4j
+		          e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 		          // Return an internal server error response
 		          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		      }
@@ -107,7 +111,7 @@ public class DeleteApis {
 	              }
 		      } catch (Exception e) {
 		          // Log any other exceptions for debugging purposes
-		          e.printStackTrace(); // You can replace this with logging framework like Log4j
+		          e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 		          // Return an internal server error response
 		          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		      }
@@ -149,7 +153,7 @@ public class DeleteApis {
 		          
 		      } catch (Exception e) {
 		          // Log any other exceptions for debugging purposes
-		          e.printStackTrace(); // You can replace this with logging framework like Log4j
+		          e.printStackTrace();    logger.error("", e);; // You can replace this with logging framework like Log4j
 		          // Return an internal server error response
 		          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		      }

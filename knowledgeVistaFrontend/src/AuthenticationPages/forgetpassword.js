@@ -88,12 +88,13 @@ const ForgetPassword = () => {
         setEmailError("User not found");
       }
     } catch (error) {
-      MySwal.fire({
-        title: "error",
-        text: error,
-        icon: "error",
-        confirmButtonText: "OK",
-      }).then((result) => {
+      // MySwal.fire({
+      //   title: "error",
+      //   text: error,
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // }).then((result) => {
+        throw error.then((result) => {
         if (result.isConfirmed) {
           // Redirect to login page
           window.location.href = "/login";
@@ -117,12 +118,13 @@ const ForgetPassword = () => {
       if (error.response && error.response.status === 404) {
         setEmailError("User not found");
     } else{
-      MySwal.fire({
-        title: "error",
-        text: error.message,
-        icon: "error",
-        confirmButtonText: "OK",
-      }).then((result) => {
+      // MySwal.fire({
+      //   title: "error",
+      //   text: error.message,
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // }).then((result) => {
+        throw error.then((result) => {
         if (result.isConfirmed) {
           // Redirect to login page
           window.location.href = "/login";

@@ -307,21 +307,17 @@ const TrainerRegistration = () => {
             ...prevErrors,
             email: "This email is already registered.",
           }));
-        } else {
-          MySwal.fire({
-            title: "Error!",
-            text: data,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+        } else{
+          throw error
         }
       } else {
-        MySwal.fire({
-          title: "Error!",
-          text: "An error occurred while registering. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        // MySwal.fire({
+        //   title: "Error!",
+        //   text: "An error occurred while registering. Please try again later.",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
+        throw error
       }
     }
   };

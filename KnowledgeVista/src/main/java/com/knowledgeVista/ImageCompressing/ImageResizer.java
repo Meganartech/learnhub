@@ -1,14 +1,14 @@
 package com.knowledgeVista.ImageCompressing;
-import javax.imageio.ImageIO;
-
-import org.springframework.web.multipart.MultipartFile;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import org.springframework.web.multipart.MultipartFile;
 public class ImageResizer {
 	 public static byte[] resizeImage(byte[] imageBytes, int width, int height) throws IOException {
 	        // Convert byte array to BufferedImage

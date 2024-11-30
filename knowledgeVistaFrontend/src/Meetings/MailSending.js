@@ -133,6 +133,7 @@ TimeZone: ${meetingData.timezone}`,
         console.log("searchresults after api", searchResults);
       } catch (error) {
         console.error("Error fetching users:", error);
+        throw error
       }
     } else {
       // If query length <= 1, clear the corresponding search result
@@ -223,12 +224,13 @@ TimeZone: ${meetingData.timezone}`,
           window.location.href="/settings/mailsettings"
         })
       }else{
-      MySwal.fire({
-        title: "Error!",
-        text: "Failed to Send Email.please Try again after some time",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      // MySwal.fire({
+      //   title: "Error!",
+      //   text: "Failed to Send Email.please Try again after some time",
+      //   icon: "error",
+      //   confirmButtonText: "OK",
+      // });
+      throw error
     }
     }
   };

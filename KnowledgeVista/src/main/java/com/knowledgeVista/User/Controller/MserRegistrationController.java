@@ -1,6 +1,19 @@
 package com.knowledgeVista.User.Controller;
-import com.knowledgeVista.DownloadManagement.CustomerLeads;
-import com.knowledgeVista.DownloadManagement.Customer_downloads;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.Madmin_Licence;
 import com.knowledgeVista.License.mAdminLicenceRepo;
@@ -11,20 +24,8 @@ import com.knowledgeVista.User.MuserRequiredDto;
 import com.knowledgeVista.User.MuserRoles;
 import com.knowledgeVista.User.Approvals.MuserApprovalRepo;
 import com.knowledgeVista.User.Approvals.MuserApprovals;
-import com.knowledgeVista.User.Repository.*;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.User.Repository.MuserRepositories;
+import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
@@ -50,6 +51,9 @@ private MuserApprovalRepo MuserApproval;
 	    private String activeProfile;
 	 @Value("${base.url}")
 	    private String baseUrl;
+	 
+	 private static final Logger logger = LoggerFactory.getLogger(MserRegistrationController.class);
+
 	
 	 public Long countadmin() {
 		 return muserrepositories.countByRoleName("ADMIN");
@@ -100,6 +104,7 @@ private MuserApprovalRepo MuserApproval;
 	                
 	            } catch (IOException e) {
 	                e.printStackTrace();
+	                logger.error("", e);
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 	            }
 	            }
@@ -113,38 +118,40 @@ private MuserApprovalRepo MuserApproval;
 	     		   licencecontrol.uploadSAS(madmin, savedadmin);
 	     	   }
 	          
-	            RestTemplate restTemplate = new RestTemplate();
+//	            RestTemplate restTemplate = new RestTemplate();
 
 
 	            
-	            String apiUrl = baseUrl +"/Developer/CustomerDownloads";
-	            String apiUrl2 = baseUrl + "/Developer/CustomerLeads";
-
-                
-	            Customer_downloads custDown = new Customer_downloads();
-	            custDown.setName(user.getUsername());
-	            custDown.setEmail(user.getEmail());
-	            custDown.setCountryCode(user.getCountryCode());
-	            custDown.setPhone(user.getPhone());
-	            
-	            CustomerLeads custlead=new CustomerLeads();
-	            custlead.setName(user.getUsername());
-	            custlead.setEmail(user.getEmail());
-	            custlead.setCountryCode(user.getCountryCode());
-	            custlead.setPhone(user.getPhone());
-	            
-	            restTemplate.postForEntity(apiUrl, custDown, String.class);
-
-	            restTemplate.postForEntity(apiUrl2, custlead, String.class);
+//	            String apiUrl = baseUrl +"/Developer/CustomerDownloads";
+//	            String apiUrl2 = baseUrl + "/Developer/CustomerLeads";
+//
+//                
+//	            Customer_downloads custDown = new Customer_downloads();
+//	            custDown.setName(user.getUsername());
+//	            custDown.setEmail(user.getEmail());
+//	            custDown.setCountryCode(user.getCountryCode());
+//	            custDown.setPhone(user.getPhone());
+//	            
+//	            CustomerLeads custlead=new CustomerLeads();
+//	            custlead.setName(user.getUsername());
+//	            custlead.setEmail(user.getEmail());
+//	            custlead.setCountryCode(user.getCountryCode());
+//	            custlead.setPhone(user.getPhone());
+//	            
+//	            restTemplate.postForEntity(apiUrl, custDown, String.class);
+//
+//	            restTemplate.postForEntity(apiUrl2, custlead, String.class);
 	     	  
 	           
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	            }else {
+	            	
 	            	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error getting role\"}");
 	   	            
 	            }
 	    } catch (Exception e) {
 	        e.printStackTrace();
+	        logger.error("", e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
 	    }
 	}
@@ -199,6 +206,7 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	                
 	            } catch (IOException e) {
 	                e.printStackTrace();
+	                logger.error("", e);
 	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 	            }
 	            }
@@ -211,6 +219,7 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 		
 	 } catch (Exception e) {
 	        e.printStackTrace();
+	        logger.error("", e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
 	    }
 }
@@ -267,6 +276,7 @@ user.setProfile(profile.getBytes());
 
 } catch (IOException e) {
 e.printStackTrace();
+logger.error("", e);
 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
 }
 }
@@ -279,6 +289,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
 
 } catch (Exception e) {
 e.printStackTrace();
+logger.error("", e);
 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
 }
 }
@@ -321,7 +332,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
 	    } catch (Exception e) {
 	        // Log the exception for debugging and auditing purposes
 	        e.printStackTrace(); // Consider using a proper logging framework in production code
-
+	        logger.error("", e);
 	        // Return a 500 internal server error response
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .contentType(MediaType.APPLICATION_JSON)
@@ -368,6 +379,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
 	        } catch (Exception e) {
 	            // Log any other exceptions for debugging purposes
 	            e.printStackTrace(); // You can replace this with logging framework like Log4j
+	            logger.error("", e);
 	            // Return an internal server error response
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
@@ -414,6 +426,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
 	            }
 	        } catch (Exception e) {
 	            e.printStackTrace(); 
+	            logger.error("", e);
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
@@ -460,6 +473,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
     }
 } catch (Exception e) {
     e.printStackTrace(); 
+    logger.error("", e);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 }
 	 
@@ -501,6 +515,7 @@ return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\
         } catch (Exception e) {
             // Log any other exceptions for debugging purposes
             e.printStackTrace(); // You can replace this with logging framework like Log4j
+            logger.error("", e);
             // Return an internal server error response
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

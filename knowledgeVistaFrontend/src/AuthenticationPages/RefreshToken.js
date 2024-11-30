@@ -27,14 +27,15 @@ const RefreshToken = () => {
                     }
                 }
             } catch (error) {
-                if(error.response){
-
-                 MySwal.fire({
-                title: "Error Occured!",
-                text: error.response,
-                icon: "error",
-              })
-            }
+                // if(error.response){
+// 
+            //      MySwal.fire({
+            //     title: "Error Occured!",
+            //     text: error.response,
+            //     icon: "error",
+            //   })
+            // }
+            throw error
             }
         }
         

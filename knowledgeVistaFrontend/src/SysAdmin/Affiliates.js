@@ -18,11 +18,12 @@ const Affiliates = () => {
         console.log(response.data)
       } catch (error) {
         console.error('Error fetching affiliates:', error);
-        MySwal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to fetch affiliates. Please try again later.',
-        });
+        // MySwal.fire({
+        //   icon: 'error',
+        //   title: 'Error',
+        //   text: 'Failed to fetch affiliates. Please try again later.',
+        // });
+        throw error
       }
     };
 

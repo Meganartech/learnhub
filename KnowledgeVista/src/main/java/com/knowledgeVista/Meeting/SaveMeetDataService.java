@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,9 @@ private ZoomsettingRepo settingrepo;
 private InviteeRepo inviteRepo;
 @Autowired
 private NotificationService notiservice;
+
+private static final Logger logger = LoggerFactory.getLogger(SaveMeetDataService.class);
+
 public void PatchsaveData(String email,String jsonString,Long meetingId) {
 	try {
 	    ObjectMapper mapper = new ObjectMapper();
@@ -81,7 +86,7 @@ public void PatchsaveData(String email,String jsonString,Long meetingId) {
 	        try {
 	            meeting.setStartTime(startTimeStr);
 	        } catch (DateTimeParseException e) {
-	        	e.printStackTrace();
+	        	e.printStackTrace();    logger.error("", e);;
 	            System.err.println("Failed to parse start time: " + startTimeStr);
 	        }
 	    }
@@ -143,7 +148,7 @@ public void PatchsaveData(String email,String jsonString,Long meetingId) {
 	        }
 	    }
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    e.printStackTrace();    logger.error("", e);;
 	}
 }
 
@@ -202,7 +207,7 @@ public void PatchsaveData(String email,String jsonString,Long meetingId) {
 			              meeting.setStartTime(startTimeStr);
 			             
 			          } catch (DateTimeParseException e) {
-			        	  e.printStackTrace();
+			        	  e.printStackTrace();    logger.error("", e);;
 			              System.err.println("Failed to parse start time: " + startTimeStr);
 			          }
 			         
@@ -281,7 +286,7 @@ public void PatchsaveData(String email,String jsonString,Long meetingId) {
 			          }
 			      
 		}catch(Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 		}
 	}
 

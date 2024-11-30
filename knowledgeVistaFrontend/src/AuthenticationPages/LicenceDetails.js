@@ -23,6 +23,7 @@ const navigate=useNavigate();
       
       setActiverofile(active.data);
       }catch(error){
+        throw error
         console.error(error);
       }
     }
@@ -52,6 +53,7 @@ const navigate=useNavigate();
 
         setLicenceDetails(filteredData);
       } catch (error) {
+        throw error
         console.error('Error fetching data:', error);
       }
     };
@@ -133,12 +135,13 @@ const navigate=useNavigate();
           confirmButtonText: "OK",
         });
       }else{
-        MySwal.fire({
-          title: "Error!",
-         text: "Some unexpected error occured try again later",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+        // MySwal.fire({
+        //   title: "Error!",
+        //  text: "Some unexpected error occured try again later",
+        //   icon: "error",
+        //   confirmButtonText: "OK",
+        // });
+        throw error
       }
      
     

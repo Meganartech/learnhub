@@ -2,6 +2,8 @@ package com.knowledgeVista.Payments;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,8 @@ public class PaymentSettingsController {
 	@Autowired
 	private MuserRepositories muserRepository;
 	
+	 private static final Logger logger = LoggerFactory.getLogger(PaymentSettingsController.class);
+
 	public ResponseEntity<?> SavePaymentDetails( Paymentsettings data, String token) {
 		
 		if (!jwtUtil.validateToken(token)) {
@@ -92,7 +96,7 @@ public class PaymentSettingsController {
 		            return ResponseEntity.ok()
 		                .body(pay);  
 		        }else {
-		        	return ResponseEntity.status(HttpStatus.NOT_FOUND)
+		        	return ResponseEntity.status(HttpStatus.NO_CONTENT)
 				            .body("No payment data found");
 		        }
 		        
@@ -101,7 +105,7 @@ public class PaymentSettingsController {
 		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		        }
 		    } catch (Exception e) {
-		    	e.printStackTrace();
+		    	e.printStackTrace();    logger.error("", e);;
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		            .body("An error occurred while retrieving payment data");
 		    }

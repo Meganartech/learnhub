@@ -3,12 +3,11 @@ package com.knowledgeVista.Course;
 
 
 import java.util.List;
-import com.knowledgeVista.User.Muser;
 
+import com.knowledgeVista.User.Muser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;

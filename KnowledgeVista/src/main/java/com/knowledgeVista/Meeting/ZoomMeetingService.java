@@ -1,4 +1,21 @@
 package com.knowledgeVista.Meeting;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowledgeVista.Meeting.zoomclass.InviteeRepo;
@@ -16,23 +33,6 @@ import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 import com.knowledgeVista.zoomJar.ZoomMethods;
-
-import org.springframework.transaction.annotation.Transactional;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
 
 @Service
@@ -61,6 +61,8 @@ public class ZoomMeetingService {
         @Autowired
 		 private ZoomMethods zoomMethod;
         
+   	 private static final Logger logger = LoggerFactory.getLogger(ZoomMeetingService.class);
+
 	    public ZoomMeetingService(ZoomTokenService zoomTokenService) {
 	        
 	        this.objectMapper = new ObjectMapper();
@@ -98,7 +100,7 @@ public class ZoomMeetingService {
 	         }
 	         
 		  } catch (Exception e) {
-			  e.printStackTrace();
+			  e.printStackTrace();    logger.error("", e);;
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 		        		
 		                .body("An error occurred while creating the meeting: " + e.getMessage() );
@@ -147,7 +149,7 @@ public class ZoomMeetingService {
   	         }
   	         
   		  } catch (Exception e) {
-  			e.printStackTrace();
+  			e.printStackTrace();    logger.error("", e);;
   		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
   		                .body("An error occurred while updating the certificate: " + e.getMessage() );
   		    }
@@ -357,7 +359,7 @@ public class ZoomMeetingService {
 	        	 }
 			}catch(Exception e) {
 				
-				e.printStackTrace();
+				e.printStackTrace();    logger.error("", e);;
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
@@ -401,7 +403,7 @@ public class ZoomMeetingService {
 	        		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	        	 }
 			}catch(Exception e) {
-				e.printStackTrace();
+				e.printStackTrace();    logger.error("", e);;
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}
@@ -459,7 +461,7 @@ public class ZoomMeetingService {
 	  		  	  
 	  	         }
 			}catch(Exception e) {
-				e.printStackTrace();
+				e.printStackTrace();    logger.error("", e);;
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 			

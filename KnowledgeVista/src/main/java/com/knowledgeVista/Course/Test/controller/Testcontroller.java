@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +52,9 @@ public class Testcontroller {
 
 			@Autowired
 			private MuserRepositories muserRepository;
+			
+		  	 private static final Logger logger = LoggerFactory.getLogger(Testcontroller.class);
+
 //-----------------------------WORKING for ADMIN View-------------------------
 
 	    public ResponseEntity<String> createTest( Long courseId, CourseTest test,String token) {
@@ -126,7 +131,7 @@ public class Testcontroller {
 		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		          }
 	        } catch (Exception e) {
-	            e.printStackTrace(); // Print the stack trace for debugging
+	            e.printStackTrace();    logger.error("", e);;    logger.error("", e);; // Print the stack trace for debugging
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                                 .body("Error creating test: " + e.getMessage());
 	        }
@@ -211,7 +216,7 @@ public class Testcontroller {
 		          }
 	         
 	        } catch (Exception e) {
-	            e.printStackTrace(); // Print the stack trace for debugging
+	            e.printStackTrace();    logger.error("", e);; // Print the stack trace for debugging
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                                 .body("Error: " + e.getMessage());
 	        }
@@ -391,7 +396,7 @@ public class Testcontroller {
 	            }
 	        } catch (Exception e) {
 	            // Log the exception (you can replace this with a logging framework like Log4j)
-	            e.printStackTrace();
+	            e.printStackTrace();    logger.error("", e);;
 	            // Return an internal server error response
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"An unexpected error occurred\"}");
 	        }
@@ -453,7 +458,7 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
                     .body("{\"error\": \"Invalid Token\"}");
         }
     } catch (Exception e) {
-    	e.printStackTrace();
+    	e.printStackTrace();    logger.error("", e);;
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error updating test: " + e.getMessage() + "\"}");
     }
 }

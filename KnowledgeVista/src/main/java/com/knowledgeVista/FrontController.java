@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -18,9 +20,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Course.Controller.CheckAccess;
@@ -43,8 +47,8 @@ import com.knowledgeVista.Meeting.zoomclass.MeetingRequest;
 import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Payments.PaymentIntegration;
 import com.knowledgeVista.Payments.PaymentListController;
-import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.PaymentSettingsController;
+import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.Controller.SettingsController;
 import com.knowledgeVista.User.MuserDto;
@@ -147,7 +151,14 @@ public class FrontController {
 	private GoogleAuthController googleauth;
 	
 	@Autowired
+	private LogManagement logmanagement;
+
+	@Autowired
 	private LadellingitemController labelingctrl;
+
+
+	 private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
+		
 	
 	@Autowired
 	private FooterDetailsController footerctrl;
@@ -1126,6 +1137,7 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
             		   }
             	   }catch(Exception e) {
             		   e.printStackTrace();
+            		   logger.error("", e);
             		   return null;
             	   }
             	   
@@ -1140,6 +1152,7 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
             		   }
             	   }catch(Exception e) {
             		   e.printStackTrace();
+            		   logger.error("", e);
             		   return null;
             	   }
                }
@@ -1153,6 +1166,7 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
             		   }
             	   }catch(Exception e) {
             		   e.printStackTrace();
+            		   logger.error("", e);
             		   return null;
             	   }
                }
@@ -1166,6 +1180,7 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
             		   }
             	   }catch(Exception e) {
             		   e.printStackTrace();
+            		   logger.error("", e);
             		   return null;
             	   }
                }
@@ -1222,7 +1237,38 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
         		   return null;
         	   }
                }
+              
+         	  @GetMapping("/log/time/{id}")
+               public ResponseEntity<?> errorSendindToMail(@PathVariable int id){
+            	   return logmanagement.logdetails(id);
+               }
+             
                
+               @GetMapping("/triggerError")
+   		    public ResponseEntity<String> triggerError() {
+   		        try {
+   		            // Intentionally cause an exception
+   		            causeException();
+   		            System.out.println("trigger errors");
+   		            return ResponseEntity.ok("No error occurred on try");
+   		        } catch (Exception e) {
+//   		            // Log the exception
+//   		            logger.error("", e);
+   		        	e.printStackTrace();
+   		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(""+e);
+//   		        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ER)
+   		        }
+   		    }
+               @RequestMapping("favicon.ico")
+               public void favicon() {
+                   // Respond with nothing or redirect to another resource.
+               }
+
+   		    // Method that intentionally throws an exception
+   		    private void causeException() throws Exception {
+   		        throw new Exception("This is a simulated exception for testing purposes.");
+   		    }
+   		    
                
                @GetMapping("/Get/labellings")
                public ResponseEntity<?>getLabelingitems(@RequestHeader("Authorization") String token ){
@@ -1244,54 +1290,6 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
             	   try {
             		   if(environment.equals("VPS")) {
             			   return labelingctrl.getLabelingitemsforall();
-            		   }
-            	   else {
-        			   return null;
-        		   }
-        	   }catch(Exception e) {
-        		   e.printStackTrace();
-        		   return null;
-        	   }
-               }
-               
-//==============================Footer=======================================
-               
-               @PostMapping("/save/FooterDetails")
-               public ResponseEntity<?>SaveFooterDetails(@RequestHeader("Authorization") String token,@RequestBody FooterDetails footerdetails){
-            	   try {
-            		   if(environment.equals("VPS")) {
-            			   return footerctrl.SaveFooterDetails(token, footerdetails);
-            		   }
-            	   else {
-        			   return null;
-        		   }
-        	   }catch(Exception e) {
-        		   e.printStackTrace();
-        		   return null;
-        	   }
-               }
-               
-               
-               @GetMapping("/Get/FooterDetails")
-               public ResponseEntity<?>Getfooterdetails(@RequestHeader("Authorization") String token ){
-            	   try {
-            		   if(environment.equals("VPS")) {
-            			   return footerctrl.Getfooterdetails(token);
-            		   }
-            	   else {
-        			   return null;
-        		   }
-        	   }catch(Exception e) {
-        		   e.printStackTrace();
-        		   return null;
-        	   }
-               }
-               
-               @GetMapping("/all/get/FooterDetails")
-               public ResponseEntity<?>getFooteritemsForAll( ){
-            	   try {
-            		   if(environment.equals("VPS")) {
-            			   return footerctrl.getFooteritemsForAll();
             		   }
             	   else {
         			   return null;

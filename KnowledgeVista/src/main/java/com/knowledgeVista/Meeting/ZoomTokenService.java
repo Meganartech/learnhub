@@ -1,10 +1,13 @@
 package com.knowledgeVista.Meeting;
 
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.knowledgeVista.zoomJar.ZoomMethods;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.knowledgeVista.zoomJar.ZoomMethods;
 @Service
 public class ZoomTokenService {
 	@Autowired
@@ -12,6 +15,8 @@ public class ZoomTokenService {
 		 @Autowired
 		 private ZoomMethods zoomMethod;
 		 
+	   	 private static final Logger logger = LoggerFactory.getLogger(ZoomTokenService.class);
+
 	    public ZoomAccountKeys getZoomAccounts(String institution) {
         	Optional<ZoomAccountKeys> opAccountdetails= zoomacrepo.findbyInstitutionName(institution);
         	if(opAccountdetails.isPresent()) {
@@ -39,7 +44,7 @@ public class ZoomTokenService {
     	     String ACCOUNT_ID = zoomkeys.getAccount_id();
     	     return zoomMethod.getAccessToken(CLIENT_ID,CLIENT_SECRET,ACCOUNT_ID);
 	    }catch(Exception e) {
-	    e.printStackTrace();
+	    e.printStackTrace();    logger.error("", e);;
 	    return null;
 	    }
 	    }

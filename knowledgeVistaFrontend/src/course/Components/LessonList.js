@@ -31,12 +31,13 @@ const LessonList = () => {
               window.location.href="/missing";
             }
             else{
-              MySwal.fire({
-                title: "Error!",
-                text: error.response.data ? error.response.data : "error occured",
-                icon: "error",
-                confirmButtonText: "OK",
-              });
+              // MySwal.fire({
+              //   title: "Error!",
+              //   text: error.response.data ? error.response.data : "error occured",
+              //   icon: "error",
+              //   confirmButtonText: "OK",
+              // });
+              throw error
             }          }
         };
     
@@ -88,12 +89,13 @@ const LessonList = () => {
                       confirmButtonText: "OK",
                   });
                   }else{
-                    MySwal.fire({
-                        title: "Error",
-                        text: "An error occurred while deleting the lesson.",
-                        icon: "error",
-                        confirmButtonText: "OK",
-                    });
+                    // MySwal.fire({
+                    //     title: "Error",
+                    //     text: "An error occurred while deleting the lesson.",
+                    //     icon: "error",
+                    //     confirmButtonText: "OK",
+                    // });
+                    throw error
                 }
               }
             }

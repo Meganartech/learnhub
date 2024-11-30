@@ -21,6 +21,7 @@ const MyCertificateList = () => {
                 }
             } catch (error) {
                 console.error("Error fetching certificates:", error);
+                throw error
             }
         };
         fetchCertificates();

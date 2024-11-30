@@ -45,6 +45,9 @@ const[errors,seterrors]=useState({
           const data = response.data;
           setdefaultZoomset(data);
           setoldzoomset(data);
+       }else if(response.status === 204){
+        setisnotFound(true);
+        setinitialsave(true);
       } 
       } catch (error) {
         if (error.response) {
@@ -53,6 +56,8 @@ const[errors,seterrors]=useState({
             setinitialsave(true);
           } else if (error.response.status === 401) {
             window.location.href = "/unauthorized";
+          }else{
+            throw error
           }
         }
       }
@@ -123,11 +128,12 @@ try{
       } 
 }catch(error){
   console.log(error)
-  MySwal.fire({
-    icon: 'error',
-    title: 'Some Error Occurred',
-    text: "error occured"
-  });
+  // MySwal.fire({
+  //   icon: 'error',
+  //   title: 'Some Error Occurred',
+  //   text: "error occured"
+  // });
+  throw error
 }
    
   }else{ 
@@ -157,11 +163,12 @@ try{
    if(error.response.status===401){
     window.location.href="/unauthorized"
    } else{
-    MySwal.fire({
-      icon: 'error',
-      title: 'Some Error Occurred',
-      text: error.data
-    });
+    // MySwal.fire({
+    //   icon: 'error',
+    //   title: 'Some Error Occurred',
+    //   text: error.data
+    // });
+    throw error
    } 
   });
     

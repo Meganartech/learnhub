@@ -379,12 +379,7 @@ const AddStudent = () => {
             confirmButtonText: "OK",
           });
         } else {
-          MySwal.fire({
-            title: "Error!",
-            text: errorData.data,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
+          throw error
         }
       }
     }

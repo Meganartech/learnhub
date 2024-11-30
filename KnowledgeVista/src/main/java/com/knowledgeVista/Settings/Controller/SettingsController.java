@@ -2,16 +2,15 @@ package com.knowledgeVista.Settings.Controller;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Settings.ViewSettings;
 import com.knowledgeVista.Settings.Repo.ViewSettingsRepo;
-import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
@@ -19,6 +18,9 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 public class SettingsController {
 	@Autowired
 	private ViewSettingsRepo settingsrepo;
+	
+	 private static final Logger logger = LoggerFactory.getLogger(SettingsController.class);
+
 	
 	 @Autowired
 	 private JwtUtil jwtUtil;
@@ -33,7 +35,7 @@ public class SettingsController {
 				return false;
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();    logger.error("", e);;
 			return true;
 		}
 	    }
@@ -69,7 +71,7 @@ public class SettingsController {
 	        	 return false;
 	         }
 		 }catch(Exception e) {
-			 e.printStackTrace();
+			 e.printStackTrace();    logger.error("", e);;
 			 return false;
 		 }
 	    }
@@ -80,7 +82,7 @@ public class SettingsController {
 			 Optional<ViewSettings> setting = settingsrepo.findBySettingName("SocialLogin");
 		        return setting.map(s -> s.getSettingValue()).orElse(true);
 			}catch(Exception e) {
-				e.printStackTrace();
+				e.printStackTrace();    logger.error("", e);;
 				return true;
 			}
 		    }
@@ -115,7 +117,7 @@ public class SettingsController {
 	        	 return false;
 	         }
 		 }catch(Exception e) {
-			 e.printStackTrace();
+			 e.printStackTrace();    logger.error("", e);;
 			 return false;
 		 }
 	    }
