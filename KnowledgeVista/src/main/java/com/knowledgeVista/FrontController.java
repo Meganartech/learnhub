@@ -55,6 +55,8 @@ import com.knowledgeVista.User.Controller.Edituser;
 import com.knowledgeVista.User.Controller.GoogleAuthController;
 import com.knowledgeVista.User.Controller.Listview;
 import com.knowledgeVista.User.Controller.MserRegistrationController;
+import com.knowledgeVista.User.LabellingItems.FooterDetails;
+import com.knowledgeVista.User.LabellingItems.controller.FooterDetailsController;
 import com.knowledgeVista.User.LabellingItems.controller.LadellingitemController;
 import com.knowledgeVista.User.Usersettings.RoleDisplayController;
 import com.knowledgeVista.User.Usersettings.Role_display_name;
@@ -146,6 +148,9 @@ public class FrontController {
 	
 	@Autowired
 	private LadellingitemController labelingctrl;
+	
+	@Autowired
+	private FooterDetailsController footerctrl;
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
 	public String getActiEnvironment() {
@@ -1248,5 +1253,54 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
         		   return null;
         	   }
                }
+               
+//==============================Footer=======================================
+               
+               @PostMapping("/save/FooterDetails")
+               public ResponseEntity<?>SaveFooterDetails(@RequestHeader("Authorization") String token,@RequestBody FooterDetails footerdetails){
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return footerctrl.SaveFooterDetails(token, footerdetails);
+            		   }
+            	   else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
+               }
+               
+               
+               @GetMapping("/Get/FooterDetails")
+               public ResponseEntity<?>Getfooterdetails(@RequestHeader("Authorization") String token ){
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return footerctrl.Getfooterdetails(token);
+            		   }
+            	   else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
+               }
+               
+               @GetMapping("/all/get/FooterDetails")
+               public ResponseEntity<?>getFooteritemsForAll( ){
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return footerctrl.getFooteritemsForAll();
+            		   }
+            	   else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
+               }
+
 }
 

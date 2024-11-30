@@ -146,7 +146,7 @@ const SocialLoginKeys = () => {
           <div></div>
           <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
           </div>
-      <h4>  Google Login Settings</h4>
+      <h4>  Google Login Settings <img src={googleicon}/></h4>
         
           <div className='pt-4' >
            
@@ -205,7 +205,7 @@ const SocialLoginKeys = () => {
          <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
          </div>
         
-     <h4>  Google Login Settings</h4>
+     <h4>  Google Login Settings <img src={googleicon}/></h4>
        
          <div className=' pt-4' >
           

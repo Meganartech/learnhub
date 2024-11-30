@@ -199,7 +199,7 @@ const SocialLoginKeysAdmin = () => {
 
       const EditInputs=(  <div>
        
-        <h4> Google Login Settings</h4>
+        <h4> Google Login Settings <img src={googleicon}/></h4>
        
          <div className='form-group row' >
           

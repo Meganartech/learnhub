@@ -4,11 +4,13 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import errorimg from "../../images/errorimg.png";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const CourseView = ({ filteredCourses }) => {
   const MySwal = withReactContent(Swal);
   const userId = sessionStorage.getItem("userid");
   const [submitting, setsubmitting] = useState(false);
   const token = sessionStorage.getItem("token");
+  const navigate =useNavigate();
   useEffect(() => {
     const pendingPayment = JSON.parse(sessionStorage.getItem("pendingPayment"));
 
@@ -261,7 +263,8 @@ const CourseView = ({ filteredCourses }) => {
                     <div className="card-text">
                       {item.amount === 0 ? (
                         <a
-                          href={item.courseUrl}
+                          // href={item.courseUrl}
+                          onClick={(e)=>{ e.preventDefault();navigate(item.courseUrl)}}
                           style={{ maxHeight: "50px", padding: "5px" }}
                           className="btn btn-outline-success w-100"
                         >
