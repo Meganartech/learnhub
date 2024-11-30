@@ -1299,6 +1299,52 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
         		   return null;
         	   }
                }
-
+//==============================Footer=======================================
+               
+               @PostMapping("/save/FooterDetails")
+               public ResponseEntity<?>SaveFooterDetails(@RequestHeader("Authorization") String token,@RequestBody FooterDetails footerdetails){
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return footerctrl.SaveFooterDetails(token, footerdetails);
+            		   }
+            	   else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
+               }
+               
+               
+               @GetMapping("/Get/FooterDetails")
+               public ResponseEntity<?>Getfooterdetails(@RequestHeader("Authorization") String token ){
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return footerctrl.Getfooterdetails(token);
+            		   }
+            	   else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
+               }
+               
+               @GetMapping("/all/get/FooterDetails")
+               public ResponseEntity<?>getFooteritemsForAll( ){
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return footerctrl.getFooteritemsForAll();
+            		   }
+            	   else {
+        			   return null;
+        		   }
+        	   }catch(Exception e) {
+        		   e.printStackTrace();
+        		   return null;
+        	   }
+               }
 }
 
