@@ -259,6 +259,7 @@ public class CourseController {
 	        courseDetail.setCourseCategory(category);
 	        courseDetail.setAmount(amount);
 	        courseDetail.setDuration(Duration);
+	        courseDetail.setPaytype("FULL");
 	        courseDetail.setInstitutionName(institution);
 	        courseDetail.setNoofseats(Noofseats);
 	        try {

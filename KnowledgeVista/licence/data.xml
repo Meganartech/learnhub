@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><root1>
 	<data>
 		<company_name> Meganar Technologies</company_name>
-		<storagesize>100</storagesize>
+		<storagesize>1</storagesize>
 		<product_name>LearnHub</product_name>
-		<version>4.0</version><key>eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNzExMjAyNDEwMEZSRUUzMCJ9.StHlz8OnpUcwvhTHXON-zG_g8psejyjwdcKR_7j7OfE</key>
+		<version>2.0</version><key>eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNjEwMjAyNDEwRlJFRTM2NSJ9.NPX3lVzQtkgZy2yJE4EwO7XJ9h-MKIPUKq7J7ELpTvw</key>
 		<type>FREE</type>
-		<course>100</course>
-		<trainer>100</trainer>
+		<course>10</course>
+		<trainer>10</trainer>
 		<student>100</student>
-		<validity>30</validity>
+		<validity>365</validity>
 	</data>
 </root1>

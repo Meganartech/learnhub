@@ -50,8 +50,11 @@ public class NotificationService {
         if (file.isPresent()) { // Check if file is present (for approach 2)
             try {
                // notiDetails.setNotimage(ImageUtils.compressImage(file.get().getBytes()));
+            	
                 byte[] img= file.get().getBytes();
+                if(img!=null) {
                 notiDetails.setNotimage(ImageResizer.resizeImage(img, 100, 100));
+                }
             } catch (IOException e) {
             	System.out.println("null image first");
             	notiDetails.setNotimage(null);
@@ -83,7 +86,7 @@ public class NotificationService {
         if(file!=null) {
         try {
 			notiDetails.setNotimage(ImageResizer.resizeImage(file, 100, 100));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();    logger.error("", e);;
 			notiDetails.setNotimage(null);
 
