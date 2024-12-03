@@ -62,7 +62,7 @@ const Paymenttransactions = () => {
               if (error.response.status === 404) {
                 console.log("notfound")
               } else if (error.response.status === 401) {
-                window.location.href = "/unauthorized";
+                navigate("/unauthorized")
               }else{
                 throw error
               }

@@ -121,7 +121,7 @@ const navigate=useNavigate();
           confirmButtonText: "Go to Login",
       }).then((result) => {
           if (result.isConfirmed) {
-              window.location.href = "/login";
+            navigate("/login");
           }
         });
       }

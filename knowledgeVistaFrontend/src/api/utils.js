@@ -8,6 +8,9 @@
 // const baseUrl = 'http://localhost:8080/eLearning';
 // export default baseUrl;
 
+// const baseUrl = 'https://testtomcat.vsmartengine.com/elearning';
+// export default baseUrl;
+
 const baseUrl = 'http://localhost:8080';
 export default baseUrl;
 

@@ -20,7 +20,7 @@ const Unauthorized = () => {
       <h1 className="display-1 text-danger">401</h1>
       <h2 className="display-6">Oops! It seems you are not authorized to access this page.</h2>
       <p className="lead">Please contact the administrator for assistance..</p>
-      <p>Go back To <a href="/login">Login</a></p>
+      <p>Go back To <a onClick={(e)=>{e.preventDefault();navigate("/login")}} href="#">Login</a></p>
      </div>
      </div>
      </div>

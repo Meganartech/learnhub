@@ -385,6 +385,7 @@ public class Testcontroller {
 	                }
 
 	                // If CourseTest exists, delete it along with its associated questions
+                   muserActivityRepo.deleteByCourseTest(courseTest);
 	                questionRepository.deleteByTest(courseTest);
 	                testRepository.delete(courseTest);
 	                return ResponseEntity.ok().body("CourseTest with ID " + testId + " and its associated questions deleted successfully");

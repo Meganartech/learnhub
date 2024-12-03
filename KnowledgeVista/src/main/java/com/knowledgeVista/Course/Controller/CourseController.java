@@ -258,6 +258,7 @@ public class CourseController {
 	        courseDetail.setCourseDescription(description);
 	        courseDetail.setCourseCategory(category);
 	        courseDetail.setAmount(amount);
+	        courseDetail.setPaytype("FULL");
 	        courseDetail.setDuration(Duration);
 	        courseDetail.setInstitutionName(institution);
 	        courseDetail.setNoofseats(Noofseats);
@@ -617,6 +618,7 @@ public class CourseController {
 
 	   //---------------------WORKING--------------
 	 
+	   
 	   public ResponseEntity<String> deleteCourse( Long courseId ,String token) {
 	       try {
 	           // Find the course by ID
@@ -673,13 +675,17 @@ public class CourseController {
 	                   user.getAllotedCourses().remove(course);
 	               }
 	               
-	               // Delete the course
+	               partpayrepo.findBycourse(course).ifPresent(struct -> {
+	            	    struct.getInstallmentDetail().clear(); // Clears child entities
+	            	    partpayrepo.delete(struct);           // Deletes the parent
+	            	});
+
 	               coursedetailrepository.delete(course);
 
 	               return ResponseEntity.ok("Course deleted successfully");
 	           } else {
 	               // If the course with the specified ID does not exist
-	               return ResponseEntity.notFound().build();
+	               return ResponseEntity.ok("course Not Found");
 	           }
 	       }else {
 
@@ -691,6 +697,9 @@ public class CourseController {
 	    	   e.printStackTrace();    logger.error("", e);;
 	           return ResponseEntity.status(HttpStatus.FORBIDDEN)
 	                   .body("The course cannot be deleted. Delete all associated lessons, test.");
+	       }catch(Exception e) {
+	    	   logger.error("", e);;
+	    	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	       }
 	   }
 

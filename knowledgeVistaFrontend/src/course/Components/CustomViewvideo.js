@@ -64,9 +64,9 @@ const CustomViewvideo = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          window.location.href = "/unauthorized";
+          navigate("/unauthorized")
         } else if (error.response && error.response.status === 404) {
-          window.location.href = "/missing";
+          navigate("/missing")
         } else {
           // MySwal.fire({
           //   icon: "error",

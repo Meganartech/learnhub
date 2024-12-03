@@ -37,6 +37,7 @@ const[sign,setsign]=useState();
                     setsign(`data:image/jpeg;base64,${certificateJson.authorizedSign}`);
                     setdefaultcerti(certificateJson);
                     setisnotFound(false); // Reset isNotFound to false
+
                 
                 const userdata = await axios.get(`${baseUrl}/certificate/getByActivityId/${activityId}`, {
                     headers: {
@@ -47,12 +48,14 @@ const[sign,setsign]=useState();
                     const userjson =  userdata.data;
                     setuserdata(userjson);
                 }}
+                else if(certificatedata.status===204){
+                    setisnotFound(true);
+                }
+                
                 
             } catch (error) {
-                if(error.response && error.response.status===404){
-                    setisnotFound(true);
-                }else if(error.response && error.response.status===401){
-                    window.location.href="/unauthorized"
+                 if(error.response && error.response.status===401){
+                    navigate("/unauthorized")
                 }else{
                     throw error
                 }
@@ -100,7 +103,10 @@ const[sign,setsign]=useState();
       </div>
             {isnotFound ?(
              <div className='notfound'>
-             <h2>Some Error occured please try again later</h2>
+           <h5 className='mb-4'>
+  Some Error occurred. Please try again later! If the issue persists, contact your administrator.
+</h5>
+
              <a href="#" onClick={() => window.history.back()} className='btn btn-primary'>Go Back</a>
              
            </div>

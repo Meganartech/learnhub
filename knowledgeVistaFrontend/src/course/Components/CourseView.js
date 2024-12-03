@@ -150,7 +150,7 @@ const CourseView = ({ filteredCourses }) => {
         setsubmitting(false);
         // Success response
         const message = response.data;
-        window.location.href = message;
+        navigate(message)
       } else {
         setsubmitting(false);
         const errorMessage = response.data;
@@ -174,7 +174,7 @@ const CourseView = ({ filteredCourses }) => {
   const handleClick = async (event, id, amount, url) => {
     event.preventDefault();
     if (amount === 0) {
-      window.location.href = url;
+      navigate(url)
     } else {
       try {
         const formdata = JSON.stringify({ courseId: id });
@@ -191,7 +191,7 @@ const CourseView = ({ filteredCourses }) => {
 
         if (response.status === 200) {
           const message = response.data;
-          window.location.href = message;
+          navigate(message);
         }
       } catch (error) {
         if (error.response.status === 401) {
@@ -215,7 +215,7 @@ const CourseView = ({ filteredCourses }) => {
   return (
     <>
       {submitting && (
-        <div className="  outerspinner active">
+        <div className="outerspinner active">
           <div className="spinner"></div>
         </div>
       )}

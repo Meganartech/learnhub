@@ -3,13 +3,16 @@ import logo from "../images/LearnHubLogo.png"
 import Notification from './Notification'
 import baseUrl from '../api/utils'
 import axios from 'axios'
-import { useLocation } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import errorimg from "../images/errorimg.png"
 import undraw_profile from "../images/profile-white.png";
 import { GlobalStateContext } from "../Context/GlobalStateProvider";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+
 const Header = ({searchQuery,handleSearchChange}) => {
+ 
+  const navigate=useNavigate();
   const { siteSettings } = useContext(GlobalStateContext);
     const islogedin=sessionStorage.getItem("token")!==null;
   const location = useLocation();
@@ -125,7 +128,7 @@ const Header = ({searchQuery,handleSearchChange}) => {
           if (response.status===200) {
             sessionStorage.clear(); 
             localStorage.clear();
-            window.location.href = "/login";
+            navigate("/login")
             return;
           }
          
@@ -150,7 +153,7 @@ const Header = ({searchQuery,handleSearchChange}) => {
     <div className="m-header">
     {islogedin && <a className="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>}
         <a href={siteSettings.siteUrl? siteSettings.siteUrl:"#"} className="b-brand">
-            <img   src={siteSettings.sitelogo?`data:image/jpeg;base64,${siteSettings.sitelogo}` : logo} alt="logo" className="logo"/>
+            <img  src={siteSettings.sitelogo?`data:image/jpeg;base64,${siteSettings.sitelogo}` : logo} alt="logo" className="logo"/>
         </a>
 
     </div>
@@ -222,7 +225,7 @@ const Header = ({searchQuery,handleSearchChange}) => {
             <button
               className="btn btn-sm btn-success mr-2"
               onClick={() => {
-                window.location.href = "/login";
+                navigate("/login")
               }}
             >
               Sign In{" "}
@@ -230,7 +233,7 @@ const Header = ({searchQuery,handleSearchChange}) => {
             <button
               className="btn btn-sm btn-secondary"
               onClick={() => {
-                window.location.href = "/StudentRegistration";
+                navigate("/StudentRegistration")
               }}
             >
               Sign up

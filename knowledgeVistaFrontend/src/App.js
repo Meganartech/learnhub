@@ -85,7 +85,6 @@ import $ from "jquery";
 import pcoded from "./assets/js/pcoded.js";
 function App() {
   useEffect(() => {
-    console.log("in useeffect pcoded");
     pcoded();
   }, []);
   const isAuthenticated = sessionStorage.getItem("token") !== null;
@@ -110,13 +109,11 @@ function App() {
     setSearchQuery(e.target.value);
   };
   const handleFilterChange = (name) => {
-    console.log(`Before update:`, filter); // Debug log to see filter state before update
     setFilter((prev) => {
       const updatedFilter = {
         ...prev,
         [name]: !prev[name], // Toggle the selected filter state
       };
-      console.log(`After update:`, updatedFilter); // Debug log to see filter state after update
       return updatedFilter;
     });
   };
@@ -158,6 +155,7 @@ function App() {
             });
             const data = response.data;
             setCourse(data);
+            console.log("course",data)
           }
         }
       } catch (error) {

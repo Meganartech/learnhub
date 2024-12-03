@@ -107,7 +107,6 @@ const SlideViewer = () => {
   useEffect(() => {
     const fetchMinis = async () => {
       try {
-        console.log("lesid=");
         const miniResponse = await axios.get(
           `${baseUrl}/getmini/${lessonId}/${docid}`,
           {

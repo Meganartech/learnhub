@@ -94,7 +94,7 @@ public class AssignCourse {
 	                        Long filled = course.getUserCount();
 	                        if (seats > filled) {
 	                            coursesToAdd.add(course);
-	                            
+	                            try {
 	                            String heading="New Course Assigned !";
 	             		       String link=course.getCourseUrl();
 	             		       String notidescription= "A Course "+course.getCourseName() + " was assigned to you " ;
@@ -120,7 +120,9 @@ public class AssignCourse {
 	             		          admin.add("ADMIN");
 	             		        	notiservice.CommoncreateNotificationUser(NotifyIdA,admin,institution );
 	             		        }
-	             		        
+	                            }catch(Exception e) {
+	                            	logger.error("error in notification",e);
+	                            }
 	                        } else { 
 	                        	fullseatcoursename.add(course.getCourseName());
 	                        	}

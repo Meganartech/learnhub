@@ -266,6 +266,8 @@ const Login = () => {
 <div className="card card-login" >
       <div className=" card-header  text-center">
       <img 
+      width={200} 
+      height={200}
   src={siteSettings.siteicon 
     ? `data:image/jpeg;base64,${siteSettings.siteicon}` 
     : logo} 

@@ -11,9 +11,9 @@ const Sidebar = ({filter,handleFilterChange}) => {
   const[ActiveLink,setActiveLink]=useState()
   const userRole = sessionStorage.getItem("role");
   const token = sessionStorage.getItem("token");
-  const Environment=sessionStorage.getItem("Activeprofile");
   const navigate=useNavigate();
   const { displayname ,Activeprofile} = useContext(GlobalStateContext);
+  
  
   useEffect(() => {
     const fetchData = async () => {
@@ -152,10 +152,9 @@ const handleClick=(e,link)=>{
         <label className="checkbox-label">
           <input
             type="checkbox"
-            checked={filter.paid}
+            checked={filter?.paid}
             name="paid"
             onChange={() => {
-              console.log("Paid checkbox toggled"); // Debug log
               handleFilterChange('paid'); // Trigger filter change for 'paid'
             }}
             className="mr-1"
@@ -168,10 +167,9 @@ const handleClick=(e,link)=>{
         <label className="checkbox-label ">
           <input
             type="checkbox"
-            checked={filter.unpaid}
+            checked={filter?.unpaid}
             name="unpaid"
             onChange={() => {
-              console.log("Unpaid checkbox toggled"); // Debug log
               handleFilterChange('unpaid'); // Trigger filter change for 'unpaid'
             }}
             className="mr-1"
@@ -210,10 +208,9 @@ const handleClick=(e,link)=>{
         <label className="checkbox-label">
           <input
             type="checkbox"
-            checked={filter.paid}
+            checked={filter?.paid}
             name="paid"
             onChange={() => {
-              console.log("Paid checkbox toggled"); // Debug log
               handleFilterChange('paid'); // Trigger filter change for 'paid'
             }}
             className="mr-1"
@@ -226,10 +223,9 @@ const handleClick=(e,link)=>{
         <label className="checkbox-label">
           <input
             type="checkbox"
-            checked={filter.unpaid}
+            checked={filter?.unpaid}
             name="unpaid"
             onChange={() => {
-              console.log("Unpaid checkbox toggled"); // Debug log
               handleFilterChange('unpaid'); // Trigger filter change for 'unpaid'
             }}
             className="mr-1"
@@ -298,7 +294,7 @@ const handleClick=(e,link)=>{
                    <i className="fa-solid fa-video pr-2"></i> Zoom
                   </a>
                 </li>
-                {/* {Environment==="VPS" ||Activeprofile==="VPS" && */}
+                {Activeprofile==="VPS" &&
                  <li>
                  <a
                    href="#"
@@ -308,7 +304,7 @@ const handleClick=(e,link)=>{
                   <i className="fa-solid fa-shoe-prints pr-2"></i> Footer
                  </a>
                </li>
-{/* }    */}
+}   
                 
                 <li>
                   <a
@@ -621,7 +617,6 @@ const handleClick=(e,link)=>{
             checked={filter.paid}
             name="paid"
             onChange={() => {
-              console.log("Paid checkbox toggled"); // Debug log
               handleFilterChange('paid'); // Trigger filter change for 'paid'
             }}
             className="mr-1"
@@ -637,7 +632,6 @@ const handleClick=(e,link)=>{
             checked={filter.unpaid}
             name="unpaid"
             onChange={() => {
-              console.log("Unpaid checkbox toggled"); // Debug log
               handleFilterChange('unpaid'); // Trigger filter change for 'unpaid'
             }}
             className="mr-1"
@@ -762,7 +756,6 @@ const handleClick=(e,link)=>{
             checked={filter.paid}
             name="paid"
             onChange={() => {
-              console.log("Paid checkbox toggled"); // Debug log
               handleFilterChange('paid'); // Trigger filter change for 'paid'
             }}
             className="mr-1"
@@ -778,7 +771,6 @@ const handleClick=(e,link)=>{
             checked={filter.unpaid}
             name="unpaid"
             onChange={() => {
-              console.log("Unpaid checkbox toggled"); // Debug log
               handleFilterChange('unpaid'); // Trigger filter change for 'unpaid'
             }}
             className="mr-1"

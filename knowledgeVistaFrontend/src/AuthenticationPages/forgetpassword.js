@@ -81,7 +81,7 @@ const ForgetPassword = () => {
         }).then((result) => {
           if (result.isConfirmed) {
             // Redirect to login page
-            window.location.href = "/login";
+            navigate("/login");
           }
         });
       } else if (response.status === 404) {
@@ -97,7 +97,7 @@ const ForgetPassword = () => {
         throw error.then((result) => {
         if (result.isConfirmed) {
           // Redirect to login page
-          window.location.href = "/login";
+          navigate("/login");
         }
       });
     }
@@ -127,7 +127,7 @@ const ForgetPassword = () => {
         throw error.then((result) => {
         if (result.isConfirmed) {
           // Redirect to login page
-          window.location.href = "/login";
+          navigate("/login");
         }
       });
     }

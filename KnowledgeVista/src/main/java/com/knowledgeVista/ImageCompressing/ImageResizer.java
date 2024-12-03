@@ -8,13 +8,22 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.knowledgeVista.Notification.Service.NotificationService;
+
 public class ImageResizer {
-	 public static byte[] resizeImage(byte[] imageBytes, int width, int height) throws IOException {
+	 private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
+	 public static byte[] resizeImage(byte[] imageBytes, int width, int height) {
+		 try {
 	        // Convert byte array to BufferedImage
 	        ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
 	        BufferedImage originalImage = ImageIO.read(bais);
-
+              if(originalImage== null) {
+            	  return null;
+              }
 	        // Create a resized image with specified dimensions
 	        Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
@@ -32,11 +41,19 @@ public class ImageResizer {
 	        baos.close();
 
 	        return resizedImageBytes;
+		 }catch(IOException e) {
+			 logger.error("", e);;
+			 return null;
+		 }
+
 	    }
-	 public static byte[] resizeImage(MultipartFile file, int width, int height) throws IOException {
+	 public static byte[] resizeImage(MultipartFile file, int width, int height) {
 	        // Convert MultipartFile to BufferedImage
+		 try {
 	        BufferedImage originalImage = ImageIO.read(file.getInputStream());
-
+	        if(originalImage== null) {
+          	  return null;
+            }
 	        // Create a resized image with specified dimensions
 	        Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
@@ -54,6 +71,10 @@ public class ImageResizer {
 	        baos.close();
 
 	        return resizedImageBytes;
+		 }catch(IOException e) {
+			 logger.error("", e);;
+			 return null;
+		 }
 	    }
 
 }

@@ -235,7 +235,7 @@ const fetchstorage=async()=>{
           <div className="marquee-content">
             <a onClick={()=>{ navigate("/licenceDetails")}} href="#" style={{ color: "darkred" }}>
               License has been expired Need to uploard new License or contact
-              "111111111111"
+              "+91 9566191759"
             </a>
           </div>
         </div>

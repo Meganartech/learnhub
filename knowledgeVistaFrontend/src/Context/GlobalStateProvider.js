@@ -39,8 +39,7 @@ export const GlobalStateProvider = ({ children }) => {
         if (cachedSettings) {
           const parsedSettings = JSON.parse(cachedSettings);
           setsiteSettings(parsedSettings);
-          updateSiteMeta(parsedSettings); // Update favicon and title
-          console.log("Loaded from sessionStorage:", parsedSettings);
+          updateSiteMeta(parsedSettings); 
         } else {
           let response;
           if (token) {
@@ -55,8 +54,7 @@ export const GlobalStateProvider = ({ children }) => {
 
           setsiteSettings(response.data);
           sessionStorage.setItem("siteSettings", JSON.stringify(response.data)); // Cache data
-          updateSiteMeta(response.data); // Update favicon and title
-          console.log("Fetched from API:", response.data);
+          updateSiteMeta(response.data);
         }
       } catch (error) {
         console.error("Error fetching site settings:", error);

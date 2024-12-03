@@ -34,6 +34,10 @@ const Footer = () => {
   }
    }catch(error){
      console.log(error)
+     setFooterDetails({copyright: "",
+      contact: "",
+      supportmail: "",
+      institutionmail: "",}); 
    }
   
     }

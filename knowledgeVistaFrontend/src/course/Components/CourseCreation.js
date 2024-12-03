@@ -57,8 +57,13 @@ const CourseCreation = () => {
 
     switch (name) {
       case "courseName":
-        error = value.length < 1 ? "Please enter a Course Title" : "";
+        error = value.length < 1 
+            ? "Please enter a Course Title" 
+            : value.length > 50 
+            ? "Course Title should not exceed 50 characters" 
+            : "";
         break;
+    
       case "courseCategory":
         error = value.length < 1 ? "Please enter a Course Category" : "";
         break;
@@ -240,7 +245,7 @@ const CourseCreation = () => {
     try {
       // Create a FormData object to send the form data
       const formDataToSend = new FormData();
-      formDataToSend.append("courseName", formData.courseName);
+      formDataToSend.append("courseName", formData.courseName.trim());
       formDataToSend.append("courseDescription", formData.courseDescription);
       formDataToSend.append("courseCategory", formData.courseCategory);
       formDataToSend.append("courseAmount", formData.courseAmount);
@@ -270,7 +275,7 @@ const CourseCreation = () => {
       if (response.status === 200) {
         const reply = response.data;
         const { message, courseId, coursename } = reply;
-        window.location.href = `/course/Addlesson/${coursename}/${courseId}`;
+        navigate(`/course/Addlesson/${coursename}/${courseId}`)
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {

@@ -44,7 +44,7 @@ const Razorpay_Settings = () => {
             setisnotFound(true);
             setinitialsave(true);
           } else if (error.response.status === 401) {
-            window.location.href = "/unauthorized";
+            navigate("/unauthorized")
           }else{
             throw error
           }
@@ -99,7 +99,6 @@ const Razorpay_Settings = () => {
     e.preventDefault();
     setisnotFound(true);
 
-    console.log(isnotFound);
   };
 
   const save = (e) => {
@@ -136,8 +135,7 @@ const Razorpay_Settings = () => {
     })
     .catch(error => {
       if(error.response.status===401){
-
-        window.location.href="/unauthorized"
+        navigate("/unauthorized")
       }else{
         // MySwal.fire({
         //   icon: 'error',
@@ -172,7 +170,7 @@ const Razorpay_Settings = () => {
   })
   .catch(error => {
    if(error.response.status===401){
-    window.location.href="/unauthorized"
+    navigate("/unauthorized")
    } else{
     // MySwal.fire({
     //   icon: 'error',
