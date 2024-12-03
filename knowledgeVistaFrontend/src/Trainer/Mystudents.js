@@ -34,7 +34,6 @@ const Mystudents = () => {
  // Function to call the search API
  const searchUsers = async () => {
   try {
-    console.log(dob)
     const response = await axios.get(`${baseUrl}/Institution/search/Mystudent`, {
       headers:{
         'Authorization':token
@@ -71,7 +70,6 @@ const handleChange = (e) => {
       break;
       case 'dob':
         setDob(value);
-        console.log(dob);
         break;
     case 'email':
       setEmail(value);
@@ -123,7 +121,7 @@ const handleChange = (e) => {
              }));
           } catch (error) {
             if(error.response && error.response.status===401){
-              window.location.href="/unauthorized"
+              navigate("/unauthorized")
             }else{
               throw error
             }
@@ -151,7 +149,7 @@ const handleChange = (e) => {
              })); // Update total pages
         } catch (error) {
           if (error.response && error.response.status === 401) {
-            window.location.href = "/unauthorized";
+            navigate("/unauthorized")
           }else{
             throw error
           }
@@ -353,7 +351,7 @@ const handleChange = (e) => {
                     <option className='bg-light text-dark' value="Active">Active</option>
                     <option className='bg-light text-dark' value="Inactive">Inactive</option>
                   </select>
-        <a href="/addStudent" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add {displayname && displayname.student_name 
+        <a onClick={(e)=>{e.preventDefault();  navigate("/addStudent")}} href="#" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add {displayname && displayname.student_name 
           ? displayname.student_name 
           : "Student" 
         }</a>

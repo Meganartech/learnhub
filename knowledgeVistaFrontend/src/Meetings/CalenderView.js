@@ -20,55 +20,47 @@ const CalenderView = () => {
   const token = sessionStorage.getItem('token');
 
   
+
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
+       
         const response = await axios.get(`${baseUrl}/api/zoom/getMyMeetings`, {
           headers: {
-            Authorization: token,
+            'Authorization': token,
           },
         });
-  
-        if (response.data) {
-          const fetchedEvents = response.data
-            .map((meeting) => {
-              if (!meeting.startTime) {
-                return null; // Skip invalid meetings
-              }
-  
-              const utcStartTime = new Date(meeting.startTime);
-              if (isNaN(utcStartTime)) {
-                return null; // Skip invalid meetings
-              }
-  
-              // Convert UTC start time to local time
-              const localStartTime = new Date(utcStartTime.getTime());
-  
-              // Add duration to start time to get end time
-              const durationInMinutes = Number(meeting.duration) || 0;
-              const localEndTime = new Date(localStartTime.getTime() + durationInMinutes * 60000);
-  
-              return {
-                id: meeting.meetingId,
-                start: localStartTime.toISOString(),
-                end: localEndTime.toISOString(),
-                joinUrl: meeting.joinUrl,
-                title: meeting.topic || "",
-              };
-            })
-            .filter(Boolean); // Remove null values from invalid meetings
-  
-          setEvents(fetchedEvents);
-        }
+      
+         if(response.data){
+          const fetchedEvents = response.data.map((meeting) => {
+            const utcStartTime = new Date(meeting.startTime); // Ensure meeting.startTime is a valid UTC date string
+
+            // Convert UTC start time to local time
+            const localStartTime = new Date(utcStartTime.toLocaleString()); 
+          
+            // Add duration to start time to get end time
+            const durationInMinutes = meeting.duration || 0; // Default to 0 if duration is not provided
+            const localEndTime = new Date(localStartTime.getTime() + durationInMinutes * 60000); // 60000 ms = 1 min
+            const starttime= localStartTime.toISOString();
+            const endtime=localEndTime.toISOString()
+            return {
+              id: meeting.meetingId,
+              start: new Date(localStartTime), // Ensure this is a Date object or ISO string
+              end: new Date(localEndTime),
+              joinUrl: meeting.joinUrl,
+              title: meeting.topic||"",
+            };
+        });
+        setEvents(fetchedEvents);
+      }
       } catch (error) {
         console.error(error);
-        throw error
       }
     };
-  
+
     fetchItems();
   }, []);
-
   const [meetingId, setMeetingId] = useState('');
 
   // Handle input change

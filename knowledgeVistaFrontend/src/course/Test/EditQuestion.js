@@ -173,7 +173,7 @@ const EditQuestion = () => {
           icon: "error",
           confirmButtonText: "OK"
         });
-        window.location.href="/unauthorized";
+        navigate("/unauthorized")
       } else {
         // MySwal.fire({
         //   title: "Error",

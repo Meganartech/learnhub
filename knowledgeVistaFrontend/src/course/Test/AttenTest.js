@@ -111,7 +111,7 @@ const AttenTest = () => {
                 title: 'Congratulations!',
                 text: `${data.message}`,
             }).then(() => {
-                window.location.href="/MyCertificateList"; 
+                 navigate("/MyCertificateList"); 
             });
         }
           else{
@@ -248,7 +248,6 @@ const AttenTest = () => {
                <div className="card-body">
           <div className="row">
           <div className="col-12">
-                <div className='atdiv'>
                   <div className='atgrid'>
                     <h3>{questions[currentQuestionIndex].questionText}</h3>
                     <ul className='listgroup'>
@@ -293,7 +292,7 @@ const AttenTest = () => {
                 </div>
                 </div>
                 </div>
-           </div>
+        
 
             ) : proceedClicked && Object.keys(selectedAnswers).length === testdetails.noOfQuestions ? (
                 // Render submission section if questions are answered

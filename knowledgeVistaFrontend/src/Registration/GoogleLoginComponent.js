@@ -5,17 +5,15 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import googleicon from "../images/google-25x25.png";
+import { useNavigate } from "react-router-dom";
 
 const GoogleLoginComponent = ({clientId}) => {
   const MySwal = withReactContent(Swal);
 
-
+  const navigate=useNavigate();
   const handleLoginSuccess = async (response) => {
     // Access the id_token directly from the response
-    const idToken = response; // Ensure this is where you get the ID token
-    console.log(response)
-    console.log("ID Token:", response.code);
-    console.log("hi here in handleLoginSuccess");
+    const idToken = response; 
 
     // Send the token to your backend Spring Boot server for verification
     try {
@@ -37,9 +35,9 @@ const GoogleLoginComponent = ({clientId}) => {
 
       // Redirect based on role
       if (role === "SYSADMIN") {
-        window.location.href = "/viewAll/Admins";
+         navigate("/viewAll/Admins");
       } else {
-        window.location.href = "/dashboard/course";
+         navigate("/dashboard/course");
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -78,12 +76,9 @@ const GoogleLoginComponent = ({clientId}) => {
       access_type="offline"
       scope="email"
       onResolve={({ provider, data }) => {
-        console.log("provider=", provider);
-        console.log("data=", data); // Log the data
         handleLoginSuccess(data); // Call the success handler
       }}
       onReject={(err) => {
-        console.log("error=", err);
         MySwal.fire({
           title: "Login Failed",
           text: "An error occurred during login. Please try again later.",

@@ -204,7 +204,6 @@ const EditMeeting = () => {
         );
         if (response.data) {
           setzoomrequest(response.data);
-          console.log(response.data)
           const startTime = response.data.startingTime; // UTC start time
           const starttimefordate=response.data.startTime;
           const localdate=new Date(starttimefordate);
@@ -242,8 +241,6 @@ const EditMeeting = () => {
           });
           
           setSelectedEmails([...response.data.settings.meetingInvitees]);
-          
-          console.log("12-hour format:", time);
           getupdatedstartime(formattedDate,time,ampm)
           
           
@@ -259,7 +256,6 @@ const EditMeeting = () => {
 
   const handleAutoRecordingChange = (event) => {
     const val = event.target.checked ? "local" : "none";
-    console.log("autorec", zoomrequest.settings.autoRecording);
     setzoomrequest((prevZoomRequest) => ({
       ...prevZoomRequest,
       settings: {
@@ -311,9 +307,6 @@ const EditMeeting = () => {
     });
     setSearchQuery("");
     setUsers("");
-    // Optional: Log for debugging or analytics
-    console.log("Selected emails:", selectedEmails);
-    console.log("Updated zoom request:", zoomrequest);
   };
 
   const handleSearch = async (query) => {
@@ -397,12 +390,10 @@ const EditMeeting = () => {
       startTime: formattedStartTime,
     }));
   
-    console.log("Updated start time:", formattedStartTime);
   };
   
   const updateStartTime = (event) => {
     const { name, value } = event.target;
-    console.log("value=", value);
     // Update formData for controlled inputs
     setFormData((prevData) => {
       const newFormData = {
@@ -411,7 +402,6 @@ const EditMeeting = () => {
       };
   
       const { date, time, ampm } = newFormData;
-      console.log(date)
       const timezone = zoomrequest.timezone;
   
       if (!date || !time || !ampm || !timezone) return prevData;
@@ -436,7 +426,6 @@ const EditMeeting = () => {
         startTime: formattedStartTime,
       }));
   
-      console.log("Updated start time:", formattedStartTime);
   
       return newFormData;
     });
@@ -466,10 +455,6 @@ const EditMeeting = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log(zoomrequest)
-   
-  
 
     try {
 

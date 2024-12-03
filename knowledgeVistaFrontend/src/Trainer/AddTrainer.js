@@ -9,8 +9,10 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { GlobalStateContext } from "../Context/GlobalStateProvider";
+import { useNavigate } from "react-router-dom";
 
 const AddTrainer = () => {
+  const navigate=useNavigate();
   const token = sessionStorage.getItem("token");
   const MySwal = withReactContent(Swal);
   const [showPassword, setShowPassword] = useState(false);
@@ -355,7 +357,7 @@ const AddTrainer = () => {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/view/Trainer";
+              navigate("/view/Trainer");
           }
         });
       }

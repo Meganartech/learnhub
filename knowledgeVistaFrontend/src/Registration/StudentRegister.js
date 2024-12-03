@@ -287,7 +287,7 @@ setErrors((prevErrors) => ({
           cancelButtonText: "Cancel",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/login";
+            navigate("/login");
           } else {
             setFormData({
               username: "",
@@ -617,7 +617,7 @@ setErrors((prevErrors) => ({
               </button>
             </div>
             <div className="w-100 alignright">
-              <a className="small" href="/login">
+              <a className="small" onClick={(e)=>{e.preventDefault();   navigate("/login");}} href="#">
                 Already have an account? Login!
               </a>
             </div>

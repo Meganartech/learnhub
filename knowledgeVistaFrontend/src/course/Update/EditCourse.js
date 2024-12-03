@@ -1,11 +1,12 @@
 import React from "react";
 import errorimg from "../../images/errorimg.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import axios from "axios";
 const EditCourse = ({ filteredCourses }) => {
+  const navigate=useNavigate();
   const MySwal = withReactContent(Swal);
   const token = sessionStorage.getItem("token");
   const createCourse = async () => {
@@ -17,7 +18,7 @@ const EditCourse = ({ filteredCourses }) => {
       });
 
       if (response.status === 200) {
-        window.location.href = "/course/addcourse";
+         navigate("/course/addcourse");
       } else if (response.status === 429) {
         Swal.fire({
           title: "Course Limit is Reached",
@@ -31,7 +32,6 @@ const EditCourse = ({ filteredCourses }) => {
     } catch (error) {
       throw error
 
-      console.error("Error ", error);
     }
   };
   const handleDelete = (e, courseId) => {
@@ -68,17 +68,18 @@ const EditCourse = ({ filteredCourses }) => {
           })
           .catch((error) => {
             if (error.response && error.response.status === 401) {
-              window.location.href = "/unauthorized";
-            } else {
-              // MySwal.fire({
-              //   title: "Error!",
-              //   text: error.response.data
-              //     ? error.response.data
-              //     : "error occured",
-              //   icon: "error",
-              //   confirmButtonText: "OK",
-              // });
-              throw error
+              navigate("/unauthorized")
+            } else if(error.response && error.response.status === 403){
+              MySwal.fire({
+                title: "Error!",
+                text: error.response.data
+                  ? error.response.data
+                  : "error occured",
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            }else{
+            throw error
             }
           });
       }
@@ -98,7 +99,7 @@ const EditCourse = ({ filteredCourses }) => {
                   <img
                     style={{ cursor: "pointer" }}
                     onClick={(e) => {
-                      window.location.href = item.courseUrl;
+                      navigate(item.courseUrl);
                     }}
                     className="img-fluid card-img-top"
                     src={`data:image/jpeg;base64,${item.courseImage}`}
@@ -112,7 +113,7 @@ const EditCourse = ({ filteredCourses }) => {
                       <div
                         style={{ cursor: "pointer" }}
                         onClick={(e) => {
-                          window.location.href = item.courseUrl;
+                          navigate(item.courseUrl);
                         }}
                       >
                         {item.courseName.length > 15
@@ -159,7 +160,8 @@ const EditCourse = ({ filteredCourses }) => {
                     <div className="card-text">
                       {item.amount === 0 ? (
                         <a
-                          href={item.courseUrl}
+                        href="#"
+                        onClick={(e)=>{e.preventDefault();  navigate(item.courseUrl)}}
                           className=" btn btn-outline-success w-100"
                         >
                           {" "}

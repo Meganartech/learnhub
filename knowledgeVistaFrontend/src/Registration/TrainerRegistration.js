@@ -279,7 +279,7 @@ const TrainerRegistration = () => {
           confirmButtonText: "ok",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/";
+              navigate("/");
           } else {
             setFormData({
               username: "",
@@ -610,7 +610,7 @@ const TrainerRegistration = () => {
                 </button>
               </div>
               <div className="w-100 alignright">
-                <a className="small" href="/login">
+                <a className="small" href="#" onClick={(e)=>{e.preventDefault();   navigate("/login");}}>
                   Already have an account? Login!
                 </a>
               </div>

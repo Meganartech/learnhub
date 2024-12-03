@@ -143,7 +143,10 @@ const EditLesson = () => {
     let error = "";
     switch (name) {
       case "lessontitle":
-        error = value.length < 1 ? "Please enter a Video Title" : "";
+        error = value.length < 1 ? "Please enter a Video Title"
+           : value.length > 50 
+        ? "Course Title should not exceed 50 characters" 
+        : "";
         setvideodata({ ...videodata, [name]: value });
         break;
       case "lessonDescription":
@@ -272,7 +275,7 @@ const EditLesson = () => {
 
     const formDataToSend = new FormData();
     if (videodata.lessontitle) {
-      formDataToSend.append("Lessontitle", videodata.lessontitle);
+      formDataToSend.append("Lessontitle", videodata.lessontitle.trim());
     }
     if (videodata.lessonDescription) {
       formDataToSend.append("LessonDescription", videodata.lessonDescription);
@@ -281,7 +284,6 @@ const EditLesson = () => {
       videodata.removedDetails.forEach(doc => {
           formDataToSend.append("removedDetails", doc); // Append each ID
       });
-      console.log("existing IDs", videodata.removedDetails.map(doc => doc.id)); // Log the IDs for verification
   }
   
     if (videodata.newDocumentFiles && videodata.newDocumentFiles.length > 0) {
@@ -289,7 +291,6 @@ const EditLesson = () => {
         formDataToSend.append("newDocumentFiles", doc); // Ensure each document is appended properly
       });
     }
-    console.log("formdata", formDataToSend);
     if (videodata.thumbnail) {
       formDataToSend.append("thumbnail", videodata.thumbnail);
     }
@@ -303,9 +304,7 @@ const EditLesson = () => {
     if (videodata.fileUrl) {
       formDataToSend.append("fileUrl", videodata.fileUrl);
     }
-    for (const [key, value] of formDataToSend.entries()) {
-      console.log(`${key}: ${value}`);
-    }
+   
 
     try {
       const response = await axios.patch(
@@ -325,13 +324,13 @@ const EditLesson = () => {
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
-          window.location.href = `/lessonList/${courseName}/${courseId}`;
+           navigate(`/lessonList/${courseName}/${courseId}`);
         });
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         setIsSubmitting(false);
-        window.location.href = "/unauthorized";
+       navigate( "/unauthorized");
       } else if (error.response && error.response === 404) {
         setIsSubmitting(false);
         MySwal.fire({
@@ -601,7 +600,7 @@ const EditLesson = () => {
                                
                               >
                                 <div 
-                                className="doclink2"
+                                className="doclink"
                                 onClick={() => {
                                 navigate(`/viewDocument/${doc.documentPath}/${lessonId}/${doc.id}`);
                                 }}> {doc.documentName &&(
@@ -634,7 +633,7 @@ const EditLesson = () => {
                       videodata.newDocumentFiles.length > 0 && (
                         <ul>
                           {videodata.newDocumentFiles.map((doc, index) => (
-                            <li key={index} className="doclink2" >
+                            <li key={index} className="doclink" >
                               {doc.name &&(
                                 <>
                                   {doc.name}{" "}

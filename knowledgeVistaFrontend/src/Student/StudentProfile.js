@@ -72,14 +72,14 @@ const StudentProfile = () => {
                 if (error.response.status === 404) {
                   setnotfound(true);
                 } else if (error.response.status === 401) {
-                  window.location.href = '/unauthorized';
+                  navigate("/unauthorized")
                 }else{
                   throw error
                 }
               }
             }
           } else {
-            window.location.href = "/unauthorized";
+            navigate("/unauthorized")
           }
         };
       

@@ -8,8 +8,10 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { GlobalStateContext } from "../Context/GlobalStateProvider";
+import { useNavigate } from "react-router-dom";
 
 const AddStudent = () => {
+  const navigate=useNavigate();
   const token = sessionStorage.getItem("token");
   const MySwal = withReactContent(Swal);
   const [showPassword, setShowPassword] = useState(false);
@@ -320,7 +322,6 @@ const AddStudent = () => {
     formDataToSend.append("profile", formData.profile);
     formDataToSend.append("skills", formData.skills);
     formDataToSend.append("countryCode", formData.countryCode);
-    console.log("dob", formData.dob);
     try {
       const response = await axios.post(
         `${baseUrl}/admin/addStudent`,
@@ -346,7 +347,7 @@ const AddStudent = () => {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/view/Students";
+            navigate("/view/Students");
           }
         });
       }

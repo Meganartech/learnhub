@@ -58,7 +58,7 @@ const Mycourse = () => {
                     <img
                       style={{ cursor: "pointer" }}
                       onClick={(e) => {
-                        window.location.href = item.courseUrl;
+                        navigate(item.courseUrl)
                       }}
                       className="img-fluid card-img-top"
                       src={`data:image/jpeg;base64,${item.courseImage}`}
@@ -69,7 +69,8 @@ const Mycourse = () => {
                     />
                     <div className="card-body">
                       <h5>
-                        <a href={item.courseUrl} className="card-title">
+                        <a onClick={(e) => {e.preventDefault(); navigate(item.courseUrl)}}
+                        href="#" className="card-title">
                           {item.courseName.length > 15
                             ? item.courseName.slice(0, 15) + "..."
                             : item.courseName}

@@ -7,6 +7,7 @@ import errorimg from "../../images/errorimg.png";
 import Header from "../../Common Components/Header";
 import pcoded from "../../assets/js/pcoded.js"
 import Sidebar from "../../Common Components/Sidebar.js";
+import { useNavigate } from "react-router-dom";
 const ViewCourseVps = () => {
   useEffect(() => {
       pcoded();  
@@ -17,6 +18,7 @@ const ViewCourseVps = () => {
   const [submitting,setsubmitting]=useState(false);
   const[notfound,setnotfound]=useState(false);
   const islogedin=sessionStorage.getItem("token")!==null;
+  const navigate=useNavigate();
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -83,7 +85,7 @@ const ViewCourseVps = () => {
       // Save payment data to localStorage or sessionStorage
       sessionStorage.setItem("pendingPayment", JSON.stringify({ courseId,  paytype }));
      
-      window.location.href = "/login";
+      navigate("/login");
       return;
     }
     let url=""
@@ -195,7 +197,7 @@ const ViewCourseVps = () => {
           setsubmitting(false)
             // Success response
             const message =  response.data;
-             window.location.href=message;
+            navigate(message);
         
         } else {
           setsubmitting(false)
@@ -216,12 +218,20 @@ const ViewCourseVps = () => {
     throw error
     }
 };
-const handleClick = async (event, id,amount,url) => {
+const handleClick = async (event, id,amount,url,paytype) => {
+  if (!token) {
+    // Save payment data to localStorage or sessionStorage
+    sessionStorage.setItem("pendingPayment", JSON.stringify({ id,  paytype }));
+   
+    navigate("/login");
+    return;
+  }
   event.preventDefault();
 if(amount===0){
-  window.location.href=url;
+navigate(url);
 }else{
   try {
+    if(token){
     const formdata=JSON.stringify({ courseId: id})
       const response = await axios.post(`${baseUrl}/CheckAccess/match`, formdata,{
 
@@ -233,8 +243,9 @@ if(amount===0){
     
       if (response.status===200) {
           const message = response.data;
-          window.location.href = message;
+          navigate(message);
       } 
+    }
   } catch (error) {
     if(error.response.status===401){
       MySwal.fire({
@@ -297,7 +308,8 @@ return (
                             e,
                             item.courseId,
                             item.amount,
-                            item.courseUrl
+                            item.courseUrl,
+                            item.paytype
                           )
                         }
                       >
@@ -308,7 +320,8 @@ return (
                    
                     <div className="card-text">
                       {item.amount === 0 ? (
-                        <a href={item.courseUrl} 
+                        <a href="#" 
+                        onClick={(e)=>{e.preventDefault();  navigate(item.courseUrl)}}
                         style={{ width:"100%" ,maxHeight: "50px", padding: "5px" }}
                         className="btn btn-outline-success">
                           Enroll for Free

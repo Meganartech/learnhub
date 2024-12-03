@@ -297,7 +297,7 @@ setErrors((prevErrors) => ({
           cancelButtonText: "Cancel",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/login";
+            navigate("/login");
           } else {
             setFormData({
               username: "",

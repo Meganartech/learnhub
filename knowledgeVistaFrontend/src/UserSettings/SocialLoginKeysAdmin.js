@@ -53,7 +53,7 @@ const SocialLoginKeysAdmin = () => {
             if (error.response.status === 404) {
               setisnotFound(true);
             } else if (error.response.status === 401) {
-              window.location.href = "/unauthorized";
+              navigate("/unauthorized")
             }else{
               throw error
             }

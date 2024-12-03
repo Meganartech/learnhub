@@ -89,7 +89,6 @@ TimeZone: ${meetingData.timezone}`,
       ...prev,
       [name]: query,
     }));
-    console.log("searching...", name, "Query=", query);
     if (query.length > 1) {
       const token = sessionStorage.getItem("token");
       const role = sessionStorage.getItem("role");
@@ -130,7 +129,6 @@ TimeZone: ${meetingData.timezone}`,
           ...prev,
           [name]: filteredUsers,
         }));
-        console.log("searchresults after api", searchResults);
       } catch (error) {
         console.error("Error fetching users:", error);
         throw error
@@ -221,7 +219,7 @@ TimeZone: ${meetingData.timezone}`,
           icon: "error",
           confirmButtonText: "OK",
         }).then(()=>{
-          window.location.href="/settings/mailsettings"
+          navigate("/settings/mailsettings")
         })
       }else{
       // MySwal.fire({

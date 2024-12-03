@@ -310,7 +310,7 @@ setErrors((prevErrors) => ({
             
           }).then((result) => {
               if (result.isConfirmed) {
-                  window.location.href = "/view/Students";
+                navigate("/view/Students");
               }
             });
         } 

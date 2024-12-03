@@ -40,10 +40,10 @@ const ViewVideo = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          window.location.href = "/unauthorized";
+          navigate("/unauthorized")
           return;
         } else if (error.response && error.response.status === 404) {
-          window.location.href = "/missing";
+          navigate("/missing")
         } else {
           // await MySwal.fire({
           //   icon: "error",
@@ -88,7 +88,6 @@ const ViewVideo = () => {
       },
     });
     setcurrentDocs(docResponse.data);
-    console.log(currentDocs);
   };
   useEffect(() => {
     // Update the currently playing lesson whenever lessonId changes

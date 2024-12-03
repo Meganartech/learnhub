@@ -124,7 +124,7 @@ const ViewTrainers = () => {
              }));
           } catch (error) {
             if(error.response && error.response.status===401){
-              window.location.href="/unauthorized"
+              navigate("/unauthorized")
             }else{
             console.error('Error fetching data:', error);
             throw error
@@ -152,7 +152,7 @@ const ViewTrainers = () => {
              })); // Update total pages
         } catch (error) {
           if (error.response && error.response.status === 401) {
-            window.location.href = "/unauthorized";
+            navigate("/unauthorized")
           }else{
           console.error('Error fetching data:', error);
           throw error

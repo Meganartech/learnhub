@@ -5,8 +5,9 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 const ViewAdmin = () => {
+  const navigate=useNavigate()
   const MySwal = withReactContent(Swal);
     const [users, setUsers] = useState([]);
     const token=sessionStorage.getItem("token");
@@ -71,7 +72,6 @@ const ViewAdmin = () => {
           break;
           case 'dob':
             setDob(value);
-            console.log(dob);
             break;
         case 'email':
           setEmail(value);
@@ -124,7 +124,7 @@ const ViewAdmin = () => {
              }));
           } catch (error) {
             if(error.response && error.response.status===401){
-              window.location.href="/unauthorized"
+              navigate("/unauthorized")
             }else{
             console.error('Error fetching data:', error);
             throw error
@@ -152,7 +152,7 @@ const ViewAdmin = () => {
              })); // Update total pages
         } catch (error) {
           if (error.response && error.response.status === 401) {
-            window.location.href = "/unauthorized";
+            navigate("/unauthorized")
           }else{
           console.error('Error fetching data:', error);
           throw error
@@ -218,7 +218,6 @@ const ViewAdmin = () => {
         }).then(async (result) => {
           if (result.isConfirmed) {
             try {
-              console.log("id", userId);
               if (userId != null) {
                 const response = await axios.delete(`${baseUrl}/deactivate/admin`, {
                   data: formData,
@@ -279,7 +278,6 @@ const ViewAdmin = () => {
         }).then(async (result) => {
           if (result.isConfirmed) {
             try {
-              console.log("id",userId);
               if (userId != null) {
                 const response = await axios.delete(`${baseUrl}/activate/admin`,{
                  data:formData,

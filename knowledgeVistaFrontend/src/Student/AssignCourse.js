@@ -85,7 +85,7 @@ const handleAssignCourse = async () => {
                 text: response.data.message
             });
             // Redirect after success
-            window.location.href = "/view/Students";
+             navigate("/view/Students");
         } 
     } catch (error) {
       

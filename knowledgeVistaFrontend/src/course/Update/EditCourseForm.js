@@ -63,7 +63,13 @@ const EditCourseForm = ({}) => {
   };
   const validateField = (fieldName, fieldValue) => {
     const validations = {
-      courseName: (value) => (value ? "" : "Course Name is required"),
+      courseName: (value) => 
+        value 
+            ? value.length <= 50 
+                ? "" 
+                : "Course Name must not exceed 50 characters" 
+            : "Course Name is required",
+    
       courseDescription: (value) =>
         value ? "" : "Course Description is required",
       courseCategory: (value) => (value ? "" : "Course Category is required"),
@@ -133,7 +139,7 @@ const EditCourseForm = ({}) => {
 
     const formData = new FormData();
     if (courseEdit.courseName) {
-      formData.append("courseName", courseEdit.courseName);
+      formData.append("courseName", courseEdit.courseName.trim());
     }
     if (courseEdit.courseDescription) {
       formData.append("courseDescription", courseEdit.courseDescription);
@@ -173,7 +179,7 @@ const EditCourseForm = ({}) => {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/dashboard/course";
+            navigate("/dashboard/course");
           }
         });
       }
