@@ -64,12 +64,13 @@ const EditCourseForm = ({}) => {
   const validateField = (fieldName, fieldValue) => {
     const validations = {
       courseName: (value) => 
-        value 
-            ? value.length <= 50 
-                ? "" 
-                : "Course Name must not exceed 50 characters" 
+        value
+            ? value.includes("/")
+                ? "Course Name must not contain the '/' character"
+                : value.length <= 50
+                    ? ""
+                    : "Course Name must not exceed 50 characters"
             : "Course Name is required",
-    
       courseDescription: (value) =>
         value ? "" : "Course Description is required",
       courseCategory: (value) => (value ? "" : "Course Category is required"),

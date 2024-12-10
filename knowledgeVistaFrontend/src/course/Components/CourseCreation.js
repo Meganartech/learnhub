@@ -61,8 +61,11 @@ const CourseCreation = () => {
             ? "Please enter a Course Title" 
             : value.length > 50 
             ? "Course Title should not exceed 50 characters" 
+            : value.includes("/") 
+            ? "Course Title should not contain the '/' character"
             : "";
         break;
+    
     
       case "courseCategory":
         error = value.length < 1 ? "Please enter a Course Category" : "";
