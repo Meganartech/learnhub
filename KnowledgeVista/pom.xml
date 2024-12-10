@@ -20,6 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>17</java.version>
+		
 	</properties>
 	<dependencies>
 		<dependency>
@@ -134,6 +135,31 @@
 			<version>1.4.3</version>
 		</dependency>
 		<dependency>
+    <groupId>com.stripe</groupId>
+    <artifactId>stripe-java</artifactId>
+    <version>22.21.0</version> <!-- Check for the latest version -->
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.paypal.sdk/checkout-sdk -->
+<dependency>
+    <groupId>com.paypal.sdk</groupId>
+    <artifactId>checkout-sdk</artifactId>
+    <version>1.0.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.paypal.sdk/paypal-core -->
+<dependency>
+    <groupId>com.paypal.sdk</groupId>
+    <artifactId>paypal-core</artifactId>
+    <version>1.7.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.paypal.sdk/rest-api-sdk -->
+<dependency>
+    <groupId>com.paypal.sdk</groupId>
+    <artifactId>rest-api-sdk</artifactId>
+    <version>1.14.0</version>
+</dependency>
+
+
+		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>5.2.3</version> <!-- or the latest version -->
@@ -210,6 +236,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>Licence</groupId>
+			<artifactId>Licence</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

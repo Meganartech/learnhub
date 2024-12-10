@@ -20,7 +20,7 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Payments.Orderuser;
-import com.knowledgeVista.Payments.OrderuserRepo;
+import com.knowledgeVista.Payments.repos.OrderuserRepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.UserStats;
 import com.knowledgeVista.User.Repository.MuserRepositories;

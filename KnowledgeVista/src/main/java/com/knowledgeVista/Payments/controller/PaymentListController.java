@@ -1,4 +1,4 @@
-package com.knowledgeVista.Payments;
+package com.knowledgeVista.Payments.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Payments.Course_PartPayment_Structure;
+import com.knowledgeVista.Payments.InstallmentDetails;
+import com.knowledgeVista.Payments.Orderuser;
+import com.knowledgeVista.Payments.repos.OrderuserRepo;
+import com.knowledgeVista.Payments.repos.partpayrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;

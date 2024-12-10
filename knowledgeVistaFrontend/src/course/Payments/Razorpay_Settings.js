@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import baseUrl from "../api/utils";
+import baseUrl from "../../api/utils";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -123,7 +123,7 @@ const Razorpay_Settings = () => {
       if (response.status === 200) {
         MySwal.fire({
           title: "Saved !",
-          text: "Payment Details Saved Sucessfully" ,
+          text: "Razorpay Details Saved Sucessfully" ,
           icon: "success",
           confirmButtonText: "OK",
         }).then((result) => {
@@ -157,7 +157,7 @@ const Razorpay_Settings = () => {
     if (response.status=== 200) {
       MySwal.fire({
         title: "Updated",
-        text: "Payment Details Saved Sucessfully" ,
+        text: "Razorpay Details Update Sucessfully" ,
         icon: "success",
         confirmButtonText: "OK",
       }).then((result) => {
@@ -188,11 +188,7 @@ const Razorpay_Settings = () => {
 
   const getsettings=( 
   <div className="col-12">
-    <div className='navigateheaders'>
-      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
-      <div></div>
-      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
-      </div>
+  
       <h4>Razorpay Settings</h4>
 
       <div className="form-group row">
@@ -221,6 +217,7 @@ const Razorpay_Settings = () => {
         </label>
         <div className="col-sm-9">
           <input
+           type="password"
             id="Razorpay_Secret_Key"
             placeholder="Razorpay Secret Key"
             value={Razorpay_Secret_Key}
@@ -235,7 +232,8 @@ const Razorpay_Settings = () => {
       </div>
 
       {valid ? (
-        <div className="btngrp">
+        <div className="cornerbtn">
+          {defaultsettings.razorpay_key ?<button className="btn btn-secondary" onClick={()=>setisnotFound(false)}>Cancel</button>:<div></div>}
           <button
             className="btn btn-primary"
             onClick={save}
@@ -256,23 +254,7 @@ const Razorpay_Settings = () => {
 
   const oldSettings = (
     <div className="col-12">
-      <div className="navigateheaders">
-        <div
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
-          <i className="fa-solid fa-arrow-left"></i>
-        </div>
-        <div></div>
-        <div
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
-          <i className="fa-solid fa-xmark"></i>
-        </div>
-      </div>
+    
 
       <h4>Razorpay Settings</h4>
 
@@ -298,6 +280,7 @@ const Razorpay_Settings = () => {
         </label>
         <div className="col-sm-9">
           <input
+           type="password"
             className="form-control"
             readOnly
             value={defaultsettings ? defaultsettings.razorpay_secret_key : ""}
@@ -317,14 +300,11 @@ const Razorpay_Settings = () => {
     </div>
   );
   return (
-    <div>
-      <div className="page-header"></div>
       <div className="card">
         <div className=" card-body">
           <div className="row">{isnotFound ? getsettings : oldSettings}</div>
         </div>
       </div>
-    </div>
   );
 };
 
