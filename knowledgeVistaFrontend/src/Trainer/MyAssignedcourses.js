@@ -11,6 +11,7 @@ const MyAssignedcourses = () => {
   const role = sessionStorage.getItem("role");
   const token = sessionStorage.getItem("token");
   const [courses, setCourses] = useState([]);
+  const Currency=sessionStorage.getItem("Currency")
   const navigate=useNavigate()
   useEffect(() => {
     const fetchItems = async () => {
@@ -198,7 +199,7 @@ const MyAssignedcourses = () => {
                           </a>
                         ) : (
                           <a className="btn btn-outline-primary w-100">
-                            <i className="fa-solid fa-indian-rupee-sign mr-2"></i>
+                            <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i>
                             <label>{item.amount}</label>
                           </a>
                         )}

@@ -9,6 +9,7 @@ const EditCourse = ({ filteredCourses }) => {
   const navigate=useNavigate();
   const MySwal = withReactContent(Swal);
   const token = sessionStorage.getItem("token");
+  const Currency=sessionStorage.getItem("Currency")
   const createCourse = async () => {
     try {
       const response = await axios.get(`${baseUrl}/api/v2/count`, {
@@ -169,7 +170,7 @@ const EditCourse = ({ filteredCourses }) => {
                         </a>
                       ) : (
                         <a className="btn btn-outline-primary w-100">
-                          <i className="fa-solid fa-indian-rupee-sign mr-2"></i>
+                       <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i>
                           <label>{item.amount}</label>
                         </a>
                       )}

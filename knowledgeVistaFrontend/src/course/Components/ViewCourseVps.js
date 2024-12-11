@@ -19,6 +19,7 @@ const ViewCourseVps = (filter,handleFilterChange) => {
   const[notfound,setnotfound]=useState(false);
   const islogedin=sessionStorage.getItem("token")!==null;
   const navigate=useNavigate();
+  const Currency=sessionStorage.getItem("Currency")
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -335,7 +336,7 @@ return (
                           }}
                         >
                           <div>
-                            <i className="fa-solid fa-indian-rupee-sign"></i>
+                          <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i>
                             <span className="mt-3 blockquote">
                               {item.amount}
                             </span>
