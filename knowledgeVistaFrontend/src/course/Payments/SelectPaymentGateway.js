@@ -13,6 +13,7 @@ const SelectPaymentGateway = ({ orderData, setorderData }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
+  const Currency=sessionStorage.getItem("Currency")
   const [paymentMethods, setPaymentMethods] = useState({
     PAYPAL: false,
     RAZORPAY: false,
@@ -205,6 +206,7 @@ const SelectPaymentGateway = ({ orderData, setorderData }) => {
                     className="col-form-label col-sm-6"
                     style={{ textAlign: "right" }}
                   >
+                     <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1" : "fa-solid fa-dollar-sign mr-1"}></i>
                     {orderData?.courseAmount}
                   </label>
                   {orderData?.paytype === "PART" && (
@@ -225,6 +227,7 @@ const SelectPaymentGateway = ({ orderData, setorderData }) => {
                         className="col-form-label col-sm-6"
                         style={{ textAlign: "right" }}
                       >
+                         <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1" : "fa-solid fa-dollar-sign mr-1"}></i>
                         {orderData?.amount}
                       </label>
                     </>
@@ -243,7 +246,7 @@ const SelectPaymentGateway = ({ orderData, setorderData }) => {
                     className="col-form-label col-sm-6"
                     style={{ textAlign: "right" }}
                   >
-                    <b>{orderData?.amount}</b>
+                    <b> <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1" : "fa-solid fa-dollar-sign mr-1"}></i>{orderData?.amount}</b>
                   </label>
                 </div>
                 <button

@@ -199,7 +199,7 @@ const MyAssignedcourses = () => {
                           </a>
                         ) : (
                           <a className="btn btn-outline-primary w-100">
-                            <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i>
+                            <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1" : "fa-solid fa-dollar-sign mr-1"}></i>
                             <label>{item.amount}</label>
                           </a>
                         )}
