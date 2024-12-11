@@ -25651,6 +25651,7 @@ ul {
   grid-template-columns: 4fr 3fr;
   gap: 30px;
   height: auto;
+  width: 100%;
   padding: 10px;
   position: relative;
 }
@@ -25658,7 +25659,9 @@ ul {
 .list {
   height: 500px;
 }
-
+.description{
+  width: 650px;
+}
 .list {
   background-color: #4680fe;
   border-radius: 7px;

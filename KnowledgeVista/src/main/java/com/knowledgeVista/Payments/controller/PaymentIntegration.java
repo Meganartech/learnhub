@@ -50,7 +50,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @CrossOrigin
 public class PaymentIntegration {
 
-	@Value("${rzp_currency}")
+	@Value("${currency}")
 	private String currency;
 
 	@Autowired
@@ -125,7 +125,7 @@ public class PaymentIntegration {
 
 // Set up price data
 				SessionCreateParams.LineItem.PriceData priceData = SessionCreateParams.LineItem.PriceData.builder()
-						.setCurrency("usd").setUnitAmount(amt * 100) // Amount in cents
+						.setCurrency(currency).setUnitAmount(amt * 100) // Amount in cents
 						.setProductData(productData).build();
 
 // Set up line item
@@ -180,7 +180,7 @@ public class PaymentIntegration {
 				// Create Razorpay order
 				JSONObject orderRequest = new JSONObject();
 				orderRequest.put("amount", amt * 100); // Convert amount to paisa
-				orderRequest.put("currency", "INR");
+				orderRequest.put("currency", currency);
 				orderRequest.put("receipt", "receipt_" + courseId);
 				orderRequest.put("notes", new JSONObject().put("user_id", userId));
 				Order order = client.orders.create(orderRequest);

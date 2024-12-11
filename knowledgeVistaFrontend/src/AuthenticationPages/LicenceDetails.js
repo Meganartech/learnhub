@@ -20,8 +20,13 @@ const navigate=useNavigate();
     const fetchactive=async()=>{
       try{
       const active=await axios.get(`${baseUrl}/Active/Environment`)
-      
-      setActiverofile(active.data);
+      if (active?.data?.environment) {
+        sessionStorage.setItem("Activeprofile", active.data.environment);
+        setActiverofile(active.data.environment);
+      } 
+      if (active?.data?.currency) {
+        sessionStorage.setItem("Currency", active.data.currency);
+      } 
       }catch(error){
         throw error
         console.error(error);

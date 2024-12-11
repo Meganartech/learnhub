@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -9,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const StripePaymentProvider = (orderData) => {
 
-    const navigate=useNavigate
+    const navigate=useNavigate()
   const MySwal = withReactContent(Swal);
   const token = sessionStorage.getItem("token");
 
@@ -25,9 +24,11 @@ const StripePaymentProvider = (orderData) => {
       if (keyResponse.status === 200) {
         const publishableKey = keyResponse.data;
   
-        // Initialize Stripe
-        const stripe = await loadStripe(publishableKey);
+        // // Initialize Stripe
+         const stripe = await loadStripe(publishableKey);
   
+        // const { loadStripe } = await import("@stripe/stripe-js");
+        // const stripe = await loadStripe(publishableKey);
         // Prepare order data
         const data = {
           courseId: orderData?.courseId,
@@ -48,6 +49,7 @@ const StripePaymentProvider = (orderData) => {
   
         // Redirect to Stripe checkout
         await stripe.redirectToCheckout({ sessionId });
+
       } else if (keyResponse.status === 204) {
         MySwal.fire({
           icon: "warning",

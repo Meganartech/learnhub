@@ -48,6 +48,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class PaymentIntegration2 {
+	@Value("${currency}")
+	private String currency;
 	@Autowired
 	private paypalrepo paypalrepo;
 	@Autowired
@@ -156,18 +158,18 @@ public class PaymentIntegration2 {
 	            // Define success and cancel URLs
 	            String successUrl = clientBaseUrl + "/updatePaypalPayment";
 	            String cancelUrl = clientBaseUrl + "/dashboard/course";
-
+	            double amtfinal=amt;
 	            // Create PayPal Order
 	            OrderRequest orderRequest = new OrderRequest();
 	            orderRequest.checkoutPaymentIntent("CAPTURE");
-	            double exchangeRate = 100.0; // Adjust this rate dynamically based on current exchange rates
-
-	         // Convert INR to USD
-	         double amtInUSD = amt / exchangeRate;
+	            if(currency.equals("INR")) {
+	            double exchangeRate = 100.0; 
+	        amtfinal = amt / exchangeRate;
+	            }
 
 	            // Set up purchase unit (product data and price)
 	            PurchaseUnitRequest purchaseUnit = new PurchaseUnitRequest()
-	            	    .amountWithBreakdown(new AmountWithBreakdown().currencyCode("USD").value(String.valueOf(amtInUSD)))
+	            	    .amountWithBreakdown(new AmountWithBreakdown().currencyCode("USD").value(String.valueOf(amtfinal)))
 	            	    .description(course.getCourseName());
 	            orderRequest.purchaseUnits(Collections.singletonList(purchaseUnit));
 

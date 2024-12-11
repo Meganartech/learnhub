@@ -31,8 +31,14 @@ const RedirectComponent = ({ vpsonly, admincount, children, sasonly, checkvisibl
         const fetchActive = async () => {
             try {
                 const active = await axios.get(`${baseUrl}/Active/Environment`);
-                sessionStorage.setItem("Activeprofile", active.data);
-                setActiveProfile(active.data);
+               
+                if (active?.data?.environment) {
+                    sessionStorage.setItem("Activeprofile", active.data.environment);
+                    setActiveProfile(active.data.environment);
+                  } 
+                  if (active?.data?.currency) {
+                    sessionStorage.setItem("Currency", active.data.currency);
+                  } 
             } catch (error) {
                 console.error(error);
                 throw error

@@ -298,7 +298,7 @@ const ViewVideo = () => {
                     />
                   ) : null}
                   {currentLesson && (
-                    <div>
+                    <div className="description">
                       <h2>{currentLesson.lessontitle}</h2>
                       <p style={{ textIndent: "100px" }}>
                         {currentLesson.lessonDescription}

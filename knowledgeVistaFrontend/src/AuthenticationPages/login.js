@@ -23,8 +23,13 @@ const Login = () => {
     const getActiveProfile = async () => {
       try {
         const active = await axios.get(`${baseUrl}/Active/Environment`);
-        sessionStorage.setItem("Activeprofile", active.data);
-        setActiveProfile(active.data);
+        if (active?.data?.environment) {
+          sessionStorage.setItem("Activeprofile", active.data.environment);
+          setActiveProfile(active.data.environment);
+        } 
+        if (active?.data?.currency) {
+          sessionStorage.setItem("Currency", active.data.currency);
+        } 
   
         // If the active profile is 'VPS', proceed with the next requests
         if (active.data === "VPS") {

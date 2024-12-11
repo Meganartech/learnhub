@@ -19,7 +19,9 @@ const SelectPaymentGateway = ({ orderData, setorderData }) => {
     STRIPE: false,
   });
   const [loading, setLoading] = useState(true);
-
+  const { handleSubmit } = RazorpayPaymentProvider(orderData);
+  const { handlePayment } = StripePaymentProvider(orderData);
+  const { handlePaymentPaypal } = PaypalPaymentProvider(orderData);
   const fetchpaymentTypedetails = async () => {
     try {
       const response = await axios.get(`${baseUrl}/get/paytypedetailsforUser`, {
@@ -43,9 +45,7 @@ const SelectPaymentGateway = ({ orderData, setorderData }) => {
     fetchpaymentTypedetails();
   }, []);
 
-  const { handleSubmit } = RazorpayPaymentProvider(orderData);
-  const { handlePayment } = StripePaymentProvider(orderData);
-  const { handlePaymentPaypal } = PaypalPaymentProvider(orderData);
+  
 
   const handlepaytypeClick = (e) => {
     const name = e.target.name;
@@ -191,7 +191,6 @@ const SelectPaymentGateway = ({ orderData, setorderData }) => {
                   </label>
                   <label
                     className="col-form-label col-sm-6"
-                    F
                     style={{ textAlign: "right" }}
                   >
                     {orderData?.coursename}

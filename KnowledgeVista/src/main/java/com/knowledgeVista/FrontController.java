@@ -3,7 +3,7 @@ package com.knowledgeVista;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-
+import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +79,8 @@ public class FrontController {
 	    private String activeProfile;
 	  @Value("${spring.environment}")
 	    private String environment;
+	  @Value("${currency}")
+		private String currency;
 	@Autowired
     private CourseController courseController;
 	
@@ -172,9 +174,13 @@ public class FrontController {
 	private FooterDetailsController footerctrl;
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
-	public String getActiEnvironment() {
-		return environment;
+	public Map<String, String> getActiveEnvironment() {
+	    Map<String, String> response = new HashMap<>();
+	    response.put("environment", environment);
+	    response.put("currency", currency);
+	    return response;
 	}
+
 //----------------------------COURSECONTROLLER----------------------------
    
 	 @GetMapping("/course/countcourse")

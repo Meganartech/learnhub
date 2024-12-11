@@ -231,7 +231,69 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     </li>
                   </ul>
                 </li>
-
+                <li className="nav-item pcoded-hasmenu">
+                  <a href="#!" className="nav-link ">
+                    <span className="pcoded-micon">
+                      <i className="fa fa-users"></i>
+                    </span>
+                    <span className="pcoded-mtext">People</span>
+                  </a>
+                  <ul className="pcoded-submenu">
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/view/Trainer"
+                        onClick={(e) => {
+                          handleClick(e, "/view/Trainer");
+                        }}
+                        className="nav-link "
+                      >
+                        <span className="pcoded-micon">
+                          <i className="fa-solid fa-person-chalkboard"></i>
+                        </span>
+                        <span className="pcoded-mtext">
+                          {displayname && displayname.trainer_name
+                            ? displayname.trainer_name
+                            : "Trainers"}
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/view/Students"
+                        onClick={(e) => {
+                          handleClick(e, "/view/Students");
+                        }}
+                        className="nav-link "
+                      >
+                        <span className="pcoded-micon">
+                          <i className="fa-solid fa-chalkboard-user"></i>
+                        </span>
+                        <span className="pcoded-mtext">
+                          {displayname && displayname.student_name
+                            ? displayname.student_name
+                            : "Student"}
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/view/Approvals"
+                        onClick={(e) => {
+                          handleClick(e, "/view/Approvals");
+                        }}
+                        className="nav-link "
+                      >
+                        <span className="pcoded-micon">
+                          <i className="fa-solid fa-person-circle-check"></i>
+                        </span>
+                        <span className="pcoded-mtext">Approvals</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
                 <li className="nav-item pcoded-hasmenu">
                   <a href="#!" className="nav-link ">
                     <span className="pcoded-micon">
@@ -326,69 +388,7 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     </li>
                   </ul>
                 </li>
-                <li className="nav-item pcoded-hasmenu">
-                  <a href="#!" className="nav-link ">
-                    <span className="pcoded-micon">
-                      <i className="fa fa-users"></i>
-                    </span>
-                    <span className="pcoded-mtext">People</span>
-                  </a>
-                  <ul className="pcoded-submenu">
-                    <li>
-                      <a
-                        href="#"
-                        data-path="/view/Trainer"
-                        onClick={(e) => {
-                          handleClick(e, "/view/Trainer");
-                        }}
-                        className="nav-link "
-                      >
-                        <span className="pcoded-micon">
-                          <i className="fa-solid fa-person-chalkboard"></i>
-                        </span>
-                        <span className="pcoded-mtext">
-                          {displayname && displayname.trainer_name
-                            ? displayname.trainer_name
-                            : "Trainers"}
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        data-path="/view/Students"
-                        onClick={(e) => {
-                          handleClick(e, "/view/Students");
-                        }}
-                        className="nav-link "
-                      >
-                        <span className="pcoded-micon">
-                          <i className="fa-solid fa-chalkboard-user"></i>
-                        </span>
-                        <span className="pcoded-mtext">
-                          {displayname && displayname.student_name
-                            ? displayname.student_name
-                            : "Student"}
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        data-path="/view/Approvals"
-                        onClick={(e) => {
-                          handleClick(e, "/view/Approvals");
-                        }}
-                        className="nav-link "
-                      >
-                        <span className="pcoded-micon">
-                          <i className="fa-solid fa-person-circle-check"></i>
-                        </span>
-                        <span className="pcoded-mtext">Approvals</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
+              
 
                 <li className="nav-item pcoded-hasmenu">
                   <a href="#!" className="nav-link ">

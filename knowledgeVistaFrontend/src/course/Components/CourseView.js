@@ -12,6 +12,7 @@ const CourseView = ({ filteredCourses }) => {
   const [submitting, setsubmitting] = useState(false);
   const token = sessionStorage.getItem("token");
   const navigate =useNavigate();
+  const Currency=sessionStorage.getItem("Currency");
   const[orderData,setorderData]=useState({
     userId:"",
     courseId:"",
@@ -35,19 +36,7 @@ const CourseView = ({ filteredCourses }) => {
       handlepaytype(courseId, userId, paytype);
     }
   }, []);
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => {
-        resolve(true);
-      };
-      script.onerror = () => {
-        resolve(false);
-      };
-      document.body.appendChild(script);
-    });
-  };
+
   const handlepaytype = (courseId, userId, paytype) => {
     let url = "";
     if (paytype === "FULL") {
@@ -106,117 +95,8 @@ setorderData(response.data)
             }
         }
   }
-  // const handlesubmit = async (courseId, userId, url) => {
-  //   try {
-  //     setsubmitting(true);
-  //     const data = JSON.stringify({
-  //       courseId: courseId,
-  //       userId: userId,
-  //     });
-
-  //     const response = await axios.post(`${baseUrl}${url}?gateway=RAZORPAY`, data, {
-  //       headers: {
-  //         Authorization: token,
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-
-  //     setsubmitting(false);
-  //     const scriptLoaded = await loadRazorpayScript();
-
-  //     if (!scriptLoaded) {
-  //       alert("Failed to load Razorpay SDK. Please try again.");
-  //       return;
-  //     }
-  //     const order = response.data;
-  //     const options = {
-  //       order_id: order.orderId,
-  //       description: order.description,
-  //       name: order.name,
-  //       handler: function (response) {
-  //         if (response.error) {
-  //           MySwal.fire({
-  //             icon: "error",
-  //             title: "Payment Failed:",
-  //             text: response.error,
-  //           });
-  //         } else {
-  //           sendPaymentIdToServer(
-  //             response.razorpay_payment_id,
-  //             order.orderId,
-  //             response.razorpay_signature
-  //           );
-  //         }
-  //       },
-
-  //       theme: {
-  //         color: "#3399cc",
-  //       },
-  //     };
-
-  //     var pay = new window.Razorpay(options);
-
-  //     pay.open();
-  //   } catch (error) {
-  //     setsubmitting(false);
-  //     if(error.response && error.response.status===400){
-  //     MySwal.fire({
-  //       icon: "error",
-  //       title: "Error creating order:",
-  //       text: error.response.data ? error.response.data : "error occured",
-  //     });
-  //   }else{
-  //     throw error
-  //   }
-  //   }
-  // };
-
-  const sendPaymentIdToServer = async (paymentId, order, signature) => {
-    try {
-      setsubmitting(true);
-      const paydata = JSON.stringify({
-        paymentId: paymentId,
-        orderId: order,
-        signature: signature,
-      });
-      const response = await axios.post(
-        `${baseUrl}/buyCourse/payment`,
-        paydata,
-        {
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        setsubmitting(false);
-        // Success response
-        const message = response.data;
-        navigate(message)
-      } else {
-        setsubmitting(false);
-        const errorMessage = response.data;
-        MySwal.fire({
-          icon: "error",
-          title: "Error updating payment ID:",
-          text: errorMessage,
-        });
-      }
-    } catch (error) {
-      setsubmitting(false);
-      if(error.response && error.response.status===404){
-      MySwal.fire({
-        icon: "error",
-        title: "Error sending payment ID to server:",
-        text: error.response.data ? error.response.data : "error occured",
-      });
-      }else{
-      throw error
-      }
-    }
-  };
+ 
+ 
   const handleClick = async (event, id, amount, url) => {
     event.preventDefault();
     if (amount === 0) {
@@ -331,8 +211,8 @@ setorderData(response.data)
                           }}
                         >
                           <div>
-                            <i className="fa-solid fa-indian-rupee-sign"></i>
-                            <span className="mt-3 blockquote">
+                             <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i>
+                              <span className="mt-3 blockquote">
                               {item.amount}
                             </span>
                           </div>
