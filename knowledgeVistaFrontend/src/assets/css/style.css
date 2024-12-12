@@ -25656,16 +25656,15 @@ ul {
   padding: 10px;
   position: relative;
 }
-.VideoFrame,
-.list {
-  height: 500px;
-}
+
 .description{
   width: 650px;
 }
 .list {
   background-color: #4680fe;
   border-radius: 7px;
+  height: 100%;
+  max-height: 650px;
   display: flex;
   flex-direction: column;
 }
@@ -25675,9 +25674,15 @@ ul {
   align-items: center;
   background-color: #e9e9e9;
   border-top: 3px solid #e9e9e9;
-  overflow-y: scroll; /* Use auto to add scrollbar only when necessary */
+  overflow-y: auto; /* Use auto to add scrollbar only when necessary */
 }
-
+.vdobox{
+  height: 400px;
+  width: 650px;
+  border: 3px solid #e9e9e9;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 .notes {
   height: 80px;
   background-color: white;

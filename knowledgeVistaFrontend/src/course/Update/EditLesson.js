@@ -143,14 +143,17 @@ const EditLesson = () => {
     let error = "";
     switch (name) {
       case "lessontitle":
-        error = value.length < 1 ? "Please enter a Video Title"
-           : value.length > 50 
-        ? "Course Title should not exceed 50 characters" 
+        error = value.length < 1 
+        ? "Please enter a Lesson Title" : value.length > 50 
+        ? "Lesson Title should not exceed 50 characters" 
         : "";
         setvideodata({ ...videodata, [name]: value });
         break;
       case "lessonDescription":
-        error = value.length < 1 ? "Please enter a Video Description" : "";
+        error = value.length < 1 
+        ? "Please enter a Lesson Descriptio " : value.length > 1000
+        ? "Lesson Description should not exceed 100 characters" 
+        : "";
         setvideodata({ ...videodata, [name]: value });
         break;
       case "normalurl":

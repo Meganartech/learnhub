@@ -58,13 +58,16 @@ const UploadVideo = () => {
     switch (name) {
       case "Lessontitle":
         error = value.length < 1 
-        ? "Please enter a Video Title" : value.length > 50 
-        ? "Course Title should not exceed 50 characters" 
+        ? "Please enter a lesson Title" : value.length > 50 
+        ? "Lesson Title should not exceed 50 characters" 
         : "";
         setvideodata({ ...videodata, [name]: value });
         break;
       case "LessonDescription":
-        error = value.length < 1 ? "Please enter a Video Description" : "";
+        error = value.length < 1 
+        ? "Please enter a Lesson Descriptio " : value.length > 1000
+        ? "Lesson Description should not exceed 100 characters" 
+        : "";
         setvideodata({ ...videodata, [name]: value });
         break;
       case "normalurl":
@@ -128,6 +131,15 @@ const UploadVideo = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !videodata.Lessontitle?.trim() || 
+      !videodata.LessonDescription || 
+      (!videodata.videoFile && !videodata.fileUrl)
+    ) {
+      alert("Please ensure all required fields are filled. Either a video file or file URL must be provided.");
+      setIsSubmitting(false); // Reset the submitting state
+      return;
+    }
     setIsSubmitting(true);
     const formDataToSend = new FormData();
     formDataToSend.append("Lessontitle", videodata.Lessontitle.trim());

@@ -68,10 +68,19 @@ const CourseCreation = () => {
     
     
       case "courseCategory":
-        error = value.length < 1 ? "Please enter a Course Category" : "";
+        error = value.length < 1 
+        ? "Please enter a Course Category" 
+        : value.length > 50 
+        ? "Course Category should not exceed 50 characters" 
+        : value.includes("/") 
+        ? "Course Category should not contain the '/' character"
+        : "";
         break;
       case "courseDescription":
-        error = value.length < 1 ? "Please enter a Course Description" : "";
+        error = value.length < 1 
+        ? "Please enter a Course Description " : value.length > 1000
+        ? "Course Description should not exceed 100 characters" 
+        : "";
         break;
       case "courseAmount":
         error =

@@ -263,8 +263,7 @@ const ViewVideo = () => {
                     <ReactPlayer
                       ref={playerRef}
                       url={videoSource}
-                      width="100%"
-                      height="80%"
+                      className="vdobox"
                       controls
                       onProgress={handleOnProgress}
                       onSeek={handleOnSeek}
@@ -286,8 +285,7 @@ const ViewVideo = () => {
                     />
                   ) : videoType === "youtube" ? (
                     <ReactPlayer
-                      width="100%"
-                      height="80%"
+                      className="vdobox"
                       controls
                       playing
                       url={videoSource ? videoSource : null}
@@ -300,7 +298,7 @@ const ViewVideo = () => {
                     />
                   ) : null}
                   {currentLesson && (
-                    <div className="description">
+                    <div className="description mt-1">
                       <h2>{currentLesson.lessontitle}</h2>
                       <p style={{ textIndent: "100px" }}>
                         {currentLesson.lessonDescription}

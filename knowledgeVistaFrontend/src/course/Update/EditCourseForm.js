@@ -63,17 +63,28 @@ const EditCourseForm = ({}) => {
   };
   const validateField = (fieldName, fieldValue) => {
     const validations = {
-      courseName: (value) => 
-        value
-            ? value.includes("/")
-                ? "Course Name must not contain the '/' character"
-                : value.length <= 50
-                    ? ""
-                    : "Course Name must not exceed 50 characters"
-            : "Course Name is required",
+      courseName: (value) =>
+        !value
+          ? "Course Name is required"
+          : value.includes("/")
+          ? "Course Name must not contain the '/' character"
+          : value.length > 50
+          ? "Course Name must not exceed 50 characters"
+          : "",
+    
       courseDescription: (value) =>
-        value ? "" : "Course Description is required",
-      courseCategory: (value) => (value ? "" : "Course Category is required"),
+        !value
+          ? "Course Description is required"
+          : value.length > 1000
+          ? "Course Description must not exceed 1000 characters"
+          : "",
+    
+      courseCategory: (value) =>
+        !value
+          ? "Course Category is required"
+          : value.length > 50
+          ? "Course Category must not exceed 50 characters"
+          : "",
       amount: (value) =>
         value && !isNaN(value) ? "" : "Invalid Amount (must be a number)",
       noofseats: (value) =>

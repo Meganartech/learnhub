@@ -183,7 +183,9 @@ const MyAssignedcourses = () => {
                           </div>
                         </div>
                       </h5>
-                      <div className="card-text"> {item.courseDescription}</div>
+                      <div className="card-text"> {item.courseDescription.length > 20
+                            ? item.courseDescription.slice(0, 20) + "..."
+                            : item.courseDescription}</div>
                       <div className="card-text">
                         {item.amount === 0 ? (
                           <a
