@@ -243,12 +243,20 @@ public ResponseEntity<?>getordersummaryFull(Map<String, Long> requestData, Strin
 		Optional<Muser> optionalUser = muserRepository.findById(userId);
 
 		if (courseOptional.isPresent() && optionalUser.isPresent()) {
+			
 			Muser user = optionalUser.get();
 
 			if ("ADMIN".equals(user.getRole().getRoleName()) || "TRAINER".equals(user.getRole().getRoleName())) {
 				return ResponseEntity.badRequest().body("Students only can buy the course");
 			}
 			CourseDetail course = courseOptional.get();
+            if (!user.getCourses().contains(course)) {
+            	 Long seats = course.getNoofseats();
+                 Long filled = course.getUserCount();
+                 if (seats <= filled) {
+                	 return ResponseEntity.badRequest().body("Seats are Filled For This Course");
+                 }
+            }
 			List<Orderuser> orderuserlist = ordertablerepo.findAllByUserIDAndCourseID(userId, courseId, "paid");
 			int amount = 0;
 			Long amt = course.getAmount();
@@ -302,7 +310,13 @@ public ResponseEntity<?>getOrderSummaryPart(Map<String, Long> requestData,  Stri
 				return ResponseEntity.badRequest().body("Students only can buy the course");
 			}
 			CourseDetail course = courseOptional.get();
-
+			 if (!user.getCourses().contains(course)) {
+            	 Long seats = course.getNoofseats();
+                 Long filled = course.getUserCount();
+                 if (seats <= filled) {
+                	 return ResponseEntity.badRequest().body("Seats are Filled For This Course");
+                 }
+            }
 			List<Orderuser> orderuserlist = ordertablerepo.findAllByUserIDAndCourseID(userId, courseId, "paid");
 			int amount = 0;
 			for (Orderuser order : orderuserlist) {
