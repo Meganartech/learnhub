@@ -247,12 +247,14 @@ const ViewVideo = () => {
           <div>
             <div className=" headingbtn">
               <h4 >{courseName}</h4>
+              <div>
              {role ==="USER" &&<Link
                 to={`/test/start/${courseName}/${courseId}`}
-                className="btn btn-primary mybtn "
+                className="btn btn-primary mybtn  "
               >
                 Start Test
               </Link>}
+              </div>
            </div>
             
               <div className="main">

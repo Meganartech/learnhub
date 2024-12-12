@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import baseUrl from "../../api/utils";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const SlideViewer = () => {
+  const MySwal = withReactContent(Swal);
   const token = sessionStorage.getItem("token");
   const location = useLocation();
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -80,8 +82,23 @@ const SlideViewer = () => {
         return updatedImages;
       });
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        MySwal.fire({
+          title: "Not Found",
+          text: "We Cannot Find The Document",
+          icon: "warning",
+          confirmButtonText: "OK",
+          allowOutsideClick: true, // Allow closing the modal by clicking outside
+        }).then(() => {
+          navigate(-1); // Navigate back whether "OK" or outside click
+        });
+      }else if(error.response && error.response.status===401){
+        
+          navigate("/unauthorized")
+        
+      }else{
       throw error
-      console.error("Error fetching slide image:", error);
+      }
     }
   };
 
@@ -117,8 +134,24 @@ const SlideViewer = () => {
         );
         setMiniatures(miniResponse.data);
       } catch (error) {
+        if (error.response && error.response.status === 404) {
+          MySwal.fire({
+            title: "Not Found",
+            text: "We Cannot Find The Document",
+            icon: "warning",
+            confirmButtonText: "OK",
+            allowOutsideClick: true, // Allow closing the modal by clicking outside
+          }).then(() => {
+            navigate(-1); // Navigate back whether "OK" or outside click
+          });
+        }else if(error.response && error.response.status===401){
+          
+            navigate("/unauthorized")
+          
+        }else{
         console.error("Error fetching miniatures:", error);
         throw error
+        }
       }
     };
 

@@ -253,8 +253,8 @@ const EditLesson = () => {
     const file = e.target.files[0];
 
     // Update formData with the new file
-    setvideodata((prevVideodata) => ({ ...prevVideodata, [name]: file }));
-    if (name === "thumbnail") {
+    setvideodata((prevVideodata) => ({ ...prevVideodata, thumbnail: file }));
+   
       // Convert the file to base64
       convertImageToBase64(file)
         .then((base64Data) => {
@@ -267,7 +267,7 @@ const EditLesson = () => {
         .catch((error) => {
           console.error("Error converting image to base64:", error);
         });
-    }
+        console.log("thumbnail",videodata.thumbnail)
   };
   const handleEdit = async (e) => {
     e.preventDefault();
@@ -304,8 +304,10 @@ const EditLesson = () => {
     if (videodata.fileUrl) {
       formDataToSend.append("fileUrl", videodata.fileUrl);
     }
-   
-
+    console.log("FormData content:");
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(key, value);
+    }
     try {
       const response = await axios.patch(
         `${baseUrl}/lessons/edit/${videodata.lessonId}`,

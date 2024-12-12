@@ -329,13 +329,13 @@ public class FrontController {
 		 
 		 @PatchMapping("/lessons/edit/{lessonId}")
 		 public ResponseEntity<?> EditLessons(@PathVariable Long lessonId,
-		     @RequestParam( required = false) MultipartFile file,
+		     @RequestParam(value="thumbnail", required = false) MultipartFile file,
 		     @RequestParam( required = false) String Lessontitle,
 		     @RequestParam( required = false) String LessonDescription,
-		     @RequestParam( required = false) MultipartFile videoFile,
-		     @RequestParam(required = false)List<MultipartFile> newDocumentFiles,
-		     @RequestParam(required=false) List<Long> removedDetails,
-		     @RequestParam( required = false) String fileUrl,
+		     @RequestParam(value = "videoFile", required = false) MultipartFile videoFile,
+		     @RequestParam(value="newDocumentFiles",required = false)List<MultipartFile> newDocumentFiles,
+		     @RequestParam(value="removedDetails",required=false) List<Long> removedDetails,
+		     @RequestParam(value="fileUrl", required = false) String fileUrl,
 		     @RequestHeader("Authorization") String token) {
 			 return videoless.EditLessons(lessonId, file, Lessontitle, LessonDescription, videoFile, fileUrl, newDocumentFiles,  removedDetails ,token);
 		 }

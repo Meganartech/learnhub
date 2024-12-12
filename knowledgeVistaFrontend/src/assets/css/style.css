@@ -25595,8 +25595,9 @@ ul {
 }
 .headingbtn {
   display: grid;
-  grid-template-columns: 10fr 2fr;
+  grid-template-columns: 10fr 1fr;
 }
+
 .videoinputs {
   padding: 20px;
   height: min-content;
@@ -25878,7 +25879,9 @@ ul {
   text-align: left;
   height: 430px;
   overflow-y: auto;
+  margin-bottom: 20px;
 }
+
 .notfound {
   margin-left: 350px;
   border-radius: 10px;

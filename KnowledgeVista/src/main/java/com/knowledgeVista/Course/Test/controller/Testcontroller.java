@@ -229,6 +229,7 @@ public class Testcontroller {
 	  
 	        public ResponseEntity<?> getTestByCourseId( Long courseId, String token) {
 	            // Validate the JWT token
+	        	try {
 	            if (!jwtUtil.validateToken(token)) {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 	                        .body("Invalid Token");
@@ -277,7 +278,6 @@ public class Testcontroller {
 	                        if (opTest.isPresent()) {
 	                            CourseTest test = opTest.get();
 	                            long attemptCount = muserActivityRepo.countByUser(user);
-
 	                            // Check if user exceeds allowed attempts
 	                            if (attemptCount >= test.getNoofattempt()) {
 	                                return ResponseEntity.badRequest().body("Attempt Limit Exceeded");
@@ -287,7 +287,10 @@ public class Testcontroller {
 
 	                            // Prepare test data for response
 	                            prepareTestDataForResponse(test);
-	                            return ResponseEntity.ok(test);
+	                            Map<String, Object> response = new HashMap<>();
+	                            response.put("test", test);
+	                            response.put("attemptCount", attemptCount);
+                            return ResponseEntity.ok(response);
 	                        } else {
 
 	                            return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -312,6 +315,11 @@ public class Testcontroller {
 	                return ResponseEntity.status(HttpStatus.FORBIDDEN)
 	                        .body("Access denied");
 	            }
+	        	}catch(Exception e) {
+	        		 logger.error("", e);;
+	 	            // Return an internal server error response
+	 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"An unexpected error occurred\"}");
+	        	}
 	        }
 	    private void prepareTestDataForResponse(CourseTest test) {
 	        // Remove relationships to avoid serialization issues

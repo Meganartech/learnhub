@@ -45,7 +45,7 @@ public class QuestionController {
 
 
 		public ResponseEntity<?> calculateMarks( List<Map<String, Object>> answers, Long courseId, String token) {
-		   
+		   try {
 		 
 
 		    String email=jwtUtil.getUsernameFromToken(token);
@@ -56,10 +56,10 @@ public class QuestionController {
 		    	 institution=user.getInstitutionName();
 		    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
 		   	    	if(!adminIsactive) {
-		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("inactive institution");
 		   	    	}
 		     }else {
-	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user not Found");
 		     }
 
 		    Optional<CourseDetail> opcourse = coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
@@ -116,12 +116,15 @@ public class QuestionController {
 		            return ResponseEntity.ok(response);
 		        } else {
 		            // Handle the case when the test is not present
-		            return ResponseEntity.notFound().build();
+		            return ResponseEntity.status(HttpStatus.NOT_FOUND ).body("Test Not Found");
 		        }
 		    } else {
-		        // Handle the case when either user or course is not present
-		        return ResponseEntity.notFound().build();
+		    	  return ResponseEntity.status(HttpStatus.NOT_FOUND ).body("User or Course Not Found");
 		    }
+		   }catch(Exception e) {
+			   logger.error("", e);;
+			   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		   }
 		}
 
 		public ResponseEntity<?> getQuestion( Long questionId, String token) {
