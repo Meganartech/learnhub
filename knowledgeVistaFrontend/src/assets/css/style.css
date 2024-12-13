@@ -21933,6 +21933,12 @@ pre[class*="language-"]:before {
   > .toggle-list {
   display: none;
 }
+.pcoded-navbar.navbar-collapsed:not(:hover)
+  .pcoded-inner-navbar
+  > .no-hasmenu
+  > .toggle-list {
+  display: none;
+}
 
 .pcoded-navbar.navbar-collapsed:not(:hover)
   .pcoded-inner-navbar

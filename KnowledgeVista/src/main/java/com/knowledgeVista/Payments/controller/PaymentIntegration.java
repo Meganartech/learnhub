@@ -2,13 +2,11 @@ package com.knowledgeVista.Payments.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
@@ -26,13 +23,11 @@ import com.knowledgeVista.Payments.Course_PartPayment_Structure;
 import com.knowledgeVista.Payments.InstallmentDetails;
 import com.knowledgeVista.Payments.Orderuser;
 import com.knowledgeVista.Payments.Paymentsettings;
-import com.knowledgeVista.Payments.Paypalsettings;
 import com.knowledgeVista.Payments.Stripesettings;
 import com.knowledgeVista.Payments.repos.OrderuserRepo;
 import com.knowledgeVista.Payments.repos.PaymentsettingRepository;
 import com.knowledgeVista.Payments.repos.Striperepo;
 import com.knowledgeVista.Payments.repos.partpayrepo;
-import com.knowledgeVista.Payments.repos.paypalrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
