@@ -676,7 +676,13 @@ public class CourseController {
 	               }
 	               
 	               partpayrepo.findBycourse(course).ifPresent(struct -> {
-	            	    struct.getInstallmentDetail().clear(); // Clears child entities
+	            	   List<InstallmentDetails> installments = struct.getInstallmentDetail();
+	            	   for (InstallmentDetails installment : installments) {
+	            		   installment.setPartpay(null); // Break the relationship
+	            	        installmentrepo.save(installment); 
+	            	       installmentrepo.delete(installment);
+	            	   }
+	            	   struct.getInstallmentDetail().clear();
 	            	    partpayrepo.delete(struct);           // Deletes the parent
 	            	});
 

@@ -61,8 +61,8 @@ const CourseCreation = () => {
             ? "Please enter a Course Title" 
             : value.length > 50 
             ? "Course Title should not exceed 50 characters" 
-            : value.includes("/") 
-            ? "Course Title should not contain the '/' character"
+            :(value.includes("/") || value.includes("\\"))
+            ?  "Course Title should not contain the '/' or '\' character"
             : "";
         break;
     
@@ -72,8 +72,8 @@ const CourseCreation = () => {
         ? "Please enter a Course Category" 
         : value.length > 50 
         ? "Course Category should not exceed 50 characters" 
-        : value.includes("/") 
-        ? "Course Category should not contain the '/' character"
+         :(value.includes("/") || value.includes("\\"))
+            ?  "Course Title should not contain the '/' or '\' character"
         : "";
         break;
       case "courseDescription":

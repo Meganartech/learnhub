@@ -66,8 +66,8 @@ const EditCourseForm = ({}) => {
       courseName: (value) =>
         !value
           ? "Course Name is required"
-          : value.includes("/")
-          ? "Course Name must not contain the '/' character"
+           :(value.includes("/") || value.includes("\\"))
+            ?  "Course Title should not contain the '/' or '\' character"
           : value.length > 50
           ? "Course Name must not exceed 50 characters"
           : "",

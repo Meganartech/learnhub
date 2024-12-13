@@ -419,6 +419,11 @@ const AddTrainer = () => {
         <div className="card-body">
           <div className="row">
             <div className="col-12">
+            <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
               <div className="innerFrame">
                 <h2 style={{ textDecoration: "underline" }}>
                   Add{" "}
