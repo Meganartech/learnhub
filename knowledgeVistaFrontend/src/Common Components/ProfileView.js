@@ -65,11 +65,10 @@ const ProfileView = () => {
         }));
       }
         
-        console.log(img);
       } catch (error) {
         if(error.response && error.response.status===401)
         {
-          window.location.href="/unauthorized";
+          navigate("/unauthorized")
         }else{
           // MySwal.fire({
           //   title: "Error!",

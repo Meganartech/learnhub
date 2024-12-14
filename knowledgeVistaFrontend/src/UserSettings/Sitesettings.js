@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 import baseUrl from "../api/utils";
+import { GlobalStateContext } from "../Context/GlobalStateProvider";
 
 const Sitesettings = () => {
   const MySwal = withReactContent(Swal);
@@ -36,7 +37,8 @@ const Sitesettings = () => {
     siteicon: "",
     titleicon: "",
   });
-
+  // const { Activeprofile} = useContext(GlobalStateContext);
+  const { Activeprofile} = useContext(GlobalStateContext);
   useEffect(()=>{
      const getLabelings=async()=>{
       try{
@@ -216,19 +218,6 @@ switch(name){
       formData.append("sitelogo", siteSettings.sitelogo);
       formData.append("siteicon", siteSettings.siteicon);
       formData.append("titleicon", siteSettings.titleicon);
-      for (let [key, value] of formData.entries()) {
-        if (value instanceof File) {
-            // If the value is a file, log the file details
-            console.log(`${key}:`, {
-                name: value.name, 
-                type: value.type, 
-                size: value.size,
-            });
-        } else {
-            // Otherwise, log the regular value
-            console.log(`${key}: ${value}`);
-        }
-    }
       
       const response=await axios.post(`${baseUrl}/save/labellings`,formData,{
         headers: {
@@ -519,7 +508,7 @@ switch(name){
       </div>
     </div>
   );
-  return <div>{isnotFound ? EditInputs : oldinputs}</div>;
+  return (<>{Activeprofile ==="VPS" && <div>{isnotFound ? EditInputs : oldinputs}</div>}</>);
 };
 
 export default Sitesettings;

@@ -31,7 +31,6 @@ const TrainerProfile = () => {
       if (role === "ADMIN") {
         try {
           let fetchedInitialUserData = initialUserData;
-          console.log("initial=",initialUserData)
           // Fetch initialUserData if it's not available from location.state
           if (!fetchedInitialUserData) {
 
@@ -40,7 +39,6 @@ const TrainerProfile = () => {
             });
             fetchedInitialUserData = detailsRes.data;
             setInitialUserData(fetchedInitialUserData);
-            console.log("from server")
           }
 
           // Fetch additional user data
@@ -70,14 +68,14 @@ const TrainerProfile = () => {
             if (error.response.status === 404) {
               setNotFound(true);
             } else if (error.response.status === 401) {
-              window.location.href = '/unauthorized';
+              navigate("/unauthorized")
             }else{
               throw error
             }
           }
         }
       } else if (role === "TRAINER") {
-        window.location.href = "/unauthorized";
+        navigate("/unauthorized")
       }
     };
 

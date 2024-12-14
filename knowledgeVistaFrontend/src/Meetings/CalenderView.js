@@ -57,59 +57,7 @@ const CalenderView = () => {
     };
 
     fetchItems();
-  }, []);   
-
- 
-// useEffect(() => {
-//   const fetchItems = async () => {
-//     try {
-//       const response = await axios.get(`${baseUrl}/api/zoom/getMyMeetings`, {
-//         headers: {
-//           Authorization: token,
-//         },
-//       });
-
-//       if (response.data) {
-//         const fetchedEvents = response.data
-//           .map((meeting) => {
-//             if (!meeting.startTime) {
-//               console.error(`Missing startTime for meeting ID: ${meeting.meetingId}`);
-//               return null; // Skip invalid meetings
-//             }
-
-//             const utcStartTime = new Date(meeting.startTime);
-//             if (isNaN(utcStartTime)) {
-//               console.error(`Invalid startTime format: ${meeting.startTime}`);
-//               return null; // Skip invalid meetings
-//             }
-
-//             // Convert UTC start time to local time
-//             const localStartTime = new Date(utcStartTime.getTime());
-
-//             // Add duration to start time to get end time
-//             const durationInMinutes = Number(meeting.duration) || 0;
-//             const localEndTime = new Date(localStartTime.getTime() + durationInMinutes * 60000);
-
-//             return {
-//               id: meeting.meetingId,
-//               start: localStartTime.toISOString(),
-//               end: localEndTime.toISOString(),
-//               joinUrl: meeting.joinUrl,
-//               title: meeting.topic || "",
-//             };
-//           })
-//           .filter(Boolean); // Remove null values from invalid meetings
-
-//         setEvents(fetchedEvents);
-//       }
-//     } catch (error) {
-//       console.error("Error fetching meetings:", error);
-//     }
-//   };
-
-//   fetchItems();
-// }, []);
-
+  }, []);
   const [meetingId, setMeetingId] = useState('');
 
   // Handle input change

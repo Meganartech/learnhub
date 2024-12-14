@@ -1,10 +1,12 @@
-package com.knowledgeVista.Payments;
+package com.knowledgeVista.Payments.repos;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.knowledgeVista.Payments.Paymentsettings;
 
 @Repository
 public interface PaymentsettingRepository extends JpaRepository<Paymentsettings, Long> {

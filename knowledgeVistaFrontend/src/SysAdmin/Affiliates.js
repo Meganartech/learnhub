@@ -15,7 +15,6 @@ const Affiliates = () => {
       try {
         const response = await axios.get(`${baseUrl}/api/v2/affliators`);
         setUsers(response.data);
-        console.log(response.data)
       } catch (error) {
         console.error('Error fetching affiliates:', error);
         // MySwal.fire({

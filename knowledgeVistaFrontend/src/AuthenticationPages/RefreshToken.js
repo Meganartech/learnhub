@@ -10,7 +10,6 @@ const RefreshToken = () => {
     const MySwal = withReactContent(Swal);
 
     const token=sessionStorage.getItem("token");
-    console.log("token",token)
     const navigate=useNavigate();
     
         const refreshtoken = async () => {

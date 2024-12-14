@@ -168,12 +168,15 @@ const TrainerRegistration = () => {
 
       case "psw":
         const passwordRegex =
-          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        if (!passwordRegex.test(value)) {
-          error =
-            "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
-        }
-        break;
+            /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+          if (!passwordRegex.test(value)) {
+            error =
+              "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+          } else if (formData.confirm_password && formData.confirm_password !== value) {
+            // Trigger confirm_password validation when password changes
+            error = "Confirm password does not match the password.";
+          }
+          break;
       case "confirm_password":
         error = value !== formData.psw ? "Passwords do not match" : "";
         break;
@@ -279,7 +282,7 @@ const TrainerRegistration = () => {
           confirmButtonText: "ok",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/";
+              navigate("/");
           } else {
             setFormData({
               username: "",
@@ -610,7 +613,7 @@ const TrainerRegistration = () => {
                 </button>
               </div>
               <div className="w-100 alignright">
-                <a className="small" href="/login">
+                <a className="small" href="#" onClick={(e)=>{e.preventDefault();   navigate("/login");}}>
                   Already have an account? Login!
                 </a>
               </div>

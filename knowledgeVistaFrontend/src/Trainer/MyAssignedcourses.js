@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import errorimg from "../images/errorimg.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../api/utils";
@@ -11,6 +11,8 @@ const MyAssignedcourses = () => {
   const role = sessionStorage.getItem("role");
   const token = sessionStorage.getItem("token");
   const [courses, setCourses] = useState([]);
+  const Currency=sessionStorage.getItem("Currency")
+  const navigate=useNavigate()
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -65,7 +67,7 @@ const MyAssignedcourses = () => {
           })
           .catch((error) => {
             if (error.response && error.response.status === 401) {
-              window.location.href = "/unauthorized";
+              navigate("/unauthorized")
             } else {
               // MySwal.fire({
               //   title: "Error!",
@@ -91,7 +93,7 @@ const MyAssignedcourses = () => {
         <div className="col-sm-12">
           <div className="createbtn">
             {(role === "ADMIN" || role === "TRAINER") && (
-              <a href="/course/Trainer/addcourse">
+              <a onClick={(e)=>{e.preventDefault();navigate("/course/Trainer/addcourse")}} href="#">
                 <button type="button" className="btn btn-light mb-3">
                   <i className="fa-solid fa-plus"></i> Create Course
                 </button>
@@ -116,14 +118,16 @@ const MyAssignedcourses = () => {
                       }}
                       style={{ cursor: "pointer" }}
                       onClick={(e) => {
-                        window.location.href = item.courseUrl;
+                        e.preventDefault()
+                        navigate(item.courseUrl)
                       }}
                       className="img-fluid card-img-top"
                       alt="Course"
                     />
                     <div className="card-body">
                       <h5 className="card-title flexWithPadding">
-                        <a href={item.courseUrl} style={{ cursor: "pointer" }}>
+                        <a  onClick={(e)=>{e.preventDefault();navigate(item.courseUrl)}}
+                         style={{ cursor: "pointer" }}>
                           {item.courseName.length > 10
                             ? item.courseName.slice(0, 10) + "..."
                             : item.courseName}
@@ -179,11 +183,17 @@ const MyAssignedcourses = () => {
                           </div>
                         </div>
                       </h5>
-                      <div className="card-text"> {item.courseDescription}</div>
+                      <div className="card-text"> {item.courseDescription.length > 20
+                            ? item.courseDescription.slice(0, 20) + "..."
+                            : item.courseDescription}</div>
                       <div className="card-text">
                         {item.amount === 0 ? (
                           <a
-                            href={item.courseUrl}
+                            href="#"
+                            onClick={(e)=>{e.preventDefault();
+                              navigate(item.courseUrl)
+                            }}
+                           
                             className=" btn btn-outline-success w-100"
                           >
                             {" "}
@@ -191,7 +201,7 @@ const MyAssignedcourses = () => {
                           </a>
                         ) : (
                           <a className="btn btn-outline-primary w-100">
-                            <i className="fa-solid fa-indian-rupee-sign mr-2"></i>
+                            <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1" : "fa-solid fa-dollar-sign mr-1"}></i>
                             <label>{item.amount}</label>
                           </a>
                         )}

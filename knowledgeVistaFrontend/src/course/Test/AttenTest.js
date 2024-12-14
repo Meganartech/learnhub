@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
 import axios from 'axios';
+import { error } from 'jquery';
 
 const AttenTest = () => {
     const navigate =useNavigate();
@@ -15,6 +16,8 @@ const AttenTest = () => {
     const [testdetails,settestdetails]=useState({
         passPercentage:"",
         noOfQuestions:"",
+        noofattempt:"",
+        userAttempt:""
     });
     const [attemplimit,setattemptlimit]=useState(false);
     const [questions, setQuestions] = useState([]);
@@ -34,26 +37,50 @@ const AttenTest = () => {
                
                
                   if(response.status===200){
-                const data =  response.data;
-                
-                settestdetails(data);
-                const transformedQuestions = data.questions.map(question => ({
-                    ...question,
-                    options: [
+                    const data = response.data.test;
+                    const attemptCount = response.data.attemptCount;
+              
+                    // Update the state with the test data and attempt count
+                    settestdetails(prev => ({
+                      ...prev,
+                      ...data, // Spread previous test details and add new ones from the 'data'
+                      userAttempt: attemptCount, // Add the attempt count to the state
+                    }));
+              
+                    // Transform the questions as needed
+                    const transformedQuestions = data.questions.map(question => ({
+                      ...question,
+                      options: [
                         { optionId: 1, optionText: question.option1 },
                         { optionId: 2, optionText: question.option2 },
                         { optionId: 3, optionText: question.option3 },
                         { optionId: 4, optionText: question.option4 }
-                    ]
-                }));
-                setQuestions(transformedQuestions);}
+                      ]
+                    }));
+              
+                    // Set the transformed questions state
+                    setQuestions(transformedQuestions);
+                  }
             } catch (error) {
                 if(error.response && error.response.status===404)
-                {
+                { 
+                    MySwal.fire({
+                        title: "Error",
+                        text: error.response.data ? error.response.data : "error occured",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
                     setNotFound(true); 
                   }
                   else if(error.response && error.response.status===400){
                     setattemptlimit(true);
+                  } else if(error.response && error.response.status===403){
+                   MySwal.fire({
+                    title: "Error",
+                    text: error.response.data ? error.response.data : "error occured",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
                   }else{
                  
                 // MySwal.fire({
@@ -104,6 +131,7 @@ const AttenTest = () => {
               }
           });
           setIsSubmitting(false);
+          if(response.status===200){
           const data = response.data;
           if(data.result === "pass"){          
             MySwal.fire({
@@ -111,7 +139,7 @@ const AttenTest = () => {
                 title: 'Congratulations!',
                 text: `${data.message}`,
             }).then(() => {
-                window.location.href="/MyCertificateList"; 
+                 navigate("/MyCertificateList"); 
             });
         }
           else{
@@ -123,18 +151,32 @@ const AttenTest = () => {
                 window.location.href = "/dashboard/course";
             })
           }
-          
+        }
       } catch (error) {
         
         setIsSubmitting(false);
-        const message=error.response
-        // MySwal.fire({
-        //     title: "Error",
-        //     text: message,
-        //     icon: "error",
-        //     confirmButtonText: "OK"
-        // });
+       if(error.response && error.response.status===401){
+        MySwal.fire({
+            title: "Un Authorized ",
+            text: error?.response?.data,
+            icon: "warning",
+            confirmButtonText: "OK"
+        }).then(()=>{
+            navigate("/dashboard/course")
+          })
+       }else if(error.response && error.response.status===404){
+        MySwal.fire({
+            title: "Not Found ",
+            text: error?.response?.data,
+            icon: "warning",
+            confirmButtonText: "OK"
+        }).then(()=>{
+            navigate("/dashboard/course")
+          })
+       }else{
+       
         throw error
+       }
       }
   };
   
@@ -194,7 +236,11 @@ const AttenTest = () => {
         <div className="row">
         <div className="col-12">
                 <div className='div3'>
-                    <h4 style={{textDecoration:"underline"}}>Test Instructions</h4>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+  <h4 style={{ textDecoration: "underline", margin: 0 }}>Test Instructions</h4>
+  <b className='mr-3'> Attempt: ({testdetails.userAttempt} / {testdetails.noofattempt})</b>
+</div>
+
                    <div className='instruction'>
                     <h2 style={{textAlign:"center"}}><i className="fa-solid fa-triangle-exclamation"></i></h2>
                     <h3 style={{textAlign:"center"}}>Notice</h3>
@@ -216,6 +262,7 @@ const AttenTest = () => {
                     <h5 className='font-weight-bold'>Test Format :</h5>
                     <ul style={{ listStyleType: 'disc' }}>
                         <li>The Test Consist of <b>{testdetails.noOfQuestions }</b> Multiple-choice Questions </li>
+                        <li>This test allows <b>{testdetails.noofattempt}</b> attempt(s) only.</li>
                         <li>Each Question carries one Mark </li>
                         <li>Read the Question Carefully and select your Answer</li>
                         <li>To pass this test you have to score atleast<b> {testdetails.passPercentage} % </b>to get the certificate</li>
@@ -235,7 +282,7 @@ const AttenTest = () => {
 
                     </div>
                     <div>
-                    <button onClick={handleProceedClick} className='btn btn-primary'>Proceed</button></div>
+                    <button onClick={handleProceedClick} className='btn btn-primary mr-3'>Proceed</button></div>
                     </div>
             </div>
             </div>
@@ -248,7 +295,6 @@ const AttenTest = () => {
                <div className="card-body">
           <div className="row">
           <div className="col-12">
-                <div className='atdiv'>
                   <div className='atgrid'>
                     <h3>{questions[currentQuestionIndex].questionText}</h3>
                     <ul className='listgroup'>
@@ -273,7 +319,7 @@ const AttenTest = () => {
                 <div className='atbtndiv'>
                  
                     {currentQuestionIndex > 0 ? (
-                       <div> <button className='btn btn-primary' onClick={handlePrevQuestion}>Previous</button></div>
+                       <div> <button className='btn btn-primary ' onClick={handlePrevQuestion}>Previous</button></div>
                             ) : (
                         <div></div>
                     )}
@@ -293,7 +339,7 @@ const AttenTest = () => {
                 </div>
                 </div>
                 </div>
-           </div>
+        
 
             ) : proceedClicked && Object.keys(selectedAnswers).length === testdetails.noOfQuestions ? (
                 // Render submission section if questions are answered

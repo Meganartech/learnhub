@@ -9,8 +9,10 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { GlobalStateContext } from "../Context/GlobalStateProvider";
+import { useNavigate } from "react-router-dom";
 
 const AddTrainer = () => {
+  const navigate=useNavigate();
   const token = sessionStorage.getItem("token");
   const MySwal = withReactContent(Swal);
   const [showPassword, setShowPassword] = useState(false);
@@ -170,17 +172,24 @@ const AddTrainer = () => {
             ? ""
             : "Please enter a valid date of birth";
         break;
-      case "psw":
-        const passwordRegex =
-          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        if (!passwordRegex.test(value)) {
-          error =
-            "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
-        }
-        break;
-      case "confirm_password":
-        error = value !== formData.psw ? "Passwords do not match" : "";
-        break;
+        case "psw":
+          const passwordRegex =
+            /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+          if (!passwordRegex.test(value)) {
+            error =
+              "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+          } else if (formData.confirm_password && formData.confirm_password !== value) {
+            // Trigger confirm_password validation when password changes
+            error = "Confirm password does not match the password.";
+          }
+          break;
+    
+        case "confirm_password":
+          if (value !== formData.psw) {
+            error = "Passwords do not match.";
+          }
+          break;
+    
       case "phone":
         error =
           value.length < 10
@@ -355,7 +364,7 @@ const AddTrainer = () => {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/view/Trainer";
+              navigate("/view/Trainer");
           }
         });
       }
@@ -410,6 +419,11 @@ const AddTrainer = () => {
         <div className="card-body">
           <div className="row">
             <div className="col-12">
+            <div className='navigateheaders'>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
               <div className="innerFrame">
                 <h2 style={{ textDecoration: "underline" }}>
                   Add{" "}

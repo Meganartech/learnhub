@@ -72,7 +72,6 @@ const Approvals = () => {
         break;
       case "dob":
         setDob(value);
-        console.log(dob);
         break;
       case "email":
         setEmail(value);
@@ -119,7 +118,7 @@ const Approvals = () => {
         }));
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          window.location.href = "/unauthorized";
+          navigate("/unauthorized")
         }
         console.error("Error fetching data:", error);
       }
@@ -210,7 +209,7 @@ console.log(error)
       }));
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        window.location.href = "/unauthorized";
+        navigate("/unauthorized")
       }
       console.error("Error fetching data:", error);
     }

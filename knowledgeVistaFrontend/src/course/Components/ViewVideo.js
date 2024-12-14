@@ -40,10 +40,10 @@ const ViewVideo = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          window.location.href = "/unauthorized";
+          navigate("/unauthorized")
           return;
         } else if (error.response && error.response.status === 404) {
-          window.location.href = "/missing";
+          navigate("/missing")
         } else {
           // await MySwal.fire({
           //   icon: "error",
@@ -88,7 +88,6 @@ const ViewVideo = () => {
       },
     });
     setcurrentDocs(docResponse.data);
-    console.log(currentDocs);
   };
   useEffect(() => {
     // Update the currently playing lesson whenever lessonId changes
@@ -248,12 +247,14 @@ const ViewVideo = () => {
           <div>
             <div className=" headingbtn">
               <h4 >{courseName}</h4>
+              <div>
              {role ==="USER" &&<Link
                 to={`/test/start/${courseName}/${courseId}`}
-                className="btn btn-primary mybtn "
+                className="btn btn-primary mybtn  "
               >
                 Start Test
               </Link>}
+              </div>
            </div>
             
               <div className="main">
@@ -262,8 +263,7 @@ const ViewVideo = () => {
                     <ReactPlayer
                       ref={playerRef}
                       url={videoSource}
-                      width="100%"
-                      height="80%"
+                      className="vdobox"
                       controls
                       onProgress={handleOnProgress}
                       onSeek={handleOnSeek}
@@ -285,8 +285,7 @@ const ViewVideo = () => {
                     />
                   ) : videoType === "youtube" ? (
                     <ReactPlayer
-                      width="100%"
-                      height="80%"
+                      className="vdobox"
                       controls
                       playing
                       url={videoSource ? videoSource : null}
@@ -299,7 +298,7 @@ const ViewVideo = () => {
                     />
                   ) : null}
                   {currentLesson && (
-                    <div>
+                    <div className="description mt-1">
                       <h2>{currentLesson.lessontitle}</h2>
                       <p style={{ textIndent: "100px" }}>
                         {currentLesson.lessonDescription}

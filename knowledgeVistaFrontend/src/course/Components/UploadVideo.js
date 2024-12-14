@@ -57,11 +57,17 @@ const UploadVideo = () => {
     let error = "";
     switch (name) {
       case "Lessontitle":
-        error = value.length < 1 ? "Please enter a Video Title" : "";
+        error = value.length < 1 
+        ? "Please enter a lesson Title" : value.length > 50 
+        ? "Lesson Title should not exceed 50 characters" 
+        : "";
         setvideodata({ ...videodata, [name]: value });
         break;
       case "LessonDescription":
-        error = value.length < 1 ? "Please enter a Video Description" : "";
+        error = value.length < 1 
+        ? "Please enter a Lesson Descriptio " : value.length > 1000
+        ? "Lesson Description should not exceed 100 characters" 
+        : "";
         setvideodata({ ...videodata, [name]: value });
         break;
       case "normalurl":
@@ -125,9 +131,18 @@ const UploadVideo = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !videodata.Lessontitle?.trim() || 
+      !videodata.LessonDescription || 
+      (!videodata.videoFile && !videodata.fileUrl)
+    ) {
+      alert("Please ensure all required fields are filled. Either a video file or file URL must be provided.");
+      setIsSubmitting(false); // Reset the submitting state
+      return;
+    }
     setIsSubmitting(true);
     const formDataToSend = new FormData();
-    formDataToSend.append("Lessontitle", videodata.Lessontitle);
+    formDataToSend.append("Lessontitle", videodata.Lessontitle.trim());
     formDataToSend.append("LessonDescription", videodata.LessonDescription);
     formDataToSend.append("thumbnail", videodata.thumbnail);
     if (videodata.documentContent && videodata.documentContent.length > 0) {
@@ -142,9 +157,7 @@ const UploadVideo = () => {
       formDataToSend.append("fileUrl", videodata.fileUrl);
       formDataToSend.append("videoFile", null);
     }
-    for (const [key, value] of formDataToSend.entries()) {
-      console.log(`${key}: ${value}`);
-    }
+  
     try {
       const response = await axios.post(
         `${baseUrl}/lessons/save/${courseId}`,
@@ -405,7 +418,7 @@ const UploadVideo = () => {
                       videodata.documentContent.length > 0 && (
                         <ul>
                           {videodata.documentContent.map((doc, index) => (
-                            <li key={index} className="doclink2">
+                            <li key={index} className="doclink">
                               {doc.name}
                               <i
                                 className="fa-regular fa-trash-can"

@@ -20,7 +20,7 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Payments.Orderuser;
-import com.knowledgeVista.Payments.OrderuserRepo;
+import com.knowledgeVista.Payments.repos.OrderuserRepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.UserStats;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -58,8 +58,9 @@ public class CourseControllerSecond {
 	    	 Muser user=opuser.get();
 	    	String institution=user.getInstitutionName(); 
 	    	Long totalStorageUsed = lessonrepo.findTotalSizeByInstitution(institution);
+	    	System.out.println("total used"+totalStorageUsed);
 	    	Long maxStorageLimitBytes = licencerepo.FindstoragesizeByinstitution(institution) * (1024L * 1024 * 1024);
-
+                  
 	    	// Calculate in bytes first
 	    	Long balanceStorageBytes = maxStorageLimitBytes - (totalStorageUsed != null ? totalStorageUsed : 0);
 
@@ -80,6 +81,7 @@ public class CourseControllerSecond {
 
 	    	if (totalStorageUsedGB < 1) {
 	    	    response.put("StorageUsed", String.format("%d MB", (totalStorageUsed != null ? totalStorageUsed : 0) / (1024 * 1024)));
+	    	
 	    	} else {
 	    	    response.put("StorageUsed", String.format("%d GB", totalStorageUsedGB));
 	    	}
@@ -89,6 +91,7 @@ public class CourseControllerSecond {
 	    	} else {
 	    	    response.put("balanceStorage", String.format("%d GB", balanceStorageGB));
 	    	}
+	    	System.out.println("total used"+response);
 	    	return ResponseEntity.ok(response);
 
 

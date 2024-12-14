@@ -55,7 +55,7 @@ const MailSettings = () => {
               setisnotFound(true);
               setinitialsave(true);
             } else if (error.response.status === 401) {
-              window.location.href = "/unauthorized";
+              navigate("/unauthorized")
             }else{
               throw error
             }
@@ -68,10 +68,7 @@ const MailSettings = () => {
   }, []);
   const save = async (e) => {
     e.preventDefault();
-    console.log("hi in save", initialsave);
-
     if (initialsave) {
-      console.log("hi in initial save");
       try {
         const response = await axios.post(
           `${baseUrl}/save/mailkeys`,
@@ -107,7 +104,6 @@ const MailSettings = () => {
       }
     } else {
       if (defaultsettings.id) {
-        console.log("hi in default");
         axios
           .patch(`${baseUrl}/Edit/mailkeys`, settings, {
             headers: {
@@ -131,7 +127,7 @@ const MailSettings = () => {
           })
           .catch((error) => {
             if (error.response.status === 401) {
-              window.location.href = "/unauthorized";
+              navigate("/unauthorized")
             } else {
               // MySwal.fire({
               //   icon: "error",
@@ -358,14 +354,13 @@ const MailSettings = () => {
                   />
                 </div>
               </div>
-            </div>
-
-            <div className="btngrp">
+            </div>          
+          </div>
+          <div className="btngrp">
               <button className="btn btn-success" onClick={Edit}>
                 Edit
               </button>
             </div>
-          </div>
         </div>
       </div>
     </div>

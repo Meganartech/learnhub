@@ -39,7 +39,7 @@ const navigate=useNavigate();
             setCourses(data);
         } catch (error) {
           if(error.response && error.response.status===401){
-            window.location.href="/unauthorized"
+             navigate("/unauthorized")
           }else{
             console.error('Error fetching user data:', error);
             throw error
@@ -81,7 +81,7 @@ const handleAssignCourse = async () => {
         title: 'Courses Assigned!',
         text: 'Selected courses have been assigned successfully.'
       });
-      window.location.href="/view/Trainer"
+      navigate("/view/Trainer")
     } 
   } catch (error) {
     if(error.response){

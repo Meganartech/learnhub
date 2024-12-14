@@ -70,7 +70,6 @@ const handleChange = (e) => {
       break;
       case 'dob':
         setDob(value);
-        console.log(dob);
         break;
     case 'email':
       setEmail(value);
@@ -127,7 +126,7 @@ const handleChange = (e) => {
              
           } catch (error) {
             if(error.response && error.response.status===401){
-              window.location.href="/unauthorized"
+              navigate("/unauthorized")
             }else{
             console.error('Error fetching data:', error);
             throw error
@@ -159,7 +158,7 @@ const handleChange = (e) => {
           }));
         } catch (error) {
           if (error.response && error.response.status === 401) {
-            window.location.href = "/unauthorized";
+            navigate("/unauthorized")
           }else{
           console.error('Error fetching data:', error);
           throw error
@@ -380,7 +379,7 @@ const handleChange = (e) => {
                     <option className='bg-light text-dark' value="Active">Active</option>
                     <option className='bg-light text-dark' value="Inactive">Inactive</option>
                   </select>
-        <a href="/addTrainer" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add {displayname && displayname.trainer_name
+        <a onClick={(e)=>{e.preventDefault();  navigate("/addTrainer")}} href="#" className='btn btn-primary mybtn'><i className="fa-solid fa-plus"></i> Add {displayname && displayname.trainer_name
                     ? displayname.trainer_name
                     : "Trainer"}</a>
         </div>

@@ -54,7 +54,7 @@ const ZoomKeys = () => {
               setisnotFound(true);
               setinitialsave(true);
             } else if (error.response.status === 401) {
-              window.location.href = "/unauthorized";
+              navigate("/unauthorized")
             }else{
               throw error
             }
@@ -160,7 +160,7 @@ const ZoomKeys = () => {
     })
     .catch(error => {
      if(error.response.status===401){
-      window.location.href="/unauthorized"
+      navigate("/unauthorized")
      } else{
       // MySwal.fire({
       //   icon: 'error',

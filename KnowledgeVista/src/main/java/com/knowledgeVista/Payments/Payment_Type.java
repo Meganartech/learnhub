@@ -1,22 +1,35 @@
 package com.knowledgeVista.Payments;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-@Entity
-@Table
-@Getter@Setter@NoArgsConstructor
-public class Payment_Type {
-	   @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long paymentTypeId;
-	   @Column(columnDefinition = "Varchar(50)")
-	private String PaymentTypeName;
 
+@Entity
+@Table(
+    uniqueConstraints = @UniqueConstraint(columnNames = {"payment_type_name", "institution_name"})
+)
+@Getter
+@Setter
+@NoArgsConstructor
+public class Payment_Type {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long paymentTypeId;
+
+    @Column(name="payment_type_name",columnDefinition = "Varchar(50)")
+    private String paymentTypeName;
+
+    @Column(name = "institution_name")
+    private String institutionName;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+    
+    
+    public Payment_Type(Boolean isActive, String paymentTypeName) {
+        this.isActive = isActive;
+        this.paymentTypeName = paymentTypeName;
+    }
 }

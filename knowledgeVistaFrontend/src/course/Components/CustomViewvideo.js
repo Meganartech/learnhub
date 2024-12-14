@@ -64,9 +64,9 @@ const CustomViewvideo = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          window.location.href = "/unauthorized";
+          navigate("/unauthorized")
         } else if (error.response && error.response.status === 404) {
-          window.location.href = "/missing";
+          navigate("/missing")
         } else {
           // MySwal.fire({
           //   icon: "error",
@@ -277,8 +277,7 @@ const CustomViewvideo = () => {
                   {videoType === "local" ? (
                     <ReactPlayer
                       url={videoSource}
-                      width="100%"
-                      height="80%"
+                     className="vdobox"
                       controls
                       onProgress={handleOnProgress}
                       onSeek={handleOnSeek}
@@ -300,8 +299,7 @@ const CustomViewvideo = () => {
                     />
                   ) : videoType === "youtube" ? (
                     <ReactPlayer
-                      width="100%"
-                      height="80%"
+                     className="vdobox"
                        playing
                       controls
                       url={videoSource ? videoSource : null}
@@ -314,7 +312,7 @@ const CustomViewvideo = () => {
                     />
                   ) : null}
                   {currentLesson && (
-                    <div>
+                    <div className="description mt-1">
                       <h2>{currentLesson.lessontitle}</h2>
                       <p style={{ textIndent: "100px" }}>
                         {currentLesson.lessonDescription}

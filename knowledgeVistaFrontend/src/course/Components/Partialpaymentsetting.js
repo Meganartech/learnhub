@@ -122,9 +122,12 @@ const Partialpaymentsetting = ({
             type="checkbox"
             className="m-4"
             name="check"
+            disabled={courseamount <= 0}
             checked={enablechecked}
             onChange={() => {
+              if(courseamount!=0){
               setenablechecked(!enablechecked);
+              }
             }}
           />
           <h4 htmlFor="check" style={{ display: "inline" }}>

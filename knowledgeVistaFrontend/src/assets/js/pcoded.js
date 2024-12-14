@@ -4,7 +4,6 @@ import 'bootstrap';
 import 'jquery-ui/ui/widgets/tooltip';
 import "./ripple"
 const Pcoded = () => {
-    console.log("pcoded")
 $(document).ready(function() {
     $(function() {
         $.widget.bridge('uitooltip', $.ui.tooltip);

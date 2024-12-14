@@ -29,9 +29,9 @@ import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.Payments.Course_PartPayment_Structure;
 import com.knowledgeVista.Payments.InstallmentDetails;
-import com.knowledgeVista.Payments.OrderuserRepo;
-import com.knowledgeVista.Payments.installmentdetilsrepo;
-import com.knowledgeVista.Payments.partpayrepo;
+import com.knowledgeVista.Payments.repos.OrderuserRepo;
+import com.knowledgeVista.Payments.repos.installmentdetilsrepo;
+import com.knowledgeVista.Payments.repos.partpayrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -258,6 +258,7 @@ public class CourseController {
 	        courseDetail.setCourseDescription(description);
 	        courseDetail.setCourseCategory(category);
 	        courseDetail.setAmount(amount);
+	        courseDetail.setPaytype("FULL");
 	        courseDetail.setDuration(Duration);
 	        courseDetail.setPaytype("FULL");
 	        courseDetail.setInstitutionName(institution);
@@ -618,6 +619,7 @@ public class CourseController {
 
 	   //---------------------WORKING--------------
 	 
+	   
 	   public ResponseEntity<String> deleteCourse( Long courseId ,String token) {
 	       try {
 	           // Find the course by ID
@@ -674,13 +676,23 @@ public class CourseController {
 	                   user.getAllotedCourses().remove(course);
 	               }
 	               
-	               // Delete the course
+	               partpayrepo.findBycourse(course).ifPresent(struct -> {
+	            	   List<InstallmentDetails> installments = struct.getInstallmentDetail();
+	            	   for (InstallmentDetails installment : installments) {
+	            		   installment.setPartpay(null); // Break the relationship
+	            	        installmentrepo.save(installment); 
+	            	       installmentrepo.delete(installment);
+	            	   }
+	            	   struct.getInstallmentDetail().clear();
+	            	    partpayrepo.delete(struct);           // Deletes the parent
+	            	});
+
 	               coursedetailrepository.delete(course);
 
 	               return ResponseEntity.ok("Course deleted successfully");
 	           } else {
 	               // If the course with the specified ID does not exist
-	               return ResponseEntity.notFound().build();
+	               return ResponseEntity.ok("course Not Found");
 	           }
 	       }else {
 
@@ -692,6 +704,9 @@ public class CourseController {
 	    	   e.printStackTrace();    logger.error("", e);;
 	           return ResponseEntity.status(HttpStatus.FORBIDDEN)
 	                   .body("The course cannot be deleted. Delete all associated lessons, test.");
+	       }catch(Exception e) {
+	    	   logger.error("", e);;
+	    	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	       }
 	   }
 

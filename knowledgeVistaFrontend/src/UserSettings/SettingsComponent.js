@@ -3,7 +3,6 @@ import DisplayCourses from "./DisplayCourses";
 import { useNavigate } from "react-router-dom";
 import ErrorBoundary from "../ErrorBoundary";
 import DisplaysocialLogin from "./DisplaysocialLogin";
-import SocialLoginKeysAdmin from "./SocialLoginKeysAdmin";
 import Sitesettings from "./Sitesettings";
 
 const SettingsComponent = () => {

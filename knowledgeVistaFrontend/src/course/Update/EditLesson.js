@@ -143,11 +143,17 @@ const EditLesson = () => {
     let error = "";
     switch (name) {
       case "lessontitle":
-        error = value.length < 1 ? "Please enter a Video Title" : "";
+        error = value.length < 1 
+        ? "Please enter a Lesson Title" : value.length > 50 
+        ? "Lesson Title should not exceed 50 characters" 
+        : "";
         setvideodata({ ...videodata, [name]: value });
         break;
       case "lessonDescription":
-        error = value.length < 1 ? "Please enter a Video Description" : "";
+        error = value.length < 1 
+        ? "Please enter a Lesson Descriptio " : value.length > 1000
+        ? "Lesson Description should not exceed 100 characters" 
+        : "";
         setvideodata({ ...videodata, [name]: value });
         break;
       case "normalurl":
@@ -250,8 +256,8 @@ const EditLesson = () => {
     const file = e.target.files[0];
 
     // Update formData with the new file
-    setvideodata((prevVideodata) => ({ ...prevVideodata, [name]: file }));
-    if (name === "thumbnail") {
+    setvideodata((prevVideodata) => ({ ...prevVideodata, thumbnail: file }));
+   
       // Convert the file to base64
       convertImageToBase64(file)
         .then((base64Data) => {
@@ -264,7 +270,7 @@ const EditLesson = () => {
         .catch((error) => {
           console.error("Error converting image to base64:", error);
         });
-    }
+        console.log("thumbnail",videodata.thumbnail)
   };
   const handleEdit = async (e) => {
     e.preventDefault();
@@ -272,7 +278,7 @@ const EditLesson = () => {
 
     const formDataToSend = new FormData();
     if (videodata.lessontitle) {
-      formDataToSend.append("Lessontitle", videodata.lessontitle);
+      formDataToSend.append("Lessontitle", videodata.lessontitle.trim());
     }
     if (videodata.lessonDescription) {
       formDataToSend.append("LessonDescription", videodata.lessonDescription);
@@ -281,7 +287,6 @@ const EditLesson = () => {
       videodata.removedDetails.forEach(doc => {
           formDataToSend.append("removedDetails", doc); // Append each ID
       });
-      console.log("existing IDs", videodata.removedDetails.map(doc => doc.id)); // Log the IDs for verification
   }
   
     if (videodata.newDocumentFiles && videodata.newDocumentFiles.length > 0) {
@@ -289,7 +294,6 @@ const EditLesson = () => {
         formDataToSend.append("newDocumentFiles", doc); // Ensure each document is appended properly
       });
     }
-    console.log("formdata", formDataToSend);
     if (videodata.thumbnail) {
       formDataToSend.append("thumbnail", videodata.thumbnail);
     }
@@ -303,10 +307,10 @@ const EditLesson = () => {
     if (videodata.fileUrl) {
       formDataToSend.append("fileUrl", videodata.fileUrl);
     }
-    for (const [key, value] of formDataToSend.entries()) {
-      console.log(`${key}: ${value}`);
+    console.log("FormData content:");
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(key, value);
     }
-
     try {
       const response = await axios.patch(
         `${baseUrl}/lessons/edit/${videodata.lessonId}`,
@@ -325,13 +329,13 @@ const EditLesson = () => {
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
-          window.location.href = `/lessonList/${courseName}/${courseId}`;
+           navigate(`/lessonList/${courseName}/${courseId}`);
         });
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         setIsSubmitting(false);
-        window.location.href = "/unauthorized";
+       navigate( "/unauthorized");
       } else if (error.response && error.response === 404) {
         setIsSubmitting(false);
         MySwal.fire({
@@ -601,7 +605,7 @@ const EditLesson = () => {
                                
                               >
                                 <div 
-                                className="doclink2"
+                                className="doclink"
                                 onClick={() => {
                                 navigate(`/viewDocument/${doc.documentPath}/${lessonId}/${doc.id}`);
                                 }}> {doc.documentName &&(
@@ -634,7 +638,7 @@ const EditLesson = () => {
                       videodata.newDocumentFiles.length > 0 && (
                         <ul>
                           {videodata.newDocumentFiles.map((doc, index) => (
-                            <li key={index} className="doclink2" >
+                            <li key={index} className="doclink" >
                               {doc.name &&(
                                 <>
                                   {doc.name}{" "}

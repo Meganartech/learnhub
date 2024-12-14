@@ -40,7 +40,6 @@ const DisplayName = () => {
           });
           if (response.status === 200) {
             const data = response.data;
-            console.log(data)
             setdisplayname(data);
             setdefaultname(data);
             
@@ -55,10 +54,9 @@ const DisplayName = () => {
           if (error.response) {
             if (error.response.status === 404) {
               setisnotFound(true);
-              console.log("notfound",isnotFound)
               setinitialsave(true);
             } else if (error.response.status === 401) {
-              window.location.href = "/unauthorized";
+              navigate("/unauthorized")
             }else{
               throw error
             }
@@ -99,7 +97,7 @@ try{
   if (error.response.status === 404) {
     console.log("notfound")
   } else if (error.response.status === 401) {
-    window.location.href = "/unauthorized";
+    navigate("/unauthorized")
   }else{
     throw error
   }
@@ -138,7 +136,7 @@ try{
     if (error.response.status === 404) {
       console.log("notfound")
     } else if (error.response.status === 401) {
-      window.location.href = "/unauthorized";
+      navigate("/unauthorized")
     }else{
       throw error
     }

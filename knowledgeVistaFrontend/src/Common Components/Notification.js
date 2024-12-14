@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import baseUrl from "../api/utils";
 import axios from "axios";
 import message from "../images/message.png";
+import { useNavigate } from "react-router-dom";
 
 const Notification = ({   handlemarkallasRead }) => {
-  
+  const navigate =useNavigate()
   const [notifications, setnotifications] = useState(() => {
     const storedNotifications = sessionStorage.getItem("notifications");
     if (storedNotifications) {
@@ -34,7 +35,6 @@ const role=sessionStorage.getItem("role")
         return
       }
       if (notifyIds.length === 0) return;
-      console.log("Fetching images for IDs:", notifyIds);
       const response = await axios.post(`${baseUrl}/getImages`, notifyIds, {
         headers: {
           Authorization: token,
@@ -70,7 +70,6 @@ const role=sessionStorage.getItem("role")
           "notifications",
           JSON.stringify(updatedNotifications)
         ); // Store updated notifications in sessionStorage
-        console.log("Images fetched successfully:", imagesData);
       }
     } catch (error) {
       console.error("Error fetching notification images:", error);
@@ -258,7 +257,7 @@ const role=sessionStorage.getItem("role")
                     onClick={() => {
                       if (notification.link && notification.link.startsWith("/")) {
                         // For internal links (relative paths), open in the same tab
-                        window.location.href = notification.link;
+                        navigate(notification.link)
                       } else {
                         // For all other URLs, open in a new tab
                         window.open(notification.link, "_blank");

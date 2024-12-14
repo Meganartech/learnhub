@@ -81,7 +81,7 @@ const EditTrainer = () => {
             setNotFound(true)
           }else if(error.response && error.response.status===401)
           {
-            window.location.href="/unauthorized";
+            navigate("/unauthorized")
           }else{
             // MySwal.fire({
             //   title: "Error!",
@@ -306,7 +306,7 @@ setErrors((prevErrors) => ({
               
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "/view/Trainer";
+                  navigate( "/view/Trainer");
                 }
               });
           }          
@@ -412,14 +412,13 @@ setErrors((prevErrors) => ({
             <div className="col-sm-9"> <input
              type="text"
               id='Name'
-              value={formData.username}
+              value={formData.username|| ""}
               onChange={handleChange}
               name="username"
               
               className={`form-control   mt-1 ${errors.username && 'is-invalid'}`}
               placeholder="Full Name"
               autoFocus
-              required
             />
             <div className="invalid-feedback">
               {errors.username}
@@ -433,7 +432,7 @@ setErrors((prevErrors) => ({
                     autoComplete="off"
                     className={`form-control   ${errors.email && 'is-invalid'}`}
                     name="email"
-                    value={formData.email}
+                    value={formData.email|| ""}
                     onChange={handleChange}
                     placeholder="Email Address"
                     required
@@ -481,9 +480,8 @@ setErrors((prevErrors) => ({
                                   name="dob"
                                   className={`form-control   ${errors.dob && 'is-invalid'}`}
                                   placeholder="Starting year"
-                                  value={formData.dob}
+                                  value={formData.dob|| ""}
                                   onChange={handleChange}
-                                  required
                                  
             />
             <div className="invalid-feedback">
@@ -496,14 +494,13 @@ setErrors((prevErrors) => ({
             <div className="col-sm-9"> <input
              type="text"
               id='skills'
-              value={formData.skills}
+              value={formData.skills|| ""}
               onChange={handleChange}
               name="skills"
               
               className={`form-control    ${errors.skills && 'is-invalid'}`}
               placeholder="skills"
            
-              required
             />
             <div className="invalid-feedback">
               {errors.skills}

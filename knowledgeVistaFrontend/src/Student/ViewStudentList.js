@@ -121,7 +121,7 @@ const ViewStudentList = () => {
         })); // Update total pages
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          window.location.href = "/unauthorized";
+          navigate("/unauthorized")
         }else{
         console.error("Error fetching data:", error);
         throw error
@@ -149,7 +149,7 @@ const ViewStudentList = () => {
       })); 
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        window.location.href = "/unauthorized";
+        navigate("/unauthorized")
       }else{
       console.error("Error fetching data:", error);
       throw error
@@ -411,7 +411,7 @@ const ViewStudentList = () => {
                 Inactive
               </option>
             </select>
-            <a href="/addStudent" className="btn btn-primary mybtn">
+            <a onClick={(e)=>{e.preventDefault();navigate("/addStudent")}} href="#" className="btn btn-primary mybtn">
               <i className="fa-solid fa-plus"></i> Add{" "}
               {displayname && displayname.student_name
                 ? displayname.student_name

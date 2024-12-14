@@ -8,7 +8,8 @@ import Header from "../../Common Components/Header";
 import pcoded from "../../assets/js/pcoded.js"
 import Sidebar from "../../Common Components/Sidebar.js";
 import { useNavigate } from "react-router-dom";
-const ViewCourseVps = () => {
+import SelectPaymentGateway from "../Payments/SelectPaymentGateway.js";
+const ViewCourseVps = (filter,handleFilterChange) => {
   useEffect(() => {
       pcoded();  
       },[]);
@@ -19,6 +20,17 @@ const ViewCourseVps = () => {
   const[notfound,setnotfound]=useState(false);
   const islogedin=sessionStorage.getItem("token")!==null;
   const navigate=useNavigate();
+  const Currency=sessionStorage.getItem("Currency")
+  const[orderData,setorderData]=useState({
+    userId:"",
+    courseId:"",
+    amount:"" ,
+    courseAmount:"",
+    coursename:"",
+    installment:"",
+    paytype:"",
+    url:""
+})
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -66,19 +78,7 @@ const ViewCourseVps = () => {
     }
   }, []);  // Empty dependency array ensures this only runs once when the component mounts
   
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => {
-        resolve(true);
-      };
-      script.onerror = () => {
-        resolve(false);
-      };
-      document.body.appendChild(script);
-    });
-  };
+ 
   const handlepaytype =(courseId, userId,paytype)=>{
    
     if (!token) {
@@ -88,136 +88,67 @@ const ViewCourseVps = () => {
       navigate("/login");
       return;
     }
-    let url=""
-    if(paytype==="FULL"){
-      url="/full/buyCourse/create";
-      handlesubmit(courseId,userId,url);
-    }else{
-    
-    MySwal.fire({
-      icon:"question",
-      title: 'Payment Type?',
-      text:"Want To Pay the Amount Partially or Fully? ",
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonColor:"#4e73df",
-      denyButtonColor:"#4e73df",
-      confirmButtonText: `Pay Fully `,
-      denyButtonText: `Pay in  Part`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        url="/full/buyCourse/create";
-        handlesubmit(courseId,userId,url);
-      } else if (result.isDenied) {
-        url="/part/buyCourse/create";
-        
-        handlesubmit(courseId,userId,url);
-      }
-    })
-    }
-  }
-  const handlesubmit = async (courseId, userId,url) => {
-    try {
-      setsubmitting(true)
-  const data=JSON.stringify({
-        courseId: courseId,
-        userId: userId
-    })
-     
-        const response = await axios.post(`${baseUrl}${url}`,data, {
-      
-          headers: {
-            "Authorization": token,
-            'Content-Type': 'application/json'
-          }
-        });
-        setsubmitting(false)
-        const scriptLoaded = await loadRazorpayScript();
+    let url = "";
+    if (paytype === "FULL") {
+      url = "/Full/getOrderSummary";
+      FetchOrderSummary(courseId, userId, url);
+    } else {
+      MySwal.fire({
+        icon: "question",
+        title: "Payment Type?",
+        text: "Want To Pay the Amount Partially or Fully? ",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonColor: "#4e73df",
+        denyButtonColor: "#4e73df",
+        confirmButtonText: `Pay Fully `,
+        denyButtonText: `Pay in  Part`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          url = "/Full/getOrderSummary";
+          FetchOrderSummary(courseId, userId, url);
+        } else if (result.isDenied) {
+          url = "/Part/getOrderSummary";
 
-        if (!scriptLoaded) {
-          alert("Failed to load Razorpay SDK. Please try again.");
-          return;
+          FetchOrderSummary(courseId, userId, url);
         }
-            const order =  response.data;
-            const options = {
-                order_id: order.orderId,  
-                description :order.description,
-               name:order.name,
-                handler: function (response) {
-                  if (response.error ){
-                    MySwal.fire({
-                      icon: 'error',
-                      title: 'Payment Failed:',
-                      text: response.error,
-                    });
-                  } else {
-                    
-                        sendPaymentIdToServer(response.razorpay_payment_id, order.orderId,response.razorpay_signature);
-
-                    }
-                },
-                
-                theme: {
-                    color: "#3399cc"
-                },
-            };
-
-            var pay = new window.Razorpay(options);
-            
-            pay.open();
-           
-        
-    } catch (error) {
-      setsubmitting(false)
-    //   MySwal.fire({
-    //     icon: 'error',
-    //     title: 'Error creating order:', 
-    //     text:  error.response.data ? error.response.data :"error occured"
-    // });
-    throw error
+      });
     }
-};
-
-  const sendPaymentIdToServer = async (paymentId, order ,signature) => {
+  };
+  const FetchOrderSummary=async(courseId, userId, url) =>{
     try {
-      setsubmitting(true)
-      const paydata=JSON.stringify({
-        paymentId: paymentId,
-        orderId: order,
-        signature:signature,
-    })
-        const response = await axios.post(`${baseUrl}/buyCourse/payment`,paydata, {
-          headers: {
-            "Authorization": token,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (response.status===200) {
-          setsubmitting(false)
-            // Success response
-            const message =  response.data;
-            navigate(message);
-        
-        } else {
-          setsubmitting(false)
-            const errorMessage =  response.data;
-            MySwal.fire({
-              icon: 'error',
-              title: 'Error updating payment ID:', 
-              text: errorMessage
+          setsubmitting(true);
+          const data = JSON.stringify({
+            courseId: courseId,
+            userId: userId,
           });
+    
+          const response = await axios.post(`${baseUrl}${url}`, data, {
+            headers: {
+              Authorization: token,
+              "Content-Type": "application/json",
+            },
+          });
+          setsubmitting(false);
+
+setorderData(response.data)
+        }catch(error){
+          setsubmitting(false);
+              if(error.response && error.response.status===400){
+              MySwal.fire({
+                icon: "error",
+                title: "Error creating order:",
+                text: error.response.data ? error.response.data : "error occured",
+              });
+            }else{
+              throw error
+            }
         }
-    } catch (error) {
-      setsubmitting(false)
-    //   MySwal.fire({
-    //     icon: 'error',
-    //     title: 'Error sending payment ID to server:', 
-    //     text: error.response.data ? error.response.data : "error occured"
-    // });
-    throw error
-    }
-};
+  }
+ 
+  
+ 
+
 const handleClick = async (event, id,amount,url,paytype) => {
   if (!token) {
     // Save payment data to localStorage or sessionStorage
@@ -269,7 +200,8 @@ navigate(url);
 
 return (
   <>
-    {islogedin && <Sidebar/>}
+    {islogedin && <Sidebar  filter={filter}
+    handleFilterChange={handleFilterChange}/>}
     <Header searchQuery={searchQuery}
         handleSearchChange={handleSearchChange}
         setSearchQuery={setSearchQuery} />
@@ -282,13 +214,16 @@ return (
     
     {filteredCourses && filteredCourses.length > 0 ? (
       <div>
+         {orderData.amount && (
+        <SelectPaymentGateway orderData={orderData} setorderData={setorderData}/>
+      )}
         <h4 style={{color:"white"}}>Courses For You</h4>
         < div className="row">
           {filteredCourses
             .slice()
             .reverse()
             .map((item) => (
-              <div className="col-6 col-md-4 col-lg-2 col-xl-2 course" key={item.courseId}>
+              <div className="col-md-6 col-xl-3 course" key={item.courseId}>
                 <div className="card mb-3">
                   <img
                     className="img-fluid card-img-top"
@@ -334,7 +269,7 @@ return (
                           }}
                         >
                           <div>
-                            <i className="fa-solid fa-indian-rupee-sign"></i>
+                          <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i>
                             <span className="mt-3 blockquote">
                               {item.amount}
                             </span>

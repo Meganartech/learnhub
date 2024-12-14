@@ -175,7 +175,7 @@ const AddMoreQuestion = () => {
                         icon: "error",
                         confirmButtonText: "OK"
                     });
-                    window.location.href = "/unauthorized"; // Redirect to previous page
+                     navigate("/unauthorized"); // Redirect to previous page
                
                 }else{
                 // MySwal.fire({
@@ -194,18 +194,17 @@ const AddMoreQuestion = () => {
         <div>
     <div className="page-header"></div>
     <div className="card">
-      <div className="card-header">
+    <div className="card-body">
             <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
       <h4>Add Question to {courseName}</h4>
-      </div>
-      <div className="card-body">
+      
+     
         <div className="row">
         <div className="col-12">
-                <div className='atdiv'>
                     <div className='atgrid' >
                         <div>
                            
@@ -255,7 +254,6 @@ const AddMoreQuestion = () => {
                         }>Save</button></div>
                     </div>
 
-                </div>
             </div>
             </div>
             </div>

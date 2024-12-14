@@ -38,7 +38,6 @@ const CreateTest = () => {
 
  const showprevious=(e)=>{
     const index=selectedQuestionIndex-1;
-    console.log(index)
     if(index >=0){
     const { questionText, option1, option2, option3, option4, answer } = savedQuestions[index];
     setQuestionText(questionText);
@@ -158,7 +157,6 @@ const CreateTest = () => {
   const submitTest = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
 
-   console.log("questions",savedQuestions)
     try {
       const noOfQuestions = savedQuestions.length; // Count the number of questions
       const requestBody = {
@@ -188,14 +186,14 @@ const CreateTest = () => {
         confirmButtonText: "OK"
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = `/course/testlist/${courseName}/${courseId}`;
+           navigate(`/course/testlist/${courseName}/${courseId}`);
         }
       });
 
     } catch (error) {
        if(error.response && error.response.status===401)
           {
-            window.location.href="/unauthorized";
+            navigate("/unauthorized")
           }else{
             // MySwal.fire({
             //   title: "Error!",
@@ -355,26 +353,24 @@ const handleOptionChange = (e, index) => {
         </div>
       ) : (
         <div className="card">
-      <div className="card-header">
+            <div className="card-body">
           <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>
       <div></div>
       <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
       </div>
       <h4 > Create Test For {courseName}</h4>  
-             
-      </div>
-      <div className="card-body">
+    
+    
         <div className="row">
         <div className="col-12">
-         <div className="atdiv" >
               
               <div className='atgrid ' >
              <div>
             {errors.selectedOption && (
               <div className="text-danger">{errors.selectedOption}</div>
             )}
-              <div className="mb-3" > 
+              <div className="formgroup row" > 
               <input
                 className={`form-control    ${errors.testName && 'is-invalid'}`}
                 value={testName}
@@ -385,11 +381,12 @@ const handleOptionChange = (e, index) => {
               
   </div>
   {selectedQuestionIndex < savedQuestions.length &&(
+   
               <i className="fas fa-trash text-danger  "
                 style={{ float: "right" ,fontSize:"20px",padding:"10px"}}
                         onClick={() => handleDelete(selectedQuestionIndex)}
                       ></i>)}
-     
+      <div className="formgroup row" > 
               <input 
               className={`form-control   ${errors.questionText && 'is-invalid'}`}       
               type="text"  
@@ -400,6 +397,7 @@ const handleOptionChange = (e, index) => {
                 required
               />
                {errors.questionText && <div className="invalid-feedback">{errors.questionText}</div>}
+               </div>
           </div>    
       <div>        
 <ul className='listgroup' >                
@@ -481,7 +479,7 @@ const handleOptionChange = (e, index) => {
                         </div>
       </div>  
      
-                      </div> 
+                     
                     </div>
                     </div>
                     </div>

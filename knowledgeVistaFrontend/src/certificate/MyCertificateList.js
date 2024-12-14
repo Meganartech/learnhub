@@ -61,7 +61,7 @@ const MyCertificateList = () => {
                             <td>{certificate.course}</td>
                             <td>{certificate.percentage}</td>
                             <td>{certificate.testDate}</td>
-                            <td><a href={`/template/${certificate.activityId}`}><i className="fa-solid fa-download text-primary"></i></a></td>
+                            <td><a href="#" onClick={(e)=>{e.preventDefault(); navigate(`/template/${certificate.activityId}`)}}><i className="fa-solid fa-download text-primary"></i></a></td>
                         </tr>
                     ))}
                 </tbody>

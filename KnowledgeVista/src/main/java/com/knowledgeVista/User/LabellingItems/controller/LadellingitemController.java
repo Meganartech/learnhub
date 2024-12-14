@@ -127,7 +127,7 @@ public class LadellingitemController {
 	 public ResponseEntity<?>getLabelingitemsforall(){
 		 try {
 			 String instutionname=muserrepositories.getInstitution("ADMIN");
-			 if(instutionname.isEmpty()) {
+			 if(instutionname.isEmpty()||instutionname.equals(null)) {
 				 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 			 }else {
 				 Optional<Labelingitems>labels=labellingrepo.FindbyInstitution(instutionname);

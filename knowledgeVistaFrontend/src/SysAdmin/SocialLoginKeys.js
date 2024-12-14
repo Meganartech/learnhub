@@ -46,17 +46,15 @@ const SocialLoginKeys = () => {
             const data = response.data;
             setdefaultkeys(data);
             setloginkeys(data);
-            console.log(response.status)
           }else if(response.status === 204){
             setisnotFound(true);
-            console.log(response.status)
           } 
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {
               setisnotFound(true);
             } else if (error.response.status === 401) {
-              window.location.href = "/unauthorized";
+              navigate("/unauthorized")
             }else{
               throw error
             }

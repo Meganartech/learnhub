@@ -177,11 +177,16 @@ const AdminRegister = () => {
         break;
 
       case "psw":
-        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        if (!passwordRegex.test(value)) {
-          error = "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
-        }
-        break;
+        const passwordRegex =
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordRegex.test(value)) {
+        error =
+          "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+      } else if (formData.confirm_password && formData.confirm_password !== value) {
+        // Trigger confirm_password validation when password changes
+        error = "Confirm password does not match the password.";
+      }
+      break;
       case "confirm_password":
         error = value !== formData.psw ? "Passwords do not match" : "";
         break;
@@ -297,7 +302,7 @@ setErrors((prevErrors) => ({
           cancelButtonText: "Cancel",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/login";
+            navigate("/login");
           } else {
             setFormData({
               username: "",

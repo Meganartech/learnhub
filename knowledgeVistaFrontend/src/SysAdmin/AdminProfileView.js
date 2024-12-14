@@ -78,14 +78,14 @@ const AdminProfileView = () => {
             if (error.response.status === 404) {
               setNotFound(true);
             } else if (error.response.status === 401) {
-              window.location.href = "/unauthorized";
+              navigate("/unauthorized")
             }else{
               throw error
             }
           }
         }
       } else if (role === "TRAINER") {
-        window.location.href = "/unauthorized";
+        navigate("/unauthorized")
       }
     };
 

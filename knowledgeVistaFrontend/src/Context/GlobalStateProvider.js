@@ -6,6 +6,8 @@ import favicon from "../images/favicon.ico"
 // Create the context
 export const GlobalStateContext = createContext();
 
+const token =  sessionStorage.getItem("token")
+const role=sessionStorage.getItem("role")
 // Create a provider component
 export const GlobalStateProvider = ({ children }) => {
   const [displayname, setDisplayname] = useState({
@@ -25,8 +27,13 @@ export const GlobalStateProvider = ({ children }) => {
     const fetchactiveprofile=async()=>{
       try{
         const active = await axios.get(`${baseUrl}/Active/Environment`);
-       // sessionStorage.setItem("Activeprofile", active.data);
-        setActiveProfile(active.data);
+        if (active?.data?.environment) {
+          sessionStorage.setItem("Activeprofile", active.data.environment);
+          setActiveProfile(active.data.environment);
+        } 
+        if (active?.data?.currency) {
+          sessionStorage.setItem("Currency", active.data.currency);
+        } 
       }catch(error){
         console.log(error)
       }
@@ -39,24 +46,24 @@ export const GlobalStateProvider = ({ children }) => {
         if (cachedSettings) {
           const parsedSettings = JSON.parse(cachedSettings);
           setsiteSettings(parsedSettings);
-          updateSiteMeta(parsedSettings); // Update favicon and title
-          console.log("Loaded from sessionStorage:", parsedSettings);
+          updateSiteMeta(parsedSettings); 
         } else {
           let response;
-          if (token) {
+          if (token && role==="ADMIN") {
+           
             response = await axios.get(`${baseUrl}/Get/labellings`, {
               headers: {
                 Authorization: token,
               },
             });
+          
           } else {
             response = await axios.get(`${baseUrl}/all/get/labellings`);
           }
 
           setsiteSettings(response.data);
           sessionStorage.setItem("siteSettings", JSON.stringify(response.data)); // Cache data
-          updateSiteMeta(response.data); // Update favicon and title
-          console.log("Fetched from API:", response.data);
+          updateSiteMeta(response.data);
         }
       } catch (error) {
         console.error("Error fetching site settings:", error);
@@ -87,7 +94,6 @@ export const GlobalStateProvider = ({ children }) => {
   }, []);
 
   
-  const token =  sessionStorage.getItem("token")
 
   useEffect(() => {
     const fetchDisplayNameSettings = async () => {

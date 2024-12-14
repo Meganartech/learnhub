@@ -221,8 +221,7 @@ setFooterDetails((prev)=>({
             className="form-control"
             readOnly
           />
-          <div className="invalid-feedback">{errors.copyright}</div>
-        </div>
+         </div>
       </div>
 
       <div className="form-group row">

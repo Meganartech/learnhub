@@ -16,24 +16,24 @@ const Footer = () => {
     const getFooterdetails=async()=>{
      try{
       if(Environment==="VPS"){
-      if(token){
-     const response=await axios.get(`${baseUrl}/Get/FooterDetails`,{
-       headers:{
-         Authorization:token
-       }
-     })
-     if(response.status===200){
-       setFooterDetails(response.data)
-     }
-    }else{
+     
       const response2=await axios.get(`${baseUrl}/all/get/FooterDetails`)
       if(response2.status===200){
         setFooterDetails(response2.data)
+      }if(response2.status===204){
+        setFooterDetails({copyright: "",
+          contact: "",
+          supportmail: "",
+          institutionmail: "",}); 
       }
     }
-  }
+  
    }catch(error){
-     console.log(error)
+     console.log("foooter",error)
+     setFooterDetails({copyright: "",
+      contact: "",
+      supportmail: "",
+      institutionmail: "",}); 
    }
   
     }

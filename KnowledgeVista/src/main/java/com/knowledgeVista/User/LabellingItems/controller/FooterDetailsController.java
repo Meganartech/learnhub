@@ -101,7 +101,7 @@ public class FooterDetailsController {
 	 public ResponseEntity<?>getFooteritemsForAll(){
 		 try {
 			 String instutionname=muserrepositories.getInstitution("ADMIN");
-			 if(instutionname.isEmpty()) {
+			 if(instutionname.isEmpty()||instutionname.equals(null)) {
 				 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 			 }else {
 				 Optional<FooterDetails>footerdetails= footerrepo.FindFooterDetailsByInstitution(instutionname);

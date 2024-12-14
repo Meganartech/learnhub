@@ -28,7 +28,6 @@ import UploadVideo from "./course/Components/UploadVideo";
 import CourseCreation from "./course/Components/CourseCreation";
 import ViewVideo from "./course/Components/ViewVideo";
 import LessonList from "./course/Components/LessonList";
-import Razorpay_Settings from "./AuthenticationPages/Razorpay_Settings.js";
 import TrainerProfile from "./Trainer/TrainerProfile.js";
 import StudentProfile from "./Student/StudentProfile.js";
 import MyAssignedcourses from "./Trainer/MyAssignedcourses.js";
@@ -83,9 +82,12 @@ import SocialLoginKeysAdmin from "./UserSettings/SocialLoginKeysAdmin.js";
 import FooterDetails from "./UserSettings/FooterDetails.js";
 import $ from "jquery";
 import pcoded from "./assets/js/pcoded.js";
+import MainPaymentSettingPage from "./course/Payments/MainPaymentSettingPage.js";
+import UpdateStripePayment from "./course/Payments/UpdateStripepayment.js";
+import SelectPaymentGateway from "./course/Payments/SelectPaymentGateway.js";
+import UpdatePaypalPayment from "./course/Payments/UpdatePaypalPayment.js";
 function App() {
   useEffect(() => {
-    console.log("in useeffect pcoded");
     pcoded();
   }, []);
   const isAuthenticated = sessionStorage.getItem("token") !== null;
@@ -110,13 +112,11 @@ function App() {
     setSearchQuery(e.target.value);
   };
   const handleFilterChange = (name) => {
-    console.log(`Before update:`, filter); // Debug log to see filter state before update
     setFilter((prev) => {
       const updatedFilter = {
         ...prev,
         [name]: !prev[name], // Toggle the selected filter state
       };
-      console.log(`After update:`, updatedFilter); // Debug log to see filter state after update
       return updatedFilter;
     });
   };
@@ -158,6 +158,7 @@ function App() {
             });
             const data = response.data;
             setCourse(data);
+            console.log("course",data)
           }
         }
       } catch (error) {
@@ -542,12 +543,12 @@ function App() {
                     authenticationRequired={true}
                     authorizationRequired={true}
                   >
-                    <Razorpay_Settings />
+                    <MainPaymentSettingPage />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
             />
-            <Route
+           <Route
               path="/certificate"
               element={
                 <ErrorBoundary>
@@ -918,14 +919,15 @@ function App() {
             />
             {/* SysAdminRoutes */}
           </Route>
-
+          <Route path="/updatePayment" element={<PrivateRoute authenticationRequired={true} onlyuser={true}><UpdateStripePayment/></PrivateRoute>}/>
+          <Route path="/updatePaypalPayment"element={<PrivateRoute authenticationRequired={true} onlyuser={true}><UpdatePaypalPayment/></PrivateRoute>}/>
           <Route
             path="/"
             element={
               <ErrorBoundary>
                 <RedirectComponent vpsonly={true} checkvisible={true}>
                   {" "}
-                  <ViewCourseVps />
+                  <ViewCourseVps filter={filter} handleFilterChange={handleFilterChange}/>
                 </RedirectComponent>
               </ErrorBoundary>
             }
@@ -1012,6 +1014,7 @@ function App() {
               </ErrorBoundary>
             }
           />
+          
           <Route
             path="*"
             element={

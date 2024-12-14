@@ -37,7 +37,7 @@ const TestList = () => {
       } catch (error) {
         if(error.response && error.response.status===401)
           {
-            window.location.href="/unauthorized";
+            navigate("/unauthorized")
           }else if(error.response && error.response.status===404){
           setNotFound(true);
         }else{
@@ -112,7 +112,7 @@ const TestList = () => {
         } catch (error) {
           if(error.response && error.response.status===401)
           {
-            window.location.href="/unauthorized";
+            navigate("/unauthorized")
           }else{
             // MySwal.fire({
             //   title: "Error!",

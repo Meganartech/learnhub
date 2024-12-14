@@ -35,8 +35,7 @@ function handleError(message) {
             });
       
             if (response.ok) { // .ok is true if status is in the range 200-299
-              const data = await response.json(); // Parse JSON response
-              console.log("Mail sent response:", data);
+              const data = await response.json(); 
               
               // Assuming the body contains the message "Mail Sent"
               if (data.statusCodeValue === 200) {
