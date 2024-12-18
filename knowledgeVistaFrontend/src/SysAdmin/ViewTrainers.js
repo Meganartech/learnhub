@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { useNavigate } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import axios from 'axios';
 const ViewTrainers = () => {
+  const navigate=useNavigate();
   const MySwal = withReactContent(Swal);
     const [users, setUsers] = useState([]);
     const token=sessionStorage.getItem("token");

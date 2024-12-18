@@ -94,6 +94,7 @@ const EditCourseForm = ({}) => {
     return validations[fieldName](fieldValue);
   };
 
+
   // Function to convert file to Base64
   const convertImageToBase64 = (file) => {
     return new Promise((resolve, reject) => {

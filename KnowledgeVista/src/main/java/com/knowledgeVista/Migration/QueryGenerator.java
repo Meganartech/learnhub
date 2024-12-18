@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +17,15 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.Course.certificate.certificateRepo;
-import com.knowledgeVista.License.Madmin_Licence;
+import com.knowledgeVista.Email.MailkeysRepo;
 import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.License.mAdminLicenceRepo;
+import com.knowledgeVista.SocialLogin.SocialKeyRepo;
+import com.knowledgeVista.SocialLogin.SocialLoginKeys;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 
@@ -45,6 +48,16 @@ public class QueryGenerator {
 	@Autowired
 	private licenseRepository licenseRepository;
 	
+	@Autowired
+	private MailkeysRepo mailkeyRepository;
+	
+	@Autowired
+	private videoLessonRepo videoLessonRepository;
+	
+	
+	@Autowired
+	private SocialKeyRepo SocialKeyRepository;
+	
 	@Value("${upload.licence.directory}")
     private String path;
    
@@ -52,21 +65,21 @@ public class QueryGenerator {
     private String backupPath;
 	
 	 @GetMapping("/switch-database")
-	 public Madmin_Licence generateInsertStatements() {
+	 public  void generateInsertStatements() {
 	        // Fetch all Muser records
 		 try {
 //			 List<Muser> Muser = muser.findAll();
 			 String institutionName = "Admin";
 			 
 			 // Add data based on the Admin name for user details  (muser table)
-//			 List<MuserMigrationDto>test= muser.findAllByInstitutionNameDto("Admin");
+			 List<MuserMigrationDto>test= muser.findAllByInstitutionNameDto("Admin");
 //		        this.writeDataToFile(test, "Muser");
 		        
 		     // Add data based on the InstitutionName name for certificate(certificate table)
 //		     Optional<certificate> certificate=certificatere.findByInstitution(institutionName);
 //		        this.writeDataToFile(Certificate, "Certificate");
 		        
-		     // Add data based on the InstitutionName name for certificate(certificate table) 
+		     // Add data based on the InstitutionName name for CourseDetail(CourseDetail table) 
 //		        List<CourseDetailDto>CourseDetail=Course.findAllByInstitutionNameDto(institutionName);
 //		        this.writeDataToFile(CourseDetail, "CourseDetail");
 
@@ -74,17 +87,29 @@ public class QueryGenerator {
 //			 Optional<License> License= licenseRepository.findByinstitution(institutionName);
 //		     this.writeDataToFile(License, "License");
 		        
-		     // Add data based on the InstitutionName name for license(license table) 
-//			 Optional<madminRepository> License= madminRepository.findByInstitutionName(institutionName);
-//			 Madmin mad=new Madmin();
-			 Madmin_Licence Madmin_Licence = madminRepository.findByInstitutionName(institutionName);
-			 List<Madmin_Licence> madminLicence = new ArrayList<>();
-			 if (Madmin_Licence != null) {
-			     madminLicence.add(Madmin_Licence);
-			 }
-			 this.writeDataToFile(madminLicence, "MadminLicence");
+		     // Add data based on the InstitutionName name for Madmin_Licence(Madmin_Licence table) 
+//			 Madmin_Licence Madmin_Licence = madminRepository.findByInstitutionName(institutionName);
+//			 List<Madmin_Licence> madminLicence = new ArrayList<>();
+//			 if (Madmin_Licence != null) {
+//			     madminLicence.add(Madmin_Licence);
+//			 }
+//			 this.writeDataToFile(madminLicence, "MadminLicence");
+//			 
+			 
+			 // Add data based on the InstitutionName name for Mailkeys(Mailkeys table) 
+//			 Optional<Mailkeys> Mailkeys=mailkeyRepository.FindMailkeyByInstituiton(institutionName);
+//			 this.writeDataToFile(Mailkeys, "Mailkeys");
 		        
-		        
+			 
+			 
+			// Add data based on the InstitutionName name for SocialLoginKeys(SocialLoginKeys table) 
+//			 List<SocialLoginKeys>SocialLoginKey= SocialKeyRepository.FindSocialLoginKeysByInstituiton(institutionName);
+//			 this.writeDataToFile(SocialLoginKey, "SocialLoginKeys");
+			 
+			 
+			// Add data based on the InstitutionName name for videoLessons(videoLessons table) 
+//				 List<VideoLessonsMigrationDto>videoLessons=videoLessonRepository.findAllByVideoLessonsMigrationDto(institutionName);
+//				 this.writeDataToFile(videoLessons, "videoLessons");
 //			 muser.findByInstitutionName(institutionName)
 //		        .ifPresentOrElse(
 //		            user -> System.out.println("Found user: " + user.getUsername()),
@@ -99,7 +124,7 @@ public class QueryGenerator {
 //		        objectMapper.writeValue(outputFile, users);
 		        // Log the output file location
 //		        System.out.println("Data successfully saved to: " + outputFile.getAbsolutePath());
-		        return Madmin_Licence;
+//		        return videoLessons;
 			} catch (Exception e) {
 			    throw new RuntimeException("Failed to access field: ", e);
 //			    return e;
