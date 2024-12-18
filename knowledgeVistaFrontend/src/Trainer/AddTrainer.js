@@ -179,8 +179,10 @@ const AddTrainer = () => {
             error =
               "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
           } else if (formData.confirm_password && formData.confirm_password !== value) {
-            // Trigger confirm_password validation when password changes
-            error = "Confirm password does not match the password.";
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              confirm_password: "Confirm password does not match the password.",
+            }));
           }
           break;
     

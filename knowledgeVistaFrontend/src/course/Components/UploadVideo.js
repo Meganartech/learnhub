@@ -27,10 +27,10 @@ const UploadVideo = () => {
     Lessontitle: "",
     LessonDescription: "",
     fileUrl: "",
-    thumbnail: null,
-    videoFile: null,
-    documentContent: [],
-    base64Image: null,
+    thumbnail: "",
+    videoFile: "",
+    documentContent: "",
+    base64Image: "",
     normalurl: "",
   });
   const handleDocChange = (e) => {
@@ -66,7 +66,7 @@ const UploadVideo = () => {
       case "LessonDescription":
         error = value.length < 1 
         ? "Please enter a Lesson Descriptio " : value.length > 1000
-        ? "Lesson Description should not exceed 100 characters" 
+        ? "Lesson Description should not exceed 1000 characters" 
         : "";
         setvideodata({ ...videodata, [name]: value });
         break;
@@ -84,6 +84,7 @@ const UploadVideo = () => {
 
           // Combine both normalurl and fileUrl updates in one setvideodata
           setvideodata({ ...updatedData, fileUrl: embedUrl });
+         
         } else {
           setvideodata(updatedData); // Ensure the normalurl is still updated even if the match fails
           error = "Invalid YouTube URL. Please provide a valid URL.";
@@ -131,15 +132,43 @@ const UploadVideo = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !videodata.Lessontitle?.trim() || 
-      !videodata.LessonDescription || 
+    let hasErrors = false;
+   
+    // List of fields to check for required validation
+    const requiredFields = [
+      { field: 'Lessontitle', errorMessage: 'This field is required' },
+      { field: 'LessonDescription', errorMessage: 'This field is required' },
+    ];
+  
+    // Check for required fields and set errors if necessary
+    requiredFields.forEach(({ field, errorMessage }) => {
+      console.log("in requiredfield")
+      if (!videodata[field]?.trim() ) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [field]: errorMessage
+        }));
+        hasErrors = true;
+      }
+    });
+  
+    // Check if there are any existing errors in the `errors` state using forEach
+    Object.keys(errors).forEach((field) => {
+      if (errors[field]) {
+        hasErrors = true;
+      }
+    });
+  
+    if (hasErrors) {
+      return; // Early return if there are any errors
+    }
+    if(
       (!videodata.videoFile && !videodata.fileUrl)
     ) {
-      alert("Please ensure all required fields are filled. Either a video file or file URL must be provided.");
-      setIsSubmitting(false); // Reset the submitting state
+      alert("Either a video file or file URL must be provided.");
       return;
     }
+
     setIsSubmitting(true);
     const formDataToSend = new FormData();
     formDataToSend.append("Lessontitle", videodata.Lessontitle.trim());
@@ -299,7 +328,6 @@ const UploadVideo = () => {
         <div className="card-body">
         <div className="row">
         <div className="col-12">
-        <form onSubmit={handleSubmit}>
           {isSubmitting &&  <div className="outerspinner active">
         <div className="spinner"></div>
       </div>}
@@ -550,11 +578,11 @@ const UploadVideo = () => {
               >
                 Cancel
               </button>
-              <button className="btn btn-primary" type="submit">
+              <button className="btn btn-primary" onClick={handleSubmit}>
                 Save
               </button>
             </div>
-        </form>
+       
         </div>
         </div>
       </div>

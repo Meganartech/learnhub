@@ -46,7 +46,8 @@ import jakarta.servlet.http.HttpServletRequest;
 public class videolessonController {
 	
 	 private static final Logger logger = LoggerFactory.getLogger(videolessonController.class);
-
+	  @Value("${spring.environment}")
+	    private String environment;
 	@Autowired
 	private MuserRepositories muserRepo;
 
@@ -77,6 +78,9 @@ public class videolessonController {
 	private PPTReader pptreader;
 
 	private Boolean checkFileSize(String institution, Long totalFileSize) {
+		 if(environment=="VPS") {
+			return true;
+		 }
 	    Long maxVideoFileSize = licencerepo.FindstoragesizeByinstitution(institution) * (1024 * 1024 * 1024); // Convert GB to bytes
 	    Long currentUsage = lessonrepo.findAllByInstitutionName(institution).stream()
 	            .mapToLong(l -> Optional.ofNullable(l.getSize()).orElse(0L)).sum();
@@ -257,9 +261,9 @@ public class videolessonController {
 	                    video.setThumbnail(file.getBytes());
 	                }
 
-	                Long docsize = 0L;
-	                Long fileSize = 0L;
-	                Long deletedsize=0L;
+	               Long Total=0L;
+	               Long newelyaddedsize=0L;
+	               Long Deleted=0L;
 	                List<DocsDetails> existingDocuments = video.getDocuments(); // Fetch current documents
                       
 	                // Update existing documents or remove them if not in the request
@@ -277,12 +281,14 @@ public class videolessonController {
 	                	        .orElse(null);
 
 	                	    if (existingDocument != null) {
-	                	        // Delete the file associated with the document
-	                	        Long size = fileService.deleteFile(existingDocument.getDocumentPath());
-	                	        deletedsize += size; // Update total size deleted
+	                	    	
+	                	    	Long size=fileService.getFileSize(existingDocument.getDocumentPath());
+	                	    	if(size>0) {
+	                	        boolean result = fileService.deleteFile(existingDocument.getDocumentPath());
+	                	        Deleted+=size;
 	                	        
 	                	        // Only delete the document from the repository if the file deletion was successful
-	                	        if (size > 0) {
+	                	        if (result) {
 	                	            docsDetailsRepository.delete(existingDocument);
 	                	            
 	                	            // Remove the document from existingDocuments
@@ -291,6 +297,7 @@ public class videolessonController {
 	                	            // Remove the ID from removedDetails using the iterator's remove method
 	                	            iterator.remove();
 	                	        }
+	                	    	}
 	                	    }
 	                	}
 
@@ -302,19 +309,26 @@ public class videolessonController {
 	                		  video.setFileUrl(null);
 	                	  }
 	                    String videoFilePath = fileService.saveVideoFile(videoFile);
-	                    fileSize = videoFile.getSize();
+	                    newelyaddedsize += videoFile.getSize();
 	                    video.setVideofilename(videoFilePath);
 	                } else if (fileUrl != null && !fileUrl.isEmpty()) {
 	                    if (video.getVideofilename() != null) {
-	                        Long videoFileDeleted = fileService.deleteFile(video.getVideofilename());
-	                        if (videoFileDeleted>0) {
+	                    	   Long videoFileDeleted = fileService.getFileSize(video.getVideofilename());
+	                    	   
+	                    	   if(videoFileDeleted>0) {
+	                    	Boolean videoresult=fileService.deleteFile(video.getVideofilename());
+	                     
+	                        if (videoresult) {
+	                        	 Deleted+=  videoFileDeleted ;
 	                            video.setVideofilename(null);
 	                            video.setFileUrl(fileUrl);
 	                        }
 	                    } else {
 	                        video.setFileUrl(fileUrl);
 	                    }
-	                }
+	                    }
+	                    }
+	                
 
 	                // Handle document details
 	              
@@ -333,17 +347,19 @@ public class videolessonController {
 	                            newDoc.setDocumentPath(documentPath);
 	                            newDoc.setVideoLessons(video); // Associate with lesson
 	                            docsDetailsRepository.save(newDoc); // Save the new document
-	                            docsize += newDocFile.getSize();
+	                            newelyaddedsize += newDocFile.getSize();
 	                        }
 	                    }
 	                }
 
-	                Long totalSize = (fileSize + docsize)-deletedsize;
-	                if (this.checkFileSize(institution, totalSize)) {
+	               Total=(video.getSize()-Deleted)+newelyaddedsize;
+	                System.out.println("size"+Total);
+	                video.setSize(Total);
+	                if (this.checkFileSize(institution, Total)) {
 	                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(
 	                            "Video cannot be added as the size for this institution exceeds the allowed limit.");
 	                }
-
+                    
 	                lessonrepo.saveAndFlush(video);
 
 	                // Notify users about the update
@@ -831,19 +847,23 @@ public ResponseEntity<?>getMiniatureDetails(Long lessonId,Long Id , String token
 				Optional<videoLessons> opvideo = lessonrepo.findBylessonIdAndInstitutionName(lessonId, institution);
 				if (opvideo.isPresent()) {
 					videoLessons videolesson = opvideo.get();
-					Long Size=videolesson.getSize();
 					List<DocsDetails>docs=videolesson.getDocuments();
-					Long Sizedeleted=0L;
 					if(docs.size()>0) {
 					for(DocsDetails doc :docs) {
-						 Sizedeleted=fileService.deleteFile(doc.getDocumentPath());
+						Long sizeone =fileService.getFileSize(doc.getDocumentPath());
+						 if(sizeone>0) {
+						 
+						 Boolean resultdeleted =fileService.deleteFile(doc.getDocumentPath());
 						 docsDetailsRepository.deleteById(doc.getId());
+						 }
 					}
 					}
 					if (videolesson.getVideofilename() != null) {
-						 Sizedeleted = fileService.deleteFile(videolesson.getVideofilename());
-						
-						if (Sizedeleted>0) {
+						Long sizeone=fileService.getFileSize(videolesson.getVideofilename());
+						 if(sizeone>0) {
+					
+						 Boolean resultdeleted =fileService.deleteFile(videolesson.getVideofilename());
+						if (resultdeleted) {
 							lessonrepo.deleteById(lessonId);
                            
 							return ResponseEntity
@@ -852,6 +872,10 @@ public ResponseEntity<?>getMiniatureDetails(Long lessonId,Long Id , String token
 							return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 									.body("{\"message\": \"Failed to delete video file associated with the note\"}");
 						}
+						 }else { 
+								return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+										.body("{\"message\": \"Failed to delete video file associated with the note\"}");
+							}
 					} else {
 						lessonrepo.deleteById(lessonId);
 						return ResponseEntity.ok("{\"message\":\"Lesson " + Lessontitle + " Deleted Successfully\"}");
