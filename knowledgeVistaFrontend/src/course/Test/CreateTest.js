@@ -108,27 +108,69 @@ const CreateTest = () => {
 
 
   const addQuestion = () => {
-    
-    if(!testName){
+    // Check for errors in testName field
+    if (!testName) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        testName: 'This field is required ',
+        testName: 'This field is required.',
+      }));
+      return;
+    } else if (testName.length > 50) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        testName: 'Test name cannot be more than 50 characters.',
       }));
       return;
     }
+  
+    // Check for errors in questionText field
     if (!questionText) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        questionText: 'This field is required ',
+        questionText: 'This field is required.',
       }));
       return;
-    }  if (!answer) {
+    } else if (questionText.length > 1000) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        selectedOption: 'Please select the correct answer',
+        questionText: 'Question text cannot be more than 1000 characters.',
       }));
       return;
     }
+    const optionErrors = {};
+    options.forEach((option, index) => {
+      if (!option.trim()) {
+        optionErrors[index] = `Option ${index + 1} cannot be empty.`;
+      } else if (option.length > 255) {
+        optionErrors[index] = `Option ${index + 1} cannot be more than 255 characters.`;
+      }
+    });
+  
+    // If there are any option errors, set them and return
+    if (Object.keys(optionErrors).length > 0) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        options: {
+          ...prevErrors.options,
+          ...optionErrors,
+        },
+      }));
+      return;
+    }
+        if (!answer) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        selectedOption: 'Please select the correct answer.',
+      }));
+      return;
+    } else if (answer.length > 255) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        selectedOption: 'Answer option cannot be more than 255 characters.',
+      }));
+      return;
+    }
+    // If no errors, proceed to add or update the question
     const newQuestion = {
       questionText: questionText,
       option1: options[0],
@@ -137,22 +179,34 @@ const CreateTest = () => {
       option4: options[3],
       answer: answer
     };
-
+  
     if (selectedQuestionIndex !== null) {
-     
       const updatedQuestions = [...savedQuestions];
       updatedQuestions[selectedQuestionIndex] = newQuestion;
-      setSavedQuestions(updatedQuestions)
-      
-    setSelectedQuestionIndex(prevIndex => prevIndex + 1);
-    
+      setSavedQuestions(updatedQuestions);
+      setSelectedQuestionIndex(prevIndex => prevIndex + 1);
     }
-
+  
     // Clear input fields after adding or updating a question
     setQuestionText("");
     setOptions(["", "", "", ""]);
     setAnswer("");
+  
+    // Reset the error state for all fields
+    setErrors({
+      ...errors,
+      testName: '',
+      questionText: '',
+      selectedOption: '',
+      options: {
+        option1: '',
+        option2: '',
+        option3: '',
+        option4: ''
+    },
+    });
   };
+  
  
   const submitTest = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -214,6 +268,12 @@ const handleTestNameChange =(e)=>{
           ...prevErrors,
           testName  : 'This field is required'
       }));
+  }if (testName.length > 50) {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      testName: 'Test name cannot be more than 50 characters.',
+    }));
+    return;
   } else {
       setErrors(prevErrors => ({
           ...prevErrors,
@@ -231,6 +291,12 @@ const handleTestNameChange =(e)=>{
             ...prevErrors,
             questionText: 'This field is required'
         }));
+    }else if (questionText.length > 1000) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        questionText: 'Question text cannot be more than 1000 characters.',
+      }));
+      return;
     } else {
         setErrors(prevErrors => ({
             ...prevErrors,
@@ -261,6 +327,10 @@ const handleOptionChange = (e, index) => {
     // Perform validation for the current option
     if (!value.trim()) {
         newErrors.options[index] = 'Option cannot be empty';
+    }else if (value.length > 255) {
+      
+        newErrors.options[index] = ' option cannot be more than 255 characters.';
+   
     }
 
     // Update the state with new errors

@@ -365,7 +365,10 @@ public class CourseController {
 	                    existingCourseDetail.setDuration(Duration);
 	                }
 	                if (Noofseats != null) {
+	                	Long count=existingCourseDetail.getUserCount();
+	                	if(count<=Noofseats) {
 	                    existingCourseDetail.setNoofseats(Noofseats);
+	                	}
 	                }
 	                if (amount != null) {
 	                    existingCourseDetail.setAmount(amount);

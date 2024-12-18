@@ -41,21 +41,6 @@ const CreateCourseTrainer = () => {
 
       switch (name) {
         case "courseName":
-<<<<<<< HEAD
-            error = value.length < 1 
-                ? "Please enter a Course Title" 
-                : value.length > 50 
-                ? "Course Title should not exceed 50 characters" 
-                : "";
-            break;
-        
-          case 'courseCategory':
-              error = value.length < 1 ? 'Please enter a Course Category' : '';
-              break;
-          case 'courseDescription':
-              error = value.length < 1 ? 'Please enter a Course Description' : '';
-              break;
-=======
         error = value.length < 1 
             ? "Please enter a Course Title" 
             : value.length > 50 
@@ -77,10 +62,9 @@ const CreateCourseTrainer = () => {
           case "courseDescription":
             error = value.length < 1 
             ? "Please enter a Course Description " : value.length > 1000
-            ? "Course Description should not exceed 100 characters" 
+            ? "Course Description should not exceed 1000 characters" 
             : "";
             break;
->>>>>>> 245ee04818510a3b9a70ea8198367b03f176c1ce
           case 'courseAmount':
               error = numericValue < 0 ? 'Course amount must be greater than or equal to 0' : '';
               break;

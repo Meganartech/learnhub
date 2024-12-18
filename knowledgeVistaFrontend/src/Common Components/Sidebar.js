@@ -10,16 +10,9 @@ const Sidebar = ({ filter, handleFilterChange }) => {
   const [ActiveLink, setActiveLink] = useState();
   const userRole = sessionStorage.getItem("role");
   const token = sessionStorage.getItem("token");
-<<<<<<< HEAD
-  const navigate=useNavigate();
-  const { displayname ,Activeprofile} = useContext(GlobalStateContext);
-  
- 
-=======
   const navigate = useNavigate();
   const { displayname, Activeprofile } = useContext(GlobalStateContext);
 
->>>>>>> 245ee04818510a3b9a70ea8198367b03f176c1ce
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -245,40 +238,6 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     </span>
                     <span className="pcoded-mtext">People</span>
                   </a>
-<<<<<<< HEAD
-                  <ul className="toggle-list ">
-  <li>
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={filter?.paid}
-            name="paid"
-            onChange={() => {
-              handleFilterChange('paid'); // Trigger filter change for 'paid'
-            }}
-            className="mr-1"
-          />
-          <span className="checkbox-custom"></span>
-          Paid
-        </label>
-      </li>
-      <li>
-        <label className="checkbox-label ">
-          <input
-            type="checkbox"
-            checked={filter?.unpaid}
-            name="unpaid"
-            onChange={() => {
-              handleFilterChange('unpaid'); // Trigger filter change for 'unpaid'
-            }}
-            className="mr-1"
-          />
-          <span className="checkbox-custom"></span>
-          Free
-        </label>
-      </li>
-  </ul>
-=======
                   <ul className="pcoded-submenu">
                     <li>
                       <a
@@ -510,7 +469,6 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                       </a>
                     </li>
                   </ul>
->>>>>>> 245ee04818510a3b9a70ea8198367b03f176c1ce
                 </li>
 
                 <li className="nav-item no-hasmenu">
@@ -525,121 +483,16 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     <span className="pcoded-mtext">Licence</span>
                   </a>
                 </li>
-<<<<<<< HEAD
-
-
-                <li className="view-course">
-  <a 
-   href="#"
-   data-path="/dashboard/course"
-   onClick={(e)=>{handleClick(e,"/dashboard/course")}}
-  >
-    <i className="fa-regular fa-eye pr-2"></i>
-    View Course
-  </a>
-  <ul className="toggle-list" >
-  <li>
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={filter?.paid}
-            name="paid"
-            onChange={() => {
-              handleFilterChange('paid'); // Trigger filter change for 'paid'
-            }}
-            className="mr-1"
-          />
-          <span className="checkbox-custom"></span>
-          Paid
-        </label>
-      </li>
-      <li >
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={filter?.unpaid}
-            name="unpaid"
-            onChange={() => {
-              handleFilterChange('unpaid'); // Trigger filter change for 'unpaid'
-            }}
-            className="mr-1"
-          />
-          <span className="checkbox-custom"></span>
-          Free
-        </label>
-      </li>
-  </ul>
-</li>
-
-              </ul>
-            </li>
-          
-            <li className="nav-item pcoded-hasmenu">
-              <a href="#!" className="nav-link ">
-                <span className="pcoded-micon">
-                  <i className="fa fa-gear"></i>
-                </span>
-                <span className="pcoded-mtext">Settings</span>
-              </a>
-              <ul className="pcoded-submenu">
-                <li>
-                  <a
-                   data-path="/settings/viewsettings"
-                   onClick={(e)=>{handleClick(e,"/settings/viewsettings")}}
-                    href="#"
-                   
-                  ><i className="fa-solid fa-gears pr-2"></i>
-                    General
-                  </a>
-                
-                </li>
-                <li>
-=======
                 <li className="nav-item no-hasmenu">
->>>>>>> 245ee04818510a3b9a70ea8198367b03f176c1ce
                   <a
                     href="#"
                     onClick={(e) => handleClick(e, "/about")}
                     className="nav-link "
                   >
-<<<<<<< HEAD
-                   <i className="fa-solid fa-envelope pr-2"></i> Mail
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    data-path="/zoom/settings"
-                    onClick={(e)=>{handleClick(e,"/zoom/settings")}}
-                  >
-                   <i className="fa-solid fa-video pr-2"></i> Zoom
-                  </a>
-                </li>
-                {Activeprofile==="VPS" &&
-                 <li>
-                 <a
-                   href="#"
-                   data-path="/settings/footer"
-                   onClick={(e)=>{handleClick(e,"/settings/footer")}}
-                 >
-                  <i className="fa-solid fa-shoe-prints pr-2"></i> Footer
-                 </a>
-               </li>
-}   
-                
-                <li>
-                  <a
-                    href="#"
-                    data-path="/settings/displayname"
-                    onClick={(e)=>{handleClick(e,"/settings/displayname")}}
-                  >
-                   <i className="fa-solid fa-users-gear"></i> Roles
-=======
                     <span className="pcoded-micon">
                       <i className="fa-solid fa-circle-info"></i>
                     </span>
                     <span className="pcoded-mtext">About us</span>
->>>>>>> 245ee04818510a3b9a70ea8198367b03f176c1ce
                   </a>
                 </li>
               </ul>
@@ -749,236 +602,6 @@ const Sidebar = ({ filter, handleFilterChange }) => {
           {/* Trainer Sidebar */}
           {userRole === "TRAINER" && (
             <ul className="nav pcoded-inner-navbar ">
-<<<<<<< HEAD
-          
-            <li className="nav-item no-hasmenu pt-2 view-course">
-              <a
-                href="#"
-                data-path="/dashboard/course"
-                onClick={(e)=>handleClick(e,"/dashboard/course")}
-                className="nav-link has-ripple"
-              >
-                <span className="pcoded-micon">
-                <i className="feather icon-layout"></i>
-                </span>
-                <span className="pcoded-mtext ">Courses</span>
-              </a>
-              <ul className="toggle-list pl-4">
-  <li>
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={filter.paid}
-            name="paid"
-            onChange={() => {
-              handleFilterChange('paid'); // Trigger filter change for 'paid'
-            }}
-            className="mr-1"
-          />
-          <span className="checkbox-custom"></span>
-          Paid
-        </label>
-      </li>
-      <li>
-        <label className="checkbox-label ">
-          <input
-            type="checkbox"
-            checked={filter.unpaid}
-            name="unpaid"
-            onChange={() => {
-              handleFilterChange('unpaid'); // Trigger filter change for 'unpaid'
-            }}
-            className="mr-1"
-          />
-          <span className="checkbox-custom"></span>
-          Free
-        </label>
-      </li>
-  </ul>
-            </li>
-            <li className="nav-item no-hasmenu">
-              <a
-                href="#"
-                data-path="/AssignedCourses"
-                onClick={(e)=>handleClick(e,"/AssignedCourses")}
-                className="nav-link has-ripple"
-              >
-                <span className="pcoded-micon">
-                  <i className="fa-solid fa-book"></i>
-                </span>
-                <span className="pcoded-mtext">My Courses</span>
-              </a>
-     
-            </li>
-            <li className="nav-item pcoded-hasmenu">
-              <a href="#!" className="nav-link ">
-                <span className="pcoded-micon">
-                  <i className="fa-solid fa-video"></i>
-                </span>
-                <span className="pcoded-mtext">Meeting</span>
-              </a>
-              <ul className="pcoded-submenu">
-            <li >
-              <a
-                href="#"
-                data-path="/meeting/calender"
-                onClick={(e)=>handleClick(e,"/meeting/calender")}
-                className="nav-link "
-              >
-                <span className="pcoded-micon">
-                  <i className="fa-solid fa-user-clock"></i>
-                </span>
-                <span className="pcoded-mtext">My Meetings</span>
-              </a>
-            </li>
-            <li >
-              <a
-                href="#"
-                data-path="/meeting/Shedule"
-                onClick={(e)=>handleClick(e,"/meeting/Shedule")}
-                className="nav-link "
-              >
-                <span className="pcoded-micon">
-                  <i className="fa-solid fa-plus"></i>
-                </span>
-                <span className="pcoded-mtext">Shedule New</span>
-              </a>
-            </li>
-</ul>
-</li>
-           
-            <li className="nav-item no-hasmenu">
-              <a
-                href="#"
-                data-path="/view/Students"
-                onClick={(e)=>handleClick(e,"/view/Students")}
-                className="nav-link "
-              >
-                <span className="pcoded-micon">
-                  <i className="fa-solid fa-users"></i>
-                </span>
-                <span className="pcoded-mtext">
-                  {displayname && displayname.student_name
-                    ? displayname.student_name
-                    : "All Students"}
-                </span>
-              </a>
-            </li>
-            <li className="nav-item no-hasmenu">
-              <a
-                href="#"
-                data-path="/myStudents"
-                onClick={(e)=>handleClick(e,"/myStudents")}
-                className="nav-link "
-              >
-                <span className="pcoded-micon">
-                  <i className="fa-solid fa-chalkboard-user"></i>
-                </span>
-                <span className="pcoded-mtext">
-                  {displayname && displayname.student_name
-                    ? `My ${displayname.student_name}`
-                    : "My Students"}
-                </span>
-              </a>
-            </li>
-       
-            
-          
-</ul>)}
- {/* Trainer Sidebar */}
-  {/* User Sidebar */}
-  {( userRole === "USER" )&&( 
-            <ul className="nav pcoded-inner-navbar ">
-          
-            <li className="nav-item no-hasmenu pt-2 view-course">
-              <a
-                href="#"
-                data-path="/dashboard/course"
-                onClick={(e)=>handleClick(e,"/dashboard/course")}
-                className="nav-link has-ripple"
-              >
-                <span className="pcoded-micon">
-                <i className="feather icon-layout"></i>
-                </span>
-                <span className="pcoded-mtext ">Courses</span>
-              </a>
-              <ul className="toggle-list pl-4">
-  <li>
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
-            checked={filter.paid}
-            name="paid"
-            onChange={() => {
-              handleFilterChange('paid'); // Trigger filter change for 'paid'
-            }}
-            className="mr-1"
-          />
-          <span className="checkbox-custom"></span>
-          Paid
-        </label>
-      </li>
-      <li>
-        <label className="checkbox-label ">
-          <input
-            type="checkbox"
-            checked={filter.unpaid}
-            name="unpaid"
-            onChange={() => {
-              handleFilterChange('unpaid'); // Trigger filter change for 'unpaid'
-            }}
-            className="mr-1"
-          />
-          <span className="checkbox-custom"></span>
-          Free
-        </label>
-      </li>
-  </ul>
-            </li>
-            <li className="nav-item no-hasmenu ">
-              <a
-                href="#"
-                data-path="/mycourses"
-                onClick={(e)=>handleClick(e,"/mycourses")}
-                className="nav-link has-ripple"
-              >
-                <span className="pcoded-micon">
-                <i className="fa-solid fa-book"></i>
-                </span>
-                <span className="pcoded-mtext">My Courses</span>
-              </a>
-     
-            </li>
-          
-            
-            <li className="nav-item no-hasmenu">
-              <a
-                href="#"
-                data-path="/MyCertificateList"
-                onClick={(e)=>handleClick(e,"/MyCertificateList")}
-                className="nav-link "
-              >
-                <span className="pcoded-micon">
-                  <i className="fa-solid fa-award"></i>
-                </span>
-                <span className="pcoded-mtext">Certificates</span>
-              </a>
-            </li>
-          
-            <li className="nav-item no-hasmenu">
-              <a
-                href="#"
-                data-path="/user/meeting/calender"
-                onClick={(e)=>handleClick(e,"/user/meeting/calender")}
-                className="nav-link "
-              >
-                <span className="pcoded-micon">
-                  <i className="fa-solid fa-video"></i>
-                </span>
-                <span className="pcoded-mtext">My Meetings</span>
-              </a>
-            </li>
-=======
               <li className="nav-item no-hasmenu pt-2 view-course">
                 <a
                   href="#"
@@ -1172,7 +795,6 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   <span className="pcoded-mtext">My Courses</span>
                 </a>
               </li>
->>>>>>> 245ee04818510a3b9a70ea8198367b03f176c1ce
 
               <li className="nav-item no-hasmenu">
                 <a

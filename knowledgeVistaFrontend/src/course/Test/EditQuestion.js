@@ -83,28 +83,33 @@ const EditQuestion = () => {
       ...prevOptions,
       [name]: value
     }));
-    validateInput(name, value);
+    
+    const newErrors = { ...errors };
+    if (options[name].trim() === '') {
+      newErrors[name] = 'This field is required.';
+    }else if(options[name].length>255){
+      newErrors[name] = 'Option Cannot be more than 255 characters';
+    } else {
+      newErrors[name] = '';
+    }
+    setErrors(newErrors);
   };
 
   const handleQuestionTextChange = (e) => {
     const { value } = e.target;
     setQuestionText(value);
-    validateInput('questionText', value);
+    const newErrors = { ...errors };
+    if (questionText.trim() === '') {
+      newErrors.questionText = 'This field is required.';
+    }else if(questionText.length>1000){
+      newErrors.questionText = 'Question Cannot be more than 1000 characters';
+    } else {
+      newErrors.questionText = '';
+    }
+    setErrors(newErrors);
   };
 
-  const validateInput = (name, value) => {
-    if (value.trim() === '') {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        [name]: 'This field is required.'
-      }));
-    } else {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        [name]: ''
-      }));
-    }
-  };
+  
 
   const validateForm = () => {
     let isValid = true;
@@ -114,6 +119,9 @@ const EditQuestion = () => {
     if (questionText.trim() === '') {
       newErrors.questionText = 'This field is required.';
       isValid = false;
+    }else if(questionText.length>1000){
+      newErrors.questionText = 'Question Cannot be more than 1000 characters';
+      isValid = false;
     } else {
       newErrors.questionText = '';
     }
@@ -122,6 +130,9 @@ const EditQuestion = () => {
     Object.keys(options).forEach(option => {
       if (options[option].trim() === '') {
         newErrors[option] = 'This field is required.';
+        isValid = false;
+      }else if(options[option].length>255){
+        newErrors[option] = 'Option Cannot be more than 255 characters';
         isValid = false;
       } else {
         newErrors[option] = '';
@@ -198,8 +209,6 @@ const EditQuestion = () => {
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
      
-        <div className='atdiv'  >
-          <div className='atgrid' >
             <div>            
               <input 
               className={`form-control   ${errors.questionText && 'is-invalid'}`}
@@ -233,7 +242,7 @@ const EditQuestion = () => {
                 </li>
               ))}
             </ul>
-          </div>
+        
           <div className='atbtndiv'>
             <div>
             <button className='btn btn-secondary' onClick={() => window.history.back()}>Cancel</button>
@@ -249,7 +258,7 @@ const EditQuestion = () => {
             </button>
             </div>
           </div>
-        </div>
+     
         </div>
         </div>
         </div>

@@ -59,17 +59,10 @@ const MyPayments = () => {
               setpaymenthistory([]);
             }           
           } catch (error) {
-<<<<<<< HEAD
             if(error.response.status===401){
               window.location.href="/unauthorized"
             }
            else{
-=======
-            if(error.response && error.response.status===401){
-              navigate("/unauthorized")
-            }else{
-            console.error('Error fetching data:', error);
->>>>>>> 245ee04818510a3b9a70ea8198367b03f176c1ce
             throw error
             }
           }
