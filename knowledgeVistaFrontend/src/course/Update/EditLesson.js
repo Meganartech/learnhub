@@ -34,13 +34,13 @@ const EditLesson = () => {
     lessonDescription: "",
     fileUrl: "",
     documentPath: "",
-    thumbnail: null,
-    newDocumentFiles: [],
-    removedDetails:[],
-    existingDocumentDetails: [],
+    thumbnail: "",
+    newDocumentFiles: "",
+    removedDetails:"",
+    existingDocumentDetails: "",
     normalurl: "",
-    videoFile: null,
-    base64Image: null,
+    videoFile: "",
+    base64Image: "",
   });
 
   const token = sessionStorage.getItem("token");
@@ -152,7 +152,7 @@ const EditLesson = () => {
       case "lessonDescription":
         error = value.length < 1 
         ? "Please enter a Lesson Descriptio " : value.length > 1000
-        ? "Lesson Description should not exceed 100 characters" 
+        ? "Lesson Description should not exceed 1000 characters" 
         : "";
         setvideodata({ ...videodata, [name]: value });
         break;
@@ -274,6 +274,18 @@ const EditLesson = () => {
   };
   const handleEdit = async (e) => {
     e.preventDefault();
+    let hasErrors = false;
+    Object.keys(errors).forEach((field) => {
+      if (errors[field]) {
+        
+        hasErrors = true;
+      }
+    });
+  
+    if (hasErrors) {
+      return; // Early return if there are any errors
+    }
+   
     setIsSubmitting(true);
 
     const formDataToSend = new FormData();
@@ -605,12 +617,12 @@ const EditLesson = () => {
                                
                               >
                                 <div 
-                                className="doclink"
-                                onClick={() => {
-                                navigate(`/viewDocument/${doc.documentPath}/${lessonId}/${doc.id}`);
-                                }}> {doc.documentName &&(
-                                  <>
-                                    {doc.documentName}{" "}
+                                className="doclinkedit"
+                               > {doc.documentName &&(
+                                  < div onClick={() => {
+                                    navigate(`/viewDocument/${doc.documentPath}/${lessonId}/${doc.id}`);
+                                    }}>
+                                    {doc.documentName && doc.documentName.length<40?doc.documentName:doc.documentName.slice(0,40)+"..."}
                                     {doc.documentName.endsWith(".pdf") && (
                                       <i className="fa-regular fa-file-pdf"></i>
                                     )}
@@ -619,8 +631,8 @@ const EditLesson = () => {
                                       <i className="fa-regular fa-file-powerpoint"></i>
                                     )}
                                      
-                                  </>
-                                )}</div><i
+                                  </div>
+                                )}<i
                                 className="fa-regular fa-trash-can text-danger"
                                 style={{
                                   marginLeft: "10px",
@@ -628,7 +640,7 @@ const EditLesson = () => {
                                 }}
                                 onClick={() => handleRemoveExisDoc(index)}
                               ></i>
-                               
+                               </div>
                               </li> // Display document name
                             )
                           )}
@@ -641,7 +653,7 @@ const EditLesson = () => {
                             <li key={index} className="doclink" >
                               {doc.name &&(
                                 <>
-                                  {doc.name}{" "}
+                                 {doc.name && doc.name.length<40?doc.name:doc.name.slice(0,40)+"..."}
                                   {doc.name.endsWith(".pdf") && (
                                     <i className="fa-regular fa-file-pdf"></i>
                                   )}

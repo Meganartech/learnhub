@@ -174,100 +174,206 @@ public class PPTReader {
     }
     
     //=========================FOR MINIATURE======================================
+//    public List<MiniatureDetail> getMiniatures(@RequestParam String fileName) throws IOException {
+//        String filePath = videoUploadDirectory + fileName;
+//        InputStream fis = new FileInputStream(filePath);
+//        List<MiniatureDetail> miniatureDetails = new ArrayList<>();
+//
+//        // Determine the file type based on the extension
+//        if (fileName.toLowerCase().endsWith(".pptx")) {
+//            // Handle .pptx files
+//            XMLSlideShow ppt = new XMLSlideShow(fis);
+//            int totalSlides = ppt.getSlides().size();
+//
+//            // Loop through each slide
+//            for (int i = 0; i < totalSlides; i++) {
+//                XSLFSlide slide = ppt.getSlides().get(i);
+//                Dimension slideSize = ppt.getPageSize();
+//
+//                // Convert each slide to a BufferedImage
+//                BufferedImage img = new BufferedImage(slideSize.width, slideSize.height, BufferedImage.TYPE_INT_RGB);
+//                Graphics2D graphics = img.createGraphics();
+//                graphics.setPaint(Color.WHITE);
+//                graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
+//                slide.draw(graphics);
+//
+//                // Convert the BufferedImage to byte[]
+//                byte[] imageBytes = convertImageToBytes(img);
+//                byte[] resized= ImageResizer.resizeImage(imageBytes,100,100);
+//                // Create MiniatureDetail and add it to the list
+//                MiniatureDetail mini = new MiniatureDetail(resized, i + 1); // i+1 for page number
+//                miniatureDetails.add(mini);
+//            }
+//            ppt.close();
+//        } else if (fileName.toLowerCase().endsWith(".ppt")) {
+//            // Handle .ppt files
+//            HSLFSlideShow ppt = new HSLFSlideShow(fis);
+//            int totalSlides = ppt.getSlides().size();
+//
+//            // Loop through each slide
+//            for (int i = 0; i < totalSlides; i++) {
+//                HSLFSlide slide = ppt.getSlides().get(i);
+//                Dimension slideSize = ppt.getPageSize();
+//
+//                // Convert each slide to a BufferedImage
+//                BufferedImage img = new BufferedImage(slideSize.width, slideSize.height, BufferedImage.TYPE_INT_RGB);
+//                Graphics2D graphics = img.createGraphics();
+//                graphics.setPaint(Color.WHITE);
+//                graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
+//                slide.draw(graphics);
+//
+//                // Convert the BufferedImage to byte[]
+//                byte[] imageBytes = convertImageToBytes(img);
+//
+//                byte[] resized= ImageResizer.resizeImage(imageBytes,100,100);
+//                // Create MiniatureDetail and add it to the list
+//                MiniatureDetail mini = new MiniatureDetail(resized, i + 1); // i+1 for page number
+//                miniatureDetails.add(mini);
+//            }
+//            ppt.close();
+//        }else if(fileName.toLowerCase().endsWith(".pdf")) {
+//
+//            PDDocument document = PDDocument.load(new File(filePath));
+//                PDFRenderer pdfRenderer = new PDFRenderer(document);
+//                int totalPages = document.getNumberOfPages();
+//
+//                // Loop through each page and convert it to an image
+//                for (int pageNumber = 0; pageNumber < totalPages; pageNumber++) {
+//                    // Render the specified page to a BufferedImage
+//                    BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(pageNumber, 300); // 300 DPI for high quality
+//
+//                    // Get the width and height of the PDF page itself
+//                    PDPage page = document.getPage(pageNumber);
+//                    float pageWidth = page.getMediaBox().getWidth();
+//                    float pageHeight = page.getMediaBox().getHeight();
+//
+//                    // Scale the image to match the original PDF page dimensions
+//                    BufferedImage scaledImage = scaleImage(bufferedImage, (int) pageWidth, (int) pageHeight);
+//
+//                    // Convert BufferedImage to byte[]
+//                    byte[] imageBytes = convertImageToBytes(scaledImage);
+//                    byte[] resized= ImageResizer.resizeImage(imageBytes,100,100);
+//                    MiniatureDetail mini = new MiniatureDetail(resized, pageNumber + 1); // pageNumber+1 for 1-based index
+//                    miniatureDetails.add(mini);
+//                }
+//           
+//
+//           
+//        
+//        }
+//        else {
+//        
+//        	fis.close();
+//            throw new IllegalArgumentException("Unsupported file type");
+//        }
+//
+//        fis.close();
+//        return miniatureDetails; // Return the list of MiniatureDetail
+//    }
+//
+//    // Helper method to convert BufferedImage to byte[]
+//    private byte[] convertImageToBytes(BufferedImage image) throws IOException {
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        ImageIO.write(image, "jpeg", baos); // Write the BufferedImage to the output stream as JPEG
+//        return baos.toByteArray();
+//    }
+//    
+//    
+//    
+//    
+//    }
+    
+    
     public List<MiniatureDetail> getMiniatures(@RequestParam String fileName) throws IOException {
         String filePath = videoUploadDirectory + fileName;
-        InputStream fis = new FileInputStream(filePath);
         List<MiniatureDetail> miniatureDetails = new ArrayList<>();
 
-        // Determine the file type based on the extension
-        if (fileName.toLowerCase().endsWith(".pptx")) {
-            // Handle .pptx files
-            XMLSlideShow ppt = new XMLSlideShow(fis);
-            int totalSlides = ppt.getSlides().size();
+        try (InputStream fis = new FileInputStream(filePath)) {
+            // Determine the file type based on the extension
+            if (fileName.toLowerCase().endsWith(".pptx")) {
+                // Handle .pptx files
+                try (XMLSlideShow ppt = new XMLSlideShow(fis)) {
+                    int totalSlides = ppt.getSlides().size();
 
-            // Loop through each slide
-            for (int i = 0; i < totalSlides; i++) {
-                XSLFSlide slide = ppt.getSlides().get(i);
-                Dimension slideSize = ppt.getPageSize();
+                    // Loop through each slide
+                    for (int i = 0; i < totalSlides; i++) {
+                        XSLFSlide slide = ppt.getSlides().get(i);
+                        Dimension slideSize = ppt.getPageSize();
 
-                // Convert each slide to a BufferedImage
-                BufferedImage img = new BufferedImage(slideSize.width, slideSize.height, BufferedImage.TYPE_INT_RGB);
-                Graphics2D graphics = img.createGraphics();
-                graphics.setPaint(Color.WHITE);
-                graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
-                slide.draw(graphics);
+                        // Convert each slide to a BufferedImage
+                        BufferedImage img = new BufferedImage(slideSize.width, slideSize.height, BufferedImage.TYPE_INT_RGB);
+                        Graphics2D graphics = img.createGraphics();
+                        graphics.setPaint(Color.WHITE);
+                        graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
+                        slide.draw(graphics);
 
-                // Convert the BufferedImage to byte[]
-                byte[] imageBytes = convertImageToBytes(img);
-                byte[] resized= ImageResizer.resizeImage(imageBytes,100,100);
-                // Create MiniatureDetail and add it to the list
-                MiniatureDetail mini = new MiniatureDetail(resized, i + 1); // i+1 for page number
-                miniatureDetails.add(mini);
-            }
-            ppt.close();
-        } else if (fileName.toLowerCase().endsWith(".ppt")) {
-            // Handle .ppt files
-            HSLFSlideShow ppt = new HSLFSlideShow(fis);
-            int totalSlides = ppt.getSlides().size();
+                        // Convert the BufferedImage to byte[]
+                        byte[] imageBytes = convertImageToBytes(img);
+                        byte[] resized = ImageResizer.resizeImage(imageBytes, 100, 100);
 
-            // Loop through each slide
-            for (int i = 0; i < totalSlides; i++) {
-                HSLFSlide slide = ppt.getSlides().get(i);
-                Dimension slideSize = ppt.getPageSize();
-
-                // Convert each slide to a BufferedImage
-                BufferedImage img = new BufferedImage(slideSize.width, slideSize.height, BufferedImage.TYPE_INT_RGB);
-                Graphics2D graphics = img.createGraphics();
-                graphics.setPaint(Color.WHITE);
-                graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
-                slide.draw(graphics);
-
-                // Convert the BufferedImage to byte[]
-                byte[] imageBytes = convertImageToBytes(img);
-
-                byte[] resized= ImageResizer.resizeImage(imageBytes,100,100);
-                // Create MiniatureDetail and add it to the list
-                MiniatureDetail mini = new MiniatureDetail(resized, i + 1); // i+1 for page number
-                miniatureDetails.add(mini);
-            }
-            ppt.close();
-        }else if(fileName.toLowerCase().endsWith(".pdf")) {
-
-            PDDocument document = PDDocument.load(new File(filePath));
-                PDFRenderer pdfRenderer = new PDFRenderer(document);
-                int totalPages = document.getNumberOfPages();
-
-                // Loop through each page and convert it to an image
-                for (int pageNumber = 0; pageNumber < totalPages; pageNumber++) {
-                    // Render the specified page to a BufferedImage
-                    BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(pageNumber, 300); // 300 DPI for high quality
-
-                    // Get the width and height of the PDF page itself
-                    PDPage page = document.getPage(pageNumber);
-                    float pageWidth = page.getMediaBox().getWidth();
-                    float pageHeight = page.getMediaBox().getHeight();
-
-                    // Scale the image to match the original PDF page dimensions
-                    BufferedImage scaledImage = scaleImage(bufferedImage, (int) pageWidth, (int) pageHeight);
-
-                    // Convert BufferedImage to byte[]
-                    byte[] imageBytes = convertImageToBytes(scaledImage);
-                    byte[] resized= ImageResizer.resizeImage(imageBytes,100,100);
-                    MiniatureDetail mini = new MiniatureDetail(resized, pageNumber + 1); // pageNumber+1 for 1-based index
-                    miniatureDetails.add(mini);
+                        // Create MiniatureDetail and add it to the list
+                        MiniatureDetail mini = new MiniatureDetail(resized, i + 1); // i+1 for page number
+                        miniatureDetails.add(mini);
+                    }
                 }
-           
+            } else if (fileName.toLowerCase().endsWith(".ppt")) {
+                // Handle .ppt files
+                try (HSLFSlideShow ppt = new HSLFSlideShow(fis)) {
+                    int totalSlides = ppt.getSlides().size();
 
-           
-        
-        }
-        else {
-        
-        	fis.close();
-            throw new IllegalArgumentException("Unsupported file type");
+                    // Loop through each slide
+                    for (int i = 0; i < totalSlides; i++) {
+                        HSLFSlide slide = ppt.getSlides().get(i);
+                        Dimension slideSize = ppt.getPageSize();
+
+                        // Convert each slide to a BufferedImage
+                        BufferedImage img = new BufferedImage(slideSize.width, slideSize.height, BufferedImage.TYPE_INT_RGB);
+                        Graphics2D graphics = img.createGraphics();
+                        graphics.setPaint(Color.WHITE);
+                        graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
+                        slide.draw(graphics);
+
+                        // Convert the BufferedImage to byte[]
+                        byte[] imageBytes = convertImageToBytes(img);
+                        byte[] resized = ImageResizer.resizeImage(imageBytes, 100, 100);
+
+                        // Create MiniatureDetail and add it to the list
+                        MiniatureDetail mini = new MiniatureDetail(resized, i + 1); // i+1 for page number
+                        miniatureDetails.add(mini);
+                    }
+                }
+            } else if (fileName.toLowerCase().endsWith(".pdf")) {
+                // Handle .pdf files
+                try (PDDocument document = PDDocument.load(new File(filePath))) {
+                    PDFRenderer pdfRenderer = new PDFRenderer(document);
+                    int totalPages = document.getNumberOfPages();
+
+                    // Loop through each page and convert it to an image
+                    for (int pageNumber = 0; pageNumber < totalPages; pageNumber++) {
+                        // Render the specified page to a BufferedImage
+                        BufferedImage bufferedImage = pdfRenderer.renderImageWithDPI(pageNumber, 300); // 300 DPI for high quality
+
+                        // Get the width and height of the PDF page itself
+                        PDPage page = document.getPage(pageNumber);
+                        float pageWidth = page.getMediaBox().getWidth();
+                        float pageHeight = page.getMediaBox().getHeight();
+
+                        // Scale the image to match the original PDF page dimensions
+                        BufferedImage scaledImage = scaleImage(bufferedImage, (int) pageWidth, (int) pageHeight);
+
+                        // Convert BufferedImage to byte[]
+                        byte[] imageBytes = convertImageToBytes(scaledImage);
+                        byte[] resized = ImageResizer.resizeImage(imageBytes, 100, 100);
+
+                        MiniatureDetail mini = new MiniatureDetail(resized, pageNumber + 1); // pageNumber+1 for 1-based index
+                        miniatureDetails.add(mini);
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("Unsupported file type");
+            }
         }
 
-        fis.close();
         return miniatureDetails; // Return the list of MiniatureDetail
     }
 
@@ -277,9 +383,6 @@ public class PPTReader {
         ImageIO.write(image, "jpeg", baos); // Write the BufferedImage to the output stream as JPEG
         return baos.toByteArray();
     }
-    
-    
-    
-    
-    }
+}
+
 

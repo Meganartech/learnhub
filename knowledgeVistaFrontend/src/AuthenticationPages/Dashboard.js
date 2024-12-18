@@ -15,6 +15,7 @@ import SupportChart from "./SupportChart";
 const Dashboard = () => {
 
   const navigate = useNavigate();
+  const Currency=sessionStorage.getItem("Currency");
   const MySwal = withReactContent(Swal);
   const token = sessionStorage.getItem("token");
   const [Courses, setCourses] = useState([]);
@@ -250,7 +251,7 @@ const fetchstorage=async()=>{
                     <div className="col-sm-6">
                         <div className="card support-bar overflow-hidden">
                             <div className="card-body pb-0">
-                                <h2 className="m-0">Rs. {countdetails.amountRecived}</h2>
+                                <h2 className="m-0"> <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i> {countdetails.amountRecived}</h2>
                                 <span className="text-c-blue">Total Course Revenue</span>
                                 <p className="mb-3 mt-3">Total number of courses calculated amount.</p>
                             </div>

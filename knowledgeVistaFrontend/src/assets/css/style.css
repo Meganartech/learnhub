@@ -25565,16 +25565,23 @@ ul {
   padding-bottom: 5px;
   border-radius: 10px;
 }
+.doclinkedit{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.doclinkedit,
 .doclink {
   color: #2f3ced;
   cursor: pointer;
-  display: inline;
 }
-
+.doclinkedit i,
 .doclink i {
   text-indent: 10px;
 }
 .listback {
+  width: 100%;
   background-color: #f2e1f5;
   border-radius: 10px;
   padding: 10px;
@@ -25582,6 +25589,7 @@ ul {
   min-height: 450px;
 }
 .listbackinner {
+  width: 100%;
   margin-top: 10px;
   background-color: #cbcbcb;
   padding: 10px;
@@ -25590,7 +25598,9 @@ ul {
   display: grid;
   grid-template-columns: 1fr 20fr 1fr 1fr;
 }
+
 .twodiv {
+  width: 100%;
   display: grid;
   grid-template-rows: 1fr 6fr;
 }
@@ -26308,8 +26318,24 @@ ul {
     grid-template-columns: 1fr;
   }
 }
+.lesson-title {
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflowed text */
+  text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+  display: inline-block;
+  max-width: 100%; /* Allow the title to take full available width */
+}
+
+
 
 @media screen and (max-width: 480px) {
+  .lesson-title {
+    max-width: 180px; /* Adjust for smaller screens */
+  }
+  .listbackinner{
+    grid-template-columns: 1fr 10fr 1fr 1fr ;
+    gap:5px;
+  }
   .twosplits {
     grid-template-columns: 1fr;
   }

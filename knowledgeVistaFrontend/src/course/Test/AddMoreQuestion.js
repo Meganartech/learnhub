@@ -55,6 +55,15 @@ const AddMoreQuestion = () => {
                     [name]: 'This field is required'
                 }
             }));
+        }else if (value.length > 255) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                options: {
+                    ...prevErrors.options,
+                    [name]: 'option cannot be more than 255 characters.'
+                }
+            }));
+       
         } else {
             setErrors(prevErrors => ({
                 ...prevErrors,
@@ -68,7 +77,9 @@ const AddMoreQuestion = () => {
 
     // Function to handle question text change
     const handleQuestionTextChange = (e) => {
+        
         const { value } = e.target;
+        console.log("LENGTH",value.length)
         setQuestionData(prevData => ({
             ...prevData,
             questionText: value
@@ -80,7 +91,12 @@ const AddMoreQuestion = () => {
                 ...prevErrors,
                 questionText: 'This field is required'
             }));
-        } else {
+        }else if (value.length > 1000) {
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              questionText: 'Question text cannot be more than 1000 characters.',
+            }));
+          } else {
             setErrors(prevErrors => ({
                 ...prevErrors,
                 questionText: ''
@@ -117,12 +133,20 @@ const AddMoreQuestion = () => {
                 ...prevErrors,
                 questionText: 'This field is required'
             }));
-        }
+            return
+        }else if (questionData.questionText.length > 1000) {
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              questionText: 'Question text cannot be more than 1000 characters.',
+            }));
+            return
+          }
         if (questionData.selectedOption === '') {
             setErrors(prevErrors => ({
                 ...prevErrors,
                 selectedOption: 'Please select an option'
             }));
+            return
         }
         for (const option in questionData.options) {
             if (questionData.options[option].trim() === '') {
@@ -133,15 +157,22 @@ const AddMoreQuestion = () => {
                         [option]: 'This field is required'
                     }
                 }));
-            }
+                return
+            }else if (questionData.options[option].length > 255) {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    options: {
+                        ...prevErrors.options,
+                        [option]: ' option cannot be more than 255 characters.'
+                    }
+               
+            } ))
+            return
         }
+    }
 
         // If there are no errors, proceed with saving
-        if (
-            questionData.questionText.trim() !== '' &&
-            questionData.selectedOption !== '' &&
-            Object.values(questionData.options).every(option => option.trim() !== '')
-        ) {
+        
             try {
                 const formData = new FormData();
                 formData.append("questionText", questionData.questionText);
@@ -187,7 +218,7 @@ const AddMoreQuestion = () => {
                 throw error
             }
         }
-        }
+        
     };
 
     return (
@@ -205,7 +236,7 @@ const AddMoreQuestion = () => {
      
         <div className="row">
         <div className="col-12">
-                    <div className='atgrid' >
+                   
                         <div>
                            
                             <input
@@ -243,8 +274,7 @@ const AddMoreQuestion = () => {
                             ))}
                         </ul>
                         {errors.selectedOption && <div className="invalid-feedback">{errors.selectedOption}</div>}
-                    </div>
-                    <div className='atbtndiv'>
+                        <div className='atbtndiv'>
                        <div> <button className='btn btn-secondary' onClick={() => window.history.back()}>Cancel</button>
                        </div> <div></div>
                         <div><button className='btn btn-primary' onClick={handleSave} disabled={
@@ -252,9 +282,10 @@ const AddMoreQuestion = () => {
                             questionData.selectedOption === '' ||
                             Object.values(questionData.options).some(option => option.trim() === '')
                         }>Save</button></div>
-                    </div>
-
-            </div>
+                    </div></div>
+                 
+                   
+        
             </div>
             </div>
             </div>

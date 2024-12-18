@@ -1,6 +1,7 @@
 package com.knowledgeVista.FileService;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,62 +59,51 @@ public boolean deleteVideoFile(String fileName) {
         return false; // Return false in case of an exception
     }
 }
-public long deleteFile(String fileName) {
+public long getFileSize(String fileName) {
     Path filePath = Paths.get(videoUploadDirectory, fileName);
 
     try {
-        // Check if the file exists and get its size before deletion
+        System.out.println("Path: " + filePath);
+
         if (Files.exists(filePath)) {
-            long fileSize = Files.size(filePath); // Get the file size in bytes
-
-            boolean deleted = Files.deleteIfExists(filePath);
-
-            if (deleted) {
-                return fileSize; // Return the size of the deleted file
-            } else {
-                return 0; // Return 0 if the file deletion failed
+            // Fetch file size safely
+            try (SeekableByteChannel channel = Files.newByteChannel(filePath)) {
+                long fileSize = channel.size();
+                System.out.println("File size: " + fileSize + " bytes");
+                return fileSize;
             }
         } else {
-            System.out.println("File does not exist");
-            return 0; // Return 0 if the file does not exist
+            System.out.println("File does not exist.");
+            return 0;
         }
     } catch (IOException e) {
-        e.printStackTrace();    logger.error("", e);;
-        System.out.println("Error occurred while deleting the file");
-        return 0; // Return 0 in case of an exception
+        e.printStackTrace();
+        System.out.println("Error occurred while fetching file size.");
+        return 0;
     }
 }
-//
-//public long deleteFile(String fileName) {
-//    Path filePath = Paths.get(videoUploadDirectory, fileName);
-//
-//    try {
-//        // Check if the file exists and get its size before deletion
-//        if (Files.exists(filePath)) {
-//            long fileSize = Files.size(filePath); // Get the file size in bytes
-//
-//            // Use ProcessBuilder to force delete the file
-//            ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", "del", "/f", "/q", filePath.toString());
-//            Process process = processBuilder.start();
-//            int exitCode = process.waitFor(); // Wait for the process to complete
-//
-//            if (exitCode == 0) { // Successful deletion
-//                return fileSize; // Return the size of the deleted file
-//            } else {
-//                System.out.println("Failed to delete the file using ProcessBuilder");
-//                return 0; // Return 0 if the file deletion failed
-//            }
-//        } else {
-//            System.out.println("File does not exist");
-//            return 0; // Return 0 if the file does not exist
-//        }
-//    } catch (IOException | InterruptedException e) {
-//        e.printStackTrace();
-//        logger.error("Error occurred while deleting the file", e);
-//        System.out.println("Error occurred while deleting the file");
-//        return 0; // Return 0 in case of an exception
-//    }
-//}
+
+public boolean deleteFile(String fileName) {
+    Path filePath = Paths.get(videoUploadDirectory, fileName);
+
+    try {
+        System.out.println("Deleting file: " + filePath);
+
+        if (Files.deleteIfExists(filePath)) {
+            System.out.println("File deleted successfully.");
+            return true;
+        } else {
+            System.out.println("File does not exist.");
+            return false;
+        }
+    } catch (IOException e) { 
+        e.printStackTrace();
+        System.out.println("Error occurred while deleting the file.");
+        return false;
+    }
+}
+
+
 
 public String updateVideoFile(String existingFileName, MultipartFile newVideoFile, String videoUploadDirectory) throws IOException {
     // Generate a unique file name for the updated video
