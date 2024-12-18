@@ -1,0 +1,16 @@
+{
+  "id" : 1,
+  "company_name" : " Meganar Technologies",
+  "product_name" : "LearnHub",
+  "key" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNjEwMjAyNDEwRlJFRTM2NSJ9.NPX3lVzQtkgZy2yJE4EwO7XJ9h-MKIPUKq7J7ELpTvw",
+  "course" : "10",
+  "students" : "100",
+  "trainer" : "10",
+  "type" : "FREE",
+  "start_date" : 1732818600000,
+  "end_date" : 1764354600000,
+  "filename" : "data.xml",
+  "institution" : "Admin",
+  "storagesize" : 1,
+  "licenseFile" : null
+}

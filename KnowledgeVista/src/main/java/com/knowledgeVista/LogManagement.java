@@ -202,7 +202,7 @@ public class LogManagement {
 
 
 		mailSender.send(mimeMessage);
-		return ResponseEntity.ok("Mail Sent");
+		return ResponseEntity.ok("Mail Sent :"+"To Mail ID: "+to+" Mail response :"+helper);
 	}
 //  	  public String getfrom(String institution) {
 //  		  Optional<Mailkeys> opkeys = mailkeyrepo.FindMailkeyByInstituiton(institution);

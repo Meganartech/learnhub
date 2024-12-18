@@ -260,6 +260,7 @@ public class CourseController {
 	        courseDetail.setAmount(amount);
 	        courseDetail.setPaytype("FULL");
 	        courseDetail.setDuration(Duration);
+	        courseDetail.setPaytype("FULL");
 	        courseDetail.setInstitutionName(institution);
 	        courseDetail.setNoofseats(Noofseats);
 	        try {
