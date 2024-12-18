@@ -43,68 +43,73 @@ public class CourseControllerSecond {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CourseControllerSecond.class);
 	
-	public ResponseEntity<?>getstoragedetails(String token){
-		try {
-		 if (!jwtUtil.validateToken(token)) {
-             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-         }
-         String role = jwtUtil.getRoleFromToken(token);
-         if(!"ADMIN".equals(role)) {
-        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
-         }
-         String email=jwtUtil.getUsernameFromToken(token);
-         Optional<Muser> opuser =muserRepository.findByEmail(email);
-	     if(opuser.isPresent()) {
-	    	 Muser user=opuser.get();
-	    	String institution=user.getInstitutionName(); 
-	    	Long totalStorageUsed = lessonrepo.findTotalSizeByInstitution(institution);
-	    	System.out.println("total used"+totalStorageUsed);
-	    	Long maxStorageLimitBytes = licencerepo.FindstoragesizeByinstitution(institution) * (1024L * 1024 * 1024);
-                  
-	    	// Calculate in bytes first
-	    	Long balanceStorageBytes = maxStorageLimitBytes - (totalStorageUsed != null ? totalStorageUsed : 0);
+	public ResponseEntity<?> getstoragedetails(String token) {
+	    try {
+	        if (!jwtUtil.validateToken(token)) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        }
+	        String role = jwtUtil.getRoleFromToken(token);
+	        if (!"ADMIN".equals(role)) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        }
+	        String email = jwtUtil.getUsernameFromToken(token);
+	        Optional<Muser> opuser = muserRepository.findByEmail(email);
 
-	    	// Convert bytes to GB and ensure integer-only values
-	    	long maxStorageLimitGB = maxStorageLimitBytes / (1024 * 1024 * 1024);
-	    	long totalStorageUsedGB = (totalStorageUsed != null ? totalStorageUsed : 0) / (1024 * 1024 * 1024);
-	    	long balanceStorageGB = balanceStorageBytes / (1024 * 1024 * 1024);
+	        if (opuser.isPresent()) {
+	            Muser user = opuser.get();
+	            String institution = user.getInstitutionName();
+	            Long totalStorageUsed = lessonrepo.findTotalSizeByInstitution(institution);
+	            System.out.println("total used: " + totalStorageUsed);
+	            Long maxStorageLimitBytes = licencerepo.FindstoragesizeByinstitution(institution) * (1024L * 1024 * 1024);
 
-	    	// Prepare response
-	    	Map<String, Object> response = new HashMap<>();
+	            // Calculate in bytes first
+	            Long balanceStorageBytes = maxStorageLimitBytes - (totalStorageUsed != null ? totalStorageUsed : 0);
 
-	    	// Check if values are less than 1 GB, if so, show in MB instead with no decimals
-	    	if (maxStorageLimitGB < 1) {
-	    	    response.put("total", String.format("%d MB", maxStorageLimitBytes / (1024 * 1024)));
-	    	} else {
-	    	    response.put("total", String.format("%d GB", maxStorageLimitGB));
-	    	}
+	            // Convert values
+	            long maxStorageLimitGB = maxStorageLimitBytes / (1024 * 1024 * 1024);
+	            long totalStorageUsedGB = (totalStorageUsed != null ? totalStorageUsed : 0) / (1024 * 1024 * 1024);
+	            long balanceStorageGB = balanceStorageBytes / (1024 * 1024 * 1024);
 
-	    	if (totalStorageUsedGB < 1) {
-	    	    response.put("StorageUsed", String.format("%d MB", (totalStorageUsed != null ? totalStorageUsed : 0) / (1024 * 1024)));
-	    	
-	    	} else {
-	    	    response.put("StorageUsed", String.format("%d GB", totalStorageUsedGB));
-	    	}
+	            Map<String, Object> response = new HashMap<>();
 
-	    	if (balanceStorageGB < 1) {
-	    	    response.put("balanceStorage", String.format("%d MB", balanceStorageBytes / (1024 * 1024)));
-	    	} else {
-	    	    response.put("balanceStorage", String.format("%d GB", balanceStorageGB));
-	    	}
-	    	System.out.println("total used"+response);
-	    	return ResponseEntity.ok(response);
+	            // Total storage
+	            if (maxStorageLimitGB >= 1) {
+	                response.put("total", String.format("%d GB", maxStorageLimitGB));
+	            } else if (maxStorageLimitBytes / (1024 * 1024) >= 1) {
+	                response.put("total", String.format("%d MB", maxStorageLimitBytes / (1024 * 1024)));
+	            } else {
+	                response.put("total", String.format("%d KB", maxStorageLimitBytes / 1024));
+	            }
 
+	            // Used storage
+	            if (totalStorageUsedGB >= 1) {
+	                response.put("StorageUsed", String.format("%d GB", totalStorageUsedGB));
+	            } else if ((totalStorageUsed != null ? totalStorageUsed : 0) / (1024 * 1024) >= 1) {
+	                response.put("StorageUsed", String.format("%d MB", (totalStorageUsed != null ? totalStorageUsed : 0) / (1024 * 1024)));
+	            } else {
+	                response.put("StorageUsed", String.format("%d KB", (totalStorageUsed != null ? totalStorageUsed : 0) / 1024));
+	            }
 
-	    	
-	    	}else {
-	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		     }
+	            // Balance storage
+	            if (balanceStorageGB >= 1) {
+	                response.put("balanceStorage", String.format("%d GB", balanceStorageGB));
+	            } else if (balanceStorageBytes / (1024 * 1024) >= 1) {
+	                response.put("balanceStorage", String.format("%d MB", balanceStorageBytes / (1024 * 1024)));
+	            } else {
+	                response.put("balanceStorage", String.format("%d KB", balanceStorageBytes / 1024));
+	            }
 
-	} catch (Exception e) {
-	         e.printStackTrace(); logger.error("", e);// You can replace this with logging framework like Log4j
-	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	     }
-	 
+	            System.out.println("Storage details: " + response);
+	            return ResponseEntity.ok(response);
+
+	        } else {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        logger.error("", e); // Replace with a logging framework
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 	public double calculateRemainingAmount(Long userId) {
 	    // Fetch user by ID

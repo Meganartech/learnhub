@@ -79,7 +79,7 @@ const CourseCreation = () => {
       case "courseDescription":
         error = value.length < 1 
         ? "Please enter a Course Description " : value.length > 1000
-        ? "Course Description should not exceed 100 characters" 
+        ? "Course Description should not exceed 1000 characters" 
         : "";
         break;
       case "courseAmount":

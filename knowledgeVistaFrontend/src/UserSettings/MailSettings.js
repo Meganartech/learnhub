@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { resolvePath, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../api/utils";
@@ -42,13 +42,13 @@ const MailSettings = () => {
 
             setdefaultsettings(data);
             setsettings(data);
+          }else if(response.status===204){
+            setisnotFound(true);
+            setinitialsave(true);
           }
         } catch (error) {
           if (error.response) {
-            if (error.response.status === 404) {
-              setisnotFound(true);
-              setinitialsave(true);
-            } else if (error.response.status === 401) {
+            if (error.response.status === 401) {
               navigate("/unauthorized")
             }else{
               throw error

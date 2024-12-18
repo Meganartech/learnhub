@@ -34,7 +34,16 @@ const ForgetPassword = () => {
     });
     // Reset error message for the field being changed
     if (name === "password") {
-      setPasswordError(value.length < 6 ? "Password must be at least 6 characters long" : "");
+      const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(value)) {
+    let   error =
+        "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+   
+      setPasswordError(error);
+    }else{
+      setPasswordError("")
+    }
     } else if (name === "confirmPassword") {
       setConfirmPasswordError(value !== formData.password ? "Passwords do not match" : "");
     }
