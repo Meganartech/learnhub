@@ -1,9 +1,13 @@
 package com.knowledgeVista.SocialLogin;
 
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.knowledgeVista.Email.Mailkeys;
 
 @Repository
 public interface SocialKeyRepo extends JpaRepository<SocialLoginKeys, Long> {
@@ -21,4 +25,7 @@ public interface SocialKeyRepo extends JpaRepository<SocialLoginKeys, Long> {
 	@Query("SELECT s FROM SocialLoginKeys s WHERE "+
 			 "		s.provider = :provider AND s.institutionName = :institutionName")
 	SocialLoginKeys findByInstitutionNameAndProviderforAdmin(String institutionName,String provider);
+	
+	@Query("SELECT u FROM SocialLoginKeys u WHERE u.institutionName = ?1")
+	List<SocialLoginKeys>FindSocialLoginKeysByInstituiton(String institution);
 }
