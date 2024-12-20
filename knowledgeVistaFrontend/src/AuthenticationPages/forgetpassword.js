@@ -201,7 +201,7 @@ const ForgetPassword = () => {
 
   const forgetPasswordForm = (
     <form  onSubmit={handleForgetPasswordSubmit}>
-      <h3 className="h4 text-gray-900 mb-4">Student Verification</h3>
+      <h3 className="h4 text-gray-900 mb-4">User Verification</h3>
       <div className="form-outline mb-4">
         <input
           type="text"

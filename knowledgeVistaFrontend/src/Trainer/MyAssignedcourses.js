@@ -125,7 +125,7 @@ const MyAssignedcourses = () => {
                       alt="Course"
                     />
                     <div className="card-body">
-                      <h5 className="card-title flexWithPadding">
+                      <h5 className="card-text flexWithPadding">
                         <a  onClick={(e)=>{e.preventDefault();navigate(item.courseUrl)}}
                          style={{ cursor: "pointer" }}>
                           {item.courseName.length > 10
@@ -183,7 +183,8 @@ const MyAssignedcourses = () => {
                           </div>
                         </div>
                       </h5>
-                      <div className="card-text">
+                      <div className="card-text"> {item.courseDescription}</div>
+                      <div className="card-text mt-3">
                         {item.amount === 0 ? (
                           <a
                             href="#"
