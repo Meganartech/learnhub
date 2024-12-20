@@ -19,9 +19,6 @@ const CalenderView = () => {
   const navigate = useNavigate();
   const token = sessionStorage.getItem('token');
 
-  
-
-
   useEffect(() => {
     const fetchItems = async () => {
       try {

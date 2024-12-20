@@ -43,7 +43,13 @@ const DisplayName = () => {
             setdisplayname(data);
             setdefaultname(data);
             
-        } 
+        } else if (response.status === 204) {
+          // const data = response.data;
+          // console.log(data)
+          setisnotFound(true);
+          setinitialsave(true);
+          
+      } 
         } catch (error) {
           if (error.response) {
             if (error.response.status === 404) {

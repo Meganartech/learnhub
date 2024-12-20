@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.knowledgeVista.Migration.MuserMigrationDto;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.MuserProfileDTO;
@@ -78,7 +79,9 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	@Query("SELECT u from Muser u WHERE u.institutionName = ?1")
 	Optional<Muser>findByInstitutionName(String institutionName);
 	
-	   
+	@Query("SELECT u from Muser u WHERE u.institutionName = ?1")
+	List<Muser>findByInstitutionNameall(String institutionName);
+	
 	   
 	   @Query("SELECT u FROM Muser u WHERE u.role.roleName = :rolename AND u.institutionName = :institutionname")
 		List<Muser> findByRoleNameAndInstitutionName(@Param("rolename") String roleName, @Param("institutionname") String institutionName);
@@ -165,7 +168,11 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 
 	    @Query("SELECT u FROM Muser u WHERE u.role.roleId = ?1")
 		  Optional<Muser> findByroleid(Long roleId);
-}
+	    
+	    @Query("SELECT new com.knowledgeVista.Migration.MuserMigrationDto(cd.userId, cd.username, cd.psw, cd.email, cd.phone, cd.isActive, cd.dob, cd.skills, cd.institutionName, cd.profile, cd.countryCode, cd.lastactive, cd.inactiveDescription, cd.role) FROM Muser cd WHERE cd.institutionName = :institutionName")
+	    List<MuserMigrationDto> findAllByInstitutionNameDto(@Param("institutionName") String institutionName);
+
+	    }
 
 
 

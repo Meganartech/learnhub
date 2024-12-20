@@ -48,6 +48,7 @@ public class CourseDetail {
 	    
 	    @ManyToMany(mappedBy = "courses")
 	    private List<Muser> users;
+	    
 	    @Column(name="paytype")
 	    private String paytype;
 

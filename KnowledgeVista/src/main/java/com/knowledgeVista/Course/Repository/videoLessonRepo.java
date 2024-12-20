@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.videoLessons;
+import com.knowledgeVista.Migration.VideoLessonsMigrationDto;
 
 public interface videoLessonRepo extends JpaRepository<videoLessons, Long> {
 
@@ -24,5 +25,10 @@ public interface videoLessonRepo extends JpaRepository<videoLessons, Long> {
 //	 String findDocumetByid(Long lessonId);
 	 
 	 @Query("SELECT SUM(v.size) FROM videoLessons v WHERE v.institutionName = :institutionName")
-	    Long findTotalSizeByInstitution(@Param("institutionName") String institutionName);
+	 Long findTotalSizeByInstitution(@Param("institutionName") String institutionName);
+	 
+	 
+//	 @Query("SELECT new com.knowledgeVista.Migration.VideoLessonsMigrationDto(cd.lessonId, cd.institutionName, cd.lessontitle, cd.lessonDescription, cd.thumbnail, cd.size, cd.videofilename, cd.fileUrl) FROM videoLessons cd WHERE cd.institutionName = :institutionName")
+//	 List<VideoLessonsMigrationDto> findAllByVideoLessonsMigrationDto(@Param("institutionName") String institutionName);
+//		
 }

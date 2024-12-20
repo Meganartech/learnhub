@@ -65,8 +65,6 @@ const CourseCreation = () => {
             ?  "Course Title should not contain the '/' or '\' character"
             : "";
         break;
-    
-    
       case "courseCategory":
         error = value.length < 1 
         ? "Please enter a Course Category" 
