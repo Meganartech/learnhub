@@ -182,144 +182,184 @@ const handleChange = (e) => {
                 return buttons;
       };
         
-  const handleDeactivate =async (userId,username,email)=>{
-    const formData = new FormData();
-    formData.append('email', email);
-    MySwal.fire({
-      title: `De Activate {displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        }?`,
-      text: `Are you sure you want to deActivate ${displayname && displayname.student_name 
-        ? displayname.student_name 
-        : "Student" 
-      } ${username}`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      confirmButtonText: "DeActivate",
-      cancelButtonText: "Cancel",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          if (userId != null) {
-            const response = await axios.delete(`${baseUrl}/admin/deactivate/Student`, {
-              data:formData,
-              headers: {
-                'Authorization': token
+      const handleDeactivate = async (userId, username, email) => {
+        const formData = new FormData();
+        formData.append("email", email);
+    
+        MySwal.fire({
+          title: "De Activate ?",
+          text: `Are you sure you want to DeActivate ${
+            displayname && displayname.student_name
+              ? displayname.student_name
+              : "Student"
+          } ${username}`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          confirmButtonText: "De Activate",
+          cancelButtonText: "Cancel",
+          input: "text",
+          inputAttributes: {
+            autocapitalize: "off",
+            placeholder: "Enter reason for deactivation (required)",
+            required: true,
+          },
+          preConfirm: (reason) => {
+            // Handle user input before confirmation
+            return new Promise((resolve, reject) => {
+              if (reason === "") {
+                Swal.showInputError("Please enter a reason for deactivation.");
+                reject(); // Reject confirmation if reason is empty
+              } else {
+                formData.append("reason", reason);
+                resolve(); // Allow confirmation if reason is provided
               }
             });
-            
-            if (response.status===200) {
-              MySwal.fire({
-                title: "DeActivated",
-                text: `${displayname && displayname.student_name 
-                  ? displayname.student_name 
-                  : "Student" 
-                } ${username} deActivated successfully`,
-                icon: "success",
-                confirmButtonText: "OK",
-            }).then(() => {
-                window.location.reload();
-            });
-            }
-          } 
-        } catch (error) {
-          if(error.response){
-            if(error.response.status===404){
-              MySwal.fire({
-                icon: 'error',
-                title: '404',
-                text: `${displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        } not found`
-            });
-            }
-          }else{
-        //   MySwal.fire({
-        //     icon: 'error',
-        //     title: 'ERROR',
-        //     text: `Error DeActivating ${displayname && displayname.student_name 
-        //   ? displayname.student_name 
-        //   : "Student" 
-        // }`
-        // });
-        throw error
-        }
-      }
-      }  
-    });
-  };
-  const handleActivate =async (userId,username,email)=>{
-    const formData = new FormData();
-    formData.append('email', email);
-    MySwal.fire({
-      title: `Activate ${displayname && displayname.student_name 
-          ? displayname.student_name 
-          : "Student" 
-        }?`,
-      text: `Are you sure you want to Activate ${displayname && displayname.student_name 
-        ? displayname.student_name 
-        : "Student" 
-      } ${username}`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      confirmButtonText: "Activate",
-      cancelButtonText: "Cancel",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          if (userId != null) {
-            const response = await axios.delete(`${baseUrl}/admin/Activate/Student`, {
-              data:formData,
-              headers: {
-                'Authorization': token
+          },
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              if (userId != null) {
+                const response = await axios.delete(
+                  `${baseUrl}/admin/deactivate/Student`,
+                  {
+                    data: formData,
+                    headers: {
+                      Authorization: token,
+                    },
+                  }
+                );
+    
+                if (response.status === 200) {
+                  MySwal.fire({
+                    title: "De Activated",
+                    text: `${
+                      displayname && displayname.student_name
+                        ? displayname.student_name
+                        : "Student"
+                    } ${username} De Activated successfully`,
+                    icon: "success",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonButtonText: "OK",
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                } else {
+                  // Handle other backend errors (e.g., 400 Bad Request)
+                  MySwal.fire(
+                    "Error",
+                    `Deactivation failed with status ${response.status}`,
+                    "error"
+                  );
+                }
+              } else {
+                // Handle case where userId is null (if applicable)
+                MySwal.fire("Error", "Invalid user ID", "error");
               }
-            });
-            
-            if (response.status===200) {
-              MySwal.fire({
-                title: "Activated",
-                text: `${displayname && displayname.student_name 
-                  ? displayname.student_name 
-                  : "Student" 
-                } ${username} Activated successfully`,
-                icon: "success",
-                confirmButtonText: "OK",
-            }).then(() => {
-                window.location.reload();
-            });
+            } catch (error) {
+              if (error.response && error.response.status === 404) {
+                MySwal.fire({
+                  icon: "error",
+                  title: "404",
+                  text: `${
+                    displayname && displayname.student_name
+                      ? displayname.student_name
+                      : "Student"
+                  } not found`,
+                });
+              } else {
+                // MySwal.fire({
+                //   icon: "error",
+                //   title: "ERROR",
+                //   text: `Error Deactivating ${
+                //     displayname && displayname.student_name
+                //       ? displayname.student_name
+                //       : "Student"
+                //   }`,
+                // });
+                throw error
+              }
             }
-          } 
-        } catch (error) {
-          if(error.response){
-            if(error.response.status===404){
-              MySwal.fire({
-                icon: 'error',
-                title: '404',
-                text: `${displayname && displayname.student_name 
-                  ? displayname.student_name 
-                  : "Student" 
-                } not found`
-            });
+          }
+        });
+      };
+      const handleActivate = async (userId, username, email) => {
+        const formData = new FormData();
+        formData.append("email", email);
+        MySwal.fire({
+          title: `Activate ${
+            displayname && displayname.student_name
+              ? displayname.student_name
+              : "Student"
+          }?`,
+          text: `Are you sure you want to Activate ${
+            displayname && displayname.student_name
+              ? displayname.student_name
+              : "Student"
+          } ${username}`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          confirmButtonText: "Activate",
+          cancelButtonText: "Cancel",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              if (userId != null) {
+                const response = await axios.delete(
+                  `${baseUrl}/admin/Activate/Student`,
+                  {
+                    data: formData,
+                    headers: {
+                      Authorization: token,
+                    },
+                  }
+                );
+    
+                if (response.status === 200) {
+                  MySwal.fire({
+                    title: "Activated",
+                    text: `${
+                      displayname && displayname.student_name
+                        ? displayname.student_name
+                        : "Student"
+                    } ${username} Activated successfully`,
+                    icon: "success",
+                    confirmButtonText: "OK",
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                }
+              }
+            } catch (error) {
+              if (error.response) {
+                if (error.response.status === 404) {
+                  MySwal.fire({
+                    icon: "error",
+                    title: "404",
+                    text: `${
+                      displayname && displayname.student_name
+                        ? displayname.student_name
+                        : "Student"
+                    } not found`,
+                  });
+                }
+              } else {
+                // MySwal.fire({
+                //   icon: "error",
+                //   title: "ERROR",
+                //   text: `Error Activating ${
+                //     displayname && displayname.student_name
+                //       ? displayname.student_name
+                //       : "Student"
+                //   }`,
+                // });
+                throw error
+              }
             }
-          }else{
-        //   MySwal.fire({
-        //     icon: 'error',
-        //     title: 'ERROR',
-        //     text: `Error Activating ${displayname && displayname.student_name 
-        //   ? displayname.student_name 
-        //   : "Student" 
-        // }`
-        // });
-        throw error
-        }
-      }
-      }  
-    });
-  };
+          }
+        });
+      };
 
   return (
     <div>
@@ -428,26 +468,48 @@ const handleChange = (e) => {
                 <td className='py-2'>{user.skills}</td>
                 <td className='py-2'>{user.dob}</td>
                 <td className='py-2' >{user.isActive===true? <div className='Activeuser'><i className="fa-solid fa-circle pr-3"></i>Active</div>:<div className='InActiveuser' ><i className="fa-solid fa-circle pr-3"></i>In Active</div>}</td>
-                <td className='text-center'>
-                <Link to={`/student/edit/${user.email}`} className='hidebtn' >
-                    <i className="fas fa-edit"></i>
-                    </Link>
-                </td>
-               
-                <td className='text-center'>
-                <Link to={`/assignCourse/Student/${user.userId}`} className='hidebtn' >
-                    <i className="fas fa-plus"></i>
-                    </Link>
-                </td>
-                <td className='text-center '>
-                {user.isActive===true?
-                  <button className='hidebtn ' onClick={()=>handleDeactivate(user.userId,user.username,user.email)}>
-                  <i className="fa-solid fa-lock"></i>
-                  </button>:
-                  <button  className='hidebtn ' onClick={()=>handleActivate(user.userId,user.username,user.email)}>
-                  <i className="fa-solid fa-lock-open"></i>
-                  </button>}
-                </td>
+                <td className="text-center">
+                                   <Link
+                                     to={`/student/edit/${user.email}`}
+                                     state={{ user }}
+                                     className="hidebtn"
+                                   >
+                                     <i className="fas fa-edit"></i>
+                                   </Link>
+                                 </td>
+                                 <td className="text-center">
+                                   <Link
+                                     to={`/assignCourse/Student/${user.userId}`}
+                                     className="hidebtn"
+                                   >
+                                     <i className="fas fa-plus"></i>
+                                   </Link>
+                                 </td>
+                                 <td className="text-center ">
+                                   {user.isActive === true ? (
+                                     <button
+                                       className="hidebtn "
+                                       onClick={() =>
+                                         handleDeactivate(
+                                           user.userId,
+                                           user.username,
+                                           user.email
+                                         )
+                                       }
+                                     >
+                                       <i className="fa-solid fa-lock"></i>
+                                     </button>
+                                   ) : (
+                                     <button
+                                       className="hidebtn "
+                                       onClick={() =>
+                                         handleActivate(user.userId, user.username, user.email)
+                                       }
+                                     >
+                                       <i className="fa-solid fa-lock-open"></i>
+                                     </button>
+                                   )}
+                                 </td>
               </tr>
             ))}
           </tbody>

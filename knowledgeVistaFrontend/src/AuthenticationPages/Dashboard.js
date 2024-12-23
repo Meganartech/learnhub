@@ -413,12 +413,12 @@ const fetchstorage=async()=>{
                 </div>
                 </div>
                <div className="col-xl-6 col-md-12">
-                <div className="card table-card">
+                <div className="card table-card ">
                     <div className="card-header">
                         <h5>Trainers</h5>
                       
                     </div>
-                    <div className="card-body p-0">
+                    <div className="card-body p-0 listviewDashboard">
                         <div className="table-responsive">
                             <table className="table table-hover mb-0">
                                 <thead>
@@ -457,13 +457,13 @@ const fetchstorage=async()=>{
                     </div>
                 </div>
             </div>
-            <div className="col-xl-6 col-md-12">
-                <div className="card table-card">
+            <div className="col-xl-6 col-md-12 ">
+                <div className="card table-card ">
                     <div className="card-header">
                         <h5>Students</h5>
                      
                     </div>
-                    <div className="card-body p-0">
+                    <div className="card-body p-0 listviewDashboard">
                         <div className="table-responsive">
                             <table className="table table-hover mb-0">
                                 <thead>

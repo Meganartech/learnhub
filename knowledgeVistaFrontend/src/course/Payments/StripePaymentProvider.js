@@ -6,7 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 
-const StripePaymentProvider = (orderData) => {
+const StripePaymentProvider = (orderData,setopenselectgateway) => {
 
     const navigate=useNavigate()
   const MySwal = withReactContent(Swal);
@@ -51,6 +51,7 @@ const StripePaymentProvider = (orderData) => {
         await stripe.redirectToCheckout({ sessionId });
 
       } else if (keyResponse.status === 204) {
+        setopenselectgateway(false)
         MySwal.fire({
           icon: "warning",
           title: "Not Found",
@@ -59,7 +60,7 @@ const StripePaymentProvider = (orderData) => {
       }
     } catch (error) {
       const status = error.response?.status;
-  
+      setopenselectgateway(false)
       if (status === 401 || status === 403) {
         MySwal.fire({
           icon: "error",
@@ -69,11 +70,12 @@ const StripePaymentProvider = (orderData) => {
           navigate("/unauthorized");
         });
       } else if (status === 400) {
-        MySwal.fire({
-          icon: "error",
-          title: "Error Creating Order",
-          text: error.response?.data || "An error occurred.",
-        });
+       
+            MySwal.fire({
+              icon: "error",
+              title: "Error creating order:",
+              text: error.response.data ? error.response.data : "error occured",
+            });
       } else {
         MySwal.fire({
           icon: "error",

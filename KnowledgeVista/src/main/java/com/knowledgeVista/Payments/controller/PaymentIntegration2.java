@@ -1,5 +1,7 @@
 package com.knowledgeVista.Payments.controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,11 +93,14 @@ public class PaymentIntegration2 {
 	            // Convert INR to USD
 	            double amountInUSD = amountInINR * conversionRate;
 
+	            BigDecimal roundedAmount = new BigDecimal(amountInUSD).setScale(2, RoundingMode.HALF_UP);
+
 	            // Print the conversion rate and the result
 	            System.out.println("Conversion Rate (INR to USD): " + conversionRate);
-	            System.out.println(amountInINR + " INR is approximately " + String.format("%.2f", amountInUSD) + " USD.");
+	            System.out.println(amountInINR + " INR is approximately " + roundedAmount + " USD.");
 
-	            return amountInUSD;
+	            // Return the rounded value as a double
+	            return roundedAmount.doubleValue();
 
 	        } catch (Exception e) {
 	            // Handle any errors that might occur during the process
@@ -251,12 +256,13 @@ public class PaymentIntegration2 {
 	        }
 	    } catch (Exception e) {
 	    	 if (e.getMessage().contains("DECIMAL_PRECISION")) {
+	    		 System.out.println(e.getMessage());
 	    	        // Handle the case where there are too many decimals
 	    	        logger.error("Error with decimal precision: The amount has too many decimal places.");
 	    	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid amount format.");
 	    	    }else {
-	        logger.error("Error creating PayPal Checkout: ", e);
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	    	logger.error("Error creating Stripe Checkout: ", e);
+	    			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Paypal keys are invalid. Please check your Paypal keys.");
 	    	    }
 	    }
 	}

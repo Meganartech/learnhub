@@ -69,19 +69,13 @@ const Mycourse = () => {
                     />
                     <div className="card-body">
                       <h5>
-                        <a onClick={(e) => {e.preventDefault(); navigate(item.courseUrl)}}
-                        href="#" className="card-title">
-                          {item.courseName.length > 25
-                            ? item.courseName.slice(0, 25) + "..."
-                            : item.courseName}
+                        <a title={item.courseName} className="courseName" onClick={(e) => {e.preventDefault(); navigate(item.courseUrl)}}
+                        href="#">
+                          { item.courseName}
                         </a>
                       </h5>
-                      <div className="card-text"> {item.courseDescription.length > 20
-                            ? item.courseDescription.slice(0, 20) + "..."
-                            : item.courseDescription}</div>
-                      <div className="card-text"> {item.courseCategory.length > 25
-                            ? item.courseCategory.slice(0, 25) + "..."
-                            : item.courseCategory} </div>
+                      <p title={item.courseDescription} className="courseDescription"> {item.courseDescription}</p>
+                     
                     </div>
                   </div>
                 </div>

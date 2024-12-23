@@ -279,7 +279,6 @@ const ViewStudentList = () => {
             //   }`,
             // });
             throw error
-            console.error("Error during deactivation:", error); // Log detailed error for debugging
           }
         }
       }

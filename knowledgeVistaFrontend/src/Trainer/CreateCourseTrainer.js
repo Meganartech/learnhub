@@ -61,8 +61,8 @@ const CreateCourseTrainer = () => {
             break;
           case "courseDescription":
             error = value.length < 1 
-            ? "Please enter a Course Description " : value.length > 1000
-            ? "Course Description should not exceed 1000 characters" 
+            ? "Please enter a Course Description " : value.length > 100
+            ? "Course Description should not exceed 100 characters" 
             : "";
             break;
           case 'courseAmount':
@@ -269,10 +269,8 @@ const CreateCourseTrainer = () => {
                             <div className='form-group row'>
                                 <label htmlFor='courseDescription' className="col-sm-3 col-form-label">Course Description <span className="text-danger">*</span></label>
                                 <div className='col-sm-9'>
-                                    <textarea
+                                    <input
                                         type="text"
-                                        rows={3}
-                                        
                                         id='courseDescription'
                                         name="courseDescription"
                                         value={formData.courseDescription}

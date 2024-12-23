@@ -125,13 +125,8 @@ const MyAssignedcourses = () => {
                       alt="Course"
                     />
                     <div className="card-body">
-                      <h5 className="card-text flexWithPadding">
-                        <a  onClick={(e)=>{e.preventDefault();navigate(item.courseUrl)}}
-                         style={{ cursor: "pointer" }}>
-                          {item.courseName.length > 10
-                            ? item.courseName.slice(0, 10) + "..."
-                            : item.courseName}
-                        </a>{" "}
+                      <div className=" flexWithPadding">
+                        <div></div>
                         <div className="gap-10">
                           <div className="dropdown ">
                             <a
@@ -170,21 +165,27 @@ const MyAssignedcourses = () => {
                           </div>
                           <div>
                             <Link to={`/course/edit/${item.courseId}`}>
-                              <i className="fa-solid fa-edit"></i>
+                              <i title="Edit Course" className="fa-solid fa-edit"></i>
                             </Link>
                           </div>
                           <div>
                             <a
                               href="#"
+                              title="Delete course"
                               onClick={(e) => handleDelete(e, item.courseId)}
                             >
                               <i className="fas fa-trash "></i>
                             </a>
                           </div>
                         </div>
-                      </h5>
-                      <div className="card-text"> {item.courseDescription}</div>
-                      <div className="card-text mt-3">
+                      </div>
+                      <h5>
+                      <a className="courseName" title= {item.courseName} onClick={(e)=>{e.preventDefault();navigate(item.courseUrl)}}
+                         style={{ cursor: "pointer" }}>
+                          { item.courseName}
+                        </a></h5>
+                      <p title={item.courseDescription} className="courseDescription"> {item.courseDescription}</p>
+                      <div>
                         {item.amount === 0 ? (
                           <a
                             href="#"
@@ -192,15 +193,15 @@ const MyAssignedcourses = () => {
                               navigate(item.courseUrl)
                             }}
                            
-                            className=" btn btn-outline-success w-100"
+                            className=" btn btn-sm btn-outline-success w-100"
                           >
                             {" "}
                             Free
                           </a>
                         ) : (
-                          <a className="btn btn-outline-primary w-100">
+                          <a className="btn btn-sm btn-outline-primary w-100">
                             <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1" : "fa-solid fa-dollar-sign mr-1"}></i>
-                            <label>{item.amount}</label>
+                            <span>{item.amount}</span>
                           </a>
                         )}
                       </div>
