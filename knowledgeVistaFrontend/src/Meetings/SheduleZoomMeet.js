@@ -5,6 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 import baseUrl from "../api/utils";
 import moment from 'moment-timezone';
+import ReccuringMeet from "./ReccuringMeet";
 
 const SheduleZoomMeet = () => {
   const navigate = useNavigate();
@@ -14,6 +15,33 @@ const SheduleZoomMeet = () => {
   const token = sessionStorage.getItem("token");
   const Productversion=sessionStorage.getItem("LicenceVersion");
   const [issubmitting, setissubmitting] = useState(false);
+  const [Recurringenabled,setRecurringenabled]=useState(false);
+  const[ReccuranceDescription,setReccuranceDescription]=useState("")
+  //type 1=daily
+  //type 2 =Weekly
+  //type 3= Monthly
+  //endDateTime=end date
+  //endTimes =0 for no end date
+  // endTimes=1-60 for occurances
+  //repeatInterval=Repeat every days count
+  //weeklyDays=(for type 2) 1-7 for representing sun-sat for sun,monday give as 1,2
+ // monthlyDay= monthly of occurson day
+ //monthlyWeek= -1 - Last week of the month.
+        // 1 - First week of the month.
+        // 2 - Second week of the month.
+        // 3 - Third week of the month.
+        // 4 - Fourth week of the month.
+ //monthlyWeekDay=for sun-mon selection in occurs on in monthly field
+  const[Reccuranceobject,setReccuranceobject]=useState({
+  endDateTime :"",
+   endTimes :'0',
+   monthlyDay :'',
+   monthlyWeek :'',
+   monthlyWeekDay :'',
+   repeatInterval :'1',
+   type : '1',
+ weeklyDays :'',
+  })
   const timezones = [
     { name: "Pacific/Midway", id: "Pacific/Midway" },
     { name: "Samoa", id: "Samoa" },
@@ -191,6 +219,7 @@ const SheduleZoomMeet = () => {
   const [zoomrequest, setzoomrequest] = useState({
     agenda: "",
     duration: "40",
+    recurrence:Reccuranceobject,
     settings: {
       audio: "",
       autoRecording: "none",
@@ -211,6 +240,9 @@ const SheduleZoomMeet = () => {
     topic: "My meeting",
     type: 2,
   });
+  //type:2=without reccurance
+  //type:3= reccurance with no fixedd time
+  // type:8 =reccurance with fixed time
   const handleAutoRecordingChange = (event) => {
     const val = event.target.checked ? "local" : "none";
     console.log("autorec", zoomrequest.settings.autoRecording);
@@ -421,15 +453,14 @@ const updateStartTime = (event) => {
     if (!finalStartTime) {
       finalStartTime = calculateStartTime(formData, zoomrequest.timezone);
     }
-  
     // Prepare the zoom request with the final startTime
     const updatedZoomRequest = {
       ...zoomrequest,
+      recurrence:Reccuranceobject,
       startTime: finalStartTime,
     };
-  
-  
-  
+    console.log("Starttime",updatedZoomRequest)
+    // return
     try {
   
       setissubmitting(true);
@@ -457,12 +488,11 @@ const updateStartTime = (event) => {
       if(error.response && error.response.status===400){
         MySwal.fire({
           title: "Error!",
-          text: "Failed to Generate Access Token",
+          text: `${error?.response?.data}`,
           icon: "error",
           confirmButtonText: "OK",
         });
       }else{
-      // Handle network errors or other exceptions
       // MySwal.fire({
       //   title: "Error!",
       //   text: "Some Unexpected Error occurred. Please try again later.",
@@ -472,6 +502,21 @@ const updateStartTime = (event) => {
       throw error
       }
     }
+  };
+  const handleReccuEnable = () => {
+   
+    setRecurringenabled((prevEnabled) => {
+      const newEnabledState = !prevEnabled;
+  
+      // Update zoomrequest based on the new state of Recurringenabled.
+      setzoomrequest((prev) => ({
+        ...prev,
+        type: newEnabledState ? 8 : 2, // Set type to 8 if enabled, otherwise 2.
+    }));
+  
+      return newEnabledState;
+    });
+    setReccuranceDescription("")
   };
   
   return (
@@ -505,7 +550,7 @@ const updateStartTime = (event) => {
           <h4>Schedule a Meeting</h4>
        
             <div className="form-group row">
-              <label htmlFor="topic"className="col-sm-3 col-form-label">
+              <label htmlFor="topic"className="col-sm-2 col-form-label">
                 Meeting Title <span className="text-danger">*</span>
               </label>
               <div className="col-sm-9">
@@ -523,7 +568,7 @@ const updateStartTime = (event) => {
               </div>
             </div>
             <div className="form-group row">
-              <label htmlFor="agenda"className="col-sm-3 col-form-label">
+              <label htmlFor="agenda"className="col-sm-2 col-form-label">
                 Meeting Descrition <span className="text-danger">*</span>
               </label>
               <div className="col-sm-9">
@@ -540,7 +585,7 @@ const updateStartTime = (event) => {
               </div>
             </div>
             <div className="form-group row">
-        <label htmlFor="timezone"className="col-sm-3 col-form-label">
+        <label htmlFor="timezone"className="col-sm-2 col-form-label">
           Time Zone <span className="text-danger">*</span>
         </label>
         <div className="col-sm-9">
@@ -560,9 +605,24 @@ const updateStartTime = (event) => {
           </select>
         </div>
       </div>
-
       <div className="form-group row">
-        <label htmlFor="when"className="col-sm-3 col-form-label">
+        <label className="col-sm-2 col-form-label">
+          
+        </label>
+        <div className="col-sm-9" style={{display:"flex"}}>
+          <input type="checkbox" className="check" onChange={handleReccuEnable} checked={Recurringenabled}/> 
+          <p>Recurring meeting
+          </p> <h5 className="pl-2">{ReccuranceDescription}</h5>
+        </div>
+      </div>
+      {Recurringenabled && 
+      <ReccuringMeet 
+      setReccuranceDescription={setReccuranceDescription}
+       setzoomrequest={setzoomrequest}
+       Reccuranceobject={Reccuranceobject} 
+      setReccuranceobject={setReccuranceobject}/>}
+      <div className="form-group row">
+        <label htmlFor="when"className="col-sm-2 col-form-label">
           When <span className="text-danger">*</span>
         </label>
        
@@ -608,7 +668,7 @@ const updateStartTime = (event) => {
          
               
           <div className="form-group row"><label htmlFor="duration"
-              className="col-sm-3 col-form-label">
+              className="col-sm-2 col-form-label">
                 Duration <span className="text-danger">*</span>
               </label>
               <div className="col-sm-9 d-flex align-items-center">
@@ -619,7 +679,7 @@ const updateStartTime = (event) => {
             ):(
               <div className="form-group row">
               <label htmlFor="duration"
-              className="col-sm-3 col-form-label">
+              className="col-sm-2 col-form-label">
                 Duration <span className="text-danger">*</span>
               </label>
               
@@ -659,7 +719,7 @@ const updateStartTime = (event) => {
 
 
             <div className="form-group row">
-              <label htmlFor="invitees"className="col-sm-3 col-form-label">
+              <label htmlFor="invitees"className="col-sm-2 col-form-label">
                 Invitees
                 <span className="text-danger">*</span>
               </label>
@@ -695,7 +755,7 @@ const updateStartTime = (event) => {
             </div>
 
             <div className="form-group row">
-              <label htmlFor="video"className="col-sm-3 col-form-label">
+              <label htmlFor="video"className="col-sm-2 col-form-label">
                 Video <span className="text-danger">*</span>
               </label>
               <div className="col-sm-9">
@@ -772,7 +832,7 @@ const updateStartTime = (event) => {
               </div>
             </div>
             <div className="form-group row">
-              <label htmlFor="options"className="col-sm-3 col-form-label">
+              <label htmlFor="options"className="col-sm-2 col-form-label">
                 Options <span className="text-danger">*</span>
               </label>
               <div className="col-sm-9">

@@ -1,6 +1,5 @@
 package com.knowledgeVista.Meeting;
 
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,12 +13,16 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.knowledgeVista.Meeting.zoomclass.InviteeRepo;
 import com.knowledgeVista.Meeting.zoomclass.Meeting;
-import com.knowledgeVista.Meeting.zoomclass.Meetrepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.InviteeRepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.Meetrepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.OccurancesRepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.Recurrenceclassrepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.ZoomsettingRepo;
+import com.knowledgeVista.Meeting.zoomclass.Occurrences;
+import com.knowledgeVista.Meeting.zoomclass.Recurrenceclass;
 import com.knowledgeVista.Meeting.zoomclass.ZoomMeetingInvitee;
 import com.knowledgeVista.Meeting.zoomclass.ZoomSettings;
-import com.knowledgeVista.Meeting.zoomclass.ZoomsettingRepo;
 import com.knowledgeVista.Notification.Service.NotificationService;
 
 
@@ -33,85 +36,137 @@ private ZoomsettingRepo settingrepo;
 private InviteeRepo inviteRepo;
 @Autowired
 private NotificationService notiservice;
+@Autowired
+private OccurancesRepo occurancesRepo;
+@Autowired 
+private Recurrenceclassrepo reccrepo;
 
 private static final Logger logger = LoggerFactory.getLogger(SaveMeetDataService.class);
 
-public void PatchsaveData(String email,String jsonString,Long meetingId) {
-	try {
-	    ObjectMapper mapper = new ObjectMapper();
-	    System.out.println("json: " + jsonString);
-	    JsonNode rootNode = mapper.readTree(jsonString); // Parse JSON to JsonNode
+private void extractMeetingDetails(JsonNode rootNode, Meeting meeting, String email) {
+    if (rootNode.has("uuid")) meeting.setUuid(rootNode.get("uuid").asText());
+    if (rootNode.has("type")) meeting.setType(rootNode.get("type").asInt());
+    if (rootNode.has("id")) meeting.setMeetingId(rootNode.get("id").asLong());
+    if (rootNode.has("agenda")) meeting.setAgenda(rootNode.get("agenda").asText());
+    if (rootNode.has("host_email")) meeting.setHostEmail(rootNode.get("host_email").asText());
+    if (rootNode.has("start_url")) meeting.setStartUrl(rootNode.get("start_url").asText());
+    if (rootNode.has("join_url")) meeting.setJoinUrl(rootNode.get("join_url").asText());
+    if (rootNode.has("password")) meeting.setPassword(rootNode.get("password").asText());
+    if (rootNode.has("topic")) meeting.setTopic(rootNode.get("topic").asText());
+    if (rootNode.has("duration")) meeting.setDuration(rootNode.get("duration").asInt());
+    if (rootNode.has("start_time")) {
+        String startTimeStr = rootNode.get("start_time").asText();
+        System.out.println("startTime=="+startTimeStr);
+            meeting.setStartTime(startTimeStr);
+    }else {
+    	System.out.println("no starttime");
+    	 if (rootNode.has("occurrences")) {
+    	        JsonNode occurrencesNode = rootNode.get("occurrences");
+    	        
+    	        // If occurrencesNode is an array and has at least one element
+    	        if (occurrencesNode.isArray() && occurrencesNode.size() > 0) {
+    	            JsonNode firstOccurrence = occurrencesNode.get(0);
+    	            
+    	            // Extract start time from the first occurrence
+    	            String firstOccurrenceStartTime = firstOccurrence.get("start_time").asText();
+    	            System.out.println("Using start time from first occurrence: " + firstOccurrenceStartTime);
+    	            
+    	            meeting.setStartTime(firstOccurrenceStartTime);
+    	        }
+    	 }
+    }
+    if (rootNode.has("timezone")) meeting.setTimezone(rootNode.get("timezone").asText());
+    meeting.setCreatedBy(email);
+}
 
-	    Optional<Meeting> opmeeting = meetrepo.FindByMeetingId(meetingId);
-	    Meeting meeting = opmeeting.orElse(null);
-	    
-	    if (meeting == null) {
-	        System.out.println("Meeting with ID " + meetingId + " not found");
-	        return;
-	    }
-	    
-	    // Update meeting details
-	    if (rootNode.has("uuid")) {
-	        meeting.setUuid(rootNode.get("uuid").asText());
-	    }
-	    if (rootNode.has("id")) {
-	        meeting.setMeetingId(rootNode.get("id").asLong());
-	    }
-	    if (rootNode.has("type")) {
-	        meeting.setType(rootNode.get("type").asInt());
-	    }
-	    if (rootNode.has("agenda")) {
-	        meeting.setAgenda(rootNode.get("agenda").asText());
-	    }
-	    if (rootNode.has("host_email")) {
-	        meeting.setHostEmail(rootNode.get("host_email").asText());
-	    }
-	    if (rootNode.has("start_url")) {
-	        meeting.setStartUrl(rootNode.get("start_url").asText());
-	    }
-	    if (rootNode.has("join_url")) {
-	        meeting.setJoinUrl(rootNode.get("join_url").asText());
-	    }
-	    if (rootNode.has("password")) {
-	        meeting.setPassword(rootNode.get("password").asText());
-	    }
-	    if (rootNode.has("topic")) {
-	        meeting.setTopic(rootNode.get("topic").asText());
-	    }
-	    if (rootNode.has("duration")) {
-	        meeting.setDuration(rootNode.get("duration").asInt());
-	    }
-	    if (rootNode.has("start_time")) {
-	        String startTimeStr = rootNode.get("start_time").asText();
-	        try {
-	            meeting.setStartTime(startTimeStr);
-	        } catch (DateTimeParseException e) {
-	        	e.printStackTrace();    logger.error("", e);;
-	            System.err.println("Failed to parse start time: " + startTimeStr);
-	        }
-	    }
-	    if (rootNode.has("timezone")) {
-	        meeting.setTimezone(rootNode.get("timezone").asText());
-	    }
-	    meeting.setCreatedBy(email);
 
-	    // Extract settings
-	    ZoomSettings settings;
-	    if (rootNode.has("settings")) {
-	        JsonNode settingsNode = rootNode.get("settings");
-	        if (meeting.getSettings() == null) {
-	            settings = new ZoomSettings();
-	        } else {
-	            settings = meeting.getSettings();
-	        }
-	        settings.setAudio(settingsNode.get("audio").asText());
-	        settings.setAutoRecording(settingsNode.get("auto_recording").asText());
-	        settings.setEmailNotification(settingsNode.get("email_notification").asBoolean());
-	        settings.setHostVideo(settingsNode.get("host_video").asBoolean());
-	        settings.setJoinBeforeHost(settingsNode.get("join_before_host").asBoolean());
-	        settings.setMuteUponEntry(settingsNode.get("mute_upon_entry").asBoolean());
+public void PatchsaveData(String email, String jsonString, Long meetingId) {
+    try {
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println("json: " + jsonString);
+        JsonNode rootNode = mapper.readTree(jsonString);
 
-	        // Clear existing invitees
+        // Fetch the existing meeting
+        Optional<Meeting> opmeeting = meetrepo.FindByMeetingId(meetingId);
+        Meeting meeting = opmeeting.orElse(null);
+
+        if (meeting == null) {
+            System.out.println("Meeting with ID " + meetingId + " not found");
+            return;
+        }
+
+        // Update meeting details
+        extractMeetingDetails(rootNode, meeting, email); // Ensure this method updates the passed meeting object
+        meeting.setCreatedBy(email);
+
+        // Update occurrences
+     // Update occurrences
+        if (rootNode.has("occurrences")) {
+        	  JsonNode occurrencesNode = rootNode.get("occurrences");
+
+        	  // Clear existing occurrences
+        	  meeting.getOccurances().clear(); 
+
+        	  if (occurrencesNode.isArray()) {
+        	    for (JsonNode occurrenceNode : occurrencesNode) {
+        	      // ... (rest of the occurrence processing logic) 
+
+        	      Long occurrenceId = occurrenceNode.get("occurrence_id").asLong();
+        	      String startTimeStr = occurrenceNode.get("start_time").asText();
+        	      String status = occurrenceNode.get("status").asText();
+        	      Integer duration = occurrenceNode.get("duration").asInt();
+
+        	      Occurrences newOccurrence = new Occurrences();
+        	      newOccurrence.setDuration(duration);
+        	      newOccurrence.setOccurrence_id(occurrenceId);
+        	      newOccurrence.setStart_time(startTimeStr);
+        	      newOccurrence.setStatus(status);
+        	      newOccurrence.setMeeting(meeting); 
+
+        	      meeting.getOccurances().add(newOccurrence); 
+        	    }
+        	  }
+        	}
+
+
+        // Update recurrence
+        if (rootNode.has("recurrence")) {
+            Recurrenceclass rec = meeting.getReccurance();
+            if (rec == null) {
+                rec = new Recurrenceclass();
+                meeting.setReccurance(rec);
+            }
+
+            JsonNode recNode = rootNode.get("recurrence");
+            rec.setEndDateTime(recNode.has("end_date_time") ? recNode.get("end_date_time").asText() : null);
+            rec.setEndTimes(recNode.has("end_times") ? recNode.get("end_times").asInt() : null);
+            rec.setMonthlyDay(recNode.has("monthly_day") ? recNode.get("monthly_day").asInt() : null);
+            rec.setMonthlyWeek(recNode.has("monthly_week") ? recNode.get("monthly_week").asInt() : null);
+            rec.setMonthlyWeekDay(recNode.has("monthly_week_day") ? recNode.get("monthly_week_day").asInt() : null);
+            rec.setRepeatInterval(recNode.has("repeat_interval") ? recNode.get("repeat_interval").asInt() : null);
+            rec.setType(recNode.has("type") ? recNode.get("type").asInt() : null);
+            rec.setWeeklyDays(recNode.has("weekly_days") ? recNode.get("weekly_days").asText() : null);
+
+            reccrepo.save(rec);
+        }
+
+        // Update settings
+        if (rootNode.has("settings")) {
+            ZoomSettings settings = meeting.getSettings();
+            if (settings == null) {
+                settings = new ZoomSettings();
+                meeting.setSettings(settings);
+            }
+
+            JsonNode settingsNode = rootNode.get("settings");
+            settings.setAudio(settingsNode.get("audio").asText());
+            settings.setAutoRecording(settingsNode.get("auto_recording").asText());
+            settings.setEmailNotification(settingsNode.get("email_notification").asBoolean());
+            settings.setHostVideo(settingsNode.get("host_video").asBoolean());
+            settings.setJoinBeforeHost(settingsNode.get("join_before_host").asBoolean());
+            settings.setMuteUponEntry(settingsNode.get("mute_upon_entry").asBoolean());
+
+        // Clear existing invitees
 	        if (settings.getMeetingInvitees() != null) {
 	            settings.getMeetingInvitees().clear();
 	        }
@@ -146,148 +201,201 @@ public void PatchsaveData(String email,String jsonString,Long meetingId) {
 	                notiservice.SpecificCreateNotificationusingEmail(notid, new ArrayList<>(existingEmails));
 	            }
 	        }
-	    }
-	} catch (Exception e) {
-	    e.printStackTrace();    logger.error("", e);;
-	}
+
+        }
+         meetrepo.save(meeting);
+       
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        logger.error("Error updating meeting: ", e);
+    }
 }
 
 
-	public void saveMeetData(String jsonString,String email) {
-		try {
-	
-			 ObjectMapper mapper = new ObjectMapper();
-			
-			 System.out.println("json"+jsonString);
-			   JsonNode rootNode = mapper.readTree(jsonString); 
-			   // Parse JSON to JsonNode
 
-			          Meeting meeting = new Meeting();
-			          if (rootNode.has("uuid")) {
-			          meeting.setUuid(rootNode.get("uuid").asText());
-			          }
-			          if (rootNode.has("id")) {
-			          meeting.setMeetingId(rootNode.get("id").asLong());
-			          }
-			          if (rootNode.has("type")) {
-			         meeting.setType(rootNode.get("type").asInt());
-			          }
-			          if (rootNode.has("agenda")) {
-                     meeting.setAgenda(rootNode.get("agenda").asText());
-			          }
-			          if (rootNode.has("host_email")) {
-			          meeting.setHostEmail(rootNode.get("host_email").asText());
-			          }
+public void saveMeetData(String jsonString, String email) {
+    try {
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println("json"+jsonString);
+        JsonNode rootNode = mapper.readTree(jsonString);
+        Meeting meeting = extractMeetingDetails(rootNode, email);
+        if(rootNode.has("occurrences")) {
+        	 JsonNode occurrencesNode = rootNode.get("occurrences");
+        	 List<Occurrences> occurrencesList = new ArrayList<>();
+             if (occurrencesNode.isArray()) {
+                 for (JsonNode occurrenceNode : occurrencesNode) {
+              Long occuranceid=occurrenceNode.get("occurrence_id").asLong();
+        	 String startTimeStr = occurrenceNode.get("start_time").asText();
+        	 String status = occurrenceNode.get("status").asText();
+             Integer duration=occurrenceNode.get("duration").asInt();
+             Occurrences occurance=new Occurrences();
+             occurance.setDuration(duration);
+             occurance.setOccurrence_id(occuranceid);
+             occurance.setStart_time(startTimeStr);
+             occurance.setStatus(status);
+             Occurrences occ=occurancesRepo.save(occurance);;
+             occurrencesList.add(occ);
+                 }
+          meeting.setOccurances(occurrencesList);
+             }
+             if(rootNode.has("recurrence")) {
+            	 Recurrenceclass rec =new Recurrenceclass();
+            	 JsonNode RecNode = rootNode.get("recurrence");
+            	 rec.setEndDateTime(  RecNode.has("end_date_time") ?  RecNode.get("end_date_time").asText() : null);
+            	 rec.setEndTimes( RecNode.has("end_times") ?  RecNode.get("end_times").asInt() : null);
+            	 rec.setMonthlyDay(  RecNode.has("monthly_day") ?  RecNode.get("monthly_day").asInt() : null);
+            	 rec.setMonthlyWeek(  RecNode.has("monthly_week") ?  RecNode.get("monthly_week").asInt() : null);
+            	 rec.setMonthlyWeekDay(  RecNode.has("monthly_week_day") ?  RecNode.get("monthly_week_day").asInt() : null);
+            	 rec.setRepeatInterval(  RecNode.has("repeat_interval") ?  RecNode.get("repeat_interval").asInt() : null);
+            	rec.setType(  RecNode.has("type") ?  RecNode.get("type").asInt() : null);
+            	rec.setWeeklyDays(  RecNode.has("weekly_days") ? RecNode.get("weekly_days").asText() : null);
+            	Recurrenceclass recu=reccrepo.save(rec);
+            	meeting.setReccurance(recu);
 
-			          if (rootNode.has("start_url")) {
-			              meeting.setStartUrl(rootNode.get("start_url").asText());
-			             
-			          }
-			          if (rootNode.has("join_url")) {
-			          meeting.setJoinUrl(rootNode.get("join_url").asText());
-			          }
-			         String Joinurl=rootNode.get("join_url").asText();
-			         if (rootNode.has("password")) {
-			          meeting.setPassword(rootNode.get("password").asText());
-			         }
-			         String topic="";
-			         if (rootNode.has("topic")) {
-			          meeting.setTopic(rootNode.get("topic").asText());
-                         topic=rootNode.get("topic").asText();
-			         }
-			         if (rootNode.has("duration")) {
-			          meeting.setDuration(rootNode.get("duration").asInt());
-			          
-			         }
-			         if (rootNode.has("start_time")) {
-			          String startTimeStr = rootNode.get("start_time").asText();
-			         
-			          
-			          try {
-			              meeting.setStartTime(startTimeStr);
-			             
-			          } catch (DateTimeParseException e) {
-			        	  e.printStackTrace();    logger.error("", e);;
-			              System.err.println("Failed to parse start time: " + startTimeStr);
-			          }
-			         
-			         }
-			         if (rootNode.has("timezone")) {
-			          meeting.setTimezone(rootNode.get("timezone").asText());
-			        
-			         }
-			          meeting.setCreatedBy(email);
-			         
+             }
+             if (rootNode.has("settings")) {
+                 ZoomSettings settings = extractSettings(rootNode.get("settings"));
+                 settingrepo.save(settings);
 
-			          // Extract settings
-			          if (rootNode.has("settings")) {
-			              JsonNode settingsNode = rootNode.get("settings");
-			              ZoomSettings settings = new ZoomSettings();
-			              settings.setAudio(settingsNode.get("audio").asText());
-			              settings.setAutoRecording(settingsNode.get("auto_recording").asText());
-			              settings.setEmailNotification(settingsNode.get("email_notification").asBoolean());
-			              settings.setHostVideo(settingsNode.get("host_video").asBoolean());
-			              settings.setJoinBeforeHost(settingsNode.get("join_before_host").asBoolean());
-			              settings.setMuteUponEntry(settingsNode.get("mute_upon_entry").asBoolean());
-			              // ... Extract other settings as needed
-			              settingrepo.save(settings);
+                 List<ZoomMeetingInvitee> invitees = extractInvitees(rootNode.get("settings"), email, settings, meeting);
+                 if (!invitees.isEmpty()) {
+                     inviteRepo.saveAll(invitees);
+                     settings.setMeetingInvitees(invitees);
+                 }
+                 meeting.setSettings(settings);
+             }
 
-			              // Extract invitees
-			              if (settingsNode.has("meeting_invitees")) {
-			            	    JsonNode inviteesNode = settingsNode.get("meeting_invitees");
-			            	    if (inviteesNode.isArray()) {
-			            	        List<ZoomMeetingInvitee> invitees = new ArrayList<>();
-			            	        List<String> notiuserlist = new ArrayList<>(); 
-			            	        for (JsonNode inviteeNode : inviteesNode) {
-			            	            if (inviteeNode.has("email")) {
-			            	                String estring = inviteeNode.get("email").asText();
-			            	                if (estring != null && !estring.trim().isEmpty()) { // Check if the email is not empty
-			            	                   
-			            	                     ZoomMeetingInvitee invitee = new ZoomMeetingInvitee();
-			            	                    invitee.setEmail(estring);
-			            	                    System.out.println("email=" + invitee.getEmail());
-			            	                    invitee.setZoomSettings(settings);
-			            	                    notiuserlist.add(estring);
-			            	                    invitees.add(invitee);
-			            	                }
-			            	            }
-			            	        }
-			            	        boolean emailExists = invitees.stream()
-	                                          .anyMatch(invitee -> invitee.getEmail().equalsIgnoreCase(email));
+             Meeting meet=  meetrepo.save(meeting);
+             List<Occurrences> occurrences = meet.getOccurances();
+             if (occurrences != null && !occurrences.isEmpty()) {
+                 for (Occurrences occurrence : occurrences) {
+                     occurrence.setMeeting(meet);  // Ensure each occurrence is linked to the meeting
+                 }
+             }
+             occurancesRepo.saveAll(occurrences);   
+                 
+             
+        }else {
+        if (rootNode.has("settings")) {
+            ZoomSettings settings = extractSettings(rootNode.get("settings"));
+            settingrepo.save(settings);
 
-	            // Add the parameter email if it's not in the list
-	            if (!emailExists) {
-	                ZoomMeetingInvitee parameterInvitee = new ZoomMeetingInvitee();
-	                parameterInvitee.setEmail(email);
-	                parameterInvitee.setZoomSettings(settings);
-	                invitees.add(parameterInvitee);
-	                notiuserlist.add(email);
-	            }
-			            	        if (!invitees.isEmpty()) {
-			            	        	  Long notid= notiservice.createNotification("MeetingSheduled", "system", "New Meeting Sheduled Click To Join the meeting", "System",topic , Joinurl);
-		            	                    meeting.setNotificationId(notid);
-			            	        	  if(notid!=null) {
-		            	                    	 notiservice.SpecificCreateNotificationusingEmail(notid,notiuserlist );
-		            	                     }
-			            	            inviteRepo.saveAll(invitees);
-			            	            settings.setMeetingInvitees(invitees);
-			            	        }
-			            	    }
-			            	}
+            List<ZoomMeetingInvitee> invitees = extractInvitees(rootNode.get("settings"), email, settings, meeting);
+            if (!invitees.isEmpty()) {
+                inviteRepo.saveAll(invitees);
+                settings.setMeetingInvitees(invitees);
+            }
+            meeting.setSettings(settings);
+        }
 
+        meetrepo.save(meeting);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        logger.error("", e);
+    }
+}
 
-			              meeting.setSettings(settings);
-			            meetrepo.save(meeting);
-                          
-			              settingrepo.save(settings);
-			          } else {
-			              // Save the meeting without settings if settings are not present
-			              meetrepo.save(meeting);
-			          }
-			      
-		}catch(Exception e) {
-			e.printStackTrace();    logger.error("", e);;
-		}
-	}
+private Meeting extractMeetingDetails(JsonNode rootNode, String email) {
+    Meeting meeting = new Meeting();
+    if (rootNode.has("uuid")) meeting.setUuid(rootNode.get("uuid").asText());
+    if (rootNode.has("type")) meeting.setType(rootNode.get("type").asInt());
+    if (rootNode.has("id")) meeting.setMeetingId(rootNode.get("id").asLong());
+    if (rootNode.has("agenda")) meeting.setAgenda(rootNode.get("agenda").asText());
+    if (rootNode.has("host_email")) meeting.setHostEmail(rootNode.get("host_email").asText());
+    if (rootNode.has("start_url")) meeting.setStartUrl(rootNode.get("start_url").asText());
+    if (rootNode.has("join_url")) meeting.setJoinUrl(rootNode.get("join_url").asText());
+    if (rootNode.has("password")) meeting.setPassword(rootNode.get("password").asText());
+    if (rootNode.has("topic")) meeting.setTopic(rootNode.get("topic").asText());
+    if (rootNode.has("duration")) meeting.setDuration(rootNode.get("duration").asInt());
+    if (rootNode.has("start_time")) {
+        String startTimeStr = rootNode.get("start_time").asText();
+        System.out.println("startTime=="+startTimeStr);
+            meeting.setStartTime(startTimeStr);
+    }else {
+    	System.out.println("no starttime");
+    	 if (rootNode.has("occurrences")) {
+    	        JsonNode occurrencesNode = rootNode.get("occurrences");
+    	        
+    	        // If occurrencesNode is an array and has at least one element
+    	        if (occurrencesNode.isArray() && occurrencesNode.size() > 0) {
+    	            JsonNode firstOccurrence = occurrencesNode.get(0);
+    	            
+    	            // Extract start time from the first occurrence
+    	            String firstOccurrenceStartTime = firstOccurrence.get("start_time").asText();
+    	            System.out.println("Using start time from first occurrence: " + firstOccurrenceStartTime);
+    	            
+    	            meeting.setStartTime(firstOccurrenceStartTime);
+    	        }
+    	 }
+    }
+        
+    
+    if (rootNode.has("timezone")) meeting.setTimezone(rootNode.get("timezone").asText());
+    meeting.setCreatedBy(email);
+    return meeting;
+}
+
+private ZoomSettings extractSettings(JsonNode settingsNode) {
+    ZoomSettings settings = new ZoomSettings();
+    if (settingsNode.has("audio")) settings.setAudio(settingsNode.get("audio").asText());
+    if (settingsNode.has("auto_recording")) settings.setAutoRecording(settingsNode.get("auto_recording").asText());
+    if (settingsNode.has("email_notification")) settings.setEmailNotification(settingsNode.get("email_notification").asBoolean());
+    if (settingsNode.has("host_video")) settings.setHostVideo(settingsNode.get("host_video").asBoolean());
+    if (settingsNode.has("join_before_host")) settings.setJoinBeforeHost(settingsNode.get("join_before_host").asBoolean());
+    if (settingsNode.has("mute_upon_entry")) settings.setMuteUponEntry(settingsNode.get("mute_upon_entry").asBoolean());
+    // Add extraction for other settings as needed
+    return settings;
+}
+
+private List<ZoomMeetingInvitee> extractInvitees(JsonNode settingsNode, String email, ZoomSettings settings, Meeting meeting) {
+    List<ZoomMeetingInvitee> invitees = new ArrayList<>();
+    List<String> notificationEmails = new ArrayList<>();
+    if (settingsNode.has("meeting_invitees")) {
+        JsonNode inviteesNode = settingsNode.get("meeting_invitees");
+        if (inviteesNode.isArray()) {
+            for (JsonNode inviteeNode : inviteesNode) {
+                if (inviteeNode.has("email")) {
+                    String inviteeEmail = inviteeNode.get("email").asText();
+                    if (inviteeEmail != null && !inviteeEmail.trim().isEmpty()) {
+                        ZoomMeetingInvitee invitee = new ZoomMeetingInvitee();
+                        invitee.setEmail(inviteeEmail);
+                        invitee.setZoomSettings(settings);
+                        notificationEmails.add(inviteeEmail);
+                        invitees.add(invitee);
+                    }
+                }
+            }
+        }
+    }
+
+    boolean emailExists = invitees.stream().anyMatch(invitee -> invitee.getEmail().equalsIgnoreCase(email));
+    if (!emailExists) {
+        ZoomMeetingInvitee parameterInvitee = new ZoomMeetingInvitee();
+        parameterInvitee.setEmail(email);
+        parameterInvitee.setZoomSettings(settings);
+        invitees.add(parameterInvitee);
+        notificationEmails.add(email);
+    }
+
+    if (!notificationEmails.isEmpty()) {
+        Long notificationId = notiservice.createNotification(
+                "MeetingScheduled",
+                "system",
+                "New Meeting Scheduled. Click to join the meeting",
+                "System",
+                meeting.getTopic(),
+                meeting.getJoinUrl()
+        );
+        meeting.setNotificationId(notificationId);
+        if (notificationId != null) {
+            notiservice.SpecificCreateNotificationusingEmail(notificationId, notificationEmails);
+        }
+    }
+
+    return invitees;
+}
+
 
 }

@@ -1,10 +1,12 @@
-package com.knowledgeVista.Meeting.zoomclass;
+package com.knowledgeVista.Meeting.zoomclass.repo;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.knowledgeVista.Meeting.zoomclass.ZoomMeetingInvitee;
 
 
 @Repository

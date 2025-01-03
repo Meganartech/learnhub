@@ -145,10 +145,11 @@ const EditCourse = ({ filteredCourses }) => {
                         <a
                         href="#"
                         onClick={(e)=>{e.preventDefault();  navigate(item.courseUrl)}}
-                          className=" btn btn-outline-success w-100"
+                          className=" btn btn-sm btn-outline-success w-100"
                         >
-                          {" "}
+                          <label>
                           Free
+                          </label>
                         </a>
                       ) : (
                         <a className="btn btn-sm  btn-outline-primary w-100">

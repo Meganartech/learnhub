@@ -115,6 +115,7 @@ export const GlobalStateProvider = ({ children }) => {
             sessionStorage.setItem("displayname", JSON.stringify(data)); // Save in localStorage
         } else if (response.status === 204) {
           setDisplayname([]);
+          sessionStorage.setItem("displayname", JSON.stringify([]));
         }   
           // else if(response.status === 204){
             

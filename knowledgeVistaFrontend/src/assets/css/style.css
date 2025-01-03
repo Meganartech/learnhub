@@ -25405,7 +25405,23 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
   display: grid;
   grid-template-columns: 1fr 40fr 1fr;
 }
-
+.listemail{
+  display: flex;
+  margin-bottom: 2px;
+}
+.meet{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.event-title {
+  white-space: nowrap;          /* Prevents the text from wrapping */
+  overflow: hidden;             /* Hides the overflowing text */
+  text-overflow: ellipsis;      /* Adds the ellipsis (...) when the text overflows */
+  max-width: 200px;             /* Set a maximum width for the element */
+  display: inline-block;        /* Makes the span behave like a block element */
+  cursor: pointer;
+}
 .cornerbtn {
   margin-top: 10px;
   padding: 10px;
@@ -25415,6 +25431,9 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
 }
 .course {
   transition: transform 0.3s ease; /* Smooth zoom effect */
+}
+.course .card{
+  width:280px
 }
 
 .course:hover {
@@ -25739,6 +25758,16 @@ ul {
   margin-left: 5px;
   border: 1px solid #ced4da;
   background-color: #e9ecef;
+}
+.check{
+  width: 20px;
+  height: 20px;
+  margin: 0 5px;
+}
+.radio{
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 5px;
 }
 .zoomopt input[type="checkbox"] {
   width: 20px;
@@ -26350,6 +26379,7 @@ ul {
 }
 .courseName{
   font-weight: 1000;
+  color:var(--primary) ;
   overflow-wrap: normal;
   text-overflow: ellipsis; /* Add ellipsis for overflowed text */
   display: inline-block;
