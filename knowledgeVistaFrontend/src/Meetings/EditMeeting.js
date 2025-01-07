@@ -5,6 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 import baseUrl from "../api/utils";
 import moment from "moment-timezone";
+import EditReccuringMeet from "./EditReccuringMeet";
 
 const EditMeeting = () => {
   const { meetingId } = useParams();
@@ -158,7 +159,33 @@ const EditMeeting = () => {
     { name: "America/Tegucigalpa", id: "America/Tegucigalpa" },
     { name: "Pacific/Apia", id: "Pacific/Apia" },
   ];
-
+  const [Recurringenabled,setRecurringenabled]=useState(false);
+  const[ReccuranceDescription,setReccuranceDescription]=useState("")
+  //type 1=daily
+  //type 2 =Weekly
+  //type 3= Monthly
+  //endDateTime=end date
+  //endTimes =0 for no end date
+  // endTimes=1-60 for occurances
+  //repeatInterval=Repeat every days count
+  //weeklyDays=(for type 2) 1-7 for representing sun-sat for sun,monday give as 1,2
+ // monthlyDay= monthly of occurson day
+ //monthlyWeek= -1 - Last week of the month.
+        // 1 - First week of the month.
+        // 2 - Second week of the month.
+        // 3 - Third week of the month.
+        // 4 - Fourth week of the month.
+ //monthlyWeekDay=for sun-mon selection in occurs on in monthly field
+  const[Reccuranceobject,setReccuranceobject]=useState({
+   endDateTime :"",
+    endTimes :'0',
+    monthlyDay :'',
+    monthlyWeek :'',
+    monthlyWeekDay :'',
+    repeatInterval :'1',
+    type : '1',
+  weeklyDays :'',
+   })
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [selectedEmails, setSelectedEmails] = useState([]);
@@ -173,6 +200,7 @@ const EditMeeting = () => {
   const [zoomrequest, setzoomrequest] = useState({
     agenda: "",
     duration: "",
+    recurrence:Reccuranceobject,
     settings: {
       audio: "",
       autoRecording: "",
@@ -191,6 +219,25 @@ const EditMeeting = () => {
     topic: "",
     type: 2,
   });
+  //type:2=without reccurance
+  //type:3= reccurance with no fixedd time
+  // type:8 =reccurance with fixed time
+  const handleReccuEnable = () => {
+   
+    setRecurringenabled((prevEnabled) => {
+      const newEnabledState = !prevEnabled;
+  
+      // Update zoomrequest based on the new state of Recurringenabled.
+      setzoomrequest((prev) => ({
+        ...prev,
+        type: newEnabledState ? 8 : 2, // Set type to 8 if enabled, otherwise 2.
+    }));
+  
+      return newEnabledState;
+    });
+    setReccuranceDescription("")
+  };
+  
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -203,51 +250,106 @@ const EditMeeting = () => {
           }
         );
         if (response.data) {
-          setzoomrequest(response.data);
-          const startTime = response.data.startingTime; // UTC start time
-          const starttimefordate=response.data.startTime;
-          const localdate=new Date(starttimefordate);
+          console.log("zoomrequest",response.data)
+  //         setzoomrequest(response.data);
+  //         console.log(response.data)
+  //         const startTime = response.data.startingTime; 
+  //         if(response.data.recurrence){
+  //         setReccuranceobject(response.data.recurrence)
+  //         setRecurringenabled(true)
+  //         }
+  //         const starttimefordate=response.data.startTime;
+  //         const localdate=new Date(starttimefordate);
           
-          const localStartTime = new Date(startTime);
+  //         const localStartTime = new Date(startTime);
 
-  // Format the local date
-  const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' gives you the "YYYY-MM-DD" format
+  // // Format the local date
+  // const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' gives you the "YYYY-MM-DD" format
 
-          const time = localStartTime.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-          }).slice(0, 5); // Get "hh:mm" format
+  //         const time = localStartTime.toLocaleTimeString('en-US', {
+  //           hour: '2-digit',
+  //           minute: '2-digit',
+  //           hour12: true,
+  //         }).slice(0, 5); // Get "hh:mm" format
           
-          // Determine AM/PM
-          const ampm = localStartTime.getHours() >= 12 ? 'PM' : 'AM';
+  //         // Determine AM/PM
+  //         const ampm = localStartTime.getHours() >= 12 ? 'PM' : 'AM';
           
-          // Calculate hours and minutes for the duration
-          let hours = 0;
-          let minutes = 0;
-          if (zoomrequest.duration) {
-            hours = Math.floor(zoomrequest.duration / 60);
-            minutes = zoomrequest.duration % 60;
-          }
+  //         // Calculate hours and minutes for the duration
+  //         let hours = 0;
+  //         let minutes = 0;
+  //         if (zoomrequest.duration) {
+  //           hours = Math.floor(zoomrequest.duration / 60);
+  //           minutes = zoomrequest.duration % 60;
+  //         }
           
-          // Populate form data
-          setFormData({
-            ...formData,
-            date: formattedDate,
-            time: time,
-            ampm: ampm,
-            hours: hours,
-            minutes: minutes,
-          });
+  //         // Populate form data
+  //         setFormData({
+  //           ...formData,
+  //           date: formattedDate,
+  //           time: time,
+  //           ampm: ampm,
+  //           hours: hours,
+  //           minutes: minutes,
+  //         });
           
-          setSelectedEmails([...response.data.settings.meetingInvitees]);
-          getupdatedstartime(formattedDate,time,ampm)
-          
+  //         setSelectedEmails([...response.data.settings.meetingInvitees]);
+  //         getupdatedstartime(formattedDate,time,ampm)
+  if(response.data.recurrence){
+            setReccuranceobject(response.data.recurrence)
+            setRecurringenabled(true)
+            }
+  setzoomrequest(response.data);
+  const startTime = response.data.startingTime; // UTC start time
+  const starttimefordate=response.data.startTime;
+  const localdate=new Date(starttimefordate);
+  
+  const localStartTime = new Date(startTime);
+
+// Format the local date
+const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' gives you the "YYYY-MM-DD" format
+
+  const time = localStartTime.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }).slice(0, 5); // Get "hh:mm" format
+  
+  // Determine AM/PM
+  const ampm = localStartTime.getHours() >= 12 ? 'PM' : 'AM';
+  
+  // Calculate hours and minutes for the duration
+  let hours = 0;
+  let minutes = 0;
+  if (zoomrequest.duration) {
+    hours = Math.floor(zoomrequest.duration / 60);
+    minutes = zoomrequest.duration % 60;
+  }
+  
+  // Populate form data
+  setFormData({
+    ...formData,
+    date: formattedDate,
+    time: time,
+    ampm: ampm,
+    hours: hours,
+    minutes: minutes,
+  });
+  
+  setSelectedEmails([...response.data.settings.meetingInvitees]);
+  getupdatedstartime(formattedDate,time,ampm)
+  
+  
+
           
         }
       } catch (error) {
+        if(error.response && error.response.status===204){
+          navigate('/notFound');
+        }else{
         console.error(error);
         throw error
+        }
       }
     };
 
@@ -453,15 +555,24 @@ const EditMeeting = () => {
     }));
     
   };
+  
+    // Normalize the date to ignore time portion
+   
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-
+     
+      const updatedZoomRequest = {
+        ...zoomrequest,
+        recurrence:Reccuranceobject,
+      };
+      // return
       setissubmitting(true);
       const response = await axios.patch(
         `${baseUrl}/api/zoom/meet/${meetingId}`,
-        zoomrequest,
+        updatedZoomRequest,
         {
           headers: {
             Authorization: token,
@@ -484,7 +595,7 @@ const EditMeeting = () => {
       if (error.response && error.response.status === 400) {
         MySwal.fire({
           title: "Error!",
-          text: "Failed to Generate Access Token",
+          text: `${error?.response?.data}`,
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -531,7 +642,7 @@ const EditMeeting = () => {
           <h4>Edit a Meeting</h4>
          
             <div className="form-group row">
-              <label htmlFor="topic"  className="col-sm-3 col-form-label">
+              <label htmlFor="topic"  className="col-sm-2 col-form-label">
                 Meeting Title <span className="text-danger">*</span>
               </label>
               <div className=" col-sm-9">
@@ -549,7 +660,7 @@ const EditMeeting = () => {
               </div>
             </div>
             <div className="form-group row">
-              <label htmlFor="agenda" className="col-sm-3 col-form-label">
+              <label htmlFor="agenda" className="col-sm-2 col-form-label">
                 Meeting Descrition <span className="text-danger">*</span>
               </label>
               <div className=" col-sm-9">
@@ -561,12 +672,11 @@ const EditMeeting = () => {
                   value={zoomrequest.agenda === null ? "" : zoomrequest.agenda}
                   className="form-control   "
                   placeholder="Description"
-                  required
                 />
               </div>
             </div>
             <div className="form-group row">
-              <label htmlFor="timezone" className="col-sm-3 col-form-label">
+              <label htmlFor="timezone" className="col-sm-2 col-form-label">
                 Time Zone <span className="text-danger">*</span>
               </label>
               <div className=" col-sm-9">
@@ -586,9 +696,25 @@ const EditMeeting = () => {
                 </select>
               </div>
             </div>
+            <div className="form-group row">
+        <label className="col-sm-2 col-form-label">
+          
+        </label>
+        <div className="col-sm-9" style={{display:"flex"}}>
+          <input type="checkbox" className="check" onChange={handleReccuEnable} checked={Recurringenabled}/> 
+          <p>Recurring meeting
+          </p> <h5 className="pl-2">{ReccuranceDescription}</h5>
+        </div>
+      </div>
+      {Recurringenabled && 
+      <EditReccuringMeet 
+      setReccuranceDescription={setReccuranceDescription}
+       setzoomrequest={setzoomrequest}
+       Reccuranceobject={Reccuranceobject} 
+      setReccuranceobject={setReccuranceobject}/>}
 
             <div className="form-group row">
-              <label htmlFor="when" className="col-sm-3 col-form-label">
+              <label htmlFor="when" className="col-sm-2 col-form-label">
                 When <span className="text-danger">*</span>
               </label>
              
@@ -598,7 +724,7 @@ const EditMeeting = () => {
                   id="date"
                   name="date"
                   min={formattedDate}
-                  value={formData.date}
+                  value={formData.date || ""}
                   onChange={updateStartTime}
                   className="form-control  "
                   required
@@ -606,7 +732,7 @@ const EditMeeting = () => {
                 <select
                   id="time"
                   name="time"
-                  value={formData.time}
+                  value={formData.time || ""}
                   onChange={updateStartTime}
                   className="form-control  "
                 >
@@ -619,7 +745,7 @@ const EditMeeting = () => {
                 <select
                   id="ampm"
                   name="ampm"
-                  value={formData.ampm}
+                  value={formData.ampm || ""}
                   onChange={updateStartTime}
                   className="form-control  "
                 >
@@ -631,29 +757,29 @@ const EditMeeting = () => {
 
             {Productversion != null && Productversion === "FREE" ? (
               <div className="form-group row">
-                <label htmlFor="duration" className="col-sm-3 col-form-label">
+                <label htmlFor="duration" className="col-sm-2 col-form-label">
                   Duration <span className="text-danger">*</span>
                 </label>
-                <div className="col-sm-9">
+                <div className="col-sm-9 row">
                   <input
-                    className="form-control"
+                    className="form-control "
                     readOnly
                     style={{ width: "90%" }}
-                    value={zoomrequest.duration}
+                    value={zoomrequest.duration? zoomrequest.duration : 40}
                   />{" "}
-                  min
+                  <label className=" ml-3 col-form-label">min</label>
                 </div>
               </div>
             ) : (
               <div className="form-group row">
-                <label htmlFor="duration" className="col-sm-3 col-form-label">
+                <label htmlFor="duration" className="col-sm-2 col-form-label">
                   Duration <span className="text-danger">*</span>
                 </label>
                 
                 <div className="datetimegrp col-sm-9">
                   <select
                     id="hrs"
-                    value={formData.hours}
+                    value={formData.hours || ""}
                     name="hrs"
                     onChange={handleTimeChange}
                     className="form-control   "
@@ -670,7 +796,7 @@ const EditMeeting = () => {
                   <select
                     id="min"
                     name="min"
-                    value={formData.minutes}
+                    value={formData.minutes || ""}
                     onChange={handleTimeChange}
                     className="form-control   "
                   >
@@ -685,13 +811,13 @@ const EditMeeting = () => {
             )}
 
             <div className="form-group row">
-              <label htmlFor="invitees" className="col-sm-3 col-form-label">
+              <label htmlFor="invitees" className="col-sm-2 col-form-label">
                 Invitees
                 <span className="text-danger">*</span>
               </label>
               <div className="col-sm-9">
                 <div className="inputlike">
-                  {selectedEmails.length > 0 && (
+                  {selectedEmails && selectedEmails.length > 0 && (
                     <div className="listemail">
                       {" "}
                       {selectedEmails.map((email, index) => (
@@ -735,7 +861,7 @@ const EditMeeting = () => {
             </div>
 
             <div className="form-group row">
-              <label htmlFor="video" className="col-sm-3 col-form-label">
+              <label htmlFor="video" className="col-sm-2 col-form-label">
                 Video <span className="text-danger">*</span>
               </label>
               <div className="col-sm-9">
@@ -745,7 +871,7 @@ const EditMeeting = () => {
                     type="radio"
                     name="hostVideo"
                     value="true" // Add a value to the input
-                    checked={zoomrequest.settings.hostVideo}
+                    checked={zoomrequest.settings.hostVideo }
                     onChange={(e) => {
                       setzoomrequest((prevZoomRequest) => ({
                         ...prevZoomRequest,
@@ -812,7 +938,7 @@ const EditMeeting = () => {
               </div>
             </div>
             <div className="form-group row">
-              <label htmlFor="options" className="col-sm-3 col-form-label">
+              <label htmlFor="options" className="col-sm-2 col-form-label">
                 Options <span className="text-danger">*</span>
               </label>
               <div className="col-sm-9">

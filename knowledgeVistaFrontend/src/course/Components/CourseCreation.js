@@ -76,8 +76,8 @@ const CourseCreation = () => {
         break;
       case "courseDescription":
         error = value.length < 1 
-        ? "Please enter a Course Description " : value.length > 1000
-        ? "Course Description should not exceed 1000 characters" 
+        ? "Please enter a Course Description " : value.length > 100
+        ? "Course Description should not exceed 100 characters" 
         : "";
         break;
       case "courseAmount":
@@ -379,8 +379,8 @@ const CourseCreation = () => {
                   Course Description <span className="text-danger">*</span>
                 </label>
                 <div className="col-sm-9">
-                  <textarea
-                    rows={3}
+                  <input
+                  type="text"
                     id="courseDescription"
                     name="courseDescription"
                     value={formData.courseDescription}

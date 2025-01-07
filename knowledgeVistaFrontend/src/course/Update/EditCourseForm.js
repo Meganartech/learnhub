@@ -75,8 +75,8 @@ const EditCourseForm = ({}) => {
       courseDescription: (value) =>
         !value
           ? "Course Description is required"
-          : value.length > 1000
-          ? "Course Description must not exceed 1000 characters"
+          : value.length > 100
+          ? "Course Description must not exceed 100 characters"
           : "",
     
       courseCategory: (value) =>
@@ -261,10 +261,10 @@ const EditCourseForm = ({}) => {
                   Course Description <span className="text-danger">*</span>
                 </label>
                 <div className="col-sm-9">
-                  <textarea
+                  <input
+                  type="text"
                     name="courseDescription"
                     id="courseDescription"
-                    rows={3}
                     className={`form-control   ${
                       errors.courseDescription && "is-invalid"
                     }`}

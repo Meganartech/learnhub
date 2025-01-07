@@ -236,7 +236,8 @@ return (
 
                   <div className="card-body">
                       <h5
-                        className="card-title"
+                        className="courseName"
+                        title={item.courseName}
                         style={{ cursor: "pointer" }}
                         onClick={(e) =>
                           handleClick(
@@ -248,35 +249,30 @@ return (
                           )
                         }
                       >
-                        {item.courseName.length > 15
-                          ? item.courseName.slice(0, 15) + "..."
-                          : item.courseName}
+                        { item.courseName}
                       </h5>
-                   
-                    <div className="card-text">
+                      <p title={item.courseDescription} className="courseDescription">
+                    {item.courseDescription}
+                    </p>
+                    <div >
                       {item.amount === 0 ? (
                         <a href="#" 
                         onClick={(e)=>{e.preventDefault();  navigate(item.courseUrl)}}
-                        style={{ width:"100%" ,maxHeight: "50px", padding: "5px" }}
-                        className="btn btn-outline-success">
+                        className="btn btn-sm btn-outline-success">
                           Enroll for Free
                         </a>
                       ) : (
                         <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns: "1fr 2fr",
-                          }}
+                         className="amountGrid"
                         >
-                          <div>
-                          <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i>
-                            <span className="mt-3 blockquote">
+                          <div className="amt">
+                          <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign pr-1" : "fa-solid fa-dollar-sign pr-1"}></i>
+                            <span>
                               {item.amount}
                             </span>
                           </div>
                           <button
-                            className="btn btn-outline-primary"
-                            style={{ maxHeight: "50px", padding: "5px" }}
+                            className="btn btn-sm btn-outline-primary"
                             onClick={() =>
                               handlepaytype(item.courseId, userId, item.paytype)
                             }

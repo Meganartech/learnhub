@@ -4,7 +4,7 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../../api/utils';
 import axios from 'axios';
 
-const PaypalPaymentProvider = (orderData) => {
+const PaypalPaymentProvider = (orderData,setopenselectgateway) => {
     const MySwal = withReactContent(Swal);
     const token = sessionStorage.getItem("token");
     const handlePaymentPaypal = async () => {
@@ -27,10 +27,13 @@ const PaypalPaymentProvider = (orderData) => {
                 sessionStorage.setItem("PaypalOrderId",orderid);
                 window.location.href = approvalUrl;
               } else {
+                setopenselectgateway(false)
                 console.error("Error: PayPal approval URL not found in response.");
               }
         }catch(error){
+          setopenselectgateway(false)
           if(error.response && error.response.status===400){
+         
             MySwal.fire({
               icon: "error",
               title: "Error creating order:",

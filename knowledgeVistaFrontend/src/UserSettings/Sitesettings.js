@@ -283,14 +283,14 @@ switch(name){
           </div>{" "}
         </div>
         <div className="col-sm-3 ">
+        {defaultsiteSettings.sitelogo && (
           <div className="imgcontainer" style={{width:"150px",height:"50px"}}>
-            {defaultsiteSettings.sitelogo && (
               <img
                 src={`data:image/jpeg;base64,${defaultsiteSettings.sitelogo}`}
                 alt="site logo "
               />
-            )}
           </div>
+          )}
         </div>
       </div>
 
@@ -304,14 +304,14 @@ switch(name){
           </div>
         </div>
         <div className="col-sm-3 ">
+        {defaultsiteSettings.siteicon && (
           <div className="imgcontainer" style={{width:"150px",height:"150px"}}>
-            {defaultsiteSettings.siteicon && (
               <img
                 src={`data:image/jpeg;base64,${defaultsiteSettings.siteicon}`}
                 alt="site icon"
               />
-            )}
           </div>
+            )}
         </div>
       </div>
 
@@ -325,14 +325,14 @@ switch(name){
           </div>
         </div>
         <div className="col-sm-3 ">
+        {defaultsiteSettings.titleicon && (
           <div className="imgcontainer" style={{width:"150px",height:"150px"}}>
-            {defaultsiteSettings.titleicon && (
               <img
                 src={`data:image/jpeg;base64,${defaultsiteSettings.titleicon}`}
                 alt="titleicon"
               />
-            )}
           </div>
+               )}
         </div>
       </div>
       <div className="btngrp">
@@ -412,14 +412,14 @@ switch(name){
           </div>{" "}
         </div>
         <div className="col-sm-3 ">
+        {baseimage.sitelogo && (
           <div className="imgcontainer" style={{width:"150px",height:"50px"}}>
-            {baseimage.sitelogo && (
               <img
                 src={baseimage.sitelogo}
                 alt="site logo"
               />
-            )}
           </div>
+            )}
         </div>
       </div>
 
@@ -452,14 +452,14 @@ switch(name){
           </div>
         </div>
         <div className="col-sm-3 ">
+        {baseimage.siteicon && (
           <div className="imgcontainer" style={{width:"150px",height:"150px"}}>
-            {baseimage.siteicon && (
               <img
                 src={baseimage.siteicon}
                 alt="site icon"
-              />
-            )}
+              />      
           </div>
+               )}
         </div>
       </div>
 
@@ -491,14 +491,14 @@ switch(name){
           </div>
         </div>
         <div className="col-sm-3 ">
+        {baseimage.titleicon && (
           <div className="imgcontainer" style={{width:"150px",height:"150px"}}>
-            {baseimage.titleicon && (
               <img
                 src={baseimage.titleicon}
                 alt="titleicon"
               />
-            )}
           </div>
+            )}
         </div>
       </div>
       <div className="btngrp">

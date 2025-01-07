@@ -158,7 +158,6 @@ function App() {
             });
             const data = response.data;
             setCourse(data);
-            console.log("course",data)
           }
         }
       } catch (error) {

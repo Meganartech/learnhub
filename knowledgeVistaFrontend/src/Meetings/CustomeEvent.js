@@ -10,13 +10,14 @@ const CustomEvent = ({ event, onDelete }) => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <span onClick={() => window.open(event.joinUrl, '_blank')}>{event.title}</span>
+    <div  className='meet'>
+      <span onClick={() => window.open(event.joinUrl, '_blank')} className='event-title'>{event.title}</span>
       
       <div>
-      <i className="fa-solid fa-pencil" onClick={()=> window.location.href=`/meet/edit/${event.id}`}></i>
+      <i className="fa-solid fa-pencil" title= {`edit ${event.title}`} onClick={()=> window.location.href=`/meet/edit/${event.id}`}></i>
         <i 
         className="fa-solid fa-trash" 
+        title= {`delete ${event.title}`}
         style={{ cursor: 'pointer', marginLeft: '10px' }} 
         onClick={handleDeleteClick}
       ></i>

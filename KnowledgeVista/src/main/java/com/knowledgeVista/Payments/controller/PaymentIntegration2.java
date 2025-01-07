@@ -1,5 +1,7 @@
 package com.knowledgeVista.Payments.controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
@@ -67,6 +71,44 @@ public class PaymentIntegration2 {
 		private CourseDetailRepository coursedetail;
 		@Autowired
 		private JwtUtil jwtUtil;
+
+	    private static final String API_URL = "https://v6.exchangerate-api.com/v6/7bd3206191151fb9958f2ae9/pair/INR/USD/1";
+
+	    public double convertINRtoUSD(double amountInINR) {
+	        try {
+	            // Initialize RestTemplate to make the API call
+	            RestTemplate restTemplate = new RestTemplate();
+
+	            // Send GET request to the API and get the response as a String
+	            String response = restTemplate.getForObject(API_URL, String.class);
+
+	            // Parse the conversion rate directly from the response string
+	            int startIdx = response.indexOf("conversion_rate") + 17;
+	            int endIdx = response.indexOf(",", startIdx);
+	            String conversionRateStr = response.substring(startIdx, endIdx).trim();
+
+	            // Convert the conversion rate to a double
+	            double conversionRate = Double.parseDouble(conversionRateStr);
+
+	            // Convert INR to USD
+	            double amountInUSD = amountInINR * conversionRate;
+
+	            BigDecimal roundedAmount = new BigDecimal(amountInUSD).setScale(2, RoundingMode.HALF_UP);
+
+	            // Print the conversion rate and the result
+	            System.out.println("Conversion Rate (INR to USD): " + conversionRate);
+	            System.out.println(amountInINR + " INR is approximately " + roundedAmount + " USD.");
+
+	            // Return the rounded value as a double
+	            return roundedAmount.doubleValue();
+
+	        } catch (Exception e) {
+	            // Handle any errors that might occur during the process
+	        	logger.error(e.getMessage());
+	            System.err.println("Error fetching conversion rate: " + e.getMessage());
+	            return -1;  // Indicating failure
+	        }
+	    }
 	private static final Logger logger = LoggerFactory.getLogger(PaymentIntegration.class);
 	private Orderuser saveOrderDetails(CourseDetail course, Muser user, Long amt, String orderId, String status,
 			String institution, Long courseId, Long userId, Long installmentNumber,String PaymentType) {
@@ -163,8 +205,10 @@ public class PaymentIntegration2 {
 	            OrderRequest orderRequest = new OrderRequest();
 	            orderRequest.checkoutPaymentIntent("CAPTURE");
 	            if(currency.equals("INR")) {
-	            double exchangeRate = 100.0; 
-	        amtfinal = amt / exchangeRate;
+	            	amtfinal = this.convertINRtoUSD(amt); 
+	            	if(amtfinal==-1) {
+	            		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot Convert Amount to USD");
+	            	}
 	            }
 
 	            // Set up purchase unit (product data and price)
@@ -211,8 +255,15 @@ public class PaymentIntegration2 {
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("PayPal Payment details not found");
 	        }
 	    } catch (Exception e) {
-	        logger.error("Error creating PayPal Checkout: ", e);
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	 if (e.getMessage().contains("DECIMAL_PRECISION")) {
+	    		 System.out.println(e.getMessage());
+	    	        // Handle the case where there are too many decimals
+	    	        logger.error("Error with decimal precision: The amount has too many decimal places.");
+	    	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid amount format.");
+	    	    }else {
+	    	    	logger.error("Error creating Stripe Checkout: ", e);
+	    			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Paypal keys are invalid. Please check your Paypal keys.");
+	    	    }
 	    }
 	}
 	

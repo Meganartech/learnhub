@@ -10,31 +10,6 @@ const EditCourse = ({ filteredCourses }) => {
   const MySwal = withReactContent(Swal);
   const token = sessionStorage.getItem("token");
   const Currency=sessionStorage.getItem("Currency")
-  const createCourse = async () => {
-    try {
-      const response = await axios.get(`${baseUrl}/api/v2/count`, {
-        headers: {
-          Authorization: token,
-        },
-      });
-
-      if (response.status === 200) {
-         navigate("/course/addcourse");
-      } else if (response.status === 429) {
-        Swal.fire({
-          title: "Course Limit is Reached",
-          text: "Need to upgrade your lisense",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "ok",
-        });
-
-      }
-    } catch (error) {
-      throw error
-
-    }
-  };
   const handleDelete = (e, courseId) => {
     e.preventDefault();
     MySwal.fire({
@@ -110,16 +85,9 @@ const EditCourse = ({ filteredCourses }) => {
                     alt="Course"
                   />
                   <div className="card-body">
-                    <h5 className="card-title flexWithPadding">
+                    <div className="flexWithPadding">
                       <div
-                        style={{ cursor: "pointer" }}
-                        onClick={(e) => {
-                          navigate(item.courseUrl);
-                        }}
                       >
-                        {item.courseName.length > 15
-                          ? item.courseName.slice(0, 15) + "..."
-                          : item.courseName}
                       </div>
                       <div className="gap-10">
                         <div className="dropdown">
@@ -147,29 +115,44 @@ const EditCourse = ({ filteredCourses }) => {
                           </div>
                         </div>
                         <Link to={`/course/edit/${item.courseId}`}>
-                          <i className="fa-solid fa-edit"></i>
+                          <i title="edit Course" className="fa-solid fa-edit"></i>
                         </Link>
 
                         <a
                           href="#"
+                           title="Delete Course"
                           onClick={(e) => handleDelete(e, item.courseId)}
                         >
                           <i className="fas fa-trash"></i>
                         </a>
                       </div>
+                    </div>
+                    <h5
+                      className="courseName"
+                      title={item.courseName}
+                      style={{ cursor: "pointer" }}
+                        onClick={(e) => {
+                          navigate(item.courseUrl);
+                        }}
+                    >
+                      {item.courseName}
                     </h5>
+                    <p  className="courseDescription">
+                    {item.courseDescription}
+                    </p>
                     <div className="card-text">
                       {item.amount === 0 ? (
                         <a
                         href="#"
                         onClick={(e)=>{e.preventDefault();  navigate(item.courseUrl)}}
-                          className=" btn btn-outline-success w-100"
+                          className=" btn btn-sm btn-outline-success w-100"
                         >
-                          {" "}
+                          <label>
                           Free
+                          </label>
                         </a>
                       ) : (
-                        <a className="btn btn-outline-primary w-100">
+                        <a className="btn btn-sm  btn-outline-primary w-100">
                        <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1 " : "fa-solid fa-dollar-sign mr-1"}></i>
                           <label>{item.amount}</label>
                         </a>
@@ -182,7 +165,6 @@ const EditCourse = ({ filteredCourses }) => {
         </div>
       ) : (
         <div
-          className="maincontainernew"
           style={{
             borderBottomLeftRadius: "10px",
             borderBottomRightRadius: "10px",

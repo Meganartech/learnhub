@@ -24,6 +24,7 @@ import okhttp3.Response;
 public class ZoomMethods {
 	 private static final Logger logger = LoggerFactory.getLogger(ZoomMethods.class);
 	private OkHttpClient client = new OkHttpClient();
+	
 	public String getAccessToken(String clientID, String clientSecret, String accountId) {
 	    RestTemplate restTemplate = new RestTemplate();
 	    HttpHeaders headers = new HttpHeaders();
@@ -96,7 +97,33 @@ public class ZoomMethods {
 	        }
 	    }
 	    
-	    
+	    public String getMeetingDetails(Long meetingId, String accessToken) throws IOException {
+	        String ZOOM_API_URL = "https://api.zoom.us/v2/meetings/" + meetingId;
+
+	        // Build the request with authorization and content-type headers
+	        Request request = new Request.Builder()
+	                .url(ZOOM_API_URL)
+	                .get() // This is a GET request to fetch meeting details
+	                .addHeader("Authorization", "Bearer " + accessToken)
+	                .addHeader("Content-Type", "application/json")
+	                .build();
+
+	        // Execute the request and handle the response
+	        try (Response response = client.newCall(request).execute()) {
+	            if (response.isSuccessful()) {
+	                // If successful, return the response body as a string
+	                return response.body().string();
+	            } else {
+	                // If not successful, handle the error response
+	                String errorResponse = response.body().string();
+	                throw new IOException("Failed to get meeting details: " + response.code() + " - " + response.message() + " - " + errorResponse);
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            logger.error("", e);
+	            throw new IOException("Failed to get Zoom meeting details", e);
+	        }
+	    } 
 	    public String EditMeet(Long meetingId, String json, String accessToken) throws IOException {
 	        // Construct the URL for the Zoom API request
 	        String url = "https://api.zoom.us/v2/meetings/" + meetingId;

@@ -18,12 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.knowledgeVista.Meeting.zoomclass.InviteeRepo;
 import com.knowledgeVista.Meeting.zoomclass.Meeting;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.MeetingInvitee;
+import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.Recurrence;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.Settings;
-import com.knowledgeVista.Meeting.zoomclass.Meetrepo;
+import com.knowledgeVista.Meeting.zoomclass.Recurrenceclass;
+import com.knowledgeVista.Meeting.zoomclass.repo.InviteeRepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.Meetrepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.OccurancesRepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.Recurrenceclassrepo;
 import com.knowledgeVista.Meeting.zoomclass.ZoomMeetingInvitee;
 import com.knowledgeVista.Meeting.zoomclass.ZoomSettings;
 import com.knowledgeVista.Meeting.zoomclass.calenderDto;
@@ -57,7 +61,10 @@ public class ZoomMeetingService {
         @Autowired
         private NotificationUserRepo notiuser;
        
-        
+
+@Autowired
+private OccurancesRepo occurancesRepo;
+@Autowired Recurrenceclassrepo reccrepo;
         @Autowired
 		 private ZoomMethods zoomMethod;
         
@@ -89,9 +96,9 @@ public class ZoomMeetingService {
   	    	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Access Token Generation Failed");
   	    	        }
   	    	      String json = this.convertToZoomApiJson(meetingReq);
-  	        		String res= zoomMethod.createMeeting(json, accessToken);
-  	        		 saveservice.saveMeetData(res, email);
-  	        		return ResponseEntity.ok(res);
+	        		String res= zoomMethod.createMeeting(json, accessToken);
+	        		 saveservice.saveMeetData(res, email);
+	        		return ResponseEntity.ok(res);
   	        	 }else {
 	        		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	        	 }
@@ -106,7 +113,6 @@ public class ZoomMeetingService {
 		                .body("An error occurred while creating the meeting: " + e.getMessage() );
 		    }
        }
-       
 
        
        public ResponseEntity<?>EditZoomMeetReq(MeetingRequest meetingReq,Long MeetingId,String token){
@@ -191,9 +197,9 @@ public class ZoomMeetingService {
 //		    zoomApiMap.put("schedule_for", "akshaya2112001@gmail.com");
 
 		    // Recurrence (if present)
-//		    if (meetingRequest.getRecurrence() != null) {
-//		        zoomApiMap.put("recurrence", convertRecurrenceToJson(meetingRequest.getRecurrence()));
-//		    }
+		    if (meetingRequest.getRecurrence() != null) {
+		        zoomApiMap.put("recurrence", convertRecurrenceToJson(meetingRequest.getRecurrence()));
+		    }
 
 		    // Settings (if present)
 		    if (meetingRequest.getSettings() != null) {
@@ -228,9 +234,9 @@ public class ZoomMeetingService {
 //		    zoomApiMap.put("schedule_for", "akshaya2112001@gmail.com");
 
 		    // Recurrence (if present)
-//		    if (meetingRequest.getRecurrence() != null) {
-//		        zoomApiMap.put("recurrence", convertRecurrenceToJson(meetingRequest.getRecurrence()));
-//		    }
+		    if (meetingRequest.getRecurrence() != null) {
+		        zoomApiMap.put("recurrence", convertRecurrenceToJson(meetingRequest.getRecurrence()));
+		    }
 
 		    // Settings (if present)
 		    if (meetingRequest.getSettings() != null) {
@@ -244,20 +250,41 @@ public class ZoomMeetingService {
 		    return objectMapper.writeValueAsString(zoomApiMap);
 		}
 
-//		private Map<String, Object> convertRecurrenceToJson(Recurrence recurrence) {
-//		    Map<String, Object> recurrenceMap = new HashMap<>();
-//		    recurrenceMap.put("type", recurrence.getType());
-//		    recurrenceMap.put("repeat_interval", recurrence.getRepeatInterval());
-//		    recurrenceMap.put("end_date_time", recurrence.getEndDateTime());
-//		    recurrenceMap.put("end_times", recurrence.getEndTimes());
-//		    recurrenceMap.put("monthly_day", recurrence.getMonthlyDay());
-//		    recurrenceMap.put("monthly_week", recurrence.getMonthlyWeek());
-//		    recurrenceMap.put("monthly_week_day", recurrence.getMonthlyWeekDay());
-//		    recurrenceMap.put("weekly_days", recurrence.getWeeklyDays());
-//		 
-//		    return recurrenceMap;
-//		}
+		private Map<String, Object> convertRecurrenceToJson(Recurrence recurrence) {
+		    Map<String, Object> recurrenceMap = new HashMap<>();
+		    recurrenceMap.put("type", recurrence.getType());
+		    recurrenceMap.put("repeat_interval", recurrence.getRepeatInterval());
+		    recurrenceMap.put("end_date_time", recurrence.getEndDateTime());
+		    recurrenceMap.put("end_times", recurrence.getEndTimes());
+		    if(recurrence.getMonthlyDay()==0) {
+		    recurrenceMap.put("monthly_day", null);
+		    recurrenceMap.put("monthly_week", recurrence.getMonthlyWeek());
+		    recurrenceMap.put("monthly_week_day", recurrence.getMonthlyWeekDay());
+		    }else {
+		    	  recurrenceMap.put("monthly_day",recurrence.getMonthlyDay());
+		    }
+		    recurrenceMap.put("weekly_days", recurrence.getWeeklyDays());
 
+		 // Printing all fields
+		 System.out.println("Recurrence Details:");
+		 System.out.println("Type: " + recurrence.getType());
+		 System.out.println("Repeat Interval: " + recurrence.getRepeatInterval());
+		 System.out.println("End Date Time: " + recurrence.getEndDateTime());
+		 System.out.println("End Times: " + recurrence.getEndTimes());
+		 System.out.println("Monthly Day: " + (recurrence.getMonthlyDay() == 0 ? "null" : recurrence.getMonthlyDay()));
+		 System.out.println("Monthly Week: " + recurrence.getMonthlyWeek());
+		 System.out.println("Monthly Week Day: " + recurrence.getMonthlyWeekDay());
+		 System.out.println("Weekly Days: " + recurrence.getWeeklyDays());
+		    
+		 
+		    return recurrenceMap;
+		}
+
+
+	   
+	  
+
+	  
 		private Map<String, Object> convertSettingsToJson(Settings settings) {
 		    Map<String, Object> settingsMap = new HashMap<>();
 
@@ -348,10 +375,10 @@ public class ZoomMeetingService {
 	  	        	for(ZoomMeetingInvitee invitee :invitees) {
 	  	        		calenderDto item=new calenderDto();
 	  	        		ZoomSettings settings=invitee.getZoomSettings();
-	  	        		item=meetrepo.findByZoomsettings(settings);
-	  	        		if(item!=null) {
-	  	        		meetingDetailsList.add(item) ; 
-	  	        		}
+	  	        		List<calenderDto> items = meetrepo.findMeetingsForRecursive(settings);
+	  	        	    if (items != null && !items.isEmpty()) {
+	  	        	        meetingDetailsList.addAll(items);
+	  	        	    }
 	  	        	}
 	  	        	return ResponseEntity.ok(meetingDetailsList);
 	  	       }else {
@@ -380,7 +407,7 @@ public class ZoomMeetingService {
 	  	        	 Muser user=opuser.get();
 	  	        	 Optional<Meeting> optionalMeeting = meetrepo.FindByMeetingId(MeetingId);
 	  	            if (optionalMeeting.isEmpty()) {
-	  	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Meeting not found");
+	  	            	 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Meeting Not Found");
 	  	            }
 	  	            Meeting meeting = optionalMeeting.get();
 	  	            // Delete the Zoom meeting using the Zoom API
@@ -392,6 +419,7 @@ public class ZoomMeetingService {
 	  	            	Long notificationId=meeting.getNotificationId();
 	  	            	notiuser.deleteByNotificationId(notificationId);
 	  	            	notidetail.deleteByNotifyId(notificationId);
+	  	            	occurancesRepo.deleteByMeetingId(MeetingId);
 	  	                meetrepo.delete(meeting); // Delete from your database
 	  	                return ResponseEntity.ok("Meeting deleted successfully");
 	  	            } else {
@@ -424,14 +452,36 @@ public class ZoomMeetingService {
 	  	        	 
 	  	        	 meettosend.setTopic(meeting.getTopic());
 	  	        	 meettosend.setAgenda(meeting.getAgenda());
-	  	        	 meettosend.setDuration(meeting.getDuration());
-	  	        	String utcDateString = meeting.getStartTime();
-	  	        	meettosend.setStartingTime(utcDateString);
-	  	           OffsetDateTime offsetDateTime = OffsetDateTime.parse(utcDateString, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-	  	           LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
-	  	            meettosend.setStartTime(localDateTime);
+	  	        	 meettosend.setDuration(meeting.getDuration());	
+	  	        	 if(meeting.getStartTime()!=null) {
+	  	        	 String utcDateString = meeting.getStartTime();
+		  	        	meettosend.setStartingTime(utcDateString);
+			  	           OffsetDateTime offsetDateTime = OffsetDateTime.parse(utcDateString, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+			  	           LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+			  	            meettosend.setStartTime(localDateTime);
+	  	        	 }
 	  	            meettosend.setTimezone(meeting.getTimezone());
 	  	            meettosend.setType(meeting.getType());
+	  	            if(meeting.getType()==8) {
+	  	          Recurrence rec=new Recurrence();
+	  	        Recurrenceclass recurrenceSource = meeting.getReccurance();
+
+	  	      if (recurrenceSource != null) {
+	  	          rec.setEndDateTime(recurrenceSource.getEndDateTime());
+	  	          rec.setEndTimes(recurrenceSource.getEndTimes());
+	  	          rec.setMonthlyDay(recurrenceSource.getMonthlyDay() != null ? recurrenceSource.getMonthlyDay() : 0);
+	  	          rec.setMonthlyWeek(recurrenceSource.getMonthlyWeek() != null ? recurrenceSource.getMonthlyWeek() : 0);
+
+	  	          rec.setMonthlyWeekDay(recurrenceSource.getMonthlyWeekDay() != null ? recurrenceSource.getMonthlyWeekDay() : 0);
+
+	  	          rec.setRepeatInterval(recurrenceSource.getRepeatInterval() != null ? recurrenceSource.getRepeatInterval() : 1);
+
+	  	          rec.setType(recurrenceSource.getType() != null ? recurrenceSource.getType() : 0);
+
+	  	          rec.setWeeklyDays(recurrenceSource.getWeeklyDays() != null ? recurrenceSource.getWeeklyDays() : "");
+	  	      }
+	  	        	meettosend.setRecurrence(rec);
+	  	            }
 	  	            ZoomSettings settings= meeting.getSettings();
 	  	            Settings set=new Settings();
 	  	            set.setAudio(settings.getAudio());
@@ -454,7 +504,7 @@ public class ZoomMeetingService {
 	  	           meettosend.setSettings(set);
 	  	           return ResponseEntity.ok(meettosend);
 	  	        	 }else {
-	  	        		 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	  	        		 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	  	        	 }
 	  	         }else {
 	  	        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");

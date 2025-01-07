@@ -908,8 +908,8 @@ mark,
 }
 
 .img-fluid {
-  width: 250px;
-  height: 200px;
+  width: 200px;
+  height: 150px;
 }
 
 .img-thumbnail {
@@ -25405,7 +25405,23 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
   display: grid;
   grid-template-columns: 1fr 40fr 1fr;
 }
-
+.listemail{
+  display: flex;
+  margin-bottom: 2px;
+}
+.meet{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.event-title {
+  white-space: nowrap;          /* Prevents the text from wrapping */
+  overflow: hidden;             /* Hides the overflowing text */
+  text-overflow: ellipsis;      /* Adds the ellipsis (...) when the text overflows */
+  max-width: 200px;             /* Set a maximum width for the element */
+  display: inline-block;        /* Makes the span behave like a block element */
+  cursor: pointer;
+}
 .cornerbtn {
   margin-top: 10px;
   padding: 10px;
@@ -25415,6 +25431,9 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
 }
 .course {
   transition: transform 0.3s ease; /* Smooth zoom effect */
+}
+.course .card{
+  width:280px
 }
 
 .course:hover {
@@ -25739,6 +25758,16 @@ ul {
   margin-left: 5px;
   border: 1px solid #ced4da;
   background-color: #e9ecef;
+}
+.check{
+  width: 20px;
+  height: 20px;
+  margin: 0 5px;
+}
+.radio{
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 5px;
 }
 .zoomopt input[type="checkbox"] {
   width: 20px;
@@ -26210,12 +26239,35 @@ ul {
     transform: scaleY(1); /* End at scaleY(1), showing the full chart */
   }
 }
-.imgcontainer {
-  border: 1px solid rgb(206, 212, 218);
-  background-image: linear-gradient(45deg, #1e90ff 25%, transparent 15%),
-    linear-gradient(-45deg, #1e90ff 25%, transparent 15%);
-  background-size: 2px 2px;
+.listviewDashboard{
+  height: 420px;
+  overflow-y: auto;
 }
+
+.listviewDashboard::-webkit-scrollbar {
+  width: 5px;
+}
+
+
+.listviewDashboard::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 5px;
+}
+
+.listviewDashboard::-webkit-scrollbar-thumb {
+  background-color: #999; /* Color of the scrollbar thumb */
+  border-radius: 4px;
+}
+
+
+.imgcontainer {
+  background: 
+      linear-gradient(45deg, #e0e0e0 25%, transparent 25%, transparent 75%, #e0e0e0 75%, #e0e0e0),
+      linear-gradient(45deg, #e0e0e0 25%, transparent 25%, transparent 75%, #e0e0e0 75%, #e0e0e0);
+  background-position: 0 0, 5px 5px;
+  background-size: 10px 10px; /* Adjust size of squares here */
+}
+
 .imgcontainer img {
   width: 100%;
   height: 100%;
@@ -26325,9 +26377,41 @@ ul {
   display: inline-block;
   max-width: 100%; /* Allow the title to take full available width */
 }
+.courseName{
+  font-weight: 1000;
+  color:var(--primary) ;
+  overflow-wrap: normal;
+  text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+  display: inline-block;
+  max-width: 100%; /* or any specific width */
+  overflow: hidden; /* Hide overflowed content */
+}
+.courseDescription{
+  font-size: .7rem;
+  text-overflow: ellipsis; 
+  max-width: 100%;
+  height: 50px;
+  margin-bottom: .7rem;
+}
+.amt {
+  display: flex;                 /* Align the icon and text in a row */
+  align-items: center;           /* Vertically center the content */
+  max-width: 90%;                /* Limit the width to 90% of the parent */
+  overflow: hidden;              /* Hide overflowed content */
+  white-space: nowrap;           /* Prevent text from wrapping */
+}
 
+.amt span {
+  text-overflow: ellipsis;       /* Show ellipsis for overflowed text */
+  overflow: hidden;              /* Hide the overflowing content */
+  white-space: nowrap;           /* Prevent the span text from wrapping */
+  flex-shrink: 1;                /* Allow the span to shrink and create ellipsis */
+}
 
-
+.amountGrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
 @media screen and (max-width: 480px) {
   .lesson-title {
     max-width: 180px; /* Adjust for smaller screens */

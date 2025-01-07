@@ -118,7 +118,13 @@ public class PaymentIntegration {
 				SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData
 						.builder().setName(course.getCourseName()).build();
 
-// Set up price data
+// Set up price data  
+
+				if ((amt * 100) < 5000 && "INR".equals(currency)) {
+				    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				        .body("The transaction amount is too small. Please ensure the amount is at least ₹50.");
+				}
+
 				SessionCreateParams.LineItem.PriceData priceData = SessionCreateParams.LineItem.PriceData.builder()
 						.setCurrency(currency).setUnitAmount(amt * 100) // Amount in cents
 						.setProductData(productData).build();
@@ -153,7 +159,7 @@ public class PaymentIntegration {
 
 		} catch (Exception e) {
 			logger.error("Error creating Stripe Checkout: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Stripe keys are invalid. Please check your Stripe keys.");
 		}
 	}
 
@@ -198,8 +204,7 @@ public class PaymentIntegration {
 			}
 		} catch (RazorpayException e) {
 			logger.error("Error creating Razorpay order: ", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Error creating Razorpay order: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Razorpay keys are invalid. Please check your Razorpay keys.");
 		}
 	}
 

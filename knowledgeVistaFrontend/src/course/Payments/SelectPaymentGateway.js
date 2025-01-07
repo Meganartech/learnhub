@@ -9,7 +9,7 @@ import axios from "axios";
 import baseUrl from "../../api/utils";
 import { useNavigate } from "react-router-dom";
 
-const SelectPaymentGateway = ({ orderData, setorderData }) => {
+const SelectPaymentGateway = ({ orderData, setorderData,setopenselectgateway }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
@@ -20,9 +20,9 @@ const SelectPaymentGateway = ({ orderData, setorderData }) => {
     STRIPE: false,
   });
   const [loading, setLoading] = useState(true);
-  const { handleSubmit } = RazorpayPaymentProvider(orderData);
-  const { handlePayment } = StripePaymentProvider(orderData);
-  const { handlePaymentPaypal } = PaypalPaymentProvider(orderData);
+  const { handleSubmit } = RazorpayPaymentProvider(orderData,  setopenselectgateway);
+  const { handlePayment } = StripePaymentProvider(orderData,setopenselectgateway);
+  const { handlePaymentPaypal } = PaypalPaymentProvider(orderData,setopenselectgateway);
   const fetchpaymentTypedetails = async () => {
     try {
       const response = await axios.get(`${baseUrl}/get/paytypedetailsforUser`, {
@@ -87,13 +87,7 @@ const SelectPaymentGateway = ({ orderData, setorderData }) => {
             <h4>Select Payment Method</h4>
             <i
               onClick={() => {
-                setorderData({
-                  amount: "",
-                  courseAmount: "",
-                  coursename: "",
-                  installment: "",
-                  paytype: "",
-                });
+               setopenselectgateway(false)
               }}
               className="fa-solid fa-xmark"
             ></i>

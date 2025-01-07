@@ -1,5 +1,7 @@
 package com.knowledgeVista.Meeting.zoomclass;
 
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -21,6 +24,7 @@ public class Meeting {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long pkId;
 	 private Long notificationId;
+	 @Column(unique = true)
 	 private Long MeetingId;
 	 private String uuid;
 	 private String HostEmail;
@@ -31,7 +35,10 @@ public class Meeting {
 	 private String Password;
 	  private String agenda;
 	  private Integer duration;
-
+	  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	  private Recurrenceclass reccurance;
+	  @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
+	    private List<Occurrences> occurances;
      @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	  private ZoomSettings settings;
 	    private String startTime;

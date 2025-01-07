@@ -13,6 +13,7 @@ const CourseView = ({ filteredCourses }) => {
   const token = sessionStorage.getItem("token");
   const navigate =useNavigate();
   const Currency=sessionStorage.getItem("Currency");
+  const[openselectgateway,setopenselectgateway]=useState(false)
   const[orderData,setorderData]=useState({
     userId:"",
     courseId:"",
@@ -82,9 +83,12 @@ const CourseView = ({ filteredCourses }) => {
           setsubmitting(false);
 
 setorderData(response.data)
+setopenselectgateway(true)
         }catch(error){
           setsubmitting(false);
+          setopenselectgateway(false);
               if(error.response && error.response.status===400){
+             
               MySwal.fire({
                 icon: "error",
                 title: "Error creating order:",
@@ -145,8 +149,8 @@ setorderData(response.data)
           <div className="spinner"></div>
         </div>
       )}
-      {orderData.amount && (
-        <SelectPaymentGateway orderData={orderData} setorderData={setorderData}/>
+      {openselectgateway && (
+        <SelectPaymentGateway orderData={orderData} setorderData={setorderData} setopenselectgateway={setopenselectgateway}/>
       )}
       <div className="page-header"></div>
       {filteredCourses.length > 0 ? (
@@ -168,6 +172,7 @@ setorderData(response.data)
                        item.courseUrl
                      );
                    }}
+                   title={`${item.courseName} image`}
                     className="img-fluid card-img-top"
                     src={`data:image/jpeg;base64,${item.courseImage}`}
                     onError={(e) => {
@@ -177,7 +182,8 @@ setorderData(response.data)
                   />
                   <div className="card-body">
                     <h5
-                      className="card-title"
+                      className="courseName"
+                      title={item.courseName}
                       style={{ cursor: "pointer" }}
                       onClick={(e) => {
                         handleClick(
@@ -188,40 +194,36 @@ setorderData(response.data)
                         );
                       }}
                     >
-                      {item.courseName.length > 15
-                        ? item.courseName.slice(0, 15) + "..."
-                        : item.courseName}
+                      {item.courseName}
                     </h5>
-
-                    <div className="card-text">
+                   <p title={item.courseDescription} className="courseDescription">
+                    {item.courseDescription}
+                    </p>
+                    <div>
                       {item.amount === 0 ? (
                         <a
-                          // href={item.courseUrl}
+                          title="Enroll For Free"
                           onClick={(e)=>{ e.preventDefault();navigate(item.courseUrl)}}
-                          style={{ maxHeight: "50px", padding: "5px" }}
-                          className="btn btn-outline-success w-100"
+                          className="btn btn-sm btn-outline-success w-100"
                         >
                           Enroll for Free
                         </a>
                       ) : (
                         <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns: "1fr 2fr",
-                          }}
+                          className="amountGrid"
                         >
-                          <div>
-                             <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i>
-                              <span className="mt-3 blockquote">
+                          <div className="amt">
+                             <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign pr-1" : "fa-solid fa-dollar-sign pr-1"}></i>
+                              <span title={item.amount} >
                               {item.amount}
                             </span>
                           </div>
                           <button
-                            className="btn btn-outline-primary"
-                            style={{ maxHeight: "50px", padding: "5px" }}
+                            className=" btn btn-sm btn-outline-primary"
                             onClick={() =>
                               handlepaytype(item.courseId, userId, item.paytype)
                             }
+                            title="Enroll Now"
                           >
                             Enroll Now
                           </button>

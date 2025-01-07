@@ -22,7 +22,13 @@ const CalenderView = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-       
+      //   const id="71115826084"
+      //  const res=await axios.get(`${baseUrl}/getzoom/${id}`,{
+      //   headers: {
+      //     'Authorization': token,
+      //   },
+      //  })
+      //  console.log("meetDetails",res)
         const response = await axios.get(`${baseUrl}/api/zoom/getMyMeetings`, {
           headers: {
             'Authorization': token,

@@ -3,7 +3,7 @@ import Swal from 'sweetalert2'; // Assuming you're using SweetAlert for alerts
 import { useState } from 'react';
 import baseUrl from '../../api/utils';
 
-const RazorpayPaymentProvider = (orderData) => {
+const RazorpayPaymentProvider = (orderData ,setopenselectgateway) => {
   const [submitting, setSubmitting] = useState(false);
  const token=sessionStorage.getItem("token");
   const loadRazorpayScript = () => {
@@ -82,10 +82,14 @@ const RazorpayPaymentProvider = (orderData) => {
       };
 
       var pay = new window.Razorpay(options);
+      setopenselectgateway(false)
       pay.open();
     } catch (error) {
+
       setSubmitting(false);
+      setopenselectgateway(false)
       if (error.response && error.response.status === 400) {
+    
         Swal.fire({
           icon: "error",
           title: "Error creating order:",

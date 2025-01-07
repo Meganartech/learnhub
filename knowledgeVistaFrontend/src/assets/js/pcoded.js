@@ -23,7 +23,6 @@ $(document).ready(function() {
             $(this).parent().removeClass('done-task');
     });
     $(".mobile-menu").on('click', function() {
-        console.log("mobile menu")
         var $this = $(this);
         $this.toggleClass('on');
     });
@@ -59,7 +58,7 @@ $(document).ready(function() {
     $(".pop-search").on('click', function(event) {
         $(".search-bar").slideToggle("fast");
         $(".search-bar input").focus();
-        console.log("clicked")
+        
     });
     $(".search-bar .close").on('click', function() {
         $(".search-bar").slideToggle("fast");
@@ -351,7 +350,6 @@ $.fn.pcodedmenu = function(settings) {
                     var $dropdown = $("body[class*='layout-6'] .theme-horizontal .pcoded-inner-navbar .pcoded-submenu > li.pcoded-hasmenu, body[class*='layout-7'] .theme-horizontal .pcoded-inner-navbar .pcoded-submenu > li.pcoded-hasmenu");
                     $dropdown.off('click').off('mouseenter mouseleave').hover(
                         function() {
-                            console.log("trigger",355)
                             $(this).addClass('pcoded-trigger').addClass('active');
                         },
                         function() {
@@ -365,7 +363,6 @@ $.fn.pcodedmenu = function(settings) {
                             var $dropdown = $(".pcoded-navbar.theme-horizontal-dis .pcoded-inner-navbar .pcoded-submenu > li.pcoded-hasmenu");
                             $dropdown.off('click').off('mouseenter mouseleave').hover(
                                 function() {
-                                    console.log("trigger",369)
                                     $(this).addClass('pcoded-trigger').addClass('active');
                                 },
                                 function() {
@@ -383,31 +380,25 @@ $.fn.pcodedmenu = function(settings) {
                                     if (str === 0) {
                                       
                                         if ($(this).hasClass('pcoded-trigger')) {
-                                            console.log("rwmovetrigger",387)
                                             $(this).removeClass('pcoded-trigger');
-                                            console.log("386")
                                             $(this).children('.pcoded-submenu').slideUp();
                                         } else {
-                                            console.log("389")
                                             $('.pcoded-submenu > li > .pcoded-submenu > li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                            console.log("rwmovetrigger",394)
+                                           
                                             $(this).closest('.pcoded-inner-navbar').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                            console.log("trigger",394)
+                                           
                                             $(this).addClass('pcoded-trigger');
                                             $(this).children('.pcoded-submenu').slideDown();
                                         }
                                     } else {
                                         if ($(this).hasClass('pcoded-trigger')) {
-                                            console.log("rwmovetrigger",402)
                                             $(this).removeClass('pcoded-trigger');
-                                            console.log("399")
                                             $(this).children('.pcoded-submenu').slideUp();
                                         } else {
-                                            console.log("402")
                                             $('.pcoded-submenu > li > .pcoded-submenu > li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                            console.log("rwmovetrigger",409)
+                                           
                                             $(this).closest('.pcoded-submenu').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                            console.log("trigger",408)
+                                            
                                             $(this).addClass('pcoded-trigger');
                                             $(this).children('.pcoded-submenu').slideDown();
                                         }
@@ -419,31 +410,26 @@ $.fn.pcodedmenu = function(settings) {
                                 if (str === 0) {
                                    
                                     if ($(this).hasClass('pcoded-trigger')) {
-                                        console.log("rwmovetrigger",423)
                                         $(this).removeClass('pcoded-trigger');
-                                        console.log("417")
                                         $(this).children('.pcoded-submenu').slideUp();
                                     } else {
-                                        console.log("420")
                                         $('.pcoded-hasmenu li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                        console.log("rwmovetrigger",430)
+                                       
                                         $(this).closest('.pcoded-inner-navbar').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                        console.log("trigger",427)
+                                       
                                         $(this).addClass('pcoded-trigger');
                                         $(this).children('.pcoded-submenu').slideDown();
                                     }
                                 } else {
                                     if ($(this).hasClass('pcoded-trigger')) {
-                                        console.log("rwmovetrigger",438)
+                                        
                                         $(this).removeClass('pcoded-trigger');
-                                        console.log("429")
                                         $(this).children('.pcoded-submenu').slideUp();
                                     } else {
-                                        console.log("432")
                                         $('.pcoded-hasmenu li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                        console.log("rwmovetrigger",445)
+                                     
                                         $(this).closest('.pcoded-submenu').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                        console.log("trigger",440)
+                                     
                                         $(this).addClass('pcoded-trigger');
                                         $(this).children('.pcoded-submenu').slideDown();
                                     }
@@ -455,7 +441,6 @@ $.fn.pcodedmenu = function(settings) {
                             var $dropdown = $(".pcoded-navbar.theme-horizontal .pcoded-inner-navbar .pcoded-submenu > li.pcoded-hasmenu");
                             $dropdown.off('click').off('mouseenter mouseleave').hover(
                                 function() {
-                                    console.log("trigger",452)
                                     $(this).addClass('pcoded-trigger').addClass('active');
                                 },
                                 function() {
@@ -470,32 +455,26 @@ $.fn.pcodedmenu = function(settings) {
                                     if (str === 0) {
                                         
                                         if ($(this).hasClass('pcoded-trigger')) {
-                                            console.log("rwmovetrigger",474)
                                             $(this).removeClass('pcoded-trigger');
-                                            console.log("461")
                                             $(this).children('.pcoded-submenu').slideUp();
                                         } else {
-                                            console.log("464")
                                             $('.pcoded-submenu > li > .pcoded-submenu > li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                            console.log("rwmovetrigger",481)
+                                          
                                             $(this).closest('.pcoded-inner-navbar').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                            console.log("trigger",474)
+                                           
                                             $(this).addClass('pcoded-trigger');
                                             $(this).children('.pcoded-submenu').slideDown();
                                         }
                                     } else {
                                         
                                         if ($(this).hasClass('pcoded-trigger')) {
-                                            console.log("rwmovetrigger",490)
                                             $(this).removeClass('pcoded-trigger');
-                                            console.log("474")
                                             $(this).children('.pcoded-submenu').slideUp();
                                         } else {
-                                            console.log("477")
                                             $('.pcoded-submenu > li > .pcoded-submenu > li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                           console.log("romvertriggert",497)
+                                        
                                             $(this).closest('.pcoded-submenu').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                            console.log("trigger",488)
+                                           
                                             $(this).addClass('pcoded-trigger');
                                             $(this).children('.pcoded-submenu').slideDown();
                                         }
@@ -513,31 +492,23 @@ $.fn.pcodedmenu = function(settings) {
                         var str = $(this).closest('.pcoded-submenu').length;
                         if (str === 0) {
                             if ($(this).hasClass('pcoded-trigger')) {
-                                console.log("romvertriggert",517)
+                              
                                 $(this).removeClass('pcoded-trigger');
-                                console.log("498")
                                 $(this).children('.pcoded-submenu').slideUp();
                             } else {
-                                console.log("501")
                                 $('.pcoded-submenu > li > .pcoded-submenu > li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                console.log("romvertriggert",524)
                                 $(this).closest('.pcoded-inner-navbar').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                console.log("trigger",513)
+                               
                                 $(this).addClass('pcoded-trigger');
                                 $(this).children('.pcoded-submenu').slideDown();
                             }
                         } else {
                             if ($(this).hasClass('pcoded-trigger')) {
-                                console.log("remojtriger",532)
                                 $(this).removeClass('pcoded-trigger');
-                                console.log("510")
                                 $(this).children('.pcoded-submenu').slideUp();
                             } else {
-                                console.log("513")
                                 $('.pcoded-submenu > li > .pcoded-submenu > li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                console.log("remojtriger",539)
                                 $(this).closest('.pcoded-submenu').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                console.log("trigger",526)
                                 $(this).addClass('pcoded-trigger');
                                 $(this).children('.pcoded-submenu').slideDown();
                             }
@@ -546,32 +517,26 @@ $.fn.pcodedmenu = function(settings) {
                     $(".pcoded-submenu > li").on('click', function(e) {
                       //  e.stopPropagation();
                         var str = $(this).closest('.pcoded-submenu').length;
-                        console.log("Clicked element:", $(this));
+                        
 
                         // Find the closest .pcoded-submenu element
                         var closestSubmenu = $(this).closest('.pcoded-submenu');
-                        console.log("Closest .pcoded-submenu element HTML:", closestSubmenu.html());
                         if (str === 0) {
                             if ($(this).hasClass('pcoded-trigger')) {
-                                console.log("remojtriger",557)
                                 $(this).removeClass('pcoded-trigger');
-                                console.log("533")
                                 $(this).children('.pcoded-submenu').slideUp();
                             } else {
-                                console.log("536")
                                 $('.pcoded-hasmenu li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                console.log("remojtriger",564)
+                               
                                 $(this).closest('.pcoded-inner-navbar').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                console.log("trigger",550)
+                              
                                 $(this).addClass('pcoded-trigger');
                                 $(this).children('.pcoded-submenu').slideDown();
                             }
                         } else {
                             
                             if ($(this).hasClass('pcoded-trigger')) {
-                                console.log("removetrigger 557")
                                 $(this).removeClass('pcoded-trigger');
-                                console.log("546")
                                 $(this).children('.pcoded-submenu').slideUp();
                                 
                             } 
@@ -597,8 +562,6 @@ $.fn.pcodedmenu = function(settings) {
                         var $dropdown = $("body[class*='layout-6'] .theme-horizontal .pcoded-inner-navbar > li,body[class*='layout-7'] .theme-horizontal .pcoded-inner-navbar > li ");
                         $dropdown.off('click').off('mouseenter mouseleave').hover(
                             function() {
-                                console.log(this,"571") 
-                                console.log("trigger",585)
                                 $(this).addClass('pcoded-trigger').addClass('active');
                                 if ($('.pcoded-submenu', this).length) {
                                     var elm = $('.pcoded-submenu:first', this);
@@ -630,8 +593,6 @@ $.fn.pcodedmenu = function(settings) {
                                 var $dropdown = $(".pcoded-navbar.theme-horizontal-dis .pcoded-inner-navbar > li");
                                 $dropdown.off('click').off('mouseenter mouseleave').hover(
                                     function() {
-                                        console.log(this,"603")
-                                        console.log("trigger",618)
                                         $(this).addClass('pcoded-trigger').addClass('active');
                                         if ($('.pcoded-submenu', this).length) {
                                             var elm = $('.pcoded-submenu:first', this);
@@ -663,16 +624,12 @@ $.fn.pcodedmenu = function(settings) {
                                 $dropdown.off('mouseenter mouseleave').off('click').on('click',
                                     function() {
                                         if ($(this).hasClass('pcoded-trigger')) {
-                                            console.log("remojtriger",667)
                                             $(this).removeClass('pcoded-trigger');
-                                            console.log("634")
                                             $(this).children('.pcoded-submenu').slideUp();
                                         } else {
-                                            console.log("637")
                                             $('li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                                            console.log("remojtriger",674)
                                             $(this).closest('.pcoded-inner-navbar').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                                            console.log("trigger",657)
+                                           
                                             $(this).addClass('pcoded-trigger');
                                             $(this).children('.pcoded-submenu').slideDown();
                                         }
@@ -683,8 +640,6 @@ $.fn.pcodedmenu = function(settings) {
                             var $dropdown = $(".theme-horizontal .pcoded-inner-navbar > li");
                             $dropdown.off('click').off('mouseenter mouseleave').hover(
                                 function() {
-                                    console.log(this,"652")
-                                    console.log("trigger",669)
                                     $(this).addClass('pcoded-trigger').addClass('active');
                                     if ($('.pcoded-submenu', this).length) {
                                         var elm = $('.pcoded-submenu:first', this);
@@ -718,17 +673,17 @@ $.fn.pcodedmenu = function(settings) {
                 $dropdown.off('mouseenter mouseleave').off('click').on('click',
                     function() {
                         if ($(this).hasClass('pcoded-trigger')) {
-                            console.log("remojtriger",722)
+                            
                             $(this).removeClass('pcoded-trigger');
 
-                            console.log("685")
+                        
                             $(this).children('.pcoded-submenu').slideUp();
                         } else {
-                            console.log("688")
+                        
                             $('li.pcoded-trigger').children('.pcoded-submenu').slideUp();
-                            console.log("remojtriger",730)
+                            
                             $(this).closest('.pcoded-inner-navbar').find('li.pcoded-trigger').removeClass('pcoded-trigger');
-                            console.log("trigger",711)
+                           
                             $(this).addClass('pcoded-trigger');
                             $(this).children('.pcoded-submenu').slideDown();
                         }
@@ -740,16 +695,13 @@ $.fn.pcodedmenu = function(settings) {
                     $('.pcoded-navbar').removeClass('is-hover');
                     $(".pcoded-inner-navbar > li:not(.pcoded-menu-caption) ").on('click', function(e) {
                         
-    const clickedElement = $(e.target); // The actual element that triggered the event
-    console.log("Exact element clicked:", clickedElement);
+    const clickedElement = $(e.target); 
 
     
-        const parentElement = clickedElement.closest('li'); // Find the parent <li>
-        console.log("Parent element:", parentElement);
+        const parentElement = clickedElement.closest('li'); 
 
         // Check if the parent has both 'pcoded-hasmenu' and 'pcoded-trigger' classes
         if (parentElement.hasClass('pcoded-hasmenu') && parentElement.hasClass('pcoded-trigger')) {
-            console.log("Removing 'pcoded-trigger' from parent element");
             parentElement.removeClass('pcoded-trigger'); // Remove 'pcoded-trigger' class
             parentElement.children('.pcoded-submenu').slideUp(); // Slide up submenu
         }else if(parentElement.hasClass('pcoded-hasmenu')){
@@ -887,7 +839,7 @@ $(".pcoded-navbar .pcoded-inner-navbar a").each(function() {
             if ($('body').hasClass('layout-7') || $('body').hasClass('layout-6')) {
                 $(this).parent('li').parent().parent('.pcoded-hasmenu').addClass("active").addClass("pcoded-trigger");
                 $(this).parent('li').parent().parent('.pcoded-hasmenu').parent().parent('.pcoded-hasmenu').addClass("active").addClass("pcoded-trigger");
-                console.log("remojtriger",865)
+              
                 $('.theme-horizontal .pcoded-inner-navbar').find('li.pcoded-trigger').removeClass('pcoded-trigger');
             }
             $(this).parent('li').parent().parent('.sidelink').addClass("active");
