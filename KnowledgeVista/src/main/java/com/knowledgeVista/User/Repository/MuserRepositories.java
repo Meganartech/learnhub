@@ -172,7 +172,22 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	    @Query("SELECT new com.knowledgeVista.Migration.MuserMigrationDto(cd.userId, cd.username, cd.psw, cd.email, cd.phone, cd.isActive, cd.dob, cd.skills, cd.institutionName, cd.profile, cd.countryCode, cd.lastactive, cd.inactiveDescription, cd.role) FROM Muser cd WHERE cd.institutionName = :institutionName")
 	    List<MuserMigrationDto> findAllByInstitutionNameDto(@Param("institutionName") String institutionName);
 
-	    }
+	    @Query("SELECT c.userId, c.username " +
+	    	       "FROM Muser c " +
+	    	       "WHERE (:username IS NOT NULL AND :username <> '' AND LOWER(c.username) LIKE LOWER(CONCAT('%', :username, '%'))) " +
+	    	       "AND (:institutionName IS NOT NULL AND :institutionName <> '' AND LOWER(c.institutionName) LIKE LOWER(CONCAT('%', :institutionName, '%'))) " +
+	    	       "AND c.role.roleName = 'TRAINER'")
+	    	List<Object[]> searchTrainerIddAndTrainerNameByInstitution(
+	    	    @Param("username") String username,
+	    	    @Param("institutionName") String institutionName);
+	    	
+	    	   @Query("SELECT u FROM Muser u WHERE u.role.roleName ='TRAINER' AND u.userId=?1")
+	 		  Optional<Muser> findtrainerByid(Long userid);
+
+}
+
+
+
 
 
 

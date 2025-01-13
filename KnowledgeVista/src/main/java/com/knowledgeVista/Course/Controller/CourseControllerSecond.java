@@ -185,49 +185,7 @@ public class CourseControllerSecond {
 		     }
 		 }
 	
-	 
-	 public ResponseEntity<List<CourseDetail>> popular( String token) {
-	     try {
-	         if (!jwtUtil.validateToken(token)) {
-	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	         }
-	         String role = jwtUtil.getRoleFromToken(token);
-	         String email=jwtUtil.getUsernameFromToken(token);
-	         String institution="";
-		     Optional<Muser> opuser =muserRepository.findByEmail(email);
-		     if(opuser.isPresent()) {
-		    	 Muser user=opuser.get();
-		    	 institution=user.getInstitutionName();
-		    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-		   	    	if(!adminIsactive) {
-		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		   	    	}
-		     }else {
-	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		     }
-	         if("ADMIN".equals(role)) {
-	         List<CourseDetail> allCoursesOrderedByUserCount = coursedetailrepository.findAllByInstitutionNameOrderByUserCountDesc(institution);
-	         List<CourseDetail> top4Courses = allCoursesOrderedByUserCount.stream().limit(4).collect(Collectors.toList());
-	        
-	         top4Courses.forEach(course -> {
-	        	 
-	             course.setUsers(null);
-	             course.setTrainer(null);
-	             course.setVideoLessons(null);
-	         });
 
-	         return ResponseEntity.ok()
-	             .contentType(MediaType.APPLICATION_JSON)
-	             .body(top4Courses);
-	         }
-	         else {
-	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	         }
-	     } catch (Exception e) {
-	         e.printStackTrace();    logger.error("", e); // You can replace this with logging framework like Log4j
-	         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	     }
-	 }
 	 
 	 
 	

@@ -1,0 +1,183 @@
+import React, { useEffect, useState } from 'react'
+import baseUrl from '../api/utils'
+import errorimg from "../images/errorimg.png";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
+
+const ViewAllBatch = () => {
+    const token=sessionStorage.getItem('token')
+      const MySwal = withReactContent(Swal);
+    const[batch,setbatch]=useState([]);
+  const Currency=sessionStorage.getItem("Currency");
+const navigate=useNavigate()
+  const handleDelete = (e, batchId) => {
+    e.preventDefault();
+    MySwal.fire({
+      title: "Delete Course?",
+      text: "Are you sure you want to delete this batch ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If the user clicked "Delete"
+        axios
+          .delete(`${baseUrl}/batch/delete/${batchId}`, {
+            headers: {
+              Authorization: token,
+            },
+          })
+          .then((response) => {
+            if (response.status === 200||204) {
+              MySwal.fire({
+                title: "Deleted!",
+                text: "Your Batch has been deleted.",
+                icon: "success",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.reload();
+                }
+              });
+            }
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              navigate("/unauthorized")
+            } else{
+            throw error
+            }
+          });
+      }
+    });
+  };
+    useEffect(()=>{
+      const fetchBatch = async () => {
+          try {
+            const response = await axios.get(`${baseUrl}/Batch/getAll`, {
+              headers: {
+                Authorization: token,
+              },
+            });
+            const data =  response.data;
+            console.log(data)
+            setbatch(data)
+          } catch (err) {
+              console.log(err)
+          }
+        };
+        fetchBatch();
+      
+  },[])
+  return (
+    <div> 
+    <div className="page-header"></div>
+    {batch.length > 0 ? (
+      <div className="row">
+         {batch
+            .slice()
+            .reverse()
+            .map((item) => (
+              <div className="col-md-6 col-xl-3 course" key={item.id}>
+                <div className="card mb-3">
+                  <img
+                   style={{ cursor: "pointer" }}
+                  //  onClick={(e) => {
+                  //    handleClick(
+                  //      e,
+                  //      item.courseId,
+                  //      item.amount,
+                  //      item.courseUrl
+                  //    );
+                  //  }}
+                   title={`${item.batchTitle} image`}
+                    className="img-fluid card-img-top"
+                    src={`data:image/jpeg;base64,${item.batchImage}`}
+                    onError={(e) => {
+                      e.target.src = errorimg; // Use the imported error image
+                    }}
+                    alt="Batch"
+                  />
+                  <div className="card-body">
+                    <h5
+                      className="courseName"
+                      title={item.batchTitle}
+                      style={{ cursor: "pointer" }}
+                      // onClick={(e) => {
+                      //   handleClick(
+                      //     e,
+                      //     item.courseId,
+                      //     item.amount,
+                      //     item.courseUrl
+                      //   );
+                      // }}
+                    >
+                      {item.batchTitle}
+                    </h5>
+                  <div style={{textAlign:"right"}}>
+                                           
+                                         <a
+                                           href="#"
+                                            title="Delete Batch"
+                                           onClick={(e) => handleDelete(e, item.id)}
+                                         >
+                                           <i className="fas fa-trash text-danger"></i>
+                                         </a>
+                                       </div>
+                   <p title={item.courseNames} className='batchlist'>
+                   <b> Courses :</b> {item.courseNames}
+                    </p>
+                    <p title={item.trainerNames} className='batchlist' >
+                    <b>Trainers :</b> {item.trainerNames}
+                    </p>
+                    <p title={item.duration} className='batchlist'>
+                    <b>Duration :</b> {item.duration}
+                    </p>
+                    <div>
+                      {item.amount === 0 ? (
+                        <a
+                          title="Enroll For Free"
+                          //onClick={(e)=>{ e.preventDefault();navigate(item.courseUrl)}}
+                          className="btn btn-sm btn-outline-success w-100"
+                        >
+                          Enroll for Free
+                        </a>
+                      ) : (
+                        <div
+                          className="amountGrid"
+                        >
+                          <div className="amt">
+                             <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign pr-1" : "fa-solid fa-dollar-sign pr-1"}></i>
+                              <span title={item.amount} >
+                              {item.amount}
+                            </span>
+                          </div>
+                          <button
+                            className=" btn btn-sm btn-outline-primary"
+                            // onClick={() =>
+                            //   handlepaytype(item.courseId, userId, item.paytype)
+                            // }
+                            title="Enroll Now"
+                          >
+                            Enroll Now
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+      </div>
+    ) : (
+      <div >
+      <h1 className="text-light ">No Batch Found </h1>
+      </div>
+    )}</div>
+  )
+}
+
+export default ViewAllBatch

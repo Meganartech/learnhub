@@ -3,6 +3,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Course.CourseDetail;
 
 import jakarta.persistence.Column;
@@ -57,6 +58,8 @@ public class Muser {
 	        inverseJoinColumns = @JoinColumn(name = "course_id")
 	    )
 	    private List<CourseDetail> courses;
+	    @ManyToMany(mappedBy = "trainers")
+	    private List<Batch> batches;
 
 	    private Boolean isActive=true;
 	    private LocalDateTime lastactive;

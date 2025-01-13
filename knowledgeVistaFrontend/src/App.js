@@ -86,6 +86,8 @@ import MainPaymentSettingPage from "./course/Payments/MainPaymentSettingPage.js"
 import UpdateStripePayment from "./course/Payments/UpdateStripepayment.js";
 import SelectPaymentGateway from "./course/Payments/SelectPaymentGateway.js";
 import UpdatePaypalPayment from "./course/Payments/UpdatePaypalPayment.js";
+import CreateBatch from "./Batch/CreateBatch.js";
+import ViewAllBatch from "./Batch/ViewAllBatch.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -830,6 +832,26 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authorizationRequired={true} onlyadmin={true}>
                     <SettingsComponent />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/batch/addNew"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authorizationRequired={true} onlyadmin={true}>
+                    <CreateBatch />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/batch/viewall"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true}>
+                    <ViewAllBatch />
                   </PrivateRoute>
                 </ErrorBoundary>
               }

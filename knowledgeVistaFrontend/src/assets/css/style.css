@@ -6643,7 +6643,9 @@ a.close.disabled {
   overflow-x: hidden;
   overflow-y: auto;
 }
-
+.shadowcard{
+  box-shadow: 0 2px 10px -1px rgba(69, 90, 100, 0.3);
+}
 .modal {
   position: fixed;
   top: 0;
@@ -25838,6 +25840,7 @@ ul {
 }
 .selectedemail {
   padding: 0px 10px;
+  padding-top: 2px;
   width: fit-content;
   background-color: #eae7e7;
   border-radius: 20px;
@@ -26378,13 +26381,21 @@ ul {
   max-width: 100%; /* Allow the title to take full available width */
 }
 .courseName{
-  font-weight: 1000;
+  /* font-weight: 1000;
   color:var(--primary) ;
   overflow-wrap: normal;
-  text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+  text-overflow: ellipsis; 
   display: inline-block;
-  max-width: 100%; /* or any specific width */
-  overflow: hidden; /* Hide overflowed content */
+  max-width: 100%; 
+  overflow: hidden;  */
+  font-weight: 1000;
+  color: var(--primary);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; 
+  display: inline-block; 
+  max-width: 100%; 
+  cursor: pointer;
 }
 .courseDescription{
   font-size: .7rem;
@@ -26411,6 +26422,25 @@ ul {
 .amountGrid{
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+.batchlist{
+  margin-bottom: 0.2rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; 
+  display: inline-block; 
+  width: 100%;
+  max-width: 100%; 
+  cursor: pointer;
+}
+.batchlist p{
+  font-weight: lighter;
+  overflow-wrap: normal;
+  text-overflow: ellipsis; 
+  display: inline-block;
+  max-width: 100%; 
+  overflow: hidden;
+ 
 }
 @media screen and (max-width: 480px) {
   .lesson-title {

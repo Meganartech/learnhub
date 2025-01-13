@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,9 +23,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.knowledgeVista.Batch.service.BatchService;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Course.Controller.CheckAccess;
@@ -172,6 +175,9 @@ public class FrontController {
 	
 	@Autowired
 	private FooterDetailsController footerctrl;
+	
+	@Autowired
+	private BatchService batchService;
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
 	public Map<String, String> getActiveEnvironment() {
@@ -196,11 +202,12 @@ public class FrontController {
 	    		@RequestParam("courseCategory") String category,
 	    		@RequestParam("Duration") Long Duration,
 	    		@RequestParam("Noofseats") Long Noofseats,
+	    		  @RequestParam("batches") String batches,
 	    		@RequestParam("courseAmount") Long amount,
 	    		@RequestParam("paytype")String paytype,
                 @RequestParam(value="InstallmentDetails", required=false) String installmentDataJson,
 	    		@RequestHeader("Authorization") String token) {
-		 return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, amount,paytype,installmentDataJson, token);
+		 return courseController.addCourse(file, courseName, description, category, Duration, Noofseats,batches, amount,paytype,installmentDataJson, token);
 	 }
 	 
 	 
@@ -292,10 +299,7 @@ public class FrontController {
 		 public ResponseEntity<?> getstorageDetails(@RequestHeader("Authorization") String token) {
 			 return coursesec.getstoragedetails(token);
 		 }
-		 @GetMapping("/courseControl/popularCourse")
-		 public ResponseEntity<List<CourseDetail>> popular(@RequestHeader("Authorization") String token) {
-			 return coursesec.popular(token);
-		 }
+
 		 @GetMapping("/dashboard/trainerSats")
 		 public ResponseEntity<?>getAllTrainerhandlingUsersAndCourses(@RequestHeader("Authorization") String token){
 			 return coursesec.getAllTrainerhandlingUsersAndCourses(token);
@@ -1482,5 +1486,69 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
         		   return null;
         	   }
                }
+               
+        ///======================Batch Service========================
+               @GetMapping("/searchCourse")
+               public List<Map<String, Object>> searchCourses(@RequestParam String courseName,
+                                                      @RequestHeader ("Authorization") String token) {
+                   return batchService.searchCourses(courseName, token);
+               }
+               
+               @GetMapping("/searchBatch")
+               public List<Map<String, Object>> searchBatch(@RequestParam String batchTitle,
+                                                      @RequestHeader ("Authorization") String token) {
+                   return batchService.searchbatch(batchTitle, token);
+               }
+               
+               @GetMapping("/searchTrainer")
+               public List<Map<String, Object>> searchTrainer(@RequestParam String userName,
+                                                      @RequestHeader ("Authorization") String token) {
+                   return batchService.searchTrainers(userName, token);
+               }
+               
+               @PostMapping(value = "/batch/save")
+               public ResponseEntity<?> saveBatch(
+                       @RequestParam("batchTitle") String batchTitle,
+                       @RequestParam("startDate") LocalDate startDate,
+                       @RequestParam("endDate") LocalDate endDate,
+                       @RequestParam("noOfSeats") Long noOfSeats,
+                       @RequestParam("amount") Long amount,
+                       @RequestParam("courses") String courses, // Assuming it's a JSON string of courses
+                       @RequestParam("trainers") String trainers, // Assuming it's a JSON string of trainers
+                       @RequestParam(value = "batchImage", required = false) MultipartFile batchImage,
+                       @RequestHeader("Authorization") String token) {
+                   
+                   // Your validation logic and service call here
+                   return batchService.SaveBatch(batchTitle, startDate, endDate, noOfSeats, amount, courses, trainers, batchImage, token);
+               }
+               
+               @PostMapping(value = "/batch/partial/save")
+               public ResponseEntity<?> saveBatchforCourseCreation(
+                       @RequestParam("batchTitle") String batchTitle,
+                       @RequestParam("startDate") LocalDate startDate,
+                       @RequestParam("endDate") LocalDate endDate,
+                       @RequestHeader("Authorization") String token) {
+                   
+                   // Your validation logic and service call here
+                   return batchService.SaveBatchforCourseCreation(batchTitle, startDate, endDate, token);
+               }
+
+
+               @GetMapping("/Batch/get")
+               public ResponseEntity<?> getbatch(@RequestParam Long id,
+                                                      @RequestHeader ("Authorization") String token) {
+                   return batchService.GetBatch(id, token);
+               }
+               
+               @GetMapping("/Batch/getAll")
+               public ResponseEntity<?> getbatch( @RequestHeader ("Authorization") String token) {
+                   return batchService.GetAllBatch( token);
+               }
+               
+               @DeleteMapping("/batch/delete/{batchid}")
+               public ResponseEntity<?> DeleteBatch(@PathVariable Long batchid, @RequestHeader ("Authorization") String token) {
+                   return batchService.deleteBatchById(batchid,token);
+               }
+               
 }
 

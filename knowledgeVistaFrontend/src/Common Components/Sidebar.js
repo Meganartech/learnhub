@@ -231,6 +231,33 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     </li>
                   </ul>
                 </li>
+
+                <li className="nav-item pcoded-hasmenu">
+                  <a href="#!" className="nav-link">
+                    <span className="pcoded-micon">
+                      <i className="fa-solid fa-object-group"></i>
+                    </span>
+                    <span className="pcoded-mtext">Batch</span>
+                  </a>
+                  <ul className="pcoded-submenu">
+                  
+
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/batch/addNew"
+                        onClick={(e) => {
+                          handleClick(e, "/batch/addNew");
+                        }}
+                      >
+                        <i className="fa-solid fa-square-plus pr-2"></i>
+                        Create batch
+                      </a>
+                    </li>
+
+                  
+                  </ul>
+                </li>
                 <li className="nav-item pcoded-hasmenu">
                   <a href="#!" className="nav-link ">
                     <span className="pcoded-micon">
