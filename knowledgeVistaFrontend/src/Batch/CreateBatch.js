@@ -291,18 +291,18 @@ const CreateBatch = () => {
     e.preventDefault();
   
     const newErrors = {};
-  
+
     // Validation checks
-    if (!batch.batchTitle) newErrors.batchTitle = "Batch title is required.";
-    if (!batch.startDate) newErrors.startDate = "Start date is required.";
-    if (!batch.endDate) newErrors.endDate = "End date is required.";
-    if (!batch.noOfSeats) newErrors.noOfSeats = "Number of seats is required.";
-    if (!batch.amount) newErrors.amount = "Amount is required.";
-    if(!batch.courses.length<0)newErrors.courses="select atleast one Course"
-     if(!batch.trainers.length<0)newErrors.trainers="select atleast one trainer"
+    if (!batch?.batchTitle) newErrors.batchTitle = "Batch title is required.";
+    if (!batch?.startDate) newErrors.startDate = "Start date is required.";
+    if (!batch?.endDate) newErrors.endDate = "End date is required.";
+    if (!batch?.noOfSeats) newErrors.noOfSeats = "Number of seats is required.";
+    if (!batch?.amount) newErrors.amount = "Amount is required.";
+    if(!batch?.courses?.length<0)newErrors.courses="select atleast one Course"
+     if(!batch?.trainers?.length<0)newErrors.trainers="select atleast one trainer"
     setErrors(newErrors);
     console.log("errors",errors)
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(newErrors)?.length > 0) {
       return;
     }
   
@@ -346,6 +346,7 @@ const CreateBatch = () => {
         setSelectedCourse([]);
         setselectedTrainers([])
         setErrors({});
+        navigate("/batch/viewall")
       }
     } catch (error) {
       console.error("Error saving batch:", error);
@@ -443,11 +444,11 @@ const CreateBatch = () => {
                   </label>
                   <div className="col-sm-9">
                   <div className="inputlike">
-                  {selectedCourse.length > 0 && (
+                  {selectedCourse?.length > 0 && (
         <div className="listemail">
-          {selectedCourse.map((course) => (
-            <div key={course.courseId} className="selectedemail">
-              {course.courseName}{" "}
+          {selectedCourse?.map((course) => (
+            <div key={course?.courseId} className="selectedemail">
+              {course?.courseName}{" "}
               <i
                 onClick={() => handleCourseRemove(course)}
                 className="fa-solid fa-xmark"
@@ -467,7 +468,7 @@ const CreateBatch = () => {
                       />
                       <div className="invalid-feedback">{errors.courses}</div>
                     </div>
-                    {courses.length > 0 && (
+                    {courses?.length > 0 && (
         <div className="user-list">
           {courses.map((course) => (
             <div key={course.courseId} className="usersingle">
@@ -492,7 +493,7 @@ const CreateBatch = () => {
                   </label>
                   <div className="col-sm-9">
                     <div className="inputlike">
-                    {selectedTainers.length > 0 && (
+                    {selectedTainers?.length > 0 && (
         <div className="listemail">
           {selectedTainers.map((trainers) => (
             <div key={trainers.userId} className="selectedemail">
@@ -516,7 +517,7 @@ const CreateBatch = () => {
                       />
                       <div className="invalid-feedback">{errors.trainers}</div>
                     </div>
-                    {trainers.length > 0 && (
+                    {trainers?.length > 0 && (
         <div className="user-list">
           {trainers.map((trainer) => (
             <div key={trainer.userId} className="usersingle">

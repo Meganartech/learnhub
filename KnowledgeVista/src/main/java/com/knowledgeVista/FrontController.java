@@ -1522,6 +1522,23 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
                    return batchService.SaveBatch(batchTitle, startDate, endDate, noOfSeats, amount, courses, trainers, batchImage, token);
                }
                
+               @PatchMapping(value = "/batch/Edit/{batchId}")
+               public ResponseEntity<?> EditBatc(
+            		   @PathVariable("batchId") Long batchId,
+                       @RequestParam("batchTitle") String batchTitle,
+                       @RequestParam("startDate") LocalDate startDate,
+                       @RequestParam("endDate") LocalDate endDate,
+                       @RequestParam("noOfSeats") Long noOfSeats,
+                       @RequestParam("amount") Long amount,
+                       @RequestParam("courses") String courses, // Assuming it's a JSON string of courses
+                       @RequestParam("trainers") String trainers, // Assuming it's a JSON string of trainers
+                       @RequestParam(value = "batchImage", required = false) MultipartFile batchImage,
+                       @RequestHeader("Authorization") String token) {
+                   
+                   // Your validation logic and service call here
+                   return batchService.updateBatch(batchId,batchTitle, startDate, endDate, noOfSeats, amount, courses, trainers, batchImage, token);
+               }
+               
                @PostMapping(value = "/batch/partial/save")
                public ResponseEntity<?> saveBatchforCourseCreation(
                        @RequestParam("batchTitle") String batchTitle,

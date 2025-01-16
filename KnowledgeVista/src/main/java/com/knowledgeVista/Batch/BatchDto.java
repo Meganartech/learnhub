@@ -22,6 +22,8 @@ public class BatchDto {
 	private Long amount;
 	private String courseNames; // For aggregated course names
 	private String trainerNames; // For aggregated trainer names
+	private List<CourseDto> courses;
+	private List<TrainerDto> trainers;
 	private byte[] batchImage;
 	private String duration; // Add this for formatted duration
     // Constructor, getters and setters
@@ -61,5 +63,24 @@ public class BatchDto {
 		this.courseNames = courseNames;
 		this.trainerNames = trainerNames;
 		this.batchImage = batchImage;
+	}
+	public BatchDto(Long id, String batchId, String batchTitle, LocalDate startDate, LocalDate endDate,
+			String institutionName, Long noOfSeats, Long amount, String courseNames, String trainerNames,
+			List<CourseDto> courses, List<TrainerDto> trainers, byte[] batchImage, String duration) {
+		super();
+		this.id = id;
+		this.batchId = batchId;
+		this.batchTitle = batchTitle;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.institutionName = institutionName;
+		this.noOfSeats = noOfSeats;
+		this.amount = amount;
+		this.courseNames = courseNames;
+		this.trainerNames = trainerNames;
+		this.courses = courses;
+		this.trainers = trainers;
+		this.batchImage = batchImage;
+		this.duration = duration;
 	}
 }

@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import baseUrl from '../api/utils'
+import React, { useEffect, useState } from "react";
+import baseUrl from "../api/utils";
 import errorimg from "../images/errorimg.png";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import altBatchImage from "../images/altBatchImage.jpg";
 const ViewAllBatch = () => {
-    const token=sessionStorage.getItem('token')
-      const MySwal = withReactContent(Swal);
-    const[batch,setbatch]=useState([]);
-  const Currency=sessionStorage.getItem("Currency");
-const navigate=useNavigate()
+  const token = sessionStorage.getItem("token");
+  const MySwal = withReactContent(Swal);
+  const [batch, setbatch] = useState([]);
+  const Currency = sessionStorage.getItem("Currency");
+  const navigate = useNavigate();
   const handleDelete = (e, batchId) => {
     e.preventDefault();
     MySwal.fire({
@@ -32,7 +32,7 @@ const navigate=useNavigate()
             },
           })
           .then((response) => {
-            if (response.status === 200||204) {
+            if (response.status === 200 || 204) {
               MySwal.fire({
                 title: "Deleted!",
                 text: "Your Batch has been deleted.",
@@ -46,61 +46,77 @@ const navigate=useNavigate()
           })
           .catch((error) => {
             if (error.response && error.response.status === 401) {
-              navigate("/unauthorized")
-            } else{
-            throw error
+              navigate("/unauthorized");
+            } else {
+              throw error;
             }
           });
       }
     });
   };
-    useEffect(()=>{
-      const fetchBatch = async () => {
-          try {
-            const response = await axios.get(`${baseUrl}/Batch/getAll`, {
-              headers: {
-                Authorization: token,
-              },
-            });
-            const data =  response.data;
-            console.log(data)
-            setbatch(data)
-          } catch (err) {
-              console.log(err)
-          }
-        };
-        fetchBatch();
-      
-  },[])
+  useEffect(() => {
+    const fetchBatch = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/Batch/getAll`, {
+          headers: {
+            Authorization: token,
+          },
+        });
+        const data = response.data;
+        console.log(data);
+        setbatch(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchBatch();
+  }, []);
   return (
-    <div> 
-    <div className="page-header"></div>
-    {batch.length > 0 ? (
-      <div className="row">
-         {batch
+    <div>
+      <div className="page-header"></div>
+      {batch.length > 0 ? (
+        <div className="row">
+          {batch
             .slice()
             .reverse()
             .map((item) => (
               <div className="col-md-6 col-xl-3 course" key={item.id}>
                 <div className="card mb-3">
-                  <img
-                   style={{ cursor: "pointer" }}
-                  //  onClick={(e) => {
-                  //    handleClick(
-                  //      e,
-                  //      item.courseId,
-                  //      item.amount,
-                  //      item.courseUrl
-                  //    );
-                  //  }}
-                   title={`${item.batchTitle} image`}
-                    className="img-fluid card-img-top"
-                    src={`data:image/jpeg;base64,${item.batchImage}`}
-                    onError={(e) => {
-                      e.target.src = errorimg; // Use the imported error image
-                    }}
-                    alt="Batch"
-                  />
+                  {item.batchImage ? (
+                    <img
+                      style={{ cursor: "pointer" }}
+                      title={`${item.batchTitle} image`}
+                      className="img-fluid card-img-top"
+                      src={`data:image/jpeg;base64,${item.batchImage}`}
+                      onError={(e) => {
+                        e.target.src = errorimg; // Use the imported error image
+                      }}
+                      alt="Batch"
+                    />
+                  ) : (
+                    <div
+                      className="img-fluid card-img-top "
+                      title={item.batchTitle}
+                      style={{
+                        backgroundImage: `url(${altBatchImage})`, // Set the background image as altBatchImage
+                        backgroundSize: "cover", // Ensure the image covers the div
+                        backgroundPosition: "center", 
+                        height: "150px", // Set a fixed height or adjust accordingly
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {/* #4680ff */}
+                     <h4 style={{color:'black',
+                       wordWrap: "break-word", // Ensure the text wraps if it overflows
+                       margin: "0", // Remove any default margin
+                       padding: "0 10px", // Add some padding for better readability if needed
+                       textAlign:"center"
+                    
+                     }}> {item.batchTitle}</h4>
+                    </div>
+                  )}
                   <div className="card-body">
                     <h5
                       className="courseName"
@@ -117,24 +133,30 @@ const navigate=useNavigate()
                     >
                       {item.batchTitle}
                     </h5>
-                  <div style={{textAlign:"right"}}>
-                                           
-                                         <a
-                                           href="#"
-                                            title="Delete Batch"
-                                           onClick={(e) => handleDelete(e, item.id)}
-                                         >
-                                           <i className="fas fa-trash text-danger"></i>
-                                         </a>
-                                       </div>
-                   <p title={item.courseNames} className='batchlist'>
-                   <b> Courses :</b> {item.courseNames}
+                    <div style={{ textAlign: "right" }}>
+                      <a
+                        href={`/batch/Edit/${item.id}`}
+                        title="Edit Batch"
+                        style={{ cursor: "pointer" }}
+                      >
+                        <i className="fas fa-edit pr-2"></i>
+                      </a>
+                      <a
+                        href="#"
+                        title="Delete Batch"
+                        onClick={(e) => handleDelete(e, item.id)}
+                      >
+                        <i className="fas fa-trash text-danger"></i>
+                      </a>
+                    </div>
+                    <p title={item.courseNames} className="batchlist">
+                      <b> Courses :</b> {item.courseNames}
                     </p>
-                    <p title={item.trainerNames} className='batchlist' >
-                    <b>Trainers :</b> {item.trainerNames}
+                    <p title={item.trainerNames} className="batchlist">
+                      <b>Trainers :</b> {item.trainerNames}
                     </p>
-                    <p title={item.duration} className='batchlist'>
-                    <b>Duration :</b> {item.duration}
+                    <p title={item.duration} className="batchlist">
+                      <b>Duration :</b> {item.duration}
                     </p>
                     <div>
                       {item.amount === 0 ? (
@@ -146,14 +168,16 @@ const navigate=useNavigate()
                           Enroll for Free
                         </a>
                       ) : (
-                        <div
-                          className="amountGrid"
-                        >
+                        <div className="amountGrid">
                           <div className="amt">
-                             <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign pr-1" : "fa-solid fa-dollar-sign pr-1"}></i>
-                              <span title={item.amount} >
-                              {item.amount}
-                            </span>
+                            <i
+                              className={
+                                Currency === "INR"
+                                  ? "fa-solid fa-indian-rupee-sign pr-1"
+                                  : "fa-solid fa-dollar-sign pr-1"
+                              }
+                            ></i>
+                            <span title={item.amount}>{item.amount}</span>
                           </div>
                           <button
                             className=" btn btn-sm btn-outline-primary"
@@ -171,13 +195,14 @@ const navigate=useNavigate()
                 </div>
               </div>
             ))}
-      </div>
-    ) : (
-      <div >
-      <h1 className="text-light ">No Batch Found </h1>
-      </div>
-    )}</div>
-  )
-}
+        </div>
+      ) : (
+        <div>
+          <h1 className="text-light ">No Batch Found </h1>
+        </div>
+      )}
+    </div>
+  );
+};
 
-export default ViewAllBatch
+export default ViewAllBatch;

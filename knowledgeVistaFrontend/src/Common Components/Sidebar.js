@@ -254,8 +254,19 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                         Create batch
                       </a>
                     </li>
-
-                  
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/batch/viewall"
+                        onClick={(e) => {
+                          handleClick(e, "/batch/viewall");
+                        }}
+                      >
+                        <i className="fa-regular fa-eye pr-2"></i>
+                        View batch
+                      </a>
+                    </li>
+                
                   </ul>
                 </li>
                 <li className="nav-item pcoded-hasmenu">

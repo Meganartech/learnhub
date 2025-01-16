@@ -7,6 +7,7 @@ import com.knowledgeVista.User.Muser;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +17,6 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
-import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,7 +46,7 @@ public class Batch {
     @Column(name="BatchImage" ,length=1000000)
     private byte[] BatchImage;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE  })
     @JoinTable(
         name = "batch_courses",
         joinColumns = @JoinColumn(name = "batch_id"),
@@ -54,7 +54,7 @@ public class Batch {
     )
     private List<CourseDetail> courses;
     private String institutionName;
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany( fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
         name = "batch_trainers",
         joinColumns = @JoinColumn(name = "batch_id"),

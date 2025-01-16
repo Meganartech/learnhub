@@ -88,6 +88,7 @@ import SelectPaymentGateway from "./course/Payments/SelectPaymentGateway.js";
 import UpdatePaypalPayment from "./course/Payments/UpdatePaypalPayment.js";
 import CreateBatch from "./Batch/CreateBatch.js";
 import ViewAllBatch from "./Batch/ViewAllBatch.js";
+import EditBatch from "./Batch/EditBatch.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -852,6 +853,16 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true}>
                     <ViewAllBatch />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/batch/Edit/:id"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true}>
+                    <EditBatch />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
