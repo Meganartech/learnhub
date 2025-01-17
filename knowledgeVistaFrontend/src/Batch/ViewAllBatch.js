@@ -108,7 +108,7 @@ const ViewAllBatch = () => {
                       }}
                     >
                       {/* #4680ff */}
-                     <h4 style={{color:'black',
+                     <h4 style={{color:'white',
                        wordWrap: "break-word", // Ensure the text wraps if it overflows
                        margin: "0", // Remove any default margin
                        padding: "0 10px", // Add some padding for better readability if needed
