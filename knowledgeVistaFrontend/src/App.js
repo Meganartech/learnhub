@@ -89,6 +89,7 @@ import UpdatePaypalPayment from "./course/Payments/UpdatePaypalPayment.js";
 import CreateBatch from "./Batch/CreateBatch.js";
 import ViewAllBatch from "./Batch/ViewAllBatch.js";
 import EditBatch from "./Batch/EditBatch.js";
+import ScrollToTop from "./ScrollToTop.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -175,6 +176,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop/>
       <div className="App ">
         <Routes>
           <Route

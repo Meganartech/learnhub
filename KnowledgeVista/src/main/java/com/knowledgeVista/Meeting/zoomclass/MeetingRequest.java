@@ -2,6 +2,8 @@ package com.knowledgeVista.Meeting.zoomclass;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.knowledgeVista.Batch.SearchDto;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +24,7 @@ public class MeetingRequest {
 //    private String templateId;
     private String timezone;
     private String topic;
-
+   
     private Integer type;
 
     // Getters and Setters for each field
@@ -87,7 +89,14 @@ public class MeetingRequest {
     }
 
     public static class Settings {
-//        private List<String> additionalDataCenterRegions;
+    	 private List<SearchDto> GroupinviteeDto;
+public List<SearchDto> getGroupinviteeDto() {
+			return GroupinviteeDto;
+		}
+		public void setGroupinviteeDto(List<SearchDto> groupinviteeDto) {
+			GroupinviteeDto = groupinviteeDto;
+		}
+		//        private List<String> additionalDataCenterRegions;
 //        private boolean allowMultipleDevices;
 //        private String alternativeHosts;
 //        private boolean alternativeHostsEmailNotification;

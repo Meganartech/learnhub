@@ -16,8 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.knowledgeVista.Batch.SearchDto;
+import com.knowledgeVista.Batch.Repo.BatchRepository;
+import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
+import com.knowledgeVista.User.MuserRequiredDto;
 import com.knowledgeVista.User.Approvals.MuserApprovalPageable;
 import com.knowledgeVista.User.Approvals.MuserApprovalRepo;
 import com.knowledgeVista.User.Approvals.MuserApprovals;
@@ -29,6 +33,8 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 public class Listview {
 	@Autowired
 	private MuserRepositories muserrepositories;
+	@Autowired
+	private CourseDetailRepository courseRepo;
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	 @Autowired 
@@ -37,7 +43,8 @@ public class Listview {
 	 private MuserApprovalRepo MuserApproval;
 	@Autowired
 	private MuserApprovalPageable approvalpage;
-	
+	@Autowired
+	private BatchRepository batchrepo;
 
 	 private static final Logger logger = LoggerFactory.getLogger(Listview.class);
 
@@ -145,12 +152,9 @@ public class Listview {
 	   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
 	   	     }
       	     if("ADMIN".equals(role)||"TRAINER".equals(role)){
-           Optional<Muser> opuser = muserrepositories.findByuserIdandInstitutionName(userId, institution);
+           Optional<MuserRequiredDto> opuser = muserrepositories.findByuserIdandInstitutionName(userId, institution);
          if(opuser.isPresent()) {
-        	 Muser user=opuser.get();
-        
-            user.setCourses(null);
-        	user.setAllotedCourses(null);
+        	 MuserRequiredDto user=opuser.get();
             return ResponseEntity.ok(user);
          }else {
         	 System.out.println("usernot");
@@ -242,19 +246,22 @@ public ResponseEntity<Page<MuserDto>> getTrainerByRoleName( String token ,int pa
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 }
-public ResponseEntity< List<String>> SearchEmail(String token,String Query){
+public ResponseEntity< List<?>> SearchEmail(String token,String Query){
 	try {
 		if (!jwtUtil.validateToken(token)) {
 	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
 	     }
 		 String email=jwtUtil.getUsernameFromToken(token);
-   	     Optional<Muser>opreq=muserrepositories.findByEmail(email);
+   	     String institutionname =muserrepositories.findinstitutionByEmail(email);
    	     
-   	     if(opreq.isPresent()) {
-   	    	 Muser requser=opreq.get();
-   	    	String institutionname=requser.getInstitutionName();
-   	    	List<String> listu= muserrepositories.findEmailsByEmailContainingIgnoreCase(Query, institutionname);
-   	    	return ResponseEntity.ok(listu);
+   	     if(institutionname!=null || !institutionname.isEmpty()) {
+   	   
+   	    	List<SearchDto> list1= muserrepositories.findEmailsAsSearchDto(Query, institutionname);
+   	    	List<SearchDto>list2= courseRepo.findCoursesAsSearchDto(Query, institutionname);
+   	    	List<SearchDto> list3 = batchrepo.findbatchAsSearchDto(Query, institutionname);
+   	    	list1.addAll(list2);
+   	    	list1.addAll(list3);
+   	    	return ResponseEntity.ok(list1);
    	     }else {
    	    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
    	     }

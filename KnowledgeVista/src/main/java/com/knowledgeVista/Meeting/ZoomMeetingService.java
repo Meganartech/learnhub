@@ -4,9 +4,11 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.knowledgeVista.Batch.SearchDto;
+import com.knowledgeVista.Batch.Repo.BatchRepository;
+import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Meeting.zoomclass.Meeting;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.MeetingInvitee;
@@ -60,6 +65,10 @@ public class ZoomMeetingService {
         private NotificationDetailsRepo notidetail;
         @Autowired
         private NotificationUserRepo notiuser;
+        @Autowired
+        private CourseDetailRepository courseRepo;
+        @Autowired
+        private BatchRepository batchrepo;
        
 
 @Autowired
@@ -334,7 +343,7 @@ private OccurancesRepo occurancesRepo;
 //		       // settingsMap.put("authentication_exception", convertAuthenticationExceptionsToJson(settings.getAuthenticationException()));
 //		    }
 		    if (settings.getMeetingInvitees() != null) {
-		        settingsMap.put("meeting_invitees", convertMeetingInviteesToJson(settings.getMeetingInvitees()));
+		        settingsMap.put("meeting_invitees", convertMeetingInviteesToJson(settings.getGroupinviteeDto()));
 		    }
 
 		    return settingsMap;
@@ -350,16 +359,82 @@ private OccurancesRepo occurancesRepo;
 //		    return exceptionsList;
 //		}
 
-		private List<Map<String, Object>> convertMeetingInviteesToJson(List<MeetingInvitee> meetingInvitees) {
-		    List<Map<String, Object>> inviteesList = new ArrayList<>();
-		    for (MeetingInvitee invitee : meetingInvitees) {
-		        Map<String, Object> inviteeMap = new HashMap<>();
-		        inviteeMap.put("email", invitee.getEmail());
-		        inviteesList.add(inviteeMap);
+//		private List<Map<String, Object>> convertMeetingInviteesToJson(List<MeetingInvitee> meetingInvitees) {
+//		    List<Map<String, Object>> inviteesList = new ArrayList<>();
+//		    for (MeetingInvitee invitee : meetingInvitees) {
+//		        Map<String, Object> inviteeMap = new HashMap<>();
+//		        inviteeMap.put("email", invitee.getEmail());
+//		        inviteesList.add(inviteeMap);
+//		    }
+//		    return inviteesList;
+//		}
+		
+		private List<Map<String, Object>> convertMeetingInviteesToJson(List<SearchDto> groupinviteeDto) {
+		    // Using a Set to store unique invitees based on email
+		    Set<Map<String, Object>> inviteesSet = new HashSet<>();
+		    if(groupinviteeDto==null) {
+		    	return new ArrayList<Map<String,Object>>();
 		    }
-		    return inviteesList;
+		    for (SearchDto item : groupinviteeDto) {
+		        if (item.getType().equals("EMAIL")) {
+		            // Fetch email by user ID
+		            String email = muserRepository.FindEmailByuserId(item.getId());
+		            
+		            // Create a map for the invitee and add it to the set
+		            Map<String, Object> inviteeMap = new HashMap<>();
+		            inviteeMap.put("email", email);
+		            inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+		        }
+		        
+		        if (item.getType().equals("COURSE")) {
+		            // Fetch emails by course ID
+		            List<String> courseInvitees = courseRepo.findInviteesByCourseId(item.getId());
+		            
+		            // Convert the course invitees (List<Map<String, String>>) to List<Map<String, Object>> to match the desired format
+		            for (String email : courseInvitees) {
+		                
+		                // Create a map for the course invitee and add it to the set
+		                Map<String, Object> inviteeMap = new HashMap<>();
+		                inviteeMap.put("email", email);
+		                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+		            }
+		            List<String> trainerInvitees =courseRepo.findTrainerInviteesByCourseId(item.getId());
+                     for (String email : trainerInvitees) {
+		                
+		                // Create a map for the course invitee and add it to the set
+		                Map<String, Object> inviteeMap = new HashMap<>();
+		                inviteeMap.put("email", email);
+		                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+		            }
+		        }
+		        if(item.getType().equals("BATCH")) {
+		        	List<Long> CourseId=batchrepo.findCourseIdsByBatchId(item.getId());
+		        	for(Long cid : CourseId) {
+		        		List<String> courseInvitees = courseRepo.findInviteesByCourseId(cid);
+			            
+			            // Convert the course invitees (List<Map<String, String>>) to List<Map<String, Object>> to match the desired format
+			            for (String email : courseInvitees) {
+			                
+			                // Create a map for the course invitee and add it to the set
+			                Map<String, Object> inviteeMap = new HashMap<>();
+			                inviteeMap.put("email", email);
+			                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+			            }
+			            List<String> trainerInvitees =courseRepo.findTrainerInviteesByCourseId(cid);
+	                     for (String email : trainerInvitees) {
+			                
+			                // Create a map for the course invitee and add it to the set
+			                Map<String, Object> inviteeMap = new HashMap<>();
+			                inviteeMap.put("email", email);
+			                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+			            }
+		        	}
+		        }
+		    }
+		    
+		    return new ArrayList<>(inviteesSet);
 		}
-	   
+
 		
 		public ResponseEntity<?>getMetting(String token){
 			try {

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.BatchDto;
 import com.knowledgeVista.Batch.CourseDto;
+import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.TrainerDto;
 
 @Repository
@@ -56,6 +57,12 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 		       "WHERE b.institutionName = :institutionName " +
 		       "GROUP BY b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount, b.BatchImage")
 		List<BatchDto> findAllBatchDtosByInstitution(@Param("institutionName") String institutionName);
+	
+	 @Query("SELECT new com.knowledgeVista.Batch.SearchDto(u.id, u.batchTitle, 'BATCH') " +
+	  	       "FROM Batch u " +
+	  	       "WHERE u.institutionName = :institutionName " +
+	  	       "AND LOWER(u.batchTitle) LIKE LOWER(CONCAT('%', :Query, '%'))")
+	  	List<SearchDto> findbatchAsSearchDto(@Param("Query") String Query, @Param("institutionName") String institutionName);
 
 	@Query("SELECT b.id, b.batchId, b.batchTitle " +
 		       "FROM Batch b " +
@@ -64,6 +71,12 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 		List<Object[]> searchBatchByBatchNameAndInstitution(
 		    @Param("batchtitle") String batchtitle,
 		    @Param("institutionName") String institutionName);
+		
+		
+		   @Query("SELECT c.id FROM Batch b " +
+		           "JOIN b.courses c " +
+		           "WHERE b.id = :id")
+		    List<Long> findCourseIdsByBatchId(@Param("id") Long id);
 
 		
 }

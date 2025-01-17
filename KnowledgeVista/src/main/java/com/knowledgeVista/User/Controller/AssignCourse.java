@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
@@ -280,7 +281,7 @@ public class AssignCourse {
 	
 	//----------------------------------MyCourses--------------------------------
 
-	public ResponseEntity<List<CourseDetail>> getCoursesForUser( String token) {
+	public ResponseEntity<List<CourseDetailDto>> getCoursesForUser( String token) {
 		
 		if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -289,37 +290,18 @@ public class AssignCourse {
         String role = jwtUtil.getRoleFromToken(token);
         String email = jwtUtil.getUsernameFromToken(token);
 		if("USER".equals(role)) {
-	    Optional<Muser> optionalUser = muserRepository.findByEmail(email);
-	    if (optionalUser.isPresent()) {
-	        Muser user = optionalUser.get();
-	        String institution=user.getInstitutionName();
-	        boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-   	    	if(!adminIsactive) {
-   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-   	    	}
-	        List<CourseDetail> courses = user.getCourses();
-	        
-	        // Set courseLessons to null for each course
-	      
-	        for (CourseDetail course : courses) {
-	            course.setUsers(null);
-	            course.setVideoLessons(null);
-	            course.setTrainer(null);
-	          
-	           
-	        }
+			 List<CourseDetailDto> courses=muserRepository.findStudentAssignedCoursesByEmail(email);
+			  
+		        return ResponseEntity.ok(courses);
 	    
 
-	        return ResponseEntity.ok(courses);
 	        }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	    } else {
-	        return ResponseEntity.notFound().build();
 	    }
-	}
 	
-	public ResponseEntity<List<CourseDetail>> getCoursesForTrainer(String token) {
+	
+	public ResponseEntity<List<CourseDetailDto>> getCoursesForTrainer(String token) {
 		if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -327,34 +309,13 @@ public class AssignCourse {
         String role = jwtUtil.getRoleFromToken(token);
         String email = jwtUtil.getUsernameFromToken(token);
 		if("TRAINER".equals(role)) {
-	    Optional<Muser> optionalUser = muserRepository.findByEmail(email);
-	    if (optionalUser.isPresent()) {
-	        Muser user = optionalUser.get();
-	        String institution=user.getInstitutionName();
-	        boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-   	    	if(!adminIsactive) {
-   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-   	    	}
-	        List<CourseDetail> courses = user.getAllotedCourses();
-	        
-	        // Set courseLessons to null for each course
-	      
-	        for (CourseDetail course : courses) {
-	            course.setUsers(null);
-	            course.setVideoLessons(null);
-	        	course.setTrainer(null);
-	            
-	           
-	        }
-	    
-
+			 List<CourseDetailDto> courses=muserRepository.findAllotedCoursesByEmail(email);
+	  
 	        return ResponseEntity.ok(courses);
 	        }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	    } else {
-	        return ResponseEntity.notFound().build();
-	    }
+	    
 	}
 	
 	

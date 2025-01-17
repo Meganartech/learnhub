@@ -619,13 +619,12 @@ public class CourseController {
 	               })
 	               .collect(Collectors.toList());
 	       return ResponseEntity.ok().body(courseInfoList);
-	       }
-	      	        else {
-	    	      	    return ResponseEntity.notFound().build();
+	       }else {
+	    	      	    return ResponseEntity.status(HttpStatus.NO_CONTENT).body("user is not a Trainer");
 	      	        	
 	      	        }
-	      	    }
-	      	    return ResponseEntity.notFound().build();
+	      	    } return ResponseEntity.status(HttpStatus.NO_CONTENT).body("user is not found");
+	      	       
 	       }else {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    	   

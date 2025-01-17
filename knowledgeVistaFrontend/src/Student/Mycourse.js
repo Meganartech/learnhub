@@ -52,7 +52,7 @@ const Mycourse = () => {
             </div>
           ) : (
             <div className="row">
-              {courses.map((item) => (
+              {Array.isArray(courses) &&  courses.map((item) => (
                 <div className="col-md-6 col-xl-3 course" key={item.courseId}>
                   <div className="card mb-3">
                     <img

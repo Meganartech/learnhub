@@ -794,13 +794,13 @@ public class FrontController {
     		}
     		
     		@GetMapping("/AssignCourse/student/courselist")
-    		public ResponseEntity<List<CourseDetail>> getCoursesForUser(
+    		public ResponseEntity<List<CourseDetailDto>> getCoursesForUser(
     		          @RequestHeader("Authorization") String token) {
     			return assign.getCoursesForUser(token);
     		}
     		
     		@GetMapping("/AssignCourse/Trainer/courselist")
-    		public ResponseEntity<List<CourseDetail>> getCoursesForTrainer(
+    		public ResponseEntity<List<CourseDetailDto>> getCoursesForTrainer(
     		          @RequestHeader("Authorization") String token) {
     			return assign.getCoursesForTrainer(token);
     		}
@@ -930,7 +930,7 @@ public class FrontController {
     		    }
     		        
     		    @GetMapping("/search/users")
-    		    public  ResponseEntity<List<String>> getusersSearch(@RequestHeader("Authorization") String token, @RequestParam("query") String query){
+    		    public  ResponseEntity<List<?>> getusersSearch(@RequestHeader("Authorization") String token, @RequestParam("query") String query){
     		   return listview.SearchEmail(token, query);
     		    }
     		    @GetMapping("/search/usersbyTrainer")

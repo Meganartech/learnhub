@@ -25433,10 +25433,13 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
 }
 .course {
   transition: transform 0.3s ease; /* Smooth zoom effect */
+  width:280px;
+  max-height: 372px; /*Extra Added*/
+  overflow: hidden;  /*Extra Added*/
 }
-.course .card{
+/* .course .card{
   width:280px
-}
+} */
 
 .course:hover {
   transform: scale(1.05); /* Slight zoom on hover */
