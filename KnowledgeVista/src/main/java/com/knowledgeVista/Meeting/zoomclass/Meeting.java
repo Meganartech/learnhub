@@ -2,6 +2,10 @@ package com.knowledgeVista.Meeting.zoomclass;
 
 import java.util.List;
 
+import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.User.Muser;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +13,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -46,6 +52,31 @@ public class Meeting {
 	    private String topic;
 	    private Integer type;
 	    private String createdBy;
+	    @ManyToMany(fetch = FetchType.LAZY)
+	    @JoinTable(
+	        name = "meeting_course_detail_mapping",
+	        joinColumns = @JoinColumn(name = "meeting_id"),
+	        inverseJoinColumns = @JoinColumn(name = "course_detail_id")
+	    )
+	    private List<CourseDetail> courseDetails;
+
+	    @ManyToMany(fetch = FetchType.LAZY)
+	    @JoinTable(
+	        name = "meeting_user_mapping",
+	        joinColumns = @JoinColumn(name = "meeting_id"),
+	        inverseJoinColumns = @JoinColumn(name = "user_id")
+	    )
+	    private List<Muser> users;
+
+	    @ManyToMany(fetch = FetchType.LAZY)
+	    @JoinTable(
+	        name = "meeting_batch_mapping",
+	        joinColumns = @JoinColumn(name = "meeting_id"),
+	        inverseJoinColumns = @JoinColumn(name = "batch_id")
+	    )
+	    private List<Batch> batches;
+
+	    
 		@Override
 		public String toString() {
 			return "Meeting [pkId=" + pkId + ", MeetingId=" + MeetingId + ", uuid=" + uuid + ", HostEmail=" + HostEmail

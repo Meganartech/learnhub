@@ -1,7 +1,6 @@
 package com.knowledgeVista.Batch.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -330,7 +328,6 @@ public class BatchService {
     //==========================Get Batch================
     public ResponseEntity<?>GetBatch(Long id,String token){
     	try {
-   		 String role = jwtUtil.getRoleFromToken(token);
 	         String email = jwtUtil.getUsernameFromToken(token);
 	         String institutionName=muserRepo.findinstitutionByEmail(email);
 	         if(institutionName==null) {
@@ -354,7 +351,6 @@ public class BatchService {
    //===================Get ALl Batch===========================
     public ResponseEntity<?>GetAllBatch(String token){
     	try {
-   		 String role = jwtUtil.getRoleFromToken(token);
 	         String email = jwtUtil.getUsernameFromToken(token);
 	         String institutionName=muserRepo.findinstitutionByEmail(email);
 	         if(institutionName==null) {

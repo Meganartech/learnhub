@@ -250,51 +250,7 @@ const EditMeeting = () => {
           }
         );
         if (response.data) {
-          console.log("zoomrequest",response.data)
-  //         setzoomrequest(response.data);
-  //         console.log(response.data)
-  //         const startTime = response.data.startingTime; 
-  //         if(response.data.recurrence){
-  //         setReccuranceobject(response.data.recurrence)
-  //         setRecurringenabled(true)
-  //         }
-  //         const starttimefordate=response.data.startTime;
-  //         const localdate=new Date(starttimefordate);
-          
-  //         const localStartTime = new Date(startTime);
-
-  // // Format the local date
-  // const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' gives you the "YYYY-MM-DD" format
-
-  //         const time = localStartTime.toLocaleTimeString('en-US', {
-  //           hour: '2-digit',
-  //           minute: '2-digit',
-  //           hour12: true,
-  //         }).slice(0, 5); // Get "hh:mm" format
-          
-  //         // Determine AM/PM
-  //         const ampm = localStartTime.getHours() >= 12 ? 'PM' : 'AM';
-          
-  //         // Calculate hours and minutes for the duration
-  //         let hours = 0;
-  //         let minutes = 0;
-  //         if (zoomrequest.duration) {
-  //           hours = Math.floor(zoomrequest.duration / 60);
-  //           minutes = zoomrequest.duration % 60;
-  //         }
-          
-  //         // Populate form data
-  //         setFormData({
-  //           ...formData,
-  //           date: formattedDate,
-  //           time: time,
-  //           ampm: ampm,
-  //           hours: hours,
-  //           minutes: minutes,
-  //         });
-          
-  //         setSelectedEmails([...response.data.settings.meetingInvitees]);
-  //         getupdatedstartime(formattedDate,time,ampm)
+ 
   if(response.data.recurrence){
             setReccuranceobject(response.data.recurrence)
             setRecurringenabled(true)
@@ -336,7 +292,7 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
     minutes: minutes,
   });
   
-  setSelectedEmails([...response.data.settings.meetingInvitees]);
+  setSelectedEmails([...response.data.settings.groupinviteeDto]);
   getupdatedstartime(formattedDate,time,ampm)
   
   
@@ -377,38 +333,37 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
     }));
   };
 
-  const handleEmailClick = (email) => {
-    // Create a new object with the "email" property
-    const newInvitee = { email: email };
-
+  const handleEmailRemove = (emailToRemove) => {
     setSelectedEmails((prev) => {
-      // Check if the email already exists in the selectedEmails array
-      const existingEmailIndex = prev.findIndex((e) => e.email === email);
-
-      let updatedEmails;
-
-      // If email exists, remove it from the list
-      if (existingEmailIndex !== -1) {
-        updatedEmails = prev.filter((e, index) => index !== existingEmailIndex);
-      } else {
-        // If email doesn't exist, add the new object to the list
-        updatedEmails = [...prev, newInvitee];
-      }
-
-      // Update zoomrequest.settings.meetingInvitees efficiently
+      const updated = new Set(prev);
+      updated.delete(emailToRemove);
       setzoomrequest((prevZoomRequest) => ({
         ...prevZoomRequest,
         settings: {
           ...prevZoomRequest.settings,
-          meetingInvitees: updatedEmails,
+          groupinviteeDto:[...updated] ,
         },
       }));
-
-      // Return the updated emails array
-      return updatedEmails;
+      return [...updated];
     });
-    setSearchQuery("");
-    setUsers("");
+  };
+  const handleEmailClick = (email) => {
+   
+    setSelectedEmails((prev)=>{
+      const updated=new Set(prev);
+      updated.add(email)
+      setzoomrequest((prevZoomRequest) => ({
+        ...prevZoomRequest,
+        settings: {
+          ...prevZoomRequest.settings,
+          groupinviteeDto:[...updated] ,
+        },
+      }));
+      return [...updated]
+    })
+    
+     setSearchQuery("");
+     setUsers([]);
   };
 
   const handleSearch = async (query) => {
@@ -436,14 +391,8 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
             query,
           },
         });
-        const selectedEmailsSet = new Set(
-          selectedEmails.map((emailObj) => emailObj.email)
-        );
-        const filteredUsers = response.data.filter(
-          (user) => !selectedEmailsSet.has(user)
-        );
-
-        setUsers(filteredUsers);
+       
+        setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
         throw error
@@ -568,7 +517,7 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
         ...zoomrequest,
         recurrence:Reccuranceobject,
       };
-      // return
+      console.log("REQUEST=",updatedZoomRequest);
       setissubmitting(true);
       const response = await axios.patch(
         `${baseUrl}/api/zoom/meet/${meetingId}`,
@@ -586,10 +535,13 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
         icon: "success",
         confirmButtonText: "OK",
       }).then(() => {
-        const sentence = "Meeting Updated:"
-        navigate('/mailSending', { state: { meetingData: response.data ,sentence} });
-       // window.location.reload();
+      window.location.reload();
       });
+      // 
+      //   const sentence = "Meeting Updated:"
+      //   navigate('/mailSending', { state: { meetingData: response.data ,sentence} });
+      //  // window.location.reload();
+      // });
     } catch (error) {
       setissubmitting(false);
       if (error.response && error.response.status === 400) {
@@ -760,15 +712,15 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
                 <label htmlFor="duration" className="col-sm-2 col-form-label">
                   Duration <span className="text-danger">*</span>
                 </label>
-                <div className="col-sm-9 row">
-                  <input
-                    className="form-control "
-                    readOnly
-                    style={{ width: "90%" }}
-                    value={zoomrequest.duration? zoomrequest.duration : 40}
-                  />{" "}
-                  <label className=" ml-3 col-form-label">min</label>
-                </div>
+                <div className="col-sm-9 ml-1 row">
+  <input
+    className="form-control col-sm-10"
+    readOnly
+    value={zoomrequest.duration ? zoomrequest.duration : 40}
+  />
+  <label className="col-form-label col-sm-2 d-flex align-items-center">min</label>
+</div>
+
               </div>
             ) : (
               <div className="form-group row">
@@ -810,48 +762,34 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
               </div>
             )}
 
-            <div className="form-group row">
-              <label htmlFor="invitees" className="col-sm-2 col-form-label">
+<div className="form-group row">
+              <label htmlFor="invitees"className="col-sm-2 col-form-label">
                 Invitees
                 <span className="text-danger">*</span>
               </label>
               <div className="col-sm-9">
                 <div className="inputlike">
-                  {selectedEmails && selectedEmails.length > 0 && (
-                    <div className="listemail">
-                      {" "}
-                      {selectedEmails.map((email, index) => (
-                        <div key={index} className="selectedemail">
-                          {email.email}{" "}
-                          <i
-                            onClick={() => handleEmailClick(email.email)}
-                            className="fa-solid fa-xmark"
-                          ></i>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  <input
-                    type="input"
-                    id="customeinpu"
-                    placeholder="search member..."
-                    className="form-control"
-                    value={searchQuery}
-                    onChange={(e) => handleSearch(e.target.value)}
-                  />
+                {selectedEmails.length >0 &&(
+                  <div className="listemail"> {selectedEmails.map((email,index)=> 
+                <div key={index}  className="selectedemail">
+                    {email.name} <i onClick={() => handleEmailRemove(email)} className="fa-solid fa-xmark"></i>
+                  </div>)}</div>)}
+            
+                <input
+                  type="input"
+                  id="customeinpu"
+                  className="form-control"
+                  placeholder="search member,course or Batch..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
                 </div>
                 {users.length > 0 && (
                   <div className="user-list">
-                    {users.map((user) => (
-                      <div key={user} className="usersingle">
-                        <label
-                          id="must"
-                          className="p-1"
-                          htmlFor={user}
-                          onClick={() => handleEmailClick(user)}
-                        >
-                          {user}
+                    {users.map((user,index) => (
+                      <div key={index} className="usersingle">
+                        <label id="must" className="p-1" htmlFor={user} onClick={() => handleEmailClick(user)}>
+                          {user.name}
                         </label>
                       </div>
                     ))}

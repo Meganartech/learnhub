@@ -142,8 +142,6 @@ public class PaymentIntegration {
 // Check if the session ID is not null
 				if (session.getId() != null) {
 // Save order details to the database
-					Orderuser savedOrder = saveOrderDetails(course, user, amt, session.getId(), "CREATED",
-							user.getInstitutionName(), courseId, userId, installmentNumber,"STRIPE");
 
 // Respond with the session ID to the frontend
 					Map<String, String> response = new HashMap<>();

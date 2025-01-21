@@ -474,10 +474,14 @@ const updateStartTime = (event) => {
         text: "Meeting Created Successfully",
         icon: "success",
         confirmButtonText: "OK",
-      }).then(() => {
-        const sentence = "New Meeting Scheduled:"
-        navigate('/mailSending', { state: { meetingData: response.data ,sentence} });
-      });
+      })
+      .then(() => {
+        window.location.reload();
+        });
+      // .then(() => {
+      //   const sentence = "New Meeting Scheduled:"
+      //   navigate('/mailSending', { state: { meetingData: response.data ,sentence} });
+      // });
     } catch (error) {
       setissubmitting(false);
       if(error.response && error.response.status===400){

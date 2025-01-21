@@ -1,47 +1,26 @@
 package com.knowledgeVista.Payments.controller;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.compress.harmony.unpack200.bytecode.forms.ThisFieldRefForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import com.knowledgeVista.Payments.Orderuser;
 import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.Paypalsettings;
 import com.knowledgeVista.Payments.Stripesettings;
-import com.knowledgeVista.Payments.repos.OrderuserRepo;
 import com.knowledgeVista.Payments.repos.PaymentsettingRepository;
 import com.knowledgeVista.Payments.repos.Striperepo;
 import com.knowledgeVista.Payments.repos.paypalrepo;
 import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.FeedbackRepository;
 import com.knowledgeVista.User.Muser;
-import com.knowledgeVista.User.LabellingItems.FooterDetails;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-import com.stripe.Stripe;
-import com.stripe.exception.SignatureVerificationException;
-import com.stripe.exception.StripeException;
-import com.stripe.model.Event;
-import com.stripe.model.WebhookEndpoint;
-import com.stripe.model.checkout.Session;
-import com.stripe.net.Webhook;
-import com.stripe.param.WebhookEndpointCreateParams;
-import com.stripe.param.checkout.SessionCreateParams;
 
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin

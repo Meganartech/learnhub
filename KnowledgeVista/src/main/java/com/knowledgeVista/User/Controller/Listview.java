@@ -254,7 +254,7 @@ public ResponseEntity< List<?>> SearchEmail(String token,String Query){
 		 String email=jwtUtil.getUsernameFromToken(token);
    	     String institutionname =muserrepositories.findinstitutionByEmail(email);
    	     
-   	     if(institutionname!=null || !institutionname.isEmpty()) {
+   	  if (institutionname != null && !institutionname.isEmpty()) {
    	   
    	    	List<SearchDto> list1= muserrepositories.findEmailsAsSearchDto(Query, institutionname);
    	    	List<SearchDto>list2= courseRepo.findCoursesAsSearchDto(Query, institutionname);

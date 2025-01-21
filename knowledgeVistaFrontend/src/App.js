@@ -64,7 +64,7 @@ import StudentCalenderView from "./Meetings/StudentCalenderView.js";
 import EditMeeting from "./Meetings/EditMeeting.js";
 import Footer from "./Common Components/Footer.js";
 import Affiliates from "./SysAdmin/Affiliates.js";
-import MailSending from "./Meetings/MailSending.js";
+//import MailSending from "./Meetings/MailSending.js";
 import SlideViewer from "./course/Components/SlideViewer.js";
 import AdminProfileView from "./SysAdmin/AdminProfileView.js";
 import StudentRegister from "./Registration/StudentRegister.js";
@@ -762,7 +762,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
-            <Route
+            {/* <Route
               path="/mailSending"
               element={
                 <ErrorBoundary>
@@ -774,7 +774,7 @@ function App() {
                   </PrivateRoute>
                 </ErrorBoundary>
               }
-            />
+            /> */}
             <Route
               path="/settings/mailSettings"
               element={

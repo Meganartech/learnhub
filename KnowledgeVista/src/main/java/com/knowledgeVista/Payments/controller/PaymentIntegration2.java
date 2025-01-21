@@ -36,11 +36,6 @@ import com.knowledgeVista.Payments.repos.paypalrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-import com.paypal.api.payments.Payment;
-import com.paypal.base.rest.PayPalRESTException;
-import com.paypal.core.PayPalEnvironment;
-import com.paypal.core.PayPalHttpClient;
-import com.paypal.http.HttpResponse;
 import com.paypal.orders.AmountWithBreakdown;
 import com.paypal.orders.ApplicationContext;
 import com.paypal.orders.LinkDescription;
@@ -231,13 +226,6 @@ public class PaymentIntegration2 {
 
 	            if (response.statusCode() == 201) {
 	                Order order = response.result();
-
-	                // Save order details to the database
-	                Orderuser savedOrder = saveOrderDetails(
-	                        course, user, amt, order.id(), "CREATED", user.getInstitutionName(),
-	                        courseId, userId, installmentNumber, "PAYPAL");
-
-	                // Respond with PayPal approval link
 	                Map<String, String> approvalLink = new HashMap<>();
 	                for (LinkDescription link : order.links()) {
 	                    if ("approve".equals(link.rel())) {

@@ -1,7 +1,6 @@
 package com.knowledgeVista.Batch;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter

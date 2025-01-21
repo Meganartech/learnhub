@@ -61,40 +61,45 @@ const Sidebar = ({ filter, handleFilterChange }) => {
     });
   }
 
-  const handleClick = (e, link) => {
-    e.preventDefault();
-    setActiveLink(link);
-    updateActiveMenu(link);
-    navigate(link);
-  };
-  // const handleClick = (link) => {
-  //   if (userRole === "ADMIN" || userRole === "TRAINER") {
-  //     if (
-  //       (link === "/about" ||
-  //         link === "/admin/dashboard" ||
-  //         link === "/licenceDetails") &&
-  //       isEmpty
-  //     ) {
-  //       setActiveLink(link);
-  //       navigate(link);
-  //     } else if (
-  //       (link === "/about" ||
-  //         link === "/admin/dashboard" ||
-  //         link === "/licenceDetails") &&
-  //       !isEmpty &&
-  //       !isvalid
-  //     ) {
-  //       setActiveLink(link);
-  //       navigate(link);
-  //     } else if (!isEmpty && isvalid) {
-  //       setActiveLink(link);
-  //       navigate(link);
-  //     }
-  //   } else if (userRole === "USER" || userRole === "SYSADMIN") {
-  //     setActiveLink(link);
-  //     navigate(link);
-  //   }
+  // const handleClick = (e, link) => {
+  //   e.preventDefault();
+  //   setActiveLink(link);
+  //   updateActiveMenu(link);
+  //   navigate(link);
   // };
+  const handleClick = (e,link) => {
+    e.preventDefault();
+    if (userRole === "ADMIN" || userRole === "TRAINER") {
+      if (
+        (link === "/about" ||
+          link === "/admin/dashboard" ||
+          link === "/licenceDetails") &&
+        isEmpty
+      ) {
+        setActiveLink(link);
+        updateActiveMenu(link);
+        navigate(link);
+      } else if (
+        (link === "/about" ||
+          link === "/admin/dashboard" ||
+          link === "/licenceDetails") &&
+        !isEmpty &&
+        !isvalid
+      ) {
+        setActiveLink(link);
+        updateActiveMenu(link);
+        navigate(link);
+      } else if (!isEmpty && isvalid) {
+        setActiveLink(link);
+        updateActiveMenu(link);
+        navigate(link);
+      }
+    } else if (userRole === "USER" || userRole === "SYSADMIN") {
+      setActiveLink(link);
+      updateActiveMenu(link);
+      navigate(link);
+    }
+  };
 
   return (
     <nav className="pcoded-navbar menu-light  ">

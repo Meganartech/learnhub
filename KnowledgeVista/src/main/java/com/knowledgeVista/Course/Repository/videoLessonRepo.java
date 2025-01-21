@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.videoLessons;
-import com.knowledgeVista.Migration.VideoLessonsMigrationDto;
 
 public interface videoLessonRepo extends JpaRepository<videoLessons, Long> {
 

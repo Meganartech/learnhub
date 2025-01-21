@@ -46,6 +46,26 @@ public class EmailController {
         //          return null;
         //      }
         //  }
+//	  	 public ResponseEntity<?> sendEmail( String email, Meeting Meet) {
+//		      try {
+//		    	 
+//			         String institutionName = muserRepository.findinstitutionByEmail(email);
+//			         if(institutionName==null || institutionName.isEmpty()) {
+//			        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("InstitutionName Not Found");
+//			         }
+//			        	 return emailService.sendHtmlEmail(institutionName,
+//			   	              Meet.getSettings().getMeetingInvitees();
+//			   	              emailRequest.getSubject(),
+//			   	              emailRequest.getBody()
+//			   	          );
+//			         }
+//			        
+//		          
+//		      } catch (Exception e) {
+//		          e.printStackTrace();    logger.error("", e);;
+//		          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//		      }
+//		  }
 
 	  public ResponseEntity<?> sendMail( String token, EmailRequest emailRequest) {
 	      try {

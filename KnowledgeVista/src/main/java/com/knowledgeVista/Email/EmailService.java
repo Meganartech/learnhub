@@ -23,8 +23,10 @@ public class EmailService {
 	  private MailkeysRepo mailkeyrepo;
 	  
 	  public ResponseEntity<?> sendHtmlEmail(String InstitutionName,List<String> to, List<String> cc, List<String> bcc, String subject, String body) throws MessagingException {
+		 System.out.println("hereee..in send mail");
 		  JavaMailSender mailSender = getJavaMailSender(InstitutionName);
           if(mailSender==null) {
+        	  System.out.println("hereee..in mailsender not found mail");
         	  return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
           }
 		  MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -50,6 +52,7 @@ public class EmailService {
 	        helper.setText(body, true);  
 
 	        mailSender.send(mimeMessage);
+	        System.out.println("Sendeded"+to);
 	       return ResponseEntity.ok("Mail Sent");
 	    }
 	  public String getfrom(String institution) {

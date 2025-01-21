@@ -3,16 +3,18 @@ package com.knowledgeVista.Meeting;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.knowledgeVista.Email.EmailService;
 import com.knowledgeVista.Meeting.zoomclass.Meeting;
 import com.knowledgeVista.Meeting.zoomclass.repo.InviteeRepo;
 import com.knowledgeVista.Meeting.zoomclass.repo.Meetrepo;
@@ -24,6 +26,8 @@ import com.knowledgeVista.Meeting.zoomclass.Recurrenceclass;
 import com.knowledgeVista.Meeting.zoomclass.ZoomMeetingInvitee;
 import com.knowledgeVista.Meeting.zoomclass.ZoomSettings;
 import com.knowledgeVista.Notification.Service.NotificationService;
+import com.knowledgeVista.User.Repository.MuserRepositories;
+
 
 
 @Service
@@ -40,6 +44,10 @@ private NotificationService notiservice;
 private OccurancesRepo occurancesRepo;
 @Autowired 
 private Recurrenceclassrepo reccrepo;
+@Autowired
+private EmailService emailservice;
+@Autowired
+private MuserRepositories muserrepo;
 
 private static final Logger logger = LoggerFactory.getLogger(SaveMeetDataService.class);
 
@@ -80,20 +88,14 @@ private void extractMeetingDetails(JsonNode rootNode, Meeting meeting, String em
 }
 
 
-public void PatchsaveData(String email, String jsonString, Long meetingId) {
+public ResponseEntity<?> PatchsaveData(String email, String jsonString, Meeting meeting) {
     try {
         ObjectMapper mapper = new ObjectMapper();
         System.out.println("json: " + jsonString);
         JsonNode rootNode = mapper.readTree(jsonString);
 
         // Fetch the existing meeting
-        Optional<Meeting> opmeeting = meetrepo.FindByMeetingId(meetingId);
-        Meeting meeting = opmeeting.orElse(null);
-
-        if (meeting == null) {
-            System.out.println("Meeting with ID " + meetingId + " not found");
-            return;
-        }
+       
 
         // Update meeting details
         extractMeetingDetails(rootNode, meeting, email); // Ensure this method updates the passed meeting object
@@ -174,6 +176,7 @@ public void PatchsaveData(String email, String jsonString, Long meetingId) {
 	        Set<String> existingEmails = new HashSet<>();
 	        List<ZoomMeetingInvitee> inviteesToSave = new ArrayList<>();
 	        if (rootNode.get("settings").has("meeting_invitees")) {
+	        
 	            JsonNode inviteesNode = rootNode.get("settings").get("meeting_invitees");
 	            if (inviteesNode.isArray()) {
 	                for (JsonNode inviteeNode : inviteesNode) {
@@ -192,34 +195,62 @@ public void PatchsaveData(String email, String jsonString, Long meetingId) {
 	        }
 	        meeting.setSettings(settings);
 	        meeting.getSettings().getMeetingInvitees().addAll(inviteesToSave);
+	        System.out.println("Updatedd");
 	        meetrepo.save(meeting);
 
 	        if (!inviteesToSave.isEmpty()) {
+	        	System.out.println("not empty invitees to save");
 	            Long notid = notiservice.createNotification("MeetingUpdated", "system", "Meeting Updated Click To Join the meeting", "System", meeting.getTopic(), meeting.getJoinUrl());
 	            meeting.setNotificationId(notid);
 	            if (notid != null) {
 	                notiservice.SpecificCreateNotificationusingEmail(notid, new ArrayList<>(existingEmails));
 	            }
+	            List<String>bcc=null;
+	            List<String>cc=null;
+	            String institutionname=muserrepo.findinstitutionByEmail(email);
+	            String body = String.format(
+	            	    "Meeting Updated: %s<br>" +
+	            	    "Password: %s<br>" +
+	            	    "Time: %s<br>" +
+	            	    "TimeZone: %s<br>" +
+	            	    "Join URL: <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
+	            	    meeting.getTopic(),
+	            	    meeting.getPassword(),
+	            	    meeting.getStartTime(),
+	            	    meeting.getTimezone(),
+	            	    meeting.getJoinUrl(),
+	            	    meeting.getJoinUrl()
+	            	);
+
+	            if (institutionname != null && !institutionname.isEmpty()) {
+	                try {
+	                    emailservice.sendHtmlEmail(institutionname, new ArrayList<>(existingEmails), cc, bcc, meeting.getTopic(), body);
+	                } catch (Exception e) {
+	                    logger.error("errorSending Mail" + e);
+	                }
+	            }
+
 	        }
 
         }
          meetrepo.save(meeting);
-       
+       return ResponseEntity.ok("Meeting Saved ");
 
     } catch (Exception e) {
         e.printStackTrace();
         logger.error("Error updating meeting: ", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
 
 
 
-public void saveMeetData(String jsonString, String email) {
+public ResponseEntity<?> saveMeetData(String jsonString, String email,Meeting meeting) {
     try {
         ObjectMapper mapper = new ObjectMapper();
         System.out.println("json"+jsonString);
         JsonNode rootNode = mapper.readTree(jsonString);
-        Meeting meeting = extractMeetingDetails(rootNode, email);
+         meeting = extractMeetingDetails(rootNode, email,meeting);
         if(rootNode.has("occurrences")) {
         	 JsonNode occurrencesNode = rootNode.get("occurrences");
         	 List<Occurrences> occurrencesList = new ArrayList<>();
@@ -274,7 +305,7 @@ public void saveMeetData(String jsonString, String email) {
                  }
              }
              occurancesRepo.saveAll(occurrences);   
-                 
+             return ResponseEntity.ok("saved Successfully");   
              
         }else {
         if (rootNode.has("settings")) {
@@ -289,16 +320,19 @@ public void saveMeetData(String jsonString, String email) {
             meeting.setSettings(settings);
         }
 
-        meetrepo.save(meeting);
+         meetrepo.save(meeting);
+       return ResponseEntity.ok("saved Successfully");
+        
         }
     } catch (Exception e) {
         e.printStackTrace();
         logger.error("", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
 
-private Meeting extractMeetingDetails(JsonNode rootNode, String email) {
-    Meeting meeting = new Meeting();
+private Meeting extractMeetingDetails(JsonNode rootNode, String email,Meeting meeting) {
+    
     if (rootNode.has("uuid")) meeting.setUuid(rootNode.get("uuid").asText());
     if (rootNode.has("type")) meeting.setType(rootNode.get("type").asInt());
     if (rootNode.has("id")) meeting.setMeetingId(rootNode.get("id").asLong());
@@ -349,7 +383,7 @@ private ZoomSettings extractSettings(JsonNode settingsNode) {
     return settings;
 }
 
-private List<ZoomMeetingInvitee> extractInvitees(JsonNode settingsNode, String email, ZoomSettings settings, Meeting meeting) {
+private List<ZoomMeetingInvitee> extractInvitees(JsonNode settingsNode, String email, ZoomSettings settings, Meeting meeting)  {
     List<ZoomMeetingInvitee> invitees = new ArrayList<>();
     List<String> notificationEmails = new ArrayList<>();
     if (settingsNode.has("meeting_invitees")) {
@@ -391,6 +425,33 @@ private List<ZoomMeetingInvitee> extractInvitees(JsonNode settingsNode, String e
         meeting.setNotificationId(notificationId);
         if (notificationId != null) {
             notiservice.SpecificCreateNotificationusingEmail(notificationId, notificationEmails);
+        }
+        
+       // mail sending.. 
+        List<String>bcc=null;
+        List<String>cc=null;
+        String institutionname=muserrepo.findinstitutionByEmail(email);
+        String body = String.format(
+        	    "Meeting Created: %s<br>" +
+        	    "Password: %s<br>" +
+        	    "Time: %s<br>" +
+        	    "TimeZone: %s<br>" +
+        	    "Join URL: <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
+        	    meeting.getTopic(),
+        	    meeting.getPassword(),
+        	    meeting.getStartTime(),
+        	    meeting.getTimezone(),
+        	    meeting.getJoinUrl(),
+        	    meeting.getJoinUrl()
+        	);
+
+        if(institutionname !=null && !institutionname.isEmpty()) {
+        	try {
+            emailservice.sendHtmlEmail(institutionname, notificationEmails, cc,bcc ,meeting.getTopic() , body);
+        	}catch(Exception e){
+        		logger.error("errorSending Mail"+e);
+        	}
+        	
         }
     }
 
