@@ -102,7 +102,9 @@ const Sidebar = ({ filter, handleFilterChange }) => {
   };
 
   return (
-    <nav className="pcoded-navbar menu-light  ">
+    <nav className="pcoded-navbar menu-light  "
+   //  style={{position:"fixed"}}
+     >
       <div className="navbar-wrapper">
         <div className="navbar-content scroll-div ">
           {/* Admin Sidebar */}
