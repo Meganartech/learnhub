@@ -6,75 +6,31 @@ import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import altBatchImage from "../images/altBatchImage.jpg";
-const ViewAllBatch = () => {
-  const token = sessionStorage.getItem("token");
-  const role=sessionStorage.getItem("role");
-  const MySwal = withReactContent(Swal);
-  const [batch, setbatch] = useState([]);
-  const Currency = sessionStorage.getItem("Currency");
-  const navigate = useNavigate();
-  const handleDelete = (e, batchId) => {
-    if(role=="USER"){
-      return;
-    }
-    e.preventDefault()
-    MySwal.fire({
-      title: "Delete Course?",
-      text: "Are you sure you want to delete this batch ?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      confirmButtonText: "Delete",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // If the user clicked "Delete"
-        axios
-          .delete(`${baseUrl}/batch/delete/${batchId}`, {
-            headers: {
-              Authorization: token,
-            },
-          })
-          .then((response) => {
-            if (response.status === 200 || 204) {
-              MySwal.fire({
-                title: "Deleted!",
-                text: "Your Batch has been deleted.",
-                icon: "success",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  window.location.reload();
-                }
-              });
-            }
-          })
-          .catch((error) => {
-            if (error.response && error.response.status === 401) {
-              navigate("/unauthorized");
-            } else {
-              throw error;
-            }
-          });
-      }
-    });
-  };
-  useEffect(() => {
-    const fetchBatch = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/Batch/getAll`, {
-          headers: {
-            Authorization: token,
-          },
-        });
-        const data = response.data;
-        console.log(data);
-        setbatch(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchBatch();
-  }, []);
+
+const Mybatches = () => {
+     const token = sessionStorage.getItem("token");
+      const role=sessionStorage.getItem("role");
+      const MySwal = withReactContent(Swal);
+      const [batch, setbatch] = useState([]);
+      const Currency = sessionStorage.getItem("Currency");
+      const navigate = useNavigate();
+      useEffect(() => {
+        const fetchBatch = async () => {
+          try {
+            const response = await axios.get(`${baseUrl}/Batch/getEnrolledBatch`, {
+              headers: {
+                Authorization: token,
+              },
+            });
+            const data = response.data;
+            console.log(data);
+            setbatch(data);
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        fetchBatch();
+      }, []);
   return (
     <div>
       <div className="page-header"></div>
@@ -109,7 +65,6 @@ const ViewAllBatch = () => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                      
                       }}
                     >
                       {/* var(--primary) */}
@@ -138,22 +93,7 @@ const ViewAllBatch = () => {
                     >
                       {item.batchTitle}
                     </h5>
-                 {(role ==="ADMIN"||role==="TRAINER") &&    <div style={{ textAlign: "right" }}>
-                      <a
-                        href={`/batch/Edit/${item.id}`}
-                        title="Edit Batch"
-                        style={{ cursor: "pointer" }}
-                      >
-                        <i className="fas fa-edit pr-2"></i>
-                      </a>
-                      <a
-                        href="#"
-                        title="Delete Batch"
-                        onClick={(e) => handleDelete(e, item.id)}
-                      >
-                        <i className="fas fa-trash text-danger"></i>
-                      </a>
-                    </div>}
+              
                     <p title={item.courseNames} className="batchlist">
                       <b> Courses :</b> {item.courseNames}
                     </p>
@@ -207,7 +147,7 @@ const ViewAllBatch = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ViewAllBatch;
+export default Mybatches

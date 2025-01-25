@@ -61,7 +61,14 @@ public class Batch {
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<Muser> trainers;
-
+    @ManyToMany( fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(
+        name = "batch_users",
+        joinColumns = @JoinColumn(name = "batch_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<Muser> users;
+    private String BatchUrl="/MyBatches";
     @Column(name = "noOfSeats")
     private Long noOfSeats;
 
@@ -76,4 +83,12 @@ public class Batch {
         this.id = id;
         generateBatchId(); // Call to generate the batchId when id is set
     }
+    
+    public long getUserCountinBatch() {
+		if (users != null) {
+			return (long) users.size();
+		} else {
+			return 0L;
+		}
+	}
 }

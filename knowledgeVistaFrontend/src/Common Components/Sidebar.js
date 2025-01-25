@@ -830,6 +830,34 @@ const Sidebar = ({ filter, handleFilterChange }) => {
               <li className="nav-item no-hasmenu ">
                 <a
                   href="#"
+                  data-path="/batch/viewall"
+                  onClick={(e) => handleClick(e, "/batch/viewall")}
+                  className="nav-link has-ripple"
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-solid fa-object-group"></i>
+                  </span>
+                  <span className="pcoded-mtext">Batches</span>
+                </a>
+              </li>
+             
+              <li className="nav-item no-hasmenu ">
+                <a
+                  href="#"
+                  data-path="/MyBatches"
+                  onClick={(e) => handleClick(e, "/MyBatches")}
+                  className="nav-link has-ripple"
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-layer-group"></i>
+                  </span>
+                  <span className="pcoded-mtext"> My Batches</span>
+                </a>
+              </li>
+             
+              <li className="nav-item no-hasmenu ">
+                <a
+                  href="#"
                   data-path="/mycourses"
                   onClick={(e) => handleClick(e, "/mycourses")}
                   className="nav-link has-ripple"

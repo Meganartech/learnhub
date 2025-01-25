@@ -11,10 +11,10 @@ const PaypalPaymentProvider = (orderData,setopenselectgateway) => {
         try{
          
           const data = JSON.stringify({
-            courseId: orderData?.courseId,
+            batchId: orderData?.batchId,
             userId: orderData?.userId,
             });
-         const url = "/full/buyCourse/create";
+         const url = "/full/buyBatch/create";
           const response = await axios.post(`${baseUrl}${url}?gateway=PAYPAL`, data, {
               headers: {
                 Authorization: token,

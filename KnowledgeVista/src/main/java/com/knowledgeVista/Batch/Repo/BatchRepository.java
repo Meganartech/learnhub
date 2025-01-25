@@ -57,6 +57,34 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 		       "GROUP BY b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount, b.BatchImage")
 		List<BatchDto> findAllBatchDtosByInstitution(@Param("institutionName") String institutionName);
 	
+	@Query("SELECT new com.knowledgeVista.Batch.BatchDto( " +
+		       "b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount, " +
+		       "COALESCE(CAST(STRING_AGG(c.courseName, ',') AS string), ''), " +
+		       "COALESCE(CAST(STRING_AGG(t.username, ',') AS string), ''), " +
+		       "b.BatchImage) " +
+		       "FROM Batch b " +
+		       "LEFT JOIN b.courses c " +
+		       "LEFT JOIN b.trainers t " +
+		       "WHERE b.institutionName = :institutionName " +
+		       "AND c.courseId = :courseId " +
+		       "GROUP BY b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount, b.BatchImage")
+		List<BatchDto> findAllBatchDtosByInstitutionAndCourse(@Param("institutionName") String institutionName, @Param("courseId") Long courseId);
+	@Query("SELECT new com.knowledgeVista.Batch.BatchDto( " +
+		       "b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount, " +
+		       "COALESCE(CAST(STRING_AGG(c.courseName, ',') AS string), ''), " +
+		       "COALESCE(CAST(STRING_AGG(t.username, ',') AS string), ''), " +
+		       "b.BatchImage) " +
+		       "FROM Batch b " +
+		       "LEFT JOIN b.courses c " +
+		       "LEFT JOIN b.trainers t " +
+		       "LEFT JOIN b.users u " +
+		       "WHERE b.institutionName = :institutionName " +
+		       "AND u.userId = :userId " +
+		       "GROUP BY b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount, b.BatchImage")
+		List<BatchDto> findAllBatchDtosByInstitutionAnduserId(@Param("institutionName") String institutionName, @Param("userId") Long userId);
+
+	
+	
 	 @Query("SELECT new com.knowledgeVista.Batch.SearchDto(u.id, u.batchTitle, 'BATCH') " +
 	  	       "FROM Batch u " +
 	  	       "WHERE u.institutionName = :institutionName " +

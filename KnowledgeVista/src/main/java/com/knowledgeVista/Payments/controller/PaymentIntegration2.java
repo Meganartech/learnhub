@@ -20,9 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
@@ -44,8 +47,7 @@ import com.paypal.orders.OrderRequest;
 import com.paypal.orders.OrdersCreateRequest;
 import com.paypal.orders.PurchaseUnitRequest;
 import jakarta.servlet.http.HttpServletRequest;
-
-@RestController
+@Service
 public class PaymentIntegration2 {
 	@Value("${currency}")
 	private String currency;
@@ -64,6 +66,8 @@ public class PaymentIntegration2 {
 		
 		@Autowired
 		private CourseDetailRepository coursedetail;
+		@Autowired
+		private BatchRepository batchrepo;
 		@Autowired
 		private JwtUtil jwtUtil;
 
@@ -105,22 +109,23 @@ public class PaymentIntegration2 {
 	        }
 	    }
 	private static final Logger logger = LoggerFactory.getLogger(PaymentIntegration.class);
-	private Orderuser saveOrderDetails(CourseDetail course, Muser user, Long amt, String orderId, String status,
-			String institution, Long courseId, Long userId, Long installmentNumber,String PaymentType) {
+	private Orderuser saveOrderDetails( String userName,String email, Long amt, String orderId, String status,
+			String institution,  Long userId, Long installmentNumber,String PaymentType,String batchName,Long batchId) {
 		Orderuser orderTable = new Orderuser();
-		orderTable.setCourseId(courseId);
 		orderTable.setOrderId(orderId);
 		orderTable.setUserId(userId);
 		orderTable.setPaymentType(PaymentType);
 		orderTable.setInstitutionName(institution);
-		orderTable.setUsername(user.getUsername());
-		orderTable.setEmail(user.getEmail());
+		orderTable.setUsername(userName);
+		orderTable.setBatchName(batchName);
+		orderTable.setBatchId(batchId);
+		orderTable.setEmail(email);
 		orderTable.setInstallmentnumber(installmentNumber);
 		orderTable.setDate(new java.util.Date());
 		orderTable.setStatus(status);
-		orderTable.setCourseName(course.getCourseName());
 		return ordertablerepo.save(orderTable);
 	}
+
 	public void notifiinstallment(Long courseId, Long userId) {
 		Optional<CourseDetail> courseOptional = coursedetail.findById(courseId);
 		Optional<Muser> optionalUser = muserRepository.findById(courseId);
@@ -156,11 +161,10 @@ public class PaymentIntegration2 {
 
 	}
 
-	public ResponseEntity<?> handlePaypalCheckout(
-	        CourseDetail course, Muser user, Long amt, Long courseId, Long userId, Long installmentNumber, HttpServletRequest httpRequest) {
+	public ResponseEntity<?> handlePaypalCheckout(String userName,String email,Long userid ,String BatchName,Long batchId,String institutionName, Long amt,HttpServletRequest httpRequest) {
 	    try {
 	        // Fetch PayPal settings for the institution
-	        Optional<Paypalsettings> opdataList = paypalrepo.FindByInstitutionName(user.getInstitutionName());
+	        Optional<Paypalsettings> opdataList = paypalrepo.FindByInstitutionName(institutionName);
 	        if (opdataList.isPresent()) {
 	            Paypalsettings data = opdataList.get();
 	            String clientId = data.getPaypal_client_id();
@@ -209,11 +213,11 @@ public class PaymentIntegration2 {
 	            // Set up purchase unit (product data and price)
 	            PurchaseUnitRequest purchaseUnit = new PurchaseUnitRequest()
 	            	    .amountWithBreakdown(new AmountWithBreakdown().currencyCode("USD").value(String.valueOf(amtfinal)))
-	            	    .description(course.getCourseName());
+	            	    .description(BatchName);
 	            orderRequest.purchaseUnits(Collections.singletonList(purchaseUnit));
 
 	            ApplicationContext appContext = new ApplicationContext()
-	                    .brandName(user.getInstitutionName())
+	                    .brandName(institutionName)
 	                    .landingPage("BILLING")
 	                    .cancelUrl(cancelUrl)
 	                    .returnUrl(successUrl)
@@ -226,6 +230,8 @@ public class PaymentIntegration2 {
 
 	            if (response.statusCode() == 201) {
 	                Order order = response.result();
+	                saveOrderDetails(userName, email, amt,order.id(), "CREATED",
+							institutionName, userid,  0L,"PAYPAL",BatchName,batchId);
 	                Map<String, String> approvalLink = new HashMap<>();
 	                for (LinkDescription link : order.links()) {
 	                    if ("approve".equals(link.rel())) {
@@ -255,6 +261,71 @@ public class PaymentIntegration2 {
 	    }
 	}
 	
+	private ResponseEntity<String> SetBatchToUser(Orderuser savedorder){
+		Optional<Muser> optionalUser = muserRepository.findById(savedorder.getUserId());
+		if(savedorder.getBatchId()==null) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("batchId Not Found");
+		}
+		
+			Optional<Batch> opbatch= batchrepo.findById(savedorder.getBatchId());
+		
+		       
+		if (optionalUser.isPresent() && opbatch.isPresent()) {
+			Muser user = optionalUser.get();
+			String institution = user.getInstitutionName();
+			Batch batch = opbatch.get();
+			// for notification
+			List<Muser> trainers = batch.getTrainers();
+			List<Long> ids = new ArrayList<>();
+
+			for (Muser trainer : trainers) {
+				ids.add(trainer.getUserId());
+			}
+
+			if (!user.getBatches().contains(batch)) {
+				user.getBatches().add(batch);
+				muserRepository.save(user);
+			}
+			if (!batch.getUsers().contains(user)) {
+				batch.getUsers().add(user);
+				batchrepo.save(batch);
+			}
+			
+			String courseUrl = batch.getBatchUrl();
+			String heading = " Payment Credited !";
+			String link = "/payment/transactionHitory";
+			String linkfortrainer = "/payment/trainer/transactionHitory";
+			String notidescription = "The payment for Batch " + batch.getBatchTitle() + " was Credited  By "
+					+ user.getUsername() + " for installment" + savedorder.getInstallmentnumber();
+
+			Long NotifyId = notiservice.createNotification("Payment", user.getUsername(), notidescription,
+					user.getEmail(), heading, link);
+			Long NotifyIdfortrainer = notiservice.createNotification("Payment", user.getUsername(),
+					notidescription, user.getEmail(), heading, linkfortrainer);
+
+			if (NotifyId != null) {
+				List<String> notiuserlist = new ArrayList<>();
+				notiuserlist.add("ADMIN");
+				notiservice.CommoncreateNotificationUser(NotifyId, notiuserlist, institution);
+			}
+			if (ids != null) {
+				notiservice.SpecificCreateNotification(NotifyIdfortrainer, ids);
+			}
+
+			return ResponseEntity.ok().body(courseUrl);
+
+		} else {
+			String errorMessage = "";
+			if (!optionalUser.isPresent()) {
+				errorMessage += "User with ID " + savedorder.getUserId() + " not found. ";
+			}
+			if (!opbatch.isPresent()) {
+				errorMessage += "Course with ID " + savedorder.getBatchId() + " not found. ";
+			}
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage.trim());
+		}
+		
+	}
 
 	public ResponseEntity<String> updatePayPalPayment(Map<String, String> requestData, String token) {
 	    try {
@@ -272,7 +343,7 @@ public class PaymentIntegration2 {
 
 	            // Create PayPalHttpClient instance
 	            PayPalHttpClient client = createPayPalHttpClient(token);
-                if(client.equals(null)) {
+                if(client==null) {
                 	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error Getting Payment details");
                 }
 	            // Create request to retrieve payment details
@@ -302,51 +373,9 @@ public class PaymentIntegration2 {
 	                orderUser.setDate(new Date()); // Current date for simplicity
 
 	                Orderuser savedOrder = ordertablerepo.save(orderUser);
+	                return this.SetBatchToUser(savedOrder);
 
-	                // Assign course to user
-	                Long courseId = orderUser.getCourseId();
-	                Long userId = orderUser.getUserId();
-
-	                Optional<Muser> optionalUser = muserRepository.findById(userId);
-	                Optional<CourseDetail> optionalCourse = coursedetail.findById(courseId);
-
-	                if (optionalUser.isPresent() && optionalCourse.isPresent()) {
-	                    Muser user = optionalUser.get();
-	                    CourseDetail course = optionalCourse.get();
-
-	                    // Assign course to user if not already assigned
-	                    if (status.equals("APPROVED") && !user.getCourses().contains(course) ) {
-	                        user.getCourses().add(course);
-	                        muserRepository.save(user);
-	                    }
-
-	                    // Send notifications
-	                    this.notifiinstallment(courseId, userId);
-	                    String courseUrl = course.getCourseUrl();
-	                    String heading = "Payment Credited!";
-	                    String link = "/payment/transactionHistory";
-	                    String notiDescription = "Payment for " + course.getCourseName() + " was credited by "
-	                            + user.getUsername() + " for installment " + savedOrder.getInstallmentnumber();
-
-	                    Long notifyId = notiservice.createNotification("Payment", user.getUsername(), notiDescription,
-	                            user.getEmail(), heading, link);
-
-	                    if (notifyId != null) {
-	                        notiservice.CommoncreateNotificationUser(notifyId, List.of("ADMIN"), user.getInstitutionName());
-	                    }
-
-	                    return ResponseEntity.ok().body(courseUrl);
-	                } else {
-	                    String errorMessage = "";
-	                    if (!optionalUser.isPresent()) {
-	                        errorMessage += "User with ID " + userId + " not found. ";
-	                    }
-	                    if (!optionalCourse.isPresent()) {
-	                        errorMessage += "Course with ID " + courseId + " not found. ";
-	                    }
-	                    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(errorMessage.trim());
-	                }
-	            } else {
+	               	            } else {
 	                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("PayPal payment details not found");
 	            }
 	        } else {

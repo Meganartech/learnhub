@@ -34,10 +34,9 @@ const RazorpayPaymentProvider = (orderData ,setopenselectgateway) => {
     try {
       setSubmitting(true);
       const data = JSON.stringify({
-        courseId: orderData?.courseId,
+        batchId: orderData?.batchId,
         userId: orderData?.userId,
       });
-
       const response = await axios.post(`${baseUrl}${url}?gateway=RAZORPAY`, data, {
         headers: {
           Authorization: token,
@@ -119,7 +118,7 @@ const RazorpayPaymentProvider = (orderData ,setopenselectgateway) => {
 
       setSubmitting(false);
       if (response.status === 200) {
-         window.location.href="/mycourses"
+         window.location.href="/MyBatches"
       } else {
         const errorMessage = response.data;
         Swal.fire({

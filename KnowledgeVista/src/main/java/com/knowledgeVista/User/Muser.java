@@ -60,6 +60,9 @@ public class Muser {
 	    private List<CourseDetail> courses;
 	    @ManyToMany(mappedBy = "trainers")
 	    private List<Batch> batches;
+	    
+	    @ManyToMany(mappedBy = "users")
+	    private List<Batch> enrolledbatch;
 
 	    private Boolean isActive=true;
 	    private LocalDateTime lastactive;

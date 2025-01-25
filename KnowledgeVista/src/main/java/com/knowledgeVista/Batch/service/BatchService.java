@@ -365,6 +365,47 @@ public class BatchService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting the batch.");
         }
     }
+//=============================Get all BatchBy CourseId=================================
+    public ResponseEntity<?>GetAllBatchByCourseID(String token,Long courseid){
+    	try {
+	         String email = jwtUtil.getUsernameFromToken(token);
+	         String institutionName=muserRepo.findinstitutionByEmail(email);
+	         if(institutionName==null) {
+	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+	         }
+	        List<BatchDto> batch=batchrepo.findAllBatchDtosByInstitutionAndCourse(institutionName, courseid);
+	        	return ResponseEntity.ok(batch);
+	        
+	         
+    	} catch (Exception e) {
+            logger.error("Exception occurred while deleting batch with ID " +e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting the batch.");
+        }
+    }
+    
+    //================================Get ALl BAtch By User==========================
+    public ResponseEntity<?>GetAllBatchByuser(String token){
+    	try {
+	         String email = jwtUtil.getUsernameFromToken(token);
+	         Optional<Muser>opuser=muserRepo.findByEmail(email);
+	         if(opuser.isPresent()) {
+	        	 Muser user= opuser.get();
+	         
+	         String institutionName=user.getInstitutionName();
+	         if(institutionName==null ) {
+	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+	         }
+	        List<BatchDto> batch=batchrepo.findAllBatchDtosByInstitutionAnduserId(institutionName, user.getUserId());
+	        	return ResponseEntity.ok(batch);
+	        
+	         }else {
+	         	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Not Found");
+	         }
+    	} catch (Exception e) {
+            logger.error("Exception occurred while deleting batch with ID " +e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting the batch.");
+        }
+    }
 
    //==============================Delete Batch================================
     @Transactional

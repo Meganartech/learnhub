@@ -31,12 +31,12 @@ const StripePaymentProvider = (orderData,setopenselectgateway) => {
         // const stripe = await loadStripe(publishableKey);
         // Prepare order data
         const data = {
-          courseId: orderData?.courseId,
+          batchId: orderData?.batchId,
           userId: orderData?.userId,
         };
   
         // Create the order
-        const orderResponse = await axios.post(`${baseUrl}/full/buyCourse/create?gateway=STRIPE`, data, {
+        const orderResponse = await axios.post(`${baseUrl}/full/buyBatch/create?gateway=STRIPE`, data, {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",

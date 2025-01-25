@@ -49,6 +49,7 @@ import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.Paypalsettings;
 import com.knowledgeVista.Payments.Stripesettings;
+import com.knowledgeVista.Payments.controller.BatchPaymentService;
 import com.knowledgeVista.Payments.controller.EnablePaymentsController;
 import com.knowledgeVista.Payments.controller.PaymentIntegration;
 import com.knowledgeVista.Payments.controller.PaymentIntegration2;
@@ -102,6 +103,8 @@ public class FrontController {
 	
 	@Autowired
 	private PaymentIntegration payment;
+	@Autowired
+	private BatchPaymentService paymentservice;
 	@Autowired
 	private PaymentIntegration2 payment2;
 	
@@ -448,42 +451,63 @@ public class FrontController {
 		        }
 		        
 //----------------------PaymentIntegration----------------------	
-		        @PostMapping("/full/buyCourse/create")
-		        public ResponseEntity<?> createOrderfull(@RequestBody Map<String, Long> requestData, @RequestParam("gateway") String gateway ,HttpServletRequest request,@RequestHeader("Authorization") String token) {
+		        @PostMapping("/Batch/getOrderSummary")
+		        public ResponseEntity<?> getBatchOrderSummary(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
 		        	 if (paylist != null && activeProfile.equals("demo")) {
 
 		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 	            	   }else {
-		        	return payment.createOrderfull(requestData,gateway,token,request);
+		        	return paymentservice.getBatchordersummary(requestData,token);
+	            	   }
+		        }
+		        @PostMapping("/full/buyBatch/create")
+		        public ResponseEntity<?> createOrderfullForBatch(@RequestBody Map<String, Long> requestData, @RequestParam("gateway") String gateway ,HttpServletRequest request,@RequestHeader("Authorization") String token) {
+		        	 if (paylist != null && activeProfile.equals("demo")) {
+
+		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+	            	   }else {
+		        	return paymentservice.createOrderfullforBatch(requestData,gateway,token,request);
 	            	   }
 		        } 
-		        @PostMapping("/Full/getOrderSummary")
-		        public ResponseEntity<?> getordersummaryFull(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
-		        	 if (paylist != null && activeProfile.equals("demo")) {
-
-		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-	            	   }else {
-		        	return payment.getordersummaryFull(requestData,token);
-	            	   }
-		        }
-		        @PostMapping("/Part/getOrderSummary")
-		        public ResponseEntity<?> getOrderSummaryPart(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
-		        	 if (paylist != null && activeProfile.equals("demo")) {
-
-		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-	            	   }else {
-		        	return payment.getOrderSummaryPart(requestData,token);
-	            	   }
-		        }
-		        @PostMapping("/part/buyCourse/create")
-		        public ResponseEntity<?> createOrderPart(@RequestBody Map<String, Long> requestData,@RequestParam("gateway") String gateway ,@RequestHeader("Authorization") String token) {
-		        	 if (paylist != null && activeProfile.equals("demo")) {
-
-		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-	            	   }else {
-		        	return payment.createOrderPart(requestData,gateway,token);
-	            	   }
-		        }
+		        
+		        //=========batch end=========
+//		        @PostMapping("/full/buyCourse/create")
+//		        public ResponseEntity<?> createOrderfull(@RequestBody Map<String, Long> requestData, @RequestParam("gateway") String gateway ,HttpServletRequest request,@RequestHeader("Authorization") String token) {
+//		        	 if (paylist != null && activeProfile.equals("demo")) {
+//
+//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+//	            	   }else {
+//		        	return payment.createOrderfull(requestData,gateway,token,request);
+//	            	   }
+//		        } 
+//		        @PostMapping("/Full/getOrderSummary")
+//		        public ResponseEntity<?> getordersummaryFull(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
+//		        	 if (paylist != null && activeProfile.equals("demo")) {
+//
+//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+//	            	   }else {
+//		        	return payment.getordersummaryFull(requestData,token);
+//	            	   }
+//		        }
+//		        @PostMapping("/Part/getOrderSummary")
+//		        public ResponseEntity<?> getOrderSummaryPart(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
+//		        	 if (paylist != null && activeProfile.equals("demo")) {
+//
+//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+//	            	   }else {
+//		        	return payment.getOrderSummaryPart(requestData,token);
+//	            	   }
+//		        }
+//		        @PostMapping("/part/buyCourse/create")
+//		        public ResponseEntity<?> createOrderPart(@RequestBody Map<String, Long> requestData,@RequestParam("gateway") String gateway ,@RequestHeader("Authorization") String token) {
+//		        	 if (paylist != null && activeProfile.equals("demo")) {
+//
+//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+//	            	   }else {
+//		        	return payment.createOrderPart(requestData,gateway,token);
+//	            	   }
+//		        }
+		        
                @PostMapping("/buyCourse/payment")
              public ResponseEntity<String> updatePaymentId(@RequestBody Map<String, String> requestData,@RequestHeader("Authorization") String token) {
             	   if (paylist != null && activeProfile.equals("demo")) {
@@ -522,8 +546,10 @@ public class FrontController {
 
               		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
             	   }else {
+            		   if(paylist!=null) {
             		   return paylist.ViewMypaymentHistry(token);
-            		      
+            		   }
+            		   return null;
             	   }
                }
                
@@ -534,7 +560,10 @@ public class FrontController {
               		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
             	
                }else {
-            	   return paylist.ViewPaymentdetails(token, courseId);    
+            	   if(paylist!=null) {
+            	   return paylist.ViewPaymentdetails(token, courseId);   
+            	   }
+            	   return null;
         	   }
                }
                
@@ -545,7 +574,10 @@ public class FrontController {
               		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
             	   }
             	   else {
+            		   if(paylist!=null) {
             		   return paylist.viewTransactionHistory(token); 
+            		   }
+            		   return null;
             	   }
                }
             	   
@@ -1355,6 +1387,10 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
                }
      
   //===========================================Labelling===========================================
+               @GetMapping("/getTheme")
+               public Map<String,String>getTheme(){
+            	   return labelingctrl.getPrimaryColor();
+               }
                
                @PostMapping("/save/labellings")
                public ResponseEntity<?>SaveLabellingitems(@RequestHeader("Authorization") String token ,
@@ -1556,8 +1592,19 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
                }
                
                @GetMapping("/Batch/getAll")
-               public ResponseEntity<?> getbatch( @RequestHeader ("Authorization") String token) {
+               public ResponseEntity<?> getAllbatch( @RequestHeader ("Authorization") String token) {
                    return batchService.GetAllBatch( token);
+               }
+               
+               
+               @GetMapping("/Batch/getAll/{courseid}")
+               public ResponseEntity<?> getAllBatchforCourse(@PathVariable Long courseid, @RequestHeader ("Authorization") String token) {
+                   return batchService.GetAllBatchByCourseID(token, courseid);
+               }
+               
+               @GetMapping("/Batch/getEnrolledBatch")
+               public ResponseEntity<?> getAllBatchforuser( @RequestHeader ("Authorization") String token) {
+                   return batchService.GetAllBatchByuser(token);
                }
                
                @DeleteMapping("/batch/delete/{batchid}")
