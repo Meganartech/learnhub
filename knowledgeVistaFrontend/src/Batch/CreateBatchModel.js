@@ -6,7 +6,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 
-const CreateBatchModel = ({ setSelectedBatches, closeModal }) => {
+const CreateBatchModel = ({ setSelectedBatches, closeModal,setErrors }) => {
   const today = new Date();
   const formattedToday = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 
@@ -51,7 +51,10 @@ const CreateBatchModel = ({ setSelectedBatches, closeModal }) => {
           ...prev, // Spread the previous state (array)
           { id: batch.id, batchId: batch.batchId, batchTitle: batchTitle } // Add the new batch
         ]);
-        
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          batches: "",
+        }));
   
         // Close the modal after submitting
         closeModal();

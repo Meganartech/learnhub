@@ -11,6 +11,7 @@ const CourseView = ({ filteredCourses }) => {
   const userId = sessionStorage.getItem("userid");
   const [submitting, setsubmitting] = useState(false);
   const token = sessionStorage.getItem("token");
+  const role=sessionStorage.getItem("role");
   const navigate =useNavigate();
   const Currency=sessionStorage.getItem("Currency");
   const[openselectgateway,setopenselectgateway]=useState(false)
@@ -122,6 +123,12 @@ const CourseView = ({ filteredCourses }) => {
         if (response.status === 200) {
           const message = response.data;
           navigate(message);
+        }else if(response.status===204){
+          MySwal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "cannot Find the  Course ",
+          });
         }
       } catch (error) {
         if (error.response.status === 401) {
@@ -129,6 +136,14 @@ const CourseView = ({ filteredCourses }) => {
             icon: "error",
             title: "Oops...",
             text: "cannot Access Course ",
+          }).then(()=>{
+            navigate("/unauthorized")
+          })
+        }else if(error.response.status === 403){
+          MySwal.fire({
+            icon: "error",
+            title: "You Cannot Access This Course",
+            text: "This Course was not  Assigned to You  ",
           });
         } else {
           // MySwal.fire({
@@ -186,16 +201,13 @@ const CourseView = ({ filteredCourses }) => {
                       className="courseName"
                       title={item.courseName}
                       style={{ cursor: "pointer" }}
-                      // onClick={(e) => {
-                      //   handleClick(
-                      //     e,
-                      //     item.courseId,
-                      //     item.amount,
-                      //     item.courseUrl
-                      //   );
-                      // }}
-                      onClick={()=>{
-                        navigate(`/batch/viewall/${item.courseId}`)
+                      onClick={(e) => {
+                        handleClick(
+                          e,
+                          item.courseId,
+                          item.amount,
+                          item.courseUrl
+                        );
                       }}
                     >
                       {item.courseName}
@@ -203,11 +215,18 @@ const CourseView = ({ filteredCourses }) => {
                    <p title={item.courseDescription} className="courseDescription">
                     {item.courseDescription}
                     </p>
-                    <div>
+                   {role ==="USER" &&  <div>
                       {item.amount === 0 ? (
                         <a
                           title="Enroll For Free"
-                          onClick={(e)=>{ e.preventDefault();navigate(item.courseUrl)}}
+                          onClick={(e) => {
+                            handleClick(
+                              e,
+                              item.courseId,
+                              item.amount,
+                              item.courseUrl
+                            );
+                          }}
                           className="btn btn-sm btn-outline-success w-100"
                         >
                           Enroll for Free
@@ -224,11 +243,13 @@ const CourseView = ({ filteredCourses }) => {
                           </div>
                           <button
                             className=" btn btn-sm btn-outline-primary"
-                            // onClick={() =>
-                            //   handlepaytype(item.courseId, userId, item.paytype)
-                            // }
-                            onClick={()=>{
-                              navigate(`/batch/viewall/${item.courseId}`)
+                            onClick={(e) => {
+                              handleClick(
+                                e,
+                                item.courseId,
+                                item.amount,
+                                item.courseUrl
+                              );
                             }}
                             title="Enroll Now"
                           >
@@ -236,7 +257,44 @@ const CourseView = ({ filteredCourses }) => {
                           </button>
                         </div>
                       )}
+                    </div>}
+                    {(role ==="ADMIN"||role==="TRAINER") &&  <div>
+                      
+                      <div className="card-text">
+                      {item.amount === 0 ? (
+                        <a
+                        href="#"
+                          className=" btn btn-sm btn-outline-success w-100"
+                          onClick={(e) => {
+                            handleClick(
+                              e,
+                              item.courseId,
+                              item.amount,
+                              item.courseUrl
+                            );
+                          }}
+                        >
+                          <label>
+                          Free
+                          </label>
+                        </a>
+                      ) : (
+                        <a className="btn btn-sm  btn-outline-primary w-100"     onClick={(e) => {
+                          handleClick(
+                            e,
+                            item.courseId,
+                            item.amount,
+                            item.courseUrl
+                          );
+                        }}>
+                       <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1 " : "fa-solid fa-dollar-sign mr-1"}></i>
+                          <label>{item.amount}</label>
+                        </a>
+                      )}
                     </div>
+                         
+                       
+                    </div>}
                   </div>
                 </div>
               </div>

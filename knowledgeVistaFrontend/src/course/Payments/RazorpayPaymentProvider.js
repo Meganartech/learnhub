@@ -118,7 +118,7 @@ const RazorpayPaymentProvider = (orderData ,setopenselectgateway) => {
 
       setSubmitting(false);
       if (response.status === 200) {
-         window.location.href="/MyBatches"
+         window.location.href="/mycourses"
       } else {
         const errorMessage = response.data;
         Swal.fire({

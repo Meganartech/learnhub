@@ -119,11 +119,19 @@ const CourseCreation = () => {
         // You can add additional logic here to add the batch to course creation if needed
         // Example: setCourseCreationBatches(updatedCourses); (if needed)
       } else {
-        updatedCourses = prevSelected; // If not found, keep the original array
+
+        updatedCourses = prevSelected; 
+        // If not found, keep the original array
       }
-  
+      if(updatedCourses.length===0){
+        setErrors((prev) => ({
+          ...prev,
+          batches: "Batch Cannot Be Empty",
+        }));
+      }
       return updatedCourses; // Return the updated array
     });
+   
   };
   
   // Handle changes to form inputs
@@ -334,7 +342,13 @@ const CourseCreation = () => {
         courseImage: "Image is Required",
       }));
     }
-
+   if(selectedBatches.length===0){
+    hasErrors = true;
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      batches: "batch is Required",
+    }));
+   }
     if (!hasErrors) {
       setnextclick(true);
     }
@@ -650,6 +664,7 @@ const CourseCreation = () => {
         <CreateBatchModel 
           setSelectedBatches={setSelectedBatches}
           closeModal={closeModal}  // Pass close function to the modal
+          setErrors={setErrors}
         />
       )}
 

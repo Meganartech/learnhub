@@ -2453,8 +2453,9 @@ pre code {
 
 .table .thead-dark th {
   color: #fff;
-  background-color: #343a40;
-  border-color: #454d55;
+  /* background-color: #343a40;
+  border-color: #454d55; */
+  background-color: var(--primary);
 }
 
 .table .thead-light th {
@@ -3460,6 +3461,11 @@ fieldset:disabled a.btn {
   color: var(--primary);
   border-color: var(--primary);
 }
+.btn-outline-primary:hover label,
+.btn-outline-primary:hover i{
+  color: #fff;
+}
+
 
 .btn-outline-primary:hover {
   color: #fff;
@@ -24962,8 +24968,9 @@ pre[class*="language-"]:before {
 /* Table backgrounds */
 .table .thead-dark th {
   color: #fff;
-  background-color: #263238;
-  border-color: #11171a;
+  /* background-color: #263238;
+  border-color: #11171a; */
+  background-color: var(--primary);
 }
 
 .table-dark {
@@ -25751,9 +25758,11 @@ ul {
   cursor: pointer;
 }
 .lessonheading {
+  background-color: var(--primary);
   color: white;
-  margin: 15px 10px;
+  padding: 15px 10px;
   font-size: 1.5rem;
+  margin-bottom: 0px;
 }
 .child {
   height: 98%;
@@ -26390,13 +26399,21 @@ ul {
     grid-template-columns: 1fr;
   }
 }
+span {
+  vertical-align: middle;
+}
+
 .lesson-title {
+
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflowed text */
   text-overflow: ellipsis; /* Add ellipsis for overflowed text */
   display: inline-block;
   max-width: 100%; /* Allow the title to take full available width */
+  vertical-align: middle;
+  padding-left:10px ;
 }
+
 .courseName{
   /* font-weight: 1000;
   color:var(--primary) ;

@@ -277,11 +277,12 @@ public class PaymentIntegration2 {
 			// for notification
 			List<Muser> trainers = batch.getTrainers();
 			List<Long> ids = new ArrayList<>();
-
+			List<CourseDetail> courses=batch.getCourses();
+           
 			for (Muser trainer : trainers) {
 				ids.add(trainer.getUserId());
-			}
-
+			}			
+			
 			if (!user.getBatches().contains(batch)) {
 				user.getBatches().add(batch);
 				muserRepository.save(user);
@@ -290,7 +291,14 @@ public class PaymentIntegration2 {
 				batch.getUsers().add(user);
 				batchrepo.save(batch);
 			}
-			
+			user.getCourses().addAll(
+				    courses.stream()
+				           .filter(course -> !user.getCourses().contains(course)) // Filter out existing courses
+				           .toList() // Collect remaining courses into a list
+				);
+
+				muserRepository.save(user); // Save user after updating courses
+
 			String courseUrl = batch.getBatchUrl();
 			String heading = " Payment Credited !";
 			String link = "/payment/transactionHitory";

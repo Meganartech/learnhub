@@ -222,9 +222,11 @@ private ResponseEntity<String> SetBatchToUser(Orderuser savedorder){
 		Muser user = optionalUser.get();
 		String institution = user.getInstitutionName();
 		Batch batch = opbatch.get();
+		
 		// for notification
 		List<Muser> trainers = batch.getTrainers();
 		List<Long> ids = new ArrayList<>();
+		List<CourseDetail>courses= batch.getCourses();
 
 		for (Muser trainer : trainers) {
 			ids.add(trainer.getUserId());
@@ -238,7 +240,19 @@ private ResponseEntity<String> SetBatchToUser(Orderuser savedorder){
 			batch.getUsers().add(user);
 			batchrepo.save(batch);
 		}
-		
+//		for(CourseDetail course:courses) {
+//			if (!user.getCourses().contains(course)) {
+//				user.getCourses().add(course);
+//				muserRepository.save(user);
+//			}
+//		}
+		user.getCourses().addAll(
+			    courses.stream()
+			           .filter(course -> !user.getCourses().contains(course)) // Filter out existing courses
+			           .toList() // Collect remaining courses into a list
+			);
+
+			muserRepository.save(user);
 		String courseUrl = batch.getBatchUrl();
 		String heading = " Payment Credited !";
 		String link = "/payment/transactionHitory";

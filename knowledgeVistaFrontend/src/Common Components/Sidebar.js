@@ -827,7 +827,7 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   </li>
                 </ul>
               </li>
-              <li className="nav-item no-hasmenu ">
+              {/* <li className="nav-item no-hasmenu ">
                 <a
                   href="#"
                   data-path="/batch/viewall"
@@ -839,9 +839,9 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   </span>
                   <span className="pcoded-mtext">Batches</span>
                 </a>
-              </li>
+              </li> */}
              
-              <li className="nav-item no-hasmenu ">
+             {/* <li className="nav-item no-hasmenu ">
                 <a
                   href="#"
                   data-path="/MyBatches"
@@ -853,7 +853,7 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   </span>
                   <span className="pcoded-mtext"> My Batches</span>
                 </a>
-              </li>
+              </li> */}
              
               <li className="nav-item no-hasmenu ">
                 <a
