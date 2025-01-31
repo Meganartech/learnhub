@@ -215,10 +215,19 @@ const SheduleZoomMeet = () => {
   useEffect(() => {
     calculateRoundedTime();
   }, []);
-
+  function generateRandomString() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length; // Get the actual length of the character set
+  
+    return Array.from({ length: 6 }, () => 
+      characters.charAt(Math.floor(Math.random() * charactersLength))
+    ).join('');
+  }
+  
   const [zoomrequest, setzoomrequest] = useState({
     agenda: "",
     duration: "40",
+    password:generateRandomString(),
     recurrence:Reccuranceobject,
     settings: {
       audio: "",
@@ -232,6 +241,7 @@ const SheduleZoomMeet = () => {
         },
       ],
       muteUponEntry: true,
+      waitingRoom:false,
       participantVideo: false,
       pushChangeToCalendar: true,
     },
@@ -517,6 +527,16 @@ const updateStartTime = (event) => {
     });
     setReccuranceDescription("")
   };
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+    if(newPassword.length>=1){
+    setzoomrequest({
+      ...zoomrequest,
+      password: newPassword,
+    });
+  }
+  };
+
   
   return (
     <div>
@@ -752,7 +772,40 @@ const updateStartTime = (event) => {
                 )}
               </div>
             </div>
-
+   <div className="form-group row">
+              <label htmlFor="options"className="col-sm-2 col-form-label">
+                Security <span className="text-danger">*</span>
+              </label>
+              <div className="col-sm-9">
+                <div className="zoomopt">
+                <input
+                    type="checkbox"
+                    checked
+                    disabled
+                  /> 
+<div style={{display:"flex"}}>
+                  <p>Passcode</p>
+                  <input
+        type="text"
+        name="password"
+        value={zoomrequest.password}
+        className="form-control form-control-sm col-sm-3 ml-3"
+        onChange={handlePasswordChange}
+      />
+                </div>
+                <div className="zoomopt">
+                  <input
+                    type="checkbox"
+                    name="waitingRoom"
+                    checked={zoomrequest.settings.waitingRoom}
+                    onChange={handleOptionsChange}
+                 
+                  />
+                  <p>Waiting Room</p>
+                </div>
+             </div>
+              </div>
+            </div>
             <div className="form-group row">
               <label htmlFor="video"className="col-sm-2 col-form-label">
                 Video <span className="text-danger">*</span>

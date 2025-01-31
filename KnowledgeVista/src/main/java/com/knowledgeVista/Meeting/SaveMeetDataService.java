@@ -167,6 +167,7 @@ public ResponseEntity<?> PatchsaveData(String email, String jsonString, Meeting 
             settings.setHostVideo(settingsNode.get("host_video").asBoolean());
             settings.setJoinBeforeHost(settingsNode.get("join_before_host").asBoolean());
             settings.setMuteUponEntry(settingsNode.get("mute_upon_entry").asBoolean());
+            settings.setWaitingRoom(settingsNode.get("waiting_room").asBoolean());
 
         // Clear existing invitees
 	        if (settings.getMeetingInvitees() != null) {
@@ -174,7 +175,13 @@ public ResponseEntity<?> PatchsaveData(String email, String jsonString, Meeting 
 	        }
 
 	        Set<String> existingEmails = new HashSet<>();
+	     
 	        List<ZoomMeetingInvitee> inviteesToSave = new ArrayList<>();
+	        ZoomMeetingInvitee admin = new ZoomMeetingInvitee();
+            admin.setEmail(email);
+            admin.setZoomSettings(settings);
+            inviteesToSave.add(admin);
+            existingEmails.add(email);
 	        if (rootNode.get("settings").has("meeting_invitees")) {
 	        
 	            JsonNode inviteesNode = rootNode.get("settings").get("meeting_invitees");
@@ -242,6 +249,7 @@ public ResponseEntity<?> PatchsaveData(String email, String jsonString, Meeting 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
+
 
 
 
@@ -379,13 +387,19 @@ private ZoomSettings extractSettings(JsonNode settingsNode) {
     if (settingsNode.has("host_video")) settings.setHostVideo(settingsNode.get("host_video").asBoolean());
     if (settingsNode.has("join_before_host")) settings.setJoinBeforeHost(settingsNode.get("join_before_host").asBoolean());
     if (settingsNode.has("mute_upon_entry")) settings.setMuteUponEntry(settingsNode.get("mute_upon_entry").asBoolean());
+    if(settingsNode.has("waiting_room")) settings.setWaitingRoom(settingsNode.get("waiting_room").asBoolean());
     // Add extraction for other settings as needed
     return settings;
 }
 
 private List<ZoomMeetingInvitee> extractInvitees(JsonNode settingsNode, String email, ZoomSettings settings, Meeting meeting)  {
     List<ZoomMeetingInvitee> invitees = new ArrayList<>();
+    ZoomMeetingInvitee admin = new ZoomMeetingInvitee();
     List<String> notificationEmails = new ArrayList<>();
+    admin.setEmail(email);
+    admin.setZoomSettings(settings);
+    notificationEmails.add(email);
+    invitees.add(admin);
     if (settingsNode.has("meeting_invitees")) {
         JsonNode inviteesNode = settingsNode.get("meeting_invitees");
         if (inviteesNode.isArray()) {

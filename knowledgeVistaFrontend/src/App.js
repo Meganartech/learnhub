@@ -89,7 +89,6 @@ import ViewAllBatch from "./Batch/ViewAllBatch.js";
 import EditBatch from "./Batch/EditBatch.js";
 import ScrollToTop from "./ScrollToTop.js";
 import ViewAllBAtchForCourse from "./Batch/ViewAllBAtchForCourse.js";
-import Mybatches from "./Student/Mybatches.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -330,16 +329,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
-             <Route
-              path="/MyBatches"
-              element={
-                <ErrorBoundary>
-                  <PrivateRoute authenticationRequired={true}>
-                    <Mybatches />
-                  </PrivateRoute>
-                </ErrorBoundary>
-              }
-            />
+             
             <Route
               path="/myStudents"
               element={
@@ -863,7 +853,7 @@ function App() {
               path="/batch/viewall"
               element={
                 <ErrorBoundary>
-                  <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
                     <ViewAllBatch />
                   </PrivateRoute>
                 </ErrorBoundary>
@@ -1077,6 +1067,7 @@ function App() {
               </ErrorBoundary>
             }
           />
+                
         </Routes>
         <Footer />
       </div>

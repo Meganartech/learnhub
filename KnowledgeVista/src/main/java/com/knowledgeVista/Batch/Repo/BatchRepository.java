@@ -104,6 +104,15 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 		           "JOIN b.courses c " +
 		           "WHERE b.id = :id")
 		    List<Long> findCourseIdsByBatchId(@Param("id") Long id);
+		   
+		   @Query("SELECT t.email FROM Batch b " +
+		           "JOIN b.trainers t " +
+		           "WHERE b.id = :id")
+		    List<String> findtrainersByBatchId(@Param("id") Long id);
+		   @Query("SELECT u.email FROM Batch b " +
+		           "JOIN b.users u " +
+		           "WHERE b.id = :id")
+		    List<String> findusersByBatchId(@Param("id") Long id);
 
 		
 }

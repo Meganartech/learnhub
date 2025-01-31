@@ -200,6 +200,7 @@ const EditMeeting = () => {
   const [zoomrequest, setzoomrequest] = useState({
     agenda: "",
     duration: "",
+    password:"",
     recurrence:Reccuranceobject,
     settings: {
       audio: "",
@@ -210,6 +211,7 @@ const EditMeeting = () => {
       meetingInvitees: [
         
       ],
+      waitingRoom:false,
       muteUponEntry: true,
       participantVideo: false,
       pushChangeToCalendar: true,
@@ -518,6 +520,7 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
         recurrence:Reccuranceobject,
       };
       console.log("REQUEST=",updatedZoomRequest);
+     
       setissubmitting(true);
       const response = await axios.patch(
         `${baseUrl}/api/zoom/meet/${meetingId}`,
@@ -563,12 +566,21 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
       }
     }
   };
-
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+    if(newPassword.length>=1){
+    setzoomrequest({
+      ...zoomrequest,
+      password: newPassword,
+    });
+  }
+  };
   return (
     <div>
     <div className="page-header"></div>
     <div className="card">
       <div className="card-body">
+        {/* <iframe src={`https://zoom.us/wc/72340865879/join?pwd=2V0wNf&uname=Akshaya`}width="100%" height="600px"></iframe> */}
       <div className="row">
       <div className="col-12">
       <div className={`outerspinner ${issubmitting? 'active' : ''}`}>
@@ -797,7 +809,40 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
                 )}
               </div>
             </div>
-
+            <div className="form-group row">
+              <label htmlFor="options"className="col-sm-2 col-form-label">
+                Security <span className="text-danger">*</span>
+              </label>
+              <div className="col-sm-9">
+                <div className="zoomopt">
+                <input
+                    type="checkbox"
+                    checked
+                    disabled
+                  /> 
+<div style={{display:"flex"}}>
+                  <p>Passcode</p>
+                  <input
+        type="text"
+        name="password"
+        value={zoomrequest.password}
+        className="form-control form-control-sm col-sm-3 ml-3"
+        onChange={handlePasswordChange}
+      />
+                </div>
+                <div className="zoomopt">
+                  <input
+                    type="checkbox"
+                    name="waitingRoom"
+                    checked={zoomrequest.settings.waitingRoom}
+                    onChange={handleOptionsChange}
+                 
+                  />
+                  <p>Waiting Room</p>
+                </div>
+             </div>
+              </div>
+            </div>
             <div className="form-group row">
               <label htmlFor="video" className="col-sm-2 col-form-label">
                 Video <span className="text-danger">*</span>

@@ -84,7 +84,6 @@ private OccurancesRepo occurancesRepo;
 	        this.zoomTokenService = zoomTokenService;
 	        
 	    }
-
        public ResponseEntity<?>createMeetReq(MeetingRequest meetingReq,String token){
     	   try {
 		    	
@@ -185,6 +184,7 @@ private OccurancesRepo occurancesRepo;
     		List<Muser> usersList=new ArrayList<Muser>();
     		List<CourseDetail>courseList=new ArrayList<CourseDetail>();
     		List <Batch>batchList=new ArrayList<Batch>();
+    		if(groupinviteeDto!=null) {
     		 for (SearchDto item : groupinviteeDto) {
     		        if (item.getType().equals("EMAIL")) {
     		            // Fetch email by user ID
@@ -215,6 +215,7 @@ private OccurancesRepo occurancesRepo;
     		       
     		        
     		        		    }
+    		}
     		 meet.setUsers(usersList);
 		        meet.setBatches(batchList);
 		        meet.setCourseDetails(courseList);
@@ -227,6 +228,7 @@ private OccurancesRepo occurancesRepo;
     		List<Muser> usersList=new ArrayList<Muser>();
     		List<CourseDetail>courseList=new ArrayList<CourseDetail>();
     		List <Batch>batchList=new ArrayList<Batch>();
+    		if(groupinviteeDto!=null) {
     		 for (SearchDto item : groupinviteeDto) {
     		        if (item.getType().equals("EMAIL")) {
     		            // Fetch email by user ID
@@ -257,6 +259,7 @@ private OccurancesRepo occurancesRepo;
     		       
     		        
     		        		    }
+    		}
     		 meeting.getUsers().clear();
     		 meeting.setUsers(usersList);
     		 meeting.getBatches().clear();
@@ -309,7 +312,7 @@ private OccurancesRepo occurancesRepo;
 		    }
 
 		    // Additional fields based on Zoom API requirements (replace placeholders)
-//		    zoomApiMap.put("password", meetingRequest.getPassword()); // Optional based on Zoom API
+		    zoomApiMap.put("password", meetingRequest.getPassword()); // Optional based on Zoom API
 //		    zoomApiMap.put("template_id", meetingRequest.getTemplateId()); // Optional based on Zoom API
 //		   
 		    return objectMapper.writeValueAsString(zoomApiMap);
@@ -405,9 +408,10 @@ private OccurancesRepo occurancesRepo;
 		    settingsMap.put("registrants_confirmation_email",true);
 		    settingsMap.put("registrants_email_notification", true);
 //		    settingsMap.put("registration_type", settings.getRegistrationType());
+//		    settingsMap.put("registration_type",2);
 //		    settingsMap.put("show_share_button", settings.isShowShareButton());
 //		    settingsMap.put("use_pmi", settings.isUsePmi());
-//		    settingsMap.put("waiting_room", settings.isWaitingRoom());
+		    settingsMap.put("waiting_room", settings.isWaitingRoom());		  
 //		    settingsMap.put("watermark", settings.isWatermark());
 //		    settingsMap.put("host_save_video_order", settings.isHostSaveVideoOrder());
 //		    settingsMap.put("alternative_host_update_polls", settings.isAlternativeHostUpdatePolls());
@@ -492,20 +496,19 @@ private OccurancesRepo occurancesRepo;
 		            }
 		        }
 		        if(item.getType().equals("BATCH")) {
-		        	List<Long> CourseId=batchrepo.findCourseIdsByBatchId(item.getId());
-		        	for(Long cid : CourseId) {
-		        		List<String> courseInvitees = courseRepo.findInviteesByCourseId(cid);
-			            
-			            // Convert the course invitees (List<Map<String, String>>) to List<Map<String, Object>> to match the desired format
-			            for (String email : courseInvitees) {
-			                
-			                // Create a map for the course invitee and add it to the set
-			                Map<String, Object> inviteeMap = new HashMap<>();
-			                inviteeMap.put("email", email);
-			                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
-			            }
-			            List<String> trainerInvitees =courseRepo.findTrainerInviteesByCourseId(cid);
-	                     for (String email : trainerInvitees) {
+		        	List<String> trainers=batchrepo.findtrainersByBatchId(item.getId());
+		        	List<String>users=batchrepo.findusersByBatchId(item.getId());
+		        	if(users!=null) {
+		        	for (String email : users) {
+		                
+		                // Create a map for the course invitee and add it to the set
+		                Map<String, Object> inviteeMap = new HashMap<>();
+		                inviteeMap.put("email", email);
+		                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+		            }
+		        	}
+		        	if(trainers!=null) {
+		        	 for (String email : trainers) {
 			                
 			                // Create a map for the course invitee and add it to the set
 			                Map<String, Object> inviteeMap = new HashMap<>();
@@ -607,7 +610,7 @@ private OccurancesRepo occurancesRepo;
 	  	        	 if(optionalMeeting.isPresent()) {
 	  	        		 Meeting meeting=optionalMeeting.get();
 	  	        	 MeetingRequest meettosend=new MeetingRequest();
-	  	        	 
+	  	        	 meettosend.setPassword(meeting.getPassword());
 	  	        	 meettosend.setTopic(meeting.getTopic());
 	  	        	 meettosend.setAgenda(meeting.getAgenda());
 	  	        	 meettosend.setDuration(meeting.getDuration());
@@ -678,6 +681,11 @@ private OccurancesRepo occurancesRepo;
 	  	            set.setParticipantVideo(settings.isParticipantVideo());
 	  	            set.setPushChangeToCalendar(settings.isPushChangeToCalendar());
 	  	            set.setGroupinviteeDto(invitees);
+	  	            if(settings.getWaitingRoom()!=null) {
+	  	            set.setWaitingRoom(settings.getWaitingRoom());
+	  	            }else {
+	  	            	set.setWaitingRoom(false);
+	  	            }
 //	  	           List<ZoomMeetingInvitee> invitees=meeting.getSettings().getMeetingInvitees();
 //	  	         List<MeetingInvitee> newInvitees = new ArrayList<>();
 //	  	           for(ZoomMeetingInvitee invitee:invitees) {

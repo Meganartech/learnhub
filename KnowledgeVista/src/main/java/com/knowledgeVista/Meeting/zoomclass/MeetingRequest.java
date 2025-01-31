@@ -14,7 +14,7 @@ public class MeetingRequest {
     private String agenda;
 //    private boolean defaultPassword;
     private Integer duration;
-//    private String password;
+    private String password;
 //    private boolean preSchedule;
    private Recurrence recurrence;
 //    private String scheduleFor;
@@ -129,12 +129,13 @@ public List<SearchDto> getGroupinviteeDto() {
 //        private Integer registrationType;
 //        private boolean showShareButton;
 //        private boolean usePmi;
-//        private boolean waitingRoom;
+       private boolean waitingRoom;
 //        private boolean watermark;
 //        private boolean hostSaveVideoOrder;
 //        private boolean alternativeHostUpdatePolls; 
 
-//        private boolean internalMeeting;
+
+		//        private boolean internalMeeting;
  //       private ContinuousMeetingChat continuousMeetingChat;
 //        private boolean participantFocusedMeeting;
         private boolean pushChangeToCalendar;
@@ -178,6 +179,12 @@ public List<SearchDto> getGroupinviteeDto() {
 		}
 		public void setAudio(String audio) {
 			this.audio = audio;
+		}
+		public boolean isWaitingRoom() {
+			return waitingRoom;
+		}
+		public void setWaitingRoom(boolean waitingRoom) {
+			this.waitingRoom = waitingRoom;
 		}
 //		public String getAudioConferenceInfo() {
 //			return audioConferenceInfo;

@@ -34,7 +34,6 @@ public class ZoomTokenService {
         }
 	    public String getAccessToken(String institution) {
 	    	try {
-	       
             ZoomAccountKeys zoomkeys=this.getZoomAccounts(institution);
             if (zoomkeys == null) {
                 return null;
