@@ -25719,7 +25719,7 @@ ul {
 }
 
 .description{
-  width: 650px;
+  width: 100%;
 }
 .list {
   background-color: #4680fe;
@@ -25737,9 +25737,23 @@ ul {
   border-top: 3px solid #e9e9e9;
   overflow-y: auto; /* Use auto to add scrollbar only when necessary */
 }
+.detailstab {
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  gap: 50px;
+  align-items: center;
+}
+
+.detailstab div {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between label and value */
+}
+
+
+
 .vdobox{
-  height: 400px;
-  width: 650px;
   border: 3px solid #e9e9e9;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -26476,6 +26490,7 @@ span {
   overflow: hidden;
  
 }
+
 @media screen and (max-width: 480px) {
   .lesson-title {
     max-width: 180px; /* Adjust for smaller screens */
@@ -26547,7 +26562,6 @@ span {
   }
   .main {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 2fr;
     padding: 10px;
   }
   .innerdivider {
@@ -26589,6 +26603,8 @@ span {
   .enroll {
     width: 300px;
   }
+
+ 
 }
 
 /* .scroll-div{

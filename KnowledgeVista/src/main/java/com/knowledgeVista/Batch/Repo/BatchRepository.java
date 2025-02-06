@@ -13,6 +13,7 @@ import com.knowledgeVista.Batch.BatchDto;
 import com.knowledgeVista.Batch.CourseDto;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.TrainerDto;
+import com.knowledgeVista.User.Muser;
 
 @Repository
 public interface BatchRepository extends JpaRepository<Batch, Long> {
@@ -113,6 +114,11 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 		           "JOIN b.users u " +
 		           "WHERE b.id = :id")
 		    List<String> findusersByBatchId(@Param("id") Long id);
+		   
+		   @Query("SELECT u FROM Batch b " +
+		           "JOIN b.users u " +
+		           "WHERE b.id = :id")
+		    List<Muser> findAllusersByBatchId(@Param("id") Long id);
 
 		
 }

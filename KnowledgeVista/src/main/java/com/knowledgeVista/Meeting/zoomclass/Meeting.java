@@ -2,6 +2,7 @@ package com.knowledgeVista.Meeting.zoomclass;
 
 import java.util.List;
 
+import com.knowledgeVista.Attendance.Attendancedetails;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.User.Muser;
@@ -76,6 +77,8 @@ public class Meeting {
 	    )
 	    private List<Batch> batches;
 
+	    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	    private List<Attendancedetails> attendanceRecords;
 	    
 		@Override
 		public String toString() {

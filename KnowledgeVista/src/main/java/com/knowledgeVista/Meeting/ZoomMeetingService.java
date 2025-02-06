@@ -1,25 +1,36 @@
 package com.knowledgeVista.Meeting;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.knowledgeVista.Attendance.Attendancedetails;
+import com.knowledgeVista.Attendance.Repo.AttendanceRepo;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
@@ -75,7 +86,11 @@ public class ZoomMeetingService {
 private OccurancesRepo occurancesRepo;
         @Autowired
 		 private ZoomMethods zoomMethod;
-        
+        @Autowired
+        private AttendanceRepo attendanceRepo;
+
+
+      
    	 private static final Logger logger = LoggerFactory.getLogger(ZoomMeetingService.class);
 
 	    public ZoomMeetingService(ZoomTokenService zoomTokenService) {
@@ -83,6 +98,107 @@ private OccurancesRepo occurancesRepo;
 	        this.objectMapper = new ObjectMapper();
 	        this.zoomTokenService = zoomTokenService;
 	        
+	    }
+	    private static final ConcurrentHashMap<Long, LocalDateTime> meetingStartTimes = new ConcurrentHashMap<>();
+	    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
+@Transactional
+	    public ResponseEntity<?>JoinMeeting(String token,Long MeetingId){
+	    	try {
+	    		String email=jwtUtil.getUsernameFromToken(token);
+	    		 Optional<Muser> opuser= muserRepository.findByEmail(email);
+	    		 if(opuser.isPresent()) {
+	    			 Muser user= opuser.get();
+	    		 String role =user.getRole().getRoleName();
+	    		 LocalDateTime now = LocalDateTime.now();
+	    		Optional<Meeting> opmeet =meetrepo.FindByMeetingId(MeetingId);
+	    		 if(!opmeet.isPresent()) {
+	    			 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Meeting Not Found");
+	    		 }
+	    		Meeting meet=opmeet.get();
+	    		if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+	    				 meetingStartTimes.put(MeetingId, now); 
+	    				  scheduler.schedule(() -> MarkRemainingAsAbsent(meet.getMeetingId()),1, TimeUnit.MINUTES);
+	                      
+	                 return ResponseEntity.ok(meet.getJoinUrl());	 
+	    		}
+	    		
+	    		 LocalDateTime meetingStartTime = meetingStartTimes.get(MeetingId);
+	             if (meetingStartTime == null) { 
+	            	 return ResponseEntity.status(HttpStatus.CONFLICT).body("Meeting has not started yet.");
+	             }
+	             long minutesSinceStart = ChronoUnit.MINUTES.between(meetingStartTime, now);
+	             if (minutesSinceStart <= 10) {
+                    
+	             // Save Attendance
+	            	 Optional<Attendancedetails> opattendance = attendanceRepo.findByUserIdAndMeetingIdAndDate(
+	            	            user.getUserId(), MeetingId, LocalDate.now()
+	            	        );
+	            	 if(opattendance.isPresent()) {
+	            		 System.out.println("in present-------------------------------------------");
+	            		 Attendancedetails attendance=opattendance.get();
+	             attendance.setStatus("PRESENT");
+	             attendanceRepo.save(attendance);// need to make meetid and userid as unique one 
+	             return ResponseEntity.ok(meet.getJoinUrl());
+	            	 }else {
+	            		 System.out.println("----------------------------------------------in else");
+	            		 Attendancedetails attendancenew=new Attendancedetails();
+	            		  attendancenew.setUserId(user.getUserId());
+	     	             attendancenew.setMeeting(meet);
+	     	             attendancenew.setDate(LocalDate.now());
+	     	             attendancenew.setStatus("PRESENT");
+	     	             attendanceRepo.save(attendancenew);// need to make meetid and userid as unique one 
+	     	             return ResponseEntity.ok(meet.getJoinUrl());
+	            	 }
+	             }else {
+	            	 return ResponseEntity.ok(meet.getJoinUrl()); 
+	             }
+	    		 }else {
+	    			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+	    		 }
+	    	
+	    	}catch (Exception e) {
+				logger.error("erroroccured in Join Meeting"+ e);
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			}
+	    }
+	    @Transactional
+	    public void MarkRemainingAsAbsent(Long meetid) {
+	        try {
+	            System.out.println("entered in MarkRemainingAbsent");
+	            List<Long> presentUsers = attendanceRepo.finduserIdsByMeetingIdAndPRESENT(meetid,LocalDate.now());
+	            System.out.println("presentUsers="+presentUsers);
+	            Optional<Meeting> opmeet = meetrepo.FindByMeetingIdwithbatch(meetid);
+
+	            if (opmeet.isPresent()) {
+	                Meeting meet = opmeet.get();
+
+	                // Force Hibernate to load batches
+	                meet.getBatches().size();  
+
+	                List<Batch> batches = new ArrayList<Batch>();
+	                batches=meet.getBatches();
+	                List<Muser> allUsers = new ArrayList<>();
+
+	                for (Batch batch : batches) {
+	                    allUsers.addAll(batchrepo.findAllusersByBatchId(batch.getId()));
+	                }
+
+	                for (Muser user : allUsers) {
+	                    if (!presentUsers.contains(user.getUserId())) {
+	                        Attendancedetails attendance = new Attendancedetails();
+	                        attendance.setUserId(user.getUserId());
+	                        attendance.setMeeting(meet);
+	                        attendance.setDate(LocalDate.now());
+	                        attendance.setStatus("ABSENT");
+	                        attendanceRepo.save(attendance);
+	                        System.out.println(user.getUsername());
+	                    }
+	                }
+	            }
+	            System.out.println("After 10 minutes PRINTING");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
 	    }
        public ResponseEntity<?>createMeetReq(MeetingRequest meetingReq,String token){
     	   try {

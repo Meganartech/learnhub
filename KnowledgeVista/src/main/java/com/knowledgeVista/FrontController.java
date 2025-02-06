@@ -1,5 +1,7 @@
 package com.knowledgeVista;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.knowledgeVista.Attendance.AttendanceService;
 import com.knowledgeVista.Batch.service.BatchService;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
@@ -169,7 +170,9 @@ public class FrontController {
 
 	@Autowired
 	private LadellingitemController labelingctrl;
-
+    
+	@Autowired
+	private AttendanceService attendanceService;
 
 	 private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
 		
@@ -1224,7 +1227,10 @@ public ResponseEntity<?> createMeeting(@RequestBody MeetingRequest meetingReq,@R
         return zoomMeetingService.createMeetReq(meetingReq,token);
    
 }
-
+@GetMapping("/api/zoom/Join/{meetingId}")
+public ResponseEntity<?>JoinMeeting(@PathVariable Long meetingId,@RequestHeader("Authorization") String token){
+	return zoomMeetingService.JoinMeeting(token, meetingId);
+}
 @GetMapping("/api/zoom/getMyMeetings")
 public ResponseEntity<?>GetMyMeetings(@RequestHeader("Authorization") String token){
 	return zoomMeetingService.getMetting(token);
@@ -1612,5 +1618,15 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
                    return batchService.deleteBatchById(batchid,token);
                }
                
+               //-------------------Attendance Service---------------
+               
+               @GetMapping("/view/StudentAttendance/{userId}")
+               public ResponseEntity<?>getAttendanceForuser(@PathVariable Long userId,@RequestHeader ("Authorization") String token, Pageable pageable){
+            	   return attendanceService.getAttendance(token, userId,pageable);
+               }
+               @GetMapping("/view/MyAttendance")
+               public ResponseEntity<?>GetMyAttendance(@RequestHeader ("Authorization") String token, Pageable pageable){
+            	   return attendanceService.getMyAttendance(token,pageable);
+               }
 }
 

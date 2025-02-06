@@ -155,10 +155,10 @@ const ViewAllBatch = () => {
                       </a>
                     </div>}
                     <p title={item.courseNames} className="batchlist">
-                      <b> Courses :</b> {item.courseNames}
+                      <b>Courses &nbsp;:</b> {item.courseNames}
                     </p>
                     <p title={item.trainerNames} className="batchlist">
-                      <b>Trainers :</b> {item.trainerNames}
+                      <b>Trainers &nbsp;:</b> {item.trainerNames}
                     </p>
                     <p title={item.duration} className="batchlist">
                       <b>Duration :</b> {item.duration}

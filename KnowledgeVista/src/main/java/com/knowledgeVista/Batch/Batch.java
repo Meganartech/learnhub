@@ -3,6 +3,7 @@ package com.knowledgeVista.Batch;
 import java.time.LocalDate;
 import java.util.List;
 import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Meeting.zoomclass.Meeting;
 import com.knowledgeVista.User.Muser;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -68,6 +69,10 @@ public class Batch {
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<Muser> users;
+    
+    @ManyToMany(mappedBy = "batches", fetch = FetchType.LAZY)
+    private List<Meeting> meetings;
+    
     private String BatchUrl="/MyBatches";
     @Column(name = "noOfSeats")
     private Long noOfSeats;
