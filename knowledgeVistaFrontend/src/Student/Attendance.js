@@ -17,7 +17,7 @@ const Attendance = () => {
   const [currentPage, setCurrentPage] = useState(0); // To handle pagination
   const [totalPages, setTotalPages] = useState(0); // To handle the total pages
    const itemsperpage=10
- 
+ const [percentage,setpercentage]=useState(0);
 
   const fetchAttendanceForUser = async () => {
     try {
@@ -28,12 +28,14 @@ const Attendance = () => {
       });
       
       if (res.status === 200) {
-        setAttendance(res?.data?.content); // Assuming 'content' is the list of attendance
-        setTotalPages(res?.data?.totalPages); // Get total pages for pagination
+        const attedancegot=res?.data?.attendance;
+        setAttendance(attedancegot?.content); // Assuming 'content' is the list of attendance
+        setTotalPages(attedancegot?.totalPages); // Get total pages for pagination
+        setpercentage(res?.data?.percentage);
         setdatacounts(() => ({
           start: currentPage * itemsperpage + 1,
           end: currentPage * itemsperpage + itemsperpage,
-          total: res?.data.totalElements,
+          total: attedancegot?.totalElements,
         }));
       }
       if (res.status === 204) {
@@ -72,6 +74,28 @@ const Attendance = () => {
       );
     }
     return buttons;
+  };
+  const handleStatusChange = async (event,item) => {
+    const newStatus = event.target.value;
+console.log(item.id)
+    try {
+      await axios.post(
+        `${baseUrl}/update/attendance`,
+        null, // No body, using params instead
+        {
+          params: {
+            Id: item.id,
+            status: newStatus,
+          },
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+ window.location.reload();
+    } catch (error) {
+      console.error("Error updating attendance:", error);
+    }
   };
 
 
@@ -133,7 +157,14 @@ const Attendance = () => {
                         <th> {currentPage * itemsperpage + (index + 1)}</th>
                         <td className="py-2"> {item.topic}</td>
                         <td className="py-2"> {item.date}</td>
-                        <td className="py-2"> {item.status}</td>
+                        <td className="py-2"> <select
+        className="form-control"
+        value={item.status}
+        onChange={(e)=>{handleStatusChange(e,item)}}
+      >
+        <option value="PRESENT">PRESENT</option>
+        <option value="ABSENT">ABSENT</option>
+      </select></td>
                       </tr>
                     ))}
                   </tbody>
@@ -184,6 +215,8 @@ const Attendance = () => {
                   </label>
                 </div>
               </div>
+              <h5 className='text-right'><label className='text-primary'>Total Attendance : {percentage}%</label></h5>
+
             </div>
           </div>
         </div>

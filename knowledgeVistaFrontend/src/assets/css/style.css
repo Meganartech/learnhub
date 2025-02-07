@@ -5703,17 +5703,19 @@ input[type="button"].btn-block {
   padding-left: 0;
   list-style: none;
   border-radius: 0.25rem;
+  margin-bottom: 0px;
 }
 
 .page-link {
   position: relative;
   display: block;
-  padding: 0.5rem 0.75rem;
+  padding: 0.2rem 0.5rem;
   margin-left: 0;
   line-height: 1.25;
   color: var(--primary);
   background-color: #fff;
   border: 0 solid #dee2e6;
+  font-size: 0.8rem !important;
 }
 
 .page-link:hover {
@@ -5722,6 +5724,7 @@ input[type="button"].btn-block {
   text-decoration: none;
   background-color: #ecf0f5;
   border-color: #dee2e6;
+  
 }
 
 .page-link:focus {
@@ -26451,6 +26454,7 @@ span {
   max-width: 100%;
   height: 50px;
   margin-bottom: .7rem;
+  overflow: hidden;
 }
 .amt {
   display: flex;                 /* Align the icon and text in a row */

@@ -2,6 +2,11 @@ package com.knowledgeVista.Attendance;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +40,11 @@ public class AttendanceService {
 	        }
 	        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 	            Page<AttendanceDto> attendancePage = attendanceRepo.findAttendanceByUserId(userId, pageable);
-	            return ResponseEntity.ok(attendancePage);
+	            double percentage = calculateAttendance(userId);
+	            Map<String, Object> response = new HashMap<>();
+	            response.put("attendance", attendancePage);
+	            response.put("percentage", percentage);
+	            return ResponseEntity.ok(response);
 	        } else {
 	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot access This Page");
 	        }
@@ -44,9 +53,52 @@ public class AttendanceService {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching attendance data");
 	    }
 	}
+	
 
-	  
+	  private double calculateAttendance(Long userId) {
+		  try {
+			  Long totalOccurance=attendanceRepo.countClassesForUser(userId);
+			  Long presentCount=attendanceRepo.countClassesPresentForUser(userId);
+			  if (totalOccurance == null || totalOccurance == 0) {
+				    return 0.0; // Avoid division by zero
+				}
 
+				double percentage = ((double) presentCount / totalOccurance) * 100;
+				return percentage;
+			  
+		  }catch (Exception e) {
+			
+			  logger.error("error calculating AttendancePercentage"+e);
+			  return -1.0;
+		}
+	  }
+public ResponseEntity<?>updateAttendance(String token,Long id,String status){
+	try {
+		if (!jwtUtil.validateToken(token)) {
+   		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+   	 }  	
+        String role=jwtUtil.getRoleFromToken(token); 
+        if("ADMIN".equals(role)||"TRANER".equals(role)) {
+        	Optional<Attendancedetails>opattendance= attendanceRepo.findById(id);
+        	if(opattendance.isPresent()) {
+        		Attendancedetails attendance=opattendance.get();
+        		if("PRESENT".equals(status)||"ABSENT".equals(status)) {
+        		attendance.setStatus(status);
+        		}
+        		attendanceRepo.save(attendance);
+        		return ResponseEntity.ok("saved");
+        	}else {
+        		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Attendance Not Found");
+        	}
+        }else {
+        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Student cannot access this Page");
+        }
+	}catch (Exception e) {
+		// TODO: handle exception
+		logger.error("Error Updating Attendance"+e);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+}
 public ResponseEntity<?> getMyAttendance(String token, Pageable pageable) {
     try {
     	 if (!jwtUtil.validateToken(token)) {
@@ -60,12 +112,14 @@ public ResponseEntity<?> getMyAttendance(String token, Pageable pageable) {
 	        		 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	        	 }
 	        	 Page<AttendanceDto> attendancePage = attendanceRepo.findAttendanceByUserId(userId, pageable);		          
-		            return ResponseEntity.ok(attendancePage);
+	        	 double percentage = calculateAttendance(userId);
+		            Map<String, Object> response = new HashMap<>();
+		            response.put("attendance", attendancePage);
+		            response.put("percentage", percentage);
+		            return ResponseEntity.ok(response);
 	         }else
 	         {return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only Students Can access This Page");      
-	    	       
-	        	 
-	        	
+	    	 
 	         }
     } catch (Exception e) {
         logger.error("Error at getAttendance in AttendanceService for user ID {}: {}", e.getMessage());

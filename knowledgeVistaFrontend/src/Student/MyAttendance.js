@@ -1,53 +1,56 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import baseUrl from '../api/utils';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import baseUrl from "../api/utils";
 
 const MyAttendance = () => {
-
-    const navigate=useNavigate();
-     const [datacounts, setdatacounts] = useState({
-          start: "",
-          end: "",
-          total: "",
-        });
-         const [currentPage, setCurrentPage] = useState(0); // To handle pagination
-          const [totalPages, setTotalPages] = useState(0); // To handle the total pages
-           const itemsperpage=10
-      const token=sessionStorage.getItem('token')
-     const[attendance,setattendance]=useState([]);
-    
-        const fetchAttendance=async()=>{
-            try{
-            const res= await axios.get(`${baseUrl}/view/MyAttendance?page=${currentPage}&size=${itemsperpage}`,{
-                headers:{
-                    Authorization:token
-                }
-            })
-            if(res.status===200){
-                setattendance(res?.data?.content); // Assuming 'content' is the list of attendance
-                setTotalPages(res?.data?.totalPages); // Get total pages for pagination
-                setdatacounts(() => ({
-                  start: currentPage * itemsperpage + 1,
-                  end: currentPage * itemsperpage + itemsperpage,
-                  total: res?.data.totalElements,
-                }));
-            }
-            if(res.status===204){
-              navigate("/notFound")
-            }
-        }catch(error){
-          if(error.response && error.response.status===401){
-            navigate("/unauthorized")
-          }else{
-            throw error
-          }
-         
-         }
+  const navigate = useNavigate();
+  const [datacounts, setdatacounts] = useState({
+    start: "",
+    end: "",
+    total: "",
+  });
+  const [currentPage, setCurrentPage] = useState(0); // To handle pagination
+  const [totalPages, setTotalPages] = useState(0); // To handle the total pages
+  const itemsperpage = 10;
+  const token = sessionStorage.getItem("token");
+  const [attendance, setattendance] = useState([]);
+  const [percentage, setpercentage] = useState(0);
+  const fetchAttendance = async () => {
+    try {
+      const res = await axios.get(
+        `${baseUrl}/view/MyAttendance?page=${currentPage}&size=${itemsperpage}`,
+        {
+          headers: {
+            Authorization: token,
+          },
         }
-       useEffect(() => {
-          fetchAttendance();
-        }, [currentPage]); 
+      );
+      if (res.status === 200) {
+        const attedancegot = res?.data?.attendance;
+        setattendance(attedancegot?.content); // Assuming 'content' is the list of attendance
+        setTotalPages(attedancegot?.totalPages); // Get total pages for pagination
+        setpercentage(res?.data?.percentage);
+        setdatacounts(() => ({
+          start: currentPage * itemsperpage + 1,
+          end: currentPage * itemsperpage + itemsperpage,
+          total: attedancegot?.totalElements,
+        }));
+      }
+      if (res.status === 204) {
+        navigate("/notFound");
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        navigate("/unauthorized");
+      } else {
+        throw error;
+      }
+    }
+  };
+  useEffect(() => {
+    fetchAttendance();
+  }, [currentPage]);
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
       setCurrentPage(newPage);
@@ -95,39 +98,33 @@ const MyAttendance = () => {
                 </div>
               </div>
               <div className="tableheader ">
-                <h4>
-                  Attendance
-                </h4>
+                <h4>Attendance</h4>
               </div>{" "}
-            
             </div>
             <div className="card-body">
               <div className="table-container">
                 <table className="table table-hover table-bordered table-sm">
                   <thead className="thead-dark">
                     <tr>
-                    <th scope="col">#</th>
+                      <th scope="col">#</th>
                       <th scope="col">Session</th>
                       <th scope="col">Date</th>
                       <th scope="col"> Attendance</th>
                     </tr>
-                    </thead>
-                    <tbody>
-                        {attendance.map((item,index)=>(
-                            <tr key={index}>
-                                <th>
-                                    {index+1}
-                                </th>
-                                <td className="py-2"> {item.topic}</td>
-                                <td className="py-2"> {item.date}</td>
-                                <td className="py-2"> {item.status}</td>
-                            </tr>
-                        ))}
-
-                    </tbody>
-                    </table>
-                    </div>
-                    <div className="cornerbtn">
+                  </thead>
+                  <tbody>
+                    {attendance.map((item, index) => (
+                      <tr key={index}>
+                        <th>{index + 1}</th>
+                        <td className="py-2"> {item.topic}</td>
+                        <td className="py-2"> {item.date}</td>
+                        <td className="py-2"> {item.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="cornerbtn">
                 <ul className="pagination">
                   <li
                     className={`page-item ${
@@ -165,18 +162,23 @@ const MyAttendance = () => {
                 </ul>
                 <div>
                   <label className="text-primary">
-                    ( {datacounts.start}- {datacounts.start + attendance.length - 1})
-                    of {datacounts.total}
+                    ( {datacounts.start}-{" "}
+                    {datacounts.start + attendance.length - 1}) of{" "}
+                    {datacounts.total}
                   </label>
                 </div>
               </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                
-  )
-}
+              <h5 className="text-right">
+                <label className="text-primary">
+                  Total Attendance : {percentage}%
+                </label>
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export default MyAttendance
+export default MyAttendance;

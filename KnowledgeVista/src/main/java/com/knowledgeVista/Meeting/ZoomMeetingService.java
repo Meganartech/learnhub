@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.TaskScheduler;
@@ -49,6 +50,7 @@ import com.knowledgeVista.Meeting.zoomclass.ZoomSettings;
 import com.knowledgeVista.Meeting.zoomclass.calenderDto;
 import com.knowledgeVista.Notification.Repositories.NotificationDetailsRepo;
 import com.knowledgeVista.Notification.Repositories.NotificationUserRepo;
+import com.knowledgeVista.Settings.Controller.SettingsController;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -80,6 +82,8 @@ public class ZoomMeetingService {
         private CourseDetailRepository courseRepo;
         @Autowired
         private BatchRepository batchrepo;
+        @Autowired
+        private SettingsController settingsctrl;
        
 
 @Autowired
@@ -89,7 +93,8 @@ private OccurancesRepo occurancesRepo;
         @Autowired
         private AttendanceRepo attendanceRepo;
 
-
+        @Value("${spring.environment}")
+	    private String environment;
       
    	 private static final Logger logger = LoggerFactory.getLogger(ZoomMeetingService.class);
 
@@ -115,10 +120,15 @@ private OccurancesRepo occurancesRepo;
 	    			 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Meeting Not Found");
 	    		 }
 	    		Meeting meet=opmeet.get();
+	    		 Long min=10L;
+				 if(environment.equals("VPS")) {
+        			    min= settingsctrl.getAttendanceThresholdMinutes();
+        		   }
 	    		if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 	    				 meetingStartTimes.put(MeetingId, now); 
-	    				  scheduler.schedule(() -> MarkRemainingAsAbsent(meet.getMeetingId()),1, TimeUnit.MINUTES);
-	                      
+	    				
+	    				  scheduler.schedule(() -> MarkRemainingAsAbsent(meet.getMeetingId()),min, TimeUnit.MINUTES);
+	                      System.out.println("min="+min);
 	                 return ResponseEntity.ok(meet.getJoinUrl());	 
 	    		}
 	    		
@@ -127,7 +137,7 @@ private OccurancesRepo occurancesRepo;
 	            	 return ResponseEntity.status(HttpStatus.CONFLICT).body("Meeting has not started yet.");
 	             }
 	             long minutesSinceStart = ChronoUnit.MINUTES.between(meetingStartTime, now);
-	             if (minutesSinceStart <= 10) {
+	             if (minutesSinceStart <= min) {
                     
 	             // Save Attendance
 	            	 Optional<Attendancedetails> opattendance = attendanceRepo.findByUserIdAndMeetingIdAndDate(
@@ -191,11 +201,9 @@ private OccurancesRepo occurancesRepo;
 	                        attendance.setDate(LocalDate.now());
 	                        attendance.setStatus("ABSENT");
 	                        attendanceRepo.save(attendance);
-	                        System.out.println(user.getUsername());
 	                    }
 	                }
 	            }
-	            System.out.println("After 10 minutes PRINTING");
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }

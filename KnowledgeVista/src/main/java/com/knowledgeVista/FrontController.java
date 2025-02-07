@@ -1318,6 +1318,21 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
             	   }
             	   
                }
+               @GetMapping("/settings/AttendanceThresholdMinutes")
+               public Long getAttendanceThresholdMinutes() {
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return settingcontroller.getAttendanceThresholdMinutes();
+            		   }else {
+            			   return null;
+            		   }
+            	   }catch(Exception e) {
+            		   e.printStackTrace();
+            		   logger.error("", e);
+            		   return null;
+            	   }
+            	   
+               }
                @GetMapping("/settings/ShowSocialLogin")
                public Boolean isSocialLoginEnabled() {
             	   try {
@@ -1337,6 +1352,20 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
             	   try {
             		   if(environment.equals("VPS")) {
             	   return settingcontroller.updateViewCourseInLandingPage(isEnabled,token);
+            		   }else {
+            			   return null;
+            		   }
+            	   }catch(Exception e) {
+            		   e.printStackTrace();
+            		   logger.error("", e);
+            		   return null;
+            	   }
+               }
+               @PostMapping("/settings/updateAttendanceThreshold")
+               public Long setAttendanceThresholdMinutes(@RequestBody Long minuites,@RequestHeader("Authorization") String token) {
+            	   try {
+            		   if(environment.equals("VPS")) {
+            	   return settingcontroller.setAttendanceThresholdMinutes(minuites,token);
             		   }else {
             			   return null;
             		   }
@@ -1627,6 +1656,10 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
                @GetMapping("/view/MyAttendance")
                public ResponseEntity<?>GetMyAttendance(@RequestHeader ("Authorization") String token, Pageable pageable){
             	   return attendanceService.getMyAttendance(token,pageable);
+               }
+               @PostMapping("/update/attendance")
+               public ResponseEntity<?>UpdateAttendance(@RequestHeader ("Authorization") String token, Long Id,String status){
+            	   return attendanceService.updateAttendance(token, Id, status);
                }
 }
 
