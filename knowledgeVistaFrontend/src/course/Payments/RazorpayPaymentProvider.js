@@ -34,10 +34,9 @@ const RazorpayPaymentProvider = (orderData ,setopenselectgateway) => {
     try {
       setSubmitting(true);
       const data = JSON.stringify({
-        courseId: orderData?.courseId,
+        batchId: orderData?.batchId,
         userId: orderData?.userId,
       });
-
       const response = await axios.post(`${baseUrl}${url}?gateway=RAZORPAY`, data, {
         headers: {
           Authorization: token,

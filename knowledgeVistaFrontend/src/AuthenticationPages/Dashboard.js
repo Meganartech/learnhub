@@ -164,36 +164,7 @@ const fetchstorage=async()=>{
           }
 
     }
-    const fetchpopularcourse = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/courseControl/popularCourse`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          const data = response.data;
-          setCourses(data);
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-            navigate("/unauthorized")
-          return;
-        }
-        // MySwal.fire({
-        //   icon: "error",
-        //   title: "Some Error Occurred",
-        //   text: error.message,
-        // });
-        throw error
-      }
-    };
-
-    fetchpopularcourse();
+   
     fetchCounts();
     fetchtrainerFetcs();
     fetchStudentFects();

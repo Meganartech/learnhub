@@ -31,4 +31,12 @@ public class MuserRequiredDto {
 	        this.profile = profile;
 	        this.countryCode = countryCode;
 	    }
+
+		public MuserRequiredDto(Long userId, String username, String email, byte[] profile) {
+			super();
+			this.userId = userId;
+			this.username = username;
+			this.email = email;
+			this.profile = profile;
+		}
 }

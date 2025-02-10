@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Course.videoLessons;
@@ -62,6 +64,8 @@ public class CourseController {
 	 private licenseRepository licencerepo;
 	 @Autowired
 	 private OrderuserRepo orderuser;
+	 @Autowired
+	 private BatchRepository batchrepo;
 	 
 	 
 	 @Value("${spring.environment}")
@@ -123,7 +127,7 @@ public class CourseController {
 	
 
 	    public ResponseEntity<?> addCourse( MultipartFile file,  String courseName,String description,
-	    		String category,Long Duration,Long Noofseats,Long amount,String paytype,String installmentDataJson, String token) {
+	    		String category,Long Duration,Long Noofseats,String batches,Long amount,String paytype,String installmentDataJson, String token) {
 		     try {
 		    	
 		         if (!jwtUtil.validateToken(token)) {
@@ -163,7 +167,25 @@ public class CourseController {
 	        courseDetail.setCourseImage(file.getBytes());
 	       
 	        CourseDetail savedCourse = coursedetailrepository.save(courseDetail);
-	        
+	        ObjectMapper objectMapper = new ObjectMapper();
+	   	 List<Map<String, Object>> batchess = objectMapper.readValue(batches, List.class);
+	   	 for (Map<String, Object> batch : batchess) {
+        	 Long batchid = ((Number) batch.get("id")).longValue();
+        	Optional<Batch> opbatch =batchrepo.findBatchByIdAndInstitutionName(batchid, institution);
+        	if(opbatch.isPresent()) {
+        		Batch existing=opbatch.get();
+        		existing.getCourses().add(savedCourse);
+        		if(existing.getAmount()==null) {
+        			existing.setAmount(amount);
+        		}
+        		if(existing.getNoOfSeats()==null) {
+        			existing.setNoOfSeats(Noofseats);
+        		}
+        		batchrepo.save(existing);
+        	}
+	   	 }
+        	 
+	     System.out.println("batches: " + batchess);
 	        String courseUrl = "/courses/"+savedCourse.getCourseName()+"/" + savedCourse.getCourseId();
 	        savedCourse.setCourseUrl(courseUrl);
 	       CourseDetail saved= coursedetailrepository.save(savedCourse);
@@ -204,9 +226,7 @@ public class CourseController {
 	    	 } else {
 	    	     System.err.println("Invalid JSON format - expected an array");
 	    	 }
-	       }else {
-	    	   System.out.println("full");
-	    	   }
+	       }
 	       Map<String, Object> response = new HashMap<>();
            response.put("message", "savedSucessfully");
            response.put("courseId", courseId);
@@ -424,17 +444,13 @@ public class CourseController {
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	     }
          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-		    Optional<CourseDetail> courseOptional = coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
+		    Optional<CourseDetail> courseOptional = coursedetailrepository.findMinimalCourseDetailbyCourseIdandInstitutionName(courseId, institution);
 		    if (courseOptional.isPresent()) {
 		        CourseDetail course = courseOptional.get();
-		        
-		        course.setUsers(null);
-		        course.setTrainer(null);
-	            course.setVideoLessons(null);
 		        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(course);
 		    } else {
 		        // Handle the case when the course with the given ID does not exist
-		        return ResponseEntity.notFound().build();
+		        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		    }}else {
 
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -603,13 +619,12 @@ public class CourseController {
 	               })
 	               .collect(Collectors.toList());
 	       return ResponseEntity.ok().body(courseInfoList);
-	       }
-	      	        else {
-	    	      	    return ResponseEntity.notFound().build();
+	       }else {
+	    	      	    return ResponseEntity.status(HttpStatus.NO_CONTENT).body("user is not a Trainer");
 	      	        	
 	      	        }
-	      	    }
-	      	    return ResponseEntity.notFound().build();
+	      	    } return ResponseEntity.status(HttpStatus.NO_CONTENT).body("user is not found");
+	      	       
 	       }else {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    	   

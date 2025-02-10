@@ -1,38 +1,56 @@
 package com.knowledgeVista.Meeting;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.knowledgeVista.Attendance.Attendancedetails;
+import com.knowledgeVista.Attendance.Repo.AttendanceRepo;
+import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.SearchDto;
+import com.knowledgeVista.Batch.Repo.BatchRepository;
+import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Meeting.zoomclass.Meeting;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest;
-import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.MeetingInvitee;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.Recurrence;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.Settings;
 import com.knowledgeVista.Meeting.zoomclass.Recurrenceclass;
 import com.knowledgeVista.Meeting.zoomclass.repo.InviteeRepo;
 import com.knowledgeVista.Meeting.zoomclass.repo.Meetrepo;
 import com.knowledgeVista.Meeting.zoomclass.repo.OccurancesRepo;
-import com.knowledgeVista.Meeting.zoomclass.repo.Recurrenceclassrepo;
 import com.knowledgeVista.Meeting.zoomclass.ZoomMeetingInvitee;
 import com.knowledgeVista.Meeting.zoomclass.ZoomSettings;
 import com.knowledgeVista.Meeting.zoomclass.calenderDto;
 import com.knowledgeVista.Notification.Repositories.NotificationDetailsRepo;
 import com.knowledgeVista.Notification.Repositories.NotificationUserRepo;
+import com.knowledgeVista.Settings.Controller.SettingsController;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -60,14 +78,24 @@ public class ZoomMeetingService {
         private NotificationDetailsRepo notidetail;
         @Autowired
         private NotificationUserRepo notiuser;
+        @Autowired
+        private CourseDetailRepository courseRepo;
+        @Autowired
+        private BatchRepository batchrepo;
+        @Autowired
+        private SettingsController settingsctrl;
        
 
 @Autowired
 private OccurancesRepo occurancesRepo;
-@Autowired Recurrenceclassrepo reccrepo;
         @Autowired
 		 private ZoomMethods zoomMethod;
-        
+        @Autowired
+        private AttendanceRepo attendanceRepo;
+
+        @Value("${spring.environment}")
+	    private String environment;
+      
    	 private static final Logger logger = LoggerFactory.getLogger(ZoomMeetingService.class);
 
 	    public ZoomMeetingService(ZoomTokenService zoomTokenService) {
@@ -76,7 +104,110 @@ private OccurancesRepo occurancesRepo;
 	        this.zoomTokenService = zoomTokenService;
 	        
 	    }
+	    private static final ConcurrentHashMap<Long, LocalDateTime> meetingStartTimes = new ConcurrentHashMap<>();
+	    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
+@Transactional
+	    public ResponseEntity<?>JoinMeeting(String token,Long MeetingId){
+	    	try {
+	    		String email=jwtUtil.getUsernameFromToken(token);
+	    		 Optional<Muser> opuser= muserRepository.findByEmail(email);
+	    		 if(opuser.isPresent()) {
+	    			 Muser user= opuser.get();
+	    		 String role =user.getRole().getRoleName();
+	    		 LocalDateTime now = LocalDateTime.now();
+	    		Optional<Meeting> opmeet =meetrepo.FindByMeetingId(MeetingId);
+	    		 if(!opmeet.isPresent()) {
+	    			 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Meeting Not Found");
+	    		 }
+	    		Meeting meet=opmeet.get();
+	    		 Long min=10L;
+				 if(environment.equals("VPS")) {
+        			    min= settingsctrl.getAttendanceThresholdMinutes();
+        		   }
+	    		if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+	    				 meetingStartTimes.put(MeetingId, now); 
+	    				
+	    				  scheduler.schedule(() -> MarkRemainingAsAbsent(meet.getMeetingId()),min, TimeUnit.MINUTES);
+	                      System.out.println("min="+min);
+	                 return ResponseEntity.ok(meet.getJoinUrl());	 
+	    		}
+	    		
+	    		 LocalDateTime meetingStartTime = meetingStartTimes.get(MeetingId);
+	             if (meetingStartTime == null) { 
+	            	 return ResponseEntity.status(HttpStatus.CONFLICT).body("Meeting has not started yet.");
+	             }
+	             long minutesSinceStart = ChronoUnit.MINUTES.between(meetingStartTime, now);
+	             if (minutesSinceStart <= min) {
+                    
+	             // Save Attendance
+	            	 Optional<Attendancedetails> opattendance = attendanceRepo.findByUserIdAndMeetingIdAndDate(
+	            	            user.getUserId(), MeetingId, LocalDate.now()
+	            	        );
+	            	 if(opattendance.isPresent()) {
+	            		 System.out.println("in present-------------------------------------------");
+	            		 Attendancedetails attendance=opattendance.get();
+	             attendance.setStatus("PRESENT");
+	             attendanceRepo.save(attendance);// need to make meetid and userid as unique one 
+	             return ResponseEntity.ok(meet.getJoinUrl());
+	            	 }else {
+	            		 System.out.println("----------------------------------------------in else");
+	            		 Attendancedetails attendancenew=new Attendancedetails();
+	            		  attendancenew.setUserId(user.getUserId());
+	     	             attendancenew.setMeeting(meet);
+	     	             attendancenew.setDate(LocalDate.now());
+	     	             attendancenew.setStatus("PRESENT");
+	     	             attendanceRepo.save(attendancenew);// need to make meetid and userid as unique one 
+	     	             return ResponseEntity.ok(meet.getJoinUrl());
+	            	 }
+	             }else {
+	            	 return ResponseEntity.ok(meet.getJoinUrl()); 
+	             }
+	    		 }else {
+	    			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+	    		 }
+	    	
+	    	}catch (Exception e) {
+				logger.error("erroroccured in Join Meeting"+ e);
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			}
+	    }
+	    @Transactional
+	    public void MarkRemainingAsAbsent(Long meetid) {
+	        try {
+	            System.out.println("entered in MarkRemainingAbsent");
+	            List<Long> presentUsers = attendanceRepo.finduserIdsByMeetingIdAndPRESENT(meetid,LocalDate.now());
+	            System.out.println("presentUsers="+presentUsers);
+	            Optional<Meeting> opmeet = meetrepo.FindByMeetingIdwithbatch(meetid);
 
+	            if (opmeet.isPresent()) {
+	                Meeting meet = opmeet.get();
+
+	                // Force Hibernate to load batches
+	                meet.getBatches().size();  
+
+	                List<Batch> batches = new ArrayList<Batch>();
+	                batches=meet.getBatches();
+	                List<Muser> allUsers = new ArrayList<>();
+
+	                for (Batch batch : batches) {
+	                    allUsers.addAll(batchrepo.findAllusersByBatchId(batch.getId()));
+	                }
+
+	                for (Muser user : allUsers) {
+	                    if (!presentUsers.contains(user.getUserId())) {
+	                        Attendancedetails attendance = new Attendancedetails();
+	                        attendance.setUserId(user.getUserId());
+	                        attendance.setMeeting(meet);
+	                        attendance.setDate(LocalDate.now());
+	                        attendance.setStatus("ABSENT");
+	                        attendanceRepo.save(attendance);
+	                    }
+	                }
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
        public ResponseEntity<?>createMeetReq(MeetingRequest meetingReq,String token){
     	   try {
 		    	
@@ -96,9 +227,11 @@ private OccurancesRepo occurancesRepo;
   	    	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Access Token Generation Failed");
   	    	        }
   	    	      String json = this.convertToZoomApiJson(meetingReq);
+  	    	    Meeting meettosave=this.saveMappings( meetingReq);
 	        		String res= zoomMethod.createMeeting(json, accessToken);
-	        		 saveservice.saveMeetData(res, email);
-	        		return ResponseEntity.ok(res);
+	        		
+	        		return saveservice.saveMeetData(res, email,meettosave);
+	        		
   	        	 }else {
 	        		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	        	 }
@@ -113,8 +246,7 @@ private OccurancesRepo occurancesRepo;
 		                .body("An error occurred while creating the meeting: " + e.getMessage() );
 		    }
        }
-
-       
+     
        public ResponseEntity<?>EditZoomMeetReq(MeetingRequest meetingReq,Long MeetingId,String token){
     	   try {
 		    	
@@ -138,9 +270,16 @@ private OccurancesRepo occurancesRepo;
     	    	        String res = zoomMethod.EditMeet(MeetingId, json, accessToken);
     	    	    	
     	    	        if (res != null && !res.contains("error")) {
+    	    	        	 Optional<Meeting> opmeeting = meetrepo.FindByMeetingId(MeetingId);
+    	    	             Meeting meeting = opmeeting.orElse(null);
+
+    	    	             if (meeting == null) {
+    	    	                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Meeting with ID " + MeetingId + " not found");
+    	    	             }
     	    	            // Save the response data
-    	    	            saveservice.PatchsaveData(email, res, MeetingId);
-    	    	            return ResponseEntity.ok(res);
+    	    	             meeting = this.PatchMappings(meetingReq,meeting);
+    	    	        	return saveservice.PatchsaveData(email, res, meeting);
+    	    	             
     	    	        } else {
     	    	        	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to Update");
     	    	          }
@@ -163,8 +302,98 @@ private OccurancesRepo occurancesRepo;
 
 
        
-       
-      
+       public Meeting saveMappings(MeetingRequest meetreq) {
+    	   Meeting meet=new Meeting();
+    		List<SearchDto> groupinviteeDto=meetreq.getSettings().getGroupinviteeDto();
+    		List<Muser> usersList=new ArrayList<Muser>();
+    		List<CourseDetail>courseList=new ArrayList<CourseDetail>();
+    		List <Batch>batchList=new ArrayList<Batch>();
+    		if(groupinviteeDto!=null) {
+    		 for (SearchDto item : groupinviteeDto) {
+    		        if (item.getType().equals("EMAIL")) {
+    		            // Fetch email by user ID
+    		           Optional<Muser> opuser = muserRepository.findById(item.getId());
+    		           if(opuser.isPresent()) {
+    		        	   Muser user=opuser.get();
+    		        	  usersList.add(user);
+    		           }
+    		            
+    		        }
+    		        
+    		        if (item.getType().equals("COURSE")) {
+    		           Optional<CourseDetail> opcourse =courseRepo.findById(item.getId());
+    		           if(opcourse.isPresent()) {
+    		        	   CourseDetail course=opcourse.get();
+    		        	   courseList.add(course);
+    		        	   
+    		           }
+    	              
+    		        }
+    		        if(item.getType().equals("BATCH")) {
+    		        	Optional<Batch> opbatch= batchrepo.findById(item.getId());
+    		        	if(opbatch.isPresent()) {
+    		        		Batch batch=opbatch.get();
+    		        		batchList.add(batch);
+    		        	}
+    		        }
+    		       
+    		        
+    		        		    }
+    		}
+    		 meet.setUsers(usersList);
+		        meet.setBatches(batchList);
+		        meet.setCourseDetails(courseList);
+		        return meet;
+
+    	}
+     
+       public Meeting PatchMappings(MeetingRequest meetreq,Meeting meeting) {
+    		List<SearchDto> groupinviteeDto=meetreq.getSettings().getGroupinviteeDto();
+    		List<Muser> usersList=new ArrayList<Muser>();
+    		List<CourseDetail>courseList=new ArrayList<CourseDetail>();
+    		List <Batch>batchList=new ArrayList<Batch>();
+    		if(groupinviteeDto!=null) {
+    		 for (SearchDto item : groupinviteeDto) {
+    		        if (item.getType().equals("EMAIL")) {
+    		            // Fetch email by user ID
+    		           Optional<Muser> opuser = muserRepository.findById(item.getId());
+    		           if(opuser.isPresent()) {
+    		        	   Muser user=opuser.get();
+    		        	  usersList.add(user);
+    		           }
+    		            
+    		        }
+    		        
+    		        if (item.getType().equals("COURSE")) {
+    		           Optional<CourseDetail> opcourse =courseRepo.findById(item.getId());
+    		           if(opcourse.isPresent()) {
+    		        	   CourseDetail course=opcourse.get();
+    		        	   courseList.add(course);
+    		        	   
+    		           }
+    	              
+    		        }
+    		        if(item.getType().equals("BATCH")) {
+    		        	Optional<Batch> opbatch= batchrepo.findById(item.getId());
+    		        	if(opbatch.isPresent()) {
+    		        		Batch batch=opbatch.get();
+    		        		batchList.add(batch);
+    		        	}
+    		        }
+    		       
+    		        
+    		        		    }
+    		}
+    		 meeting.getUsers().clear();
+    		 meeting.setUsers(usersList);
+    		 meeting.getBatches().clear();
+		        meeting.setBatches(batchList);
+	    		 meeting.getCourseDetails().clear();
+		        meeting.setCourseDetails(courseList);
+		        return meeting;
+
+    	}
+
 	  
        private String convertToZoomApiJsonForEdit(MeetingRequest meetingRequest) throws JsonProcessingException {
 		    Map<String, Object> zoomApiMap = new HashMap<>();
@@ -207,7 +436,7 @@ private OccurancesRepo occurancesRepo;
 		    }
 
 		    // Additional fields based on Zoom API requirements (replace placeholders)
-//		    zoomApiMap.put("password", meetingRequest.getPassword()); // Optional based on Zoom API
+		    zoomApiMap.put("password", meetingRequest.getPassword()); // Optional based on Zoom API
 //		    zoomApiMap.put("template_id", meetingRequest.getTemplateId()); // Optional based on Zoom API
 //		   
 		    return objectMapper.writeValueAsString(zoomApiMap);
@@ -265,16 +494,7 @@ private OccurancesRepo occurancesRepo;
 		    }
 		    recurrenceMap.put("weekly_days", recurrence.getWeeklyDays());
 
-		 // Printing all fields
-		 System.out.println("Recurrence Details:");
-		 System.out.println("Type: " + recurrence.getType());
-		 System.out.println("Repeat Interval: " + recurrence.getRepeatInterval());
-		 System.out.println("End Date Time: " + recurrence.getEndDateTime());
-		 System.out.println("End Times: " + recurrence.getEndTimes());
-		 System.out.println("Monthly Day: " + (recurrence.getMonthlyDay() == 0 ? "null" : recurrence.getMonthlyDay()));
-		 System.out.println("Monthly Week: " + recurrence.getMonthlyWeek());
-		 System.out.println("Monthly Week Day: " + recurrence.getMonthlyWeekDay());
-		 System.out.println("Weekly Days: " + recurrence.getWeeklyDays());
+		
 		    
 		 
 		    return recurrenceMap;
@@ -312,9 +532,10 @@ private OccurancesRepo occurancesRepo;
 		    settingsMap.put("registrants_confirmation_email",true);
 		    settingsMap.put("registrants_email_notification", true);
 //		    settingsMap.put("registration_type", settings.getRegistrationType());
+//		    settingsMap.put("registration_type",2);
 //		    settingsMap.put("show_share_button", settings.isShowShareButton());
 //		    settingsMap.put("use_pmi", settings.isUsePmi());
-//		    settingsMap.put("waiting_room", settings.isWaitingRoom());
+		    settingsMap.put("waiting_room", settings.isWaitingRoom());		  
 //		    settingsMap.put("watermark", settings.isWatermark());
 //		    settingsMap.put("host_save_video_order", settings.isHostSaveVideoOrder());
 //		    settingsMap.put("alternative_host_update_polls", settings.isAlternativeHostUpdatePolls());
@@ -334,7 +555,7 @@ private OccurancesRepo occurancesRepo;
 //		       // settingsMap.put("authentication_exception", convertAuthenticationExceptionsToJson(settings.getAuthenticationException()));
 //		    }
 		    if (settings.getMeetingInvitees() != null) {
-		        settingsMap.put("meeting_invitees", convertMeetingInviteesToJson(settings.getMeetingInvitees()));
+		        settingsMap.put("meeting_invitees", convertMeetingInviteesToJson(settings.getGroupinviteeDto()));
 		    }
 
 		    return settingsMap;
@@ -350,16 +571,81 @@ private OccurancesRepo occurancesRepo;
 //		    return exceptionsList;
 //		}
 
-		private List<Map<String, Object>> convertMeetingInviteesToJson(List<MeetingInvitee> meetingInvitees) {
-		    List<Map<String, Object>> inviteesList = new ArrayList<>();
-		    for (MeetingInvitee invitee : meetingInvitees) {
-		        Map<String, Object> inviteeMap = new HashMap<>();
-		        inviteeMap.put("email", invitee.getEmail());
-		        inviteesList.add(inviteeMap);
+//		private List<Map<String, Object>> convertMeetingInviteesToJson(List<MeetingInvitee> meetingInvitees) {
+//		    List<Map<String, Object>> inviteesList = new ArrayList<>();
+//		    for (MeetingInvitee invitee : meetingInvitees) {
+//		        Map<String, Object> inviteeMap = new HashMap<>();
+//		        inviteeMap.put("email", invitee.getEmail());
+//		        inviteesList.add(inviteeMap);
+//		    }
+//		    return inviteesList;
+//		}
+		
+		private List<Map<String, Object>> convertMeetingInviteesToJson(List<SearchDto> groupinviteeDto) {
+		    // Using a Set to store unique invitees based on email
+		    Set<Map<String, Object>> inviteesSet = new HashSet<>();
+		    if(groupinviteeDto==null) {
+		    	return new ArrayList<Map<String,Object>>();
 		    }
-		    return inviteesList;
+		    for (SearchDto item : groupinviteeDto) {
+		        if (item.getType().equals("EMAIL")) {
+		            // Fetch email by user ID
+		            String email = muserRepository.FindEmailByuserId(item.getId());
+		            
+		            // Create a map for the invitee and add it to the set
+		            Map<String, Object> inviteeMap = new HashMap<>();
+		            inviteeMap.put("email", email);
+		            inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+		        }
+		        
+		        if (item.getType().equals("COURSE")) {
+		            // Fetch emails by course ID
+		            List<String> courseInvitees = courseRepo.findInviteesByCourseId(item.getId());
+		            
+		            // Convert the course invitees (List<Map<String, String>>) to List<Map<String, Object>> to match the desired format
+		            for (String email : courseInvitees) {
+		                
+		                // Create a map for the course invitee and add it to the set
+		                Map<String, Object> inviteeMap = new HashMap<>();
+		                inviteeMap.put("email", email);
+		                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+		            }
+		            List<String> trainerInvitees =courseRepo.findTrainerInviteesByCourseId(item.getId());
+                     for (String email : trainerInvitees) {
+		                
+		                // Create a map for the course invitee and add it to the set
+		                Map<String, Object> inviteeMap = new HashMap<>();
+		                inviteeMap.put("email", email);
+		                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+		            }
+		        }
+		        if(item.getType().equals("BATCH")) {
+		        	List<String> trainers=batchrepo.findtrainersByBatchId(item.getId());
+		        	List<String>users=batchrepo.findusersByBatchId(item.getId());
+		        	if(users!=null) {
+		        	for (String email : users) {
+		                
+		                // Create a map for the course invitee and add it to the set
+		                Map<String, Object> inviteeMap = new HashMap<>();
+		                inviteeMap.put("email", email);
+		                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+		            }
+		        	}
+		        	if(trainers!=null) {
+		        	 for (String email : trainers) {
+			                
+			                // Create a map for the course invitee and add it to the set
+			                Map<String, Object> inviteeMap = new HashMap<>();
+			                inviteeMap.put("email", email);
+			                inviteesSet.add(inviteeMap); // Set will ensure uniqueness automatically
+			            }
+		        	}
+		        }
+		    }
+		    
+		    return new ArrayList<>(inviteesSet);
 		}
-	   
+
 		
 		public ResponseEntity<?>getMetting(String token){
 			try {
@@ -373,7 +659,6 @@ private OccurancesRepo occurancesRepo;
 	  	        	  List<calenderDto> meetingDetailsList = new ArrayList<>();
 	  	        	List<ZoomMeetingInvitee>invitees= inviteerepo.findByEmail(email);
 	  	        	for(ZoomMeetingInvitee invitee :invitees) {
-	  	        		calenderDto item=new calenderDto();
 	  	        		ZoomSettings settings=invitee.getZoomSettings();
 	  	        		List<calenderDto> items = meetrepo.findMeetingsForRecursive(settings);
 	  	        	    if (items != null && !items.isEmpty()) {
@@ -449,10 +734,36 @@ private OccurancesRepo occurancesRepo;
 	  	        	 if(optionalMeeting.isPresent()) {
 	  	        		 Meeting meeting=optionalMeeting.get();
 	  	        	 MeetingRequest meettosend=new MeetingRequest();
-	  	        	 
+	  	        	 meettosend.setPassword(meeting.getPassword());
 	  	        	 meettosend.setTopic(meeting.getTopic());
 	  	        	 meettosend.setAgenda(meeting.getAgenda());
-	  	        	 meettosend.setDuration(meeting.getDuration());	
+	  	        	 meettosend.setDuration(meeting.getDuration());
+	  	        	 List<SearchDto> invitees=new ArrayList<SearchDto>();
+	  	        	List<Batch> batches=meeting.getBatches();
+	  	        	for(Batch batch : batches) {
+	  	        		SearchDto dto=new SearchDto();
+	  	        		dto.setId(batch.getId());
+	  	        		dto.setName(batch.getBatchTitle());
+	  	        		dto.setType("BATCH");
+	  	        		invitees.add(dto);
+	  	        	}
+	  	        	List<CourseDetail>courses=meeting.getCourseDetails();
+	  	        	for(CourseDetail course : courses) {
+	  	        		SearchDto dto=new SearchDto();
+	  	        		dto.setId(course.getCourseId());
+	  	        		dto.setName(course.getCourseName());
+	  	        		dto.setType("COURSE");
+	  	        		invitees.add(dto);
+	  	        	}
+	  	        	List<Muser> users=meeting.getUsers();
+	  	        	for(Muser user : users) {
+	  	        		SearchDto dto=new SearchDto();
+	  	        		dto.setId(user.getUserId());
+	  	        		dto.setName(user.getUsername());
+	  	        		dto.setType("USER");
+	  	        		invitees.add(dto);
+	  	        	}
+	  	        	
 	  	        	 if(meeting.getStartTime()!=null) {
 	  	        	 String utcDateString = meeting.getStartTime();
 		  	        	meettosend.setStartingTime(utcDateString);
@@ -493,14 +804,21 @@ private OccurancesRepo occurancesRepo;
 	  	            set.setMuteUponEntry(settings.isMuteUponEntry());
 	  	            set.setParticipantVideo(settings.isParticipantVideo());
 	  	            set.setPushChangeToCalendar(settings.isPushChangeToCalendar());
-	  	           List<ZoomMeetingInvitee> invitees=meeting.getSettings().getMeetingInvitees();
-	  	         List<MeetingInvitee> newInvitees = new ArrayList<>();
-	  	           for(ZoomMeetingInvitee invitee:invitees) {
-	  	        	 MeetingInvitee newInvite=new MeetingInvitee();
-	  	        	 newInvite.setEmail(invitee.getEmail());
-	  	        	 newInvitees.add(newInvite);
-	  	           }
-	  	           set.setMeetingInvitees(newInvitees);
+	  	            set.setGroupinviteeDto(invitees);
+	  	            if(settings.getWaitingRoom()!=null) {
+	  	            set.setWaitingRoom(settings.getWaitingRoom());
+	  	            }else {
+	  	            	set.setWaitingRoom(false);
+	  	            }
+//	  	           List<ZoomMeetingInvitee> invitees=meeting.getSettings().getMeetingInvitees();
+//	  	         List<MeetingInvitee> newInvitees = new ArrayList<>();
+//	  	           for(ZoomMeetingInvitee invitee:invitees) {
+//	  	        	 MeetingInvitee newInvite=new MeetingInvitee();
+//	  	        	 newInvite.setEmail(invitee.getEmail());
+//	  	        	 newInvitees.add(newInvite);
+//	  	           }
+//	  	           set.setMeetingInvitees(newInvitees);
+	  	            
 	  	           meettosend.setSettings(set);
 	  	           return ResponseEntity.ok(meettosend);
 	  	        	 }else {

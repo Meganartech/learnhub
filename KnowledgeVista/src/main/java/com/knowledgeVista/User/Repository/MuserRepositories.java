@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.knowledgeVista.Batch.SearchDto;
+import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Migration.MuserMigrationDto;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
@@ -23,9 +25,14 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 
 	@Query("SELECT u FROM Muser u WHERE u.email = ?1")
   Optional<Muser> findByEmail(String email);
+	
+	@Query("SELECT u.userId FROM Muser u WHERE u.email = ?1")
+	Long  findidByEmail(String email);
+	
 	@Query("SELECT u.institutionName FROM Muser u WHERE u.role.roleName = :rolename")
 	String getInstitution(String rolename);
-
+	@Query("SELECT u.email FROM Muser u WHERE u.userId=?1")
+   String FindEmailByuserId(Long userId);
 	@Query("SELECT u.institutionName FROM Muser u WHERE u.email = ?1")
   String findinstitutionByEmail(String email);
 	 @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName) " +
@@ -66,14 +73,24 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String institutionName);
 
 
-	@Query("SELECT u FROM Muser u WHERE u.username = ?1")
-	  Optional<Muser> findByname(String username);
+@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(c.courseId, c.courseName, c.courseUrl, c.courseDescription, c.courseCategory, c.amount, c.courseImage, c.paytype, c.Duration, c.institutionName, c.Noofseats) " +
+        "FROM Muser u " +
+        "JOIN u.allotedCourses c " +
+        "WHERE u.email = :email")
+ List<CourseDetailDto> findAllotedCoursesByEmail(@Param("email") String email);
+
+@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(c.courseId, c.courseName, c.courseUrl, c.courseDescription, c.courseCategory, c.amount, c.courseImage, c.paytype, c.Duration, c.institutionName, c.Noofseats) " +
+        "FROM Muser u " +
+        "JOIN u.courses c " +
+        "WHERE u.email = :email")
+ List<CourseDetailDto> findStudentAssignedCoursesByEmail(@Param("email") String email);
 	
 	@Query("SELECT u FROM Muser u WHERE u.email = ?1 AND u.institutionName = ?2")
   Optional<Muser> findByEmailandInstitutionName(String email, String institutionName);
 	
-	@Query("SELECT u FROM Muser u WHERE u.userId = ?1 AND u.institutionName = ?2")
-	  Optional<Muser> findByuserIdandInstitutionName(Long userId, String institutionName);
+	@Query("SELECT new com.knowledgeVista.User.MuserRequiredDto(u.userId, u.username, u.email, u.profile) " +
+	          "FROM Muser u WHERE u.userId = ?1 AND u.institutionName = ?2")
+	  Optional<MuserRequiredDto> findByuserIdandInstitutionName(Long userId, String institutionName);
 
 	
 	@Query("SELECT u from Muser u WHERE u.institutionName = ?1")
@@ -95,10 +112,15 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	    @Query("SELECT isActive FROM Muser u WHERE u.role.roleName = :rolename  AND u.institutionName = :institutionname")
 	    Boolean getactiveResultByInstitutionName(@Param("rolename") String roleName, @Param("institutionname") String institutionName);
 
-	    @Query("SELECT u.email FROM Muser u WHERE u.institutionName = :institutionname AND LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%'))")
-	    List<String> findEmailsByEmailContainingIgnoreCase(@Param("email") String email,@Param("institutionname") String institution);
+//	    @Query("SELECT u.email FROM Muser u WHERE u.institutionName = :institutionname AND LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%'))")
+//	    List<String> findEmailsByEmailContainingIgnoreCase(@Param("email") String email,@Param("institutionname") String institution);
 
-	    
+	    @Query("SELECT new com.knowledgeVista.Batch.SearchDto(u.userId, u.username, 'EMAIL') " +
+	    	       "FROM Muser u " +
+	    	       "WHERE u.institutionName = :institutionName " +
+	    	       "AND LOWER(u.username) LIKE LOWER(CONCAT('%', :email, '%'))")
+	    	List<SearchDto> findEmailsAsSearchDto(@Param("email") String email, @Param("institutionName") String institutionName);
+
 	    
 	    @Query("SELECT DISTINCT u2.email " +
 	            "FROM Muser u1 " +
@@ -172,7 +194,22 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	    @Query("SELECT new com.knowledgeVista.Migration.MuserMigrationDto(cd.userId, cd.username, cd.psw, cd.email, cd.phone, cd.isActive, cd.dob, cd.skills, cd.institutionName, cd.profile, cd.countryCode, cd.lastactive, cd.inactiveDescription, cd.role) FROM Muser cd WHERE cd.institutionName = :institutionName")
 	    List<MuserMigrationDto> findAllByInstitutionNameDto(@Param("institutionName") String institutionName);
 
-	    }
+	    @Query("SELECT c.userId, c.username " +
+	    	       "FROM Muser c " +
+	    	       "WHERE (:username IS NOT NULL AND :username <> '' AND LOWER(c.username) LIKE LOWER(CONCAT('%', :username, '%'))) " +
+	    	       "AND (:institutionName IS NOT NULL AND :institutionName <> '' AND LOWER(c.institutionName) LIKE LOWER(CONCAT('%', :institutionName, '%'))) " +
+	    	       "AND c.role.roleName = 'TRAINER'")
+	    	List<Object[]> searchTrainerIddAndTrainerNameByInstitution(
+	    	    @Param("username") String username,
+	    	    @Param("institutionName") String institutionName);
+	    	
+	    	   @Query("SELECT u FROM Muser u WHERE u.role.roleName ='TRAINER' AND u.userId=?1")
+	 		  Optional<Muser> findtrainerByid(Long userid);
+
+}
+
+
+
 
 
 

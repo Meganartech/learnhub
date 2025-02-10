@@ -147,10 +147,12 @@ const Header = ({searchQuery,handleSearchChange}) => {
   
 
   return (
-    <header className="navbar pcoded-header navbar-expand-lg navbar-light header-blue">
+    <header className="navbar pcoded-header navbar-expand-lg navbar-light header-blue"
+    //style={{position:"fixed", paddingBottom:"5px"}}
+  >
 		
 			
-    <div className="m-header">
+    <div className="m-header" >
     {islogedin && <a className="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>}
         <a href={siteSettings.siteUrl? siteSettings.siteUrl:"#"} className="b-brand">
             <img  src={siteSettings.sitelogo?`data:image/jpeg;base64,${siteSettings.sitelogo}` : logo} alt="logo" className="logo"/>

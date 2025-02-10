@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.knowledgeVista.Email.Mailkeys;
-
 @Repository
 public interface SocialKeyRepo extends JpaRepository<SocialLoginKeys, Long> {
 	 @Query("SELECT CASE WHEN EXISTS (SELECT 1 FROM SocialLoginKeys s WHERE s.institutionName = 'Meganartech') THEN true ELSE false END")

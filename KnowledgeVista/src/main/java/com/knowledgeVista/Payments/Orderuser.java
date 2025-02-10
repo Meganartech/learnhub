@@ -29,6 +29,8 @@ public class Orderuser {
 	    private String username;
 	    private Long courseId;
 	    private String paymentId;
+	    private Long batchId;
+	    private String batchName;
 	    private Long installmentnumber;
 	    @Column(columnDefinition = "Varchar(50)")
 	    private String status;

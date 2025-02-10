@@ -853,7 +853,6 @@ public ResponseEntity<?>getMiniatureDetails(Long lessonId,Long Id , String token
 						Long sizeone =fileService.getFileSize(doc.getDocumentPath());
 						 if(sizeone>0) {
 						 
-						 Boolean resultdeleted =fileService.deleteFile(doc.getDocumentPath());
 						 docsDetailsRepository.deleteById(doc.getId());
 						 }
 					}

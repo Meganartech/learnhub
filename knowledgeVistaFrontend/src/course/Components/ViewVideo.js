@@ -265,6 +265,7 @@ const ViewVideo = () => {
                       url={videoSource}
                       className="vdobox"
                       controls
+                      style={{width:"100%"}}
                       onProgress={handleOnProgress}
                       onSeek={handleOnSeek}
                       light={
@@ -284,9 +285,11 @@ const ViewVideo = () => {
                       }}
                     />
                   ) : videoType === "youtube" ? (
+                   
                     <ReactPlayer
-                      className="vdobox"
                       controls
+                      className="vdobox"
+                      style={{width:"100%"}}
                       playing
                       url={videoSource ? videoSource : null}
                       light={
@@ -340,8 +343,8 @@ const ViewVideo = () => {
                           />
                         </div>
                         <div className="child">
-                          <h4>{lesson.lessontitle}</h4>
-                          <h6>{lesson.lessonDescription}</h6>
+                          <h5 className="courseName">{lesson.lessontitle}</h5>
+                          <p className="courseDescription">{lesson.lessonDescription}</p>
                         </div>
                       </div>
                     ))}

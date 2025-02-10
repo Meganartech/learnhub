@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.Course.certificate.certificateRepo;
@@ -25,7 +24,6 @@ import com.knowledgeVista.Email.MailkeysRepo;
 import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.License.mAdminLicenceRepo;
 import com.knowledgeVista.SocialLogin.SocialKeyRepo;
-import com.knowledgeVista.SocialLogin.SocialLoginKeys;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 

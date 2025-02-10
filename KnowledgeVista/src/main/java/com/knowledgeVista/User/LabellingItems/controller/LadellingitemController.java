@@ -1,12 +1,15 @@
 package com.knowledgeVista.User.LabellingItems.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,8 +19,7 @@ import com.knowledgeVista.User.LabellingItems.Repo.LabellingitemsRepo;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
-@RestController
-@CrossOrigin
+@Service
 public class LadellingitemController {
 	@Autowired
 	private LabellingitemsRepo labellingrepo;
@@ -25,8 +27,18 @@ public class LadellingitemController {
 	private MuserRepositories muserrepositories;
 	 @Autowired
 	 private JwtUtil jwtUtil;
-
-	 
+   @Value("${theme.primarycolor}")
+  private String primaryColor;
+   
+   @Value("${theme.lightprimarycolor}")
+   private String lightprimarycolor;
+   
+   public Map<String, String> getPrimaryColor() {
+	   Map<String, String> colorMap = new HashMap<>();
+       colorMap.put("primaryColor", primaryColor);
+       colorMap.put("lightPrimaryColor", lightprimarycolor);
+       return colorMap;
+   }
 	 public ResponseEntity<?>SaveLabellingitems(String token,  String siteUrl,String title, MultipartFile sitelogo,  MultipartFile siteicon,  MultipartFile titleicon){
 		  try {
 	        	if (!jwtUtil.validateToken(token)) {

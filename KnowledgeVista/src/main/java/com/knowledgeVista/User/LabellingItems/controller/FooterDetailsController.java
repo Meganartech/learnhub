@@ -7,11 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.LabellingItems.FooterDetails;
-import com.knowledgeVista.User.LabellingItems.Labelingitems;
 import com.knowledgeVista.User.LabellingItems.Repo.FooterdetailsRepo;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;

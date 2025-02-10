@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.Settings;
 import com.knowledgeVista.Settings.ViewSettings;
 import com.knowledgeVista.Settings.Repo.ViewSettingsRepo;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -121,5 +122,42 @@ public class SettingsController {
 			 return false;
 		 }
 	    }
-	 
+	 public Long setAttendanceThresholdMinutes(Long minutes,String token) {
+		 try {
+			
+	         String role = jwtUtil.getRoleFromToken(token);
+	         if("ADMIN".equals(role)) {
+	        Optional<ViewSettings> opviewSettings =settingsrepo.findBySettingName("AttendanceThresholdMinutes");
+	        ViewSettings viewSettings;
+	        if(opviewSettings.isPresent()) {
+	        	  viewSettings = opviewSettings.get();
+	        }else {
+	        	  viewSettings = new ViewSettings();
+		            viewSettings.setSettingName("AttendanceThresholdMinutes");
+	        }
+	        viewSettings.setSettingLongValue(minutes);
+		      settingsrepo.save(viewSettings);
+		      return minutes;
+	         }else {
+	        	 return null;
+	         }
+	    }catch (Exception e) {
+		return null;
+		}
+}
+	 public Long getAttendanceThresholdMinutes() {
+		 try {
+		        Optional<ViewSettings> opviewSettings =settingsrepo.findBySettingName("AttendanceThresholdMinutes");
+		        ViewSettings viewSettings;
+		        if(opviewSettings.isPresent()) {
+		        	  viewSettings = opviewSettings.get();
+		        	  return viewSettings.getSettingLongValue();
+		        }else {
+		        	  return 10L;
+		        }
+		    }catch (Exception e) {
+			return 10L;
+			}
+	 }
+
 }

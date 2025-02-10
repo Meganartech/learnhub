@@ -55,7 +55,7 @@ const ViewStudentList = () => {
       }
     } catch (error) {
       console.error("Error fetching users:", error);
-      throw error
+      throw error;
     }
   };
 
@@ -121,10 +121,10 @@ const ViewStudentList = () => {
         })); // Update total pages
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          navigate("/unauthorized")
-        }else{
-        console.error("Error fetching data:", error);
-        throw error
+          navigate("/unauthorized");
+        } else {
+          console.error("Error fetching data:", error);
+          throw error;
         }
       }
     };
@@ -146,13 +146,13 @@ const ViewStudentList = () => {
         start: currentPage * itemsperpage + 1,
         end: currentPage * itemsperpage + itemsperpage,
         total: data.totalElements,
-      })); 
+      }));
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        navigate("/unauthorized")
-      }else{
-      console.error("Error fetching data:", error);
-      throw error
+        navigate("/unauthorized");
+      } else {
+        console.error("Error fetching data:", error);
+        throw error;
       }
     }
   };
@@ -169,18 +169,17 @@ const ViewStudentList = () => {
     const buttons = [];
     for (let i = 0; i < totalPages; i++) {
       buttons.push(
-        <li className={`page-item ${i === currentPage ? "active" : ""}`} key={i}>
-          <a
-            className="page-link"
-            href="#"
-            onClick={() => handlePageChange(i)}
-          >
+        <li
+          className={`page-item ${i === currentPage ? "active" : ""}`}
+          key={i}
+        >
+          <a className="page-link" href="#" onClick={() => handlePageChange(i)}>
             {i + 1}
           </a>
         </li>
       );
     }
-            return buttons;
+    return buttons;
   };
 
   const handleDeactivate = async (userId, username, email) => {
@@ -278,7 +277,7 @@ const ViewStudentList = () => {
             //       : "Student"
             //   }`,
             // });
-            throw error
+            throw error;
           }
         }
       }
@@ -355,257 +354,293 @@ const ViewStudentList = () => {
             //       : "Student"
             //   }`,
             // });
-            throw error
+            throw error;
           }
         }
       }
     });
   };
+  
 
   return (
     <div>
-    <div className="page-header"></div>
-    <div className='row'>
-      <div className='col-sm-12'>
-        <div className='card'>
-          <div className='card-header'>
-        <div className="navigateheaders">
-          <div
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            <i className="fa-solid fa-arrow-left"></i>
-          </div>
-          <div></div>
-          <div
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            <i className="fa-solid fa-xmark"></i>
-          </div>
-        </div>
-        <div className="tableheader ">
-          <h4>
-            {displayname && displayname.student_name
-              ? displayname.student_name
-              : "Student"}{" "}
-            Details
-          </h4>
+      <div className="page-header"></div>
+      <div className="row">
+        <div className="col-sm-12">
+          <div className="card">
+            <div className="card-header">
+              <div className="navigateheaders">
+                <div
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <i className="fa-solid fa-arrow-left"></i>
+                </div>
+                <div></div>
+                <div
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </div>
+              </div>
+              <div className="tableheader ">
+                <h4>
+                  {displayname && displayname.student_name
+                    ? displayname.student_name
+                    : "Student"}{" "}
+                  Details
+                </h4>
 
-          <div className="selectandadd">
-            <select
-              className="selectstyle btn btn-success  text-left "
-              value={filterOption}
-              onChange={(e) => setFilterOption(e.target.value)}
-            >
-              <option className="bg-light text-dark " value="All">
-                All
-              </option>
-              <option className="bg-light text-dark" value="Active">
-                Active
-              </option>
-              <option className="bg-light text-dark" value="Inactive">
-                Inactive
-              </option>
-            </select>
-            <a onClick={(e)=>{e.preventDefault();navigate("/addStudent")}} href="#" className="btn btn-primary mybtn">
-              <i className="fa-solid fa-plus"></i> Add{" "}
-              {displayname && displayname.student_name
-                ? displayname.student_name
-                : "Student"}
-            </a>
-          </div>
-        </div> </div>
-        <div className='card-body'>
-        <div className="table-container">
-          <table className="table table-hover table-bordered table-sm">
-            <thead className="thead-dark">
-              <tr>
-                <th scope="col">
-                  <i
-                    onClick={() => {
-                      setfullsearch(!fullsearch);
+                <div className="selectandadd">
+                  <select
+                    className="selectstyle btn btn-success  text-left "
+                    value={filterOption}
+                    onChange={(e) => setFilterOption(e.target.value)}
+                  >
+                    <option className="bg-light text-dark " value="All">
+                      All
+                    </option>
+                    <option className="bg-light text-dark" value="Active">
+                      Active
+                    </option>
+                    <option className="bg-light text-dark" value="Inactive">
+                      Inactive
+                    </option>
+                  </select>
+                  <a
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/addStudent");
                     }}
-                    className={
-                      fullsearch
-                        ? "fa-solid fa-xmark"
-                        : "fa-solid fa-magnifying-glass"
-                    }
-                  ></i>
-                </th>
-                <th scope="col">Username</th>
-                <th scope="col">Email</th>
-                <th scope="col">Phone</th>
-                <th scope="col"> Skills</th>
-                <th scope="col">Date of Birth</th>
-                <th scope="col">Status</th>
-                <th colSpan="3" scope="col">
-                  Action
-                </th>
-              </tr>
-              {fullsearch ? (
-                <tr>
-                  <td></td>
+                    href="#"
+                    className="btn btn-primary mybtn"
+                  >
+                    <i className="fa-solid fa-plus"></i> Add{" "}
+                    {displayname && displayname.student_name
+                      ? displayname.student_name
+                      : "Student"}
+                  </a>
+                </div>
+              </div>{" "}
+            </div>
+            <div className="card-body">
+              <div className="table-container">
+                <table className="table table-hover table-bordered table-sm">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th scope="col">
+                        <i
+                          onClick={() => {
+                            setfullsearch(!fullsearch);
+                          }}
+                          className={
+                            fullsearch
+                              ? "fa-solid fa-xmark"
+                              : "fa-solid fa-magnifying-glass"
+                          }
+                        ></i>
+                      </th>
+                      <th scope="col">Username</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Phone</th>
+                      <th scope="col"> Skills</th>
+                      <th scope="col">Date of Birth</th>
+                      <th scope="col">Status</th>
+                      <th colSpan="4" scope="col">
+                        Action
+                      </th>
+                    </tr>
+                    {fullsearch ? (
+                      <tr>
+                        <td></td>
 
-                  <td>
-                    <input
-                      type="search"
-                      name="username"
-                      value={username}
-                      onChange={handleChange}
-                      placeholder="Search Username"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="search"
-                      name="email"
-                      value={email}
-                      onChange={handleChange}
-                      placeholder="Search Email"
-                    />
-                  </td>
+                        <td>
+                          <input
+                            type="search"
+                            name="username"
+                            value={username}
+                            onChange={handleChange}
+                            placeholder="Search Username"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="search"
+                            name="email"
+                            value={email}
+                            onChange={handleChange}
+                            placeholder="Search Email"
+                          />
+                        </td>
 
-                  <td>
-                    <input
-                      type="search"
-                      name="phone"
-                      value={phone}
-                      onChange={handleChange}
-                      placeholder="Search Phone"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="search"
-                      name="skills"
-                      value={skills}
-                      onChange={handleChange}
-                      placeholder="Search Skills"
-                    />
-                  </td>
-                  <td>
-                    <div style={{ width: "110px" }}></div>
-                  </td>
-                </tr>
-              ) : (
-                <></>
-              )}
-            </thead>
-            <tbody>
-              {filterData().map((user, index) => (
-                <tr key={user.userId}>
-                  <th scope="row">
-                    {currentPage * itemsperpage + (index + 1)}
-                  </th>
-                  <td className="py-2"> {user.username}</td>{" "}
-                  <td className="py-2">
-                    {" "}
-                    <Link
-                      to={`/view/Student/profile/${user.email}`}
-                      state={{ user }} // Pass user details in state
-                    >
-                      {user.email}{" "}
-                    </Link>
-                  </td>
-                  <td className="py-2">{user.phone}</td>
-                  <td className="py-2">{user.skills}</td>
-                  <td className="py-2">{user.dob}</td>
-                  <td className="py-2">
-                    {user.isActive === true ? (
-                      <div className="Activeuser">
-                        <i className="fa-solid fa-circle pr-3"></i>Active
-                      </div>
+                        <td>
+                          <input
+                            type="search"
+                            name="phone"
+                            value={phone}
+                            onChange={handleChange}
+                            placeholder="Search Phone"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="search"
+                            name="skills"
+                            value={skills}
+                            onChange={handleChange}
+                            placeholder="Search Skills"
+                          />
+                        </td>
+                        <td>
+                          <div style={{ width: "110px" }}></div>
+                        </td>
+                      </tr>
                     ) : (
-                      <div className="InActiveuser">
-                        <i className="fa-solid fa-circle pr-3"></i>In Active
-                      </div>
+                      <></>
                     )}
-                  </td>
-                  <td className="text-center">
-                    <Link
-                      to={`/student/edit/${user.email}`}
-                      state={{ user }}
-                      className="hidebtn"
+                  </thead>
+                  <tbody>
+                    {filterData().map((user, index) => (
+                      <tr key={user.userId}>
+                        <th scope="row">
+                          {currentPage * itemsperpage + (index + 1)}
+                        </th>
+                        <td className="py-2"> {user.username}</td>{" "}
+                        <td className="py-2">
+                          {" "}
+                          <Link
+                            to={`/view/Student/profile/${user.email}`}
+                            state={{ user }} // Pass user details in state
+                          >
+                            {user.email}{" "}
+                          </Link>
+                        </td>
+                        <td className="py-2">{user.phone}</td>
+                        <td className="py-2">{user.skills}</td>
+                        <td className="py-2">{user.dob}</td>
+                        <td className="py-2">
+                          {user.isActive === true ? (
+                            <div className="Activeuser">
+                              <i className="fa-solid fa-circle pr-3"></i>Active
+                            </div>
+                          ) : (
+                            <div className="InActiveuser">
+                              <i className="fa-solid fa-circle pr-3"></i>In
+                              Active
+                            </div>
+                          )}
+                        </td>
+                        <td className="text-center">
+                          <Link
+                            to={`/student/edit/${user.email}`}
+                            state={{ user }}
+                            className="hidebtn"
+                          >
+                            <i className="fas fa-edit"></i>
+                          </Link>
+                        </td>
+                        <td className="text-center">
+                          <Link
+                            to={`/assignCourse/Student/${user.userId}`}
+                            className="hidebtn"
+                          >
+                            <i className="fas fa-plus"></i>
+                          </Link>
+                        </td>
+                        <td className="text-center ">
+                          {user.isActive === true ? (
+                            <button
+                              className="hidebtn "
+                              onClick={() =>
+                                handleDeactivate(
+                                  user.userId,
+                                  user.username,
+                                  user.email
+                                )
+                              }
+                            >
+                              <i className="fa-solid fa-lock"></i>
+                            </button>
+                          ) : (
+                            <button
+                              className="hidebtn "
+                              onClick={() =>
+                                handleActivate(
+                                  user.userId,
+                                  user.username,
+                                  user.email
+                                )
+                              }
+                            >
+                              <i className="fa-solid fa-lock-open"></i>
+                            </button>
+                          )}
+                        </td>
+                        <td>
+                        <Link
+                            to={`/view/Attendance/${user.userId}`}
+                            state={{ user }} // Pass user details in state
+                          
+                            className="hidebtn"
+                           
+                            title="Attendance"
+                          >
+                            <i className="fa-solid fa-clipboard-user"></i>
+                         </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="cornerbtn">
+                <ul className="pagination">
+                  <li
+                    className={`page-item ${
+                      currentPage === 0 ? "disabled" : ""
+                    }`}
+                    key="prev"
+                  >
+                    <a
+                      className="page-link"
+                      href="#"
+                      aria-label="Previous"
+                      onClick={() => handlePageChange(currentPage - 1)}
                     >
-                      <i className="fas fa-edit"></i>
-                    </Link>
-                  </td>
-                  <td className="text-center">
-                    <Link
-                      to={`/assignCourse/Student/${user.userId}`}
-                      className="hidebtn"
+                      <span aria-hidden="true">«</span>
+                      <span className="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  {renderPaginationButtons()}
+                  <li
+                    className={`page-item ${
+                      currentPage === totalPages - 1 ? "disabled" : ""
+                    }`}
+                    key="next"
+                  >
+                    <a
+                      className="page-link"
+                      href="#"
+                      aria-label="Next"
+                      onClick={() => handlePageChange(currentPage + 1)}
                     >
-                      <i className="fas fa-plus"></i>
-                    </Link>
-                  </td>
-                  <td className="text-center ">
-                    {user.isActive === true ? (
-                      <button
-                        className="hidebtn "
-                        onClick={() =>
-                          handleDeactivate(
-                            user.userId,
-                            user.username,
-                            user.email
-                          )
-                        }
-                      >
-                        <i className="fa-solid fa-lock"></i>
-                      </button>
-                    ) : (
-                      <button
-                        className="hidebtn "
-                        onClick={() =>
-                          handleActivate(user.userId, user.username, user.email)
-                        }
-                      >
-                        <i className="fa-solid fa-lock-open"></i>
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="cornerbtn">
-        <ul className="pagination">
-           
-           <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`} key="prev">
-         <a
-           className="page-link"
-           href="#"
-           aria-label="Previous"
-           onClick={() => handlePageChange(currentPage - 1)}
-         >
-           <span aria-hidden="true">«</span>
-           <span className="sr-only">Previous</span>
-         </a>
-       </li>
-               {renderPaginationButtons()}
-               <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`} key="next">
-         <a
-           className="page-link"
-           href="#"
-           aria-label="Next"
-           onClick={() => handlePageChange(currentPage + 1)}
-         >
-           <span aria-hidden="true">»</span>
-           <span className="sr-only">Next</span>
-         </a>
-       </li>
-             </ul> 
-          <div>
-            <label className="text-primary">
-            ( {datacounts.start}- { datacounts.start + users.length-1 }) of {datacounts.total}
-            </label>
+                      <span aria-hidden="true">»</span>
+                      <span className="sr-only">Next</span>
+                    </a>
+                  </li>
+                </ul>
+                <div>
+                  <label className="text-primary">
+                    ( {datacounts.start}- {datacounts.start + users.length - 1})
+                    of {datacounts.total}
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        </div>
-        </div>
         </div>
       </div>
     </div>

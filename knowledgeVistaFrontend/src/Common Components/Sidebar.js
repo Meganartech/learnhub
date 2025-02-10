@@ -61,43 +61,50 @@ const Sidebar = ({ filter, handleFilterChange }) => {
     });
   }
 
-  const handleClick = (e, link) => {
-    e.preventDefault();
-    setActiveLink(link);
-    updateActiveMenu(link);
-    navigate(link);
-  };
-  // const handleClick = (link) => {
-  //   if (userRole === "ADMIN" || userRole === "TRAINER") {
-  //     if (
-  //       (link === "/about" ||
-  //         link === "/admin/dashboard" ||
-  //         link === "/licenceDetails") &&
-  //       isEmpty
-  //     ) {
-  //       setActiveLink(link);
-  //       navigate(link);
-  //     } else if (
-  //       (link === "/about" ||
-  //         link === "/admin/dashboard" ||
-  //         link === "/licenceDetails") &&
-  //       !isEmpty &&
-  //       !isvalid
-  //     ) {
-  //       setActiveLink(link);
-  //       navigate(link);
-  //     } else if (!isEmpty && isvalid) {
-  //       setActiveLink(link);
-  //       navigate(link);
-  //     }
-  //   } else if (userRole === "USER" || userRole === "SYSADMIN") {
-  //     setActiveLink(link);
-  //     navigate(link);
-  //   }
+  // const handleClick = (e, link) => {
+  //   e.preventDefault();
+  //   setActiveLink(link);
+  //   updateActiveMenu(link);
+  //   navigate(link);
   // };
+  const handleClick = (e,link) => {
+    e.preventDefault();
+    if (userRole === "ADMIN" || userRole === "TRAINER") {
+      if (
+        (link === "/about" ||
+          link === "/admin/dashboard" ||
+          link === "/licenceDetails") &&
+        isEmpty
+      ) {
+        setActiveLink(link);
+        updateActiveMenu(link);
+        navigate(link);
+      } else if (
+        (link === "/about" ||
+          link === "/admin/dashboard" ||
+          link === "/licenceDetails") &&
+        !isEmpty &&
+        !isvalid
+      ) {
+        setActiveLink(link);
+        updateActiveMenu(link);
+        navigate(link);
+      } else if (!isEmpty && isvalid) {
+        setActiveLink(link);
+        updateActiveMenu(link);
+        navigate(link);
+      }
+    } else if (userRole === "USER" || userRole === "SYSADMIN") {
+      setActiveLink(link);
+      updateActiveMenu(link);
+      navigate(link);
+    }
+  };
 
   return (
-    <nav className="pcoded-navbar menu-light  ">
+    <nav className="pcoded-navbar menu-light  "
+   //  style={{position:"fixed"}}
+     >
       <div className="navbar-wrapper">
         <div className="navbar-content scroll-div ">
           {/* Admin Sidebar */}
@@ -229,6 +236,44 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                         </li>
                       </ul>
                     </li>
+                  </ul>
+                </li>
+
+                <li className="nav-item pcoded-hasmenu">
+                  <a href="#!" className="nav-link">
+                    <span className="pcoded-micon">
+                      <i className="fa-solid fa-object-group"></i>
+                    </span>
+                    <span className="pcoded-mtext">Batch</span>
+                  </a>
+                  <ul className="pcoded-submenu">
+                  
+
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/batch/addNew"
+                        onClick={(e) => {
+                          handleClick(e, "/batch/addNew");
+                        }}
+                      >
+                        <i className="fa-solid fa-square-plus pr-2"></i>
+                        Create batch
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/batch/viewall"
+                        onClick={(e) => {
+                          handleClick(e, "/batch/viewall");
+                        }}
+                      >
+                        <i className="fa-regular fa-eye pr-2"></i>
+                        View batch
+                      </a>
+                    </li>
+                
                   </ul>
                 </li>
                 <li className="nav-item pcoded-hasmenu">
@@ -782,6 +827,34 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   </li>
                 </ul>
               </li>
+              {/* <li className="nav-item no-hasmenu ">
+                <a
+                  href="#"
+                  data-path="/batch/viewall"
+                  onClick={(e) => handleClick(e, "/batch/viewall")}
+                  className="nav-link has-ripple"
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-solid fa-object-group"></i>
+                  </span>
+                  <span className="pcoded-mtext">Batches</span>
+                </a>
+              </li> */}
+             
+             {/* <li className="nav-item no-hasmenu ">
+                <a
+                  href="#"
+                  data-path="/MyBatches"
+                  onClick={(e) => handleClick(e, "/MyBatches")}
+                  className="nav-link has-ripple"
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-layer-group"></i>
+                  </span>
+                  <span className="pcoded-mtext"> My Batches</span>
+                </a>
+              </li> */}
+             
               <li className="nav-item no-hasmenu ">
                 <a
                   href="#"
@@ -809,7 +882,19 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   <span className="pcoded-mtext">Certificates</span>
                 </a>
               </li>
-
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/view/MyAttendance"
+                  onClick={(e) => handleClick(e, "/view/MyAttendance")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-solid  fa-clipboard-user"></i>
+                  </span>
+                  <span className="pcoded-mtext">My Attendance</span>
+                </a>
+              </li>
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"

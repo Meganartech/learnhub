@@ -30,6 +30,12 @@ public interface Meetrepo extends JpaRepository<Meeting, Long>{
 	@Query("SELECT u From Meeting u WHERE u.MeetingId=?1")
    Optional<Meeting> FindByMeetingId(Long MeetingId);
 	
+	@Query("SELECT u.JoinUrl From Meeting u WHERE u.MeetingId=?1")
+	   String FindJoinUrlByMeetingId(Long MeetingId);
+	
+	@Query("SELECT m FROM Meeting m JOIN FETCH m.batches WHERE m.MeetingId = :meetingId")
+	Optional<Meeting> FindByMeetingIdwithbatch(Long meetingId);
+
 	
 	
 }

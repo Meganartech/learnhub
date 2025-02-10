@@ -1,5 +1,7 @@
 package com.knowledgeVista;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.knowledgeVista.Attendance.AttendanceService;
+import com.knowledgeVista.Batch.service.BatchService;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Course.Controller.CheckAccess;
@@ -48,6 +50,7 @@ import com.knowledgeVista.Notification.Controller.NotificationController;
 import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.Paypalsettings;
 import com.knowledgeVista.Payments.Stripesettings;
+import com.knowledgeVista.Payments.controller.BatchPaymentService;
 import com.knowledgeVista.Payments.controller.EnablePaymentsController;
 import com.knowledgeVista.Payments.controller.PaymentIntegration;
 import com.knowledgeVista.Payments.controller.PaymentIntegration2;
@@ -101,6 +104,8 @@ public class FrontController {
 	
 	@Autowired
 	private PaymentIntegration payment;
+	@Autowired
+	private BatchPaymentService paymentservice;
 	@Autowired
 	private PaymentIntegration2 payment2;
 	
@@ -165,13 +170,18 @@ public class FrontController {
 
 	@Autowired
 	private LadellingitemController labelingctrl;
-
+    
+	@Autowired
+	private AttendanceService attendanceService;
 
 	 private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
 		
 	
 	@Autowired
 	private FooterDetailsController footerctrl;
+	
+	@Autowired
+	private BatchService batchService;
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
 	public Map<String, String> getActiveEnvironment() {
@@ -196,11 +206,12 @@ public class FrontController {
 	    		@RequestParam("courseCategory") String category,
 	    		@RequestParam("Duration") Long Duration,
 	    		@RequestParam("Noofseats") Long Noofseats,
+	    		  @RequestParam("batches") String batches,
 	    		@RequestParam("courseAmount") Long amount,
 	    		@RequestParam("paytype")String paytype,
                 @RequestParam(value="InstallmentDetails", required=false) String installmentDataJson,
 	    		@RequestHeader("Authorization") String token) {
-		 return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, amount,paytype,installmentDataJson, token);
+		 return courseController.addCourse(file, courseName, description, category, Duration, Noofseats,batches, amount,paytype,installmentDataJson, token);
 	 }
 	 
 	 
@@ -292,10 +303,7 @@ public class FrontController {
 		 public ResponseEntity<?> getstorageDetails(@RequestHeader("Authorization") String token) {
 			 return coursesec.getstoragedetails(token);
 		 }
-		 @GetMapping("/courseControl/popularCourse")
-		 public ResponseEntity<List<CourseDetail>> popular(@RequestHeader("Authorization") String token) {
-			 return coursesec.popular(token);
-		 }
+
 		 @GetMapping("/dashboard/trainerSats")
 		 public ResponseEntity<?>getAllTrainerhandlingUsersAndCourses(@RequestHeader("Authorization") String token){
 			 return coursesec.getAllTrainerhandlingUsersAndCourses(token);
@@ -446,42 +454,63 @@ public class FrontController {
 		        }
 		        
 //----------------------PaymentIntegration----------------------	
-		        @PostMapping("/full/buyCourse/create")
-		        public ResponseEntity<?> createOrderfull(@RequestBody Map<String, Long> requestData, @RequestParam("gateway") String gateway ,HttpServletRequest request,@RequestHeader("Authorization") String token) {
+		        @PostMapping("/Batch/getOrderSummary")
+		        public ResponseEntity<?> getBatchOrderSummary(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
 		        	 if (paylist != null && activeProfile.equals("demo")) {
 
 		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 	            	   }else {
-		        	return payment.createOrderfull(requestData,gateway,token,request);
+		        	return paymentservice.getBatchordersummary(requestData,token);
+	            	   }
+		        }
+		        @PostMapping("/full/buyBatch/create")
+		        public ResponseEntity<?> createOrderfullForBatch(@RequestBody Map<String, Long> requestData, @RequestParam("gateway") String gateway ,HttpServletRequest request,@RequestHeader("Authorization") String token) {
+		        	 if (paylist != null && activeProfile.equals("demo")) {
+
+		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+	            	   }else {
+		        	return paymentservice.createOrderfullforBatch(requestData,gateway,token,request);
 	            	   }
 		        } 
-		        @PostMapping("/Full/getOrderSummary")
-		        public ResponseEntity<?> getordersummaryFull(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
-		        	 if (paylist != null && activeProfile.equals("demo")) {
-
-		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-	            	   }else {
-		        	return payment.getordersummaryFull(requestData,token);
-	            	   }
-		        }
-		        @PostMapping("/Part/getOrderSummary")
-		        public ResponseEntity<?> getOrderSummaryPart(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
-		        	 if (paylist != null && activeProfile.equals("demo")) {
-
-		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-	            	   }else {
-		        	return payment.getOrderSummaryPart(requestData,token);
-	            	   }
-		        }
-		        @PostMapping("/part/buyCourse/create")
-		        public ResponseEntity<?> createOrderPart(@RequestBody Map<String, Long> requestData,@RequestParam("gateway") String gateway ,@RequestHeader("Authorization") String token) {
-		        	 if (paylist != null && activeProfile.equals("demo")) {
-
-		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-	            	   }else {
-		        	return payment.createOrderPart(requestData,gateway,token);
-	            	   }
-		        }
+		        
+		        //=========batch end=========
+//		        @PostMapping("/full/buyCourse/create")
+//		        public ResponseEntity<?> createOrderfull(@RequestBody Map<String, Long> requestData, @RequestParam("gateway") String gateway ,HttpServletRequest request,@RequestHeader("Authorization") String token) {
+//		        	 if (paylist != null && activeProfile.equals("demo")) {
+//
+//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+//	            	   }else {
+//		        	return payment.createOrderfull(requestData,gateway,token,request);
+//	            	   }
+//		        } 
+//		        @PostMapping("/Full/getOrderSummary")
+//		        public ResponseEntity<?> getordersummaryFull(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
+//		        	 if (paylist != null && activeProfile.equals("demo")) {
+//
+//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+//	            	   }else {
+//		        	return payment.getordersummaryFull(requestData,token);
+//	            	   }
+//		        }
+//		        @PostMapping("/Part/getOrderSummary")
+//		        public ResponseEntity<?> getOrderSummaryPart(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
+//		        	 if (paylist != null && activeProfile.equals("demo")) {
+//
+//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+//	            	   }else {
+//		        	return payment.getOrderSummaryPart(requestData,token);
+//	            	   }
+//		        }
+//		        @PostMapping("/part/buyCourse/create")
+//		        public ResponseEntity<?> createOrderPart(@RequestBody Map<String, Long> requestData,@RequestParam("gateway") String gateway ,@RequestHeader("Authorization") String token) {
+//		        	 if (paylist != null && activeProfile.equals("demo")) {
+//
+//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+//	            	   }else {
+//		        	return payment.createOrderPart(requestData,gateway,token);
+//	            	   }
+//		        }
+		        
                @PostMapping("/buyCourse/payment")
              public ResponseEntity<String> updatePaymentId(@RequestBody Map<String, String> requestData,@RequestHeader("Authorization") String token) {
             	   if (paylist != null && activeProfile.equals("demo")) {
@@ -520,8 +549,10 @@ public class FrontController {
 
               		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
             	   }else {
+            		   if(paylist!=null) {
             		   return paylist.ViewMypaymentHistry(token);
-            		      
+            		   }
+            		   return null;
             	   }
                }
                
@@ -532,7 +563,10 @@ public class FrontController {
               		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
             	
                }else {
-            	   return paylist.ViewPaymentdetails(token, courseId);    
+            	   if(paylist!=null) {
+            	   return paylist.ViewPaymentdetails(token, courseId);   
+            	   }
+            	   return null;
         	   }
                }
                
@@ -543,7 +577,10 @@ public class FrontController {
               		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
             	   }
             	   else {
+            		   if(paylist!=null) {
             		   return paylist.viewTransactionHistory(token); 
+            		   }
+            		   return null;
             	   }
                }
             	   
@@ -790,13 +827,13 @@ public class FrontController {
     		}
     		
     		@GetMapping("/AssignCourse/student/courselist")
-    		public ResponseEntity<List<CourseDetail>> getCoursesForUser(
+    		public ResponseEntity<List<CourseDetailDto>> getCoursesForUser(
     		          @RequestHeader("Authorization") String token) {
     			return assign.getCoursesForUser(token);
     		}
     		
     		@GetMapping("/AssignCourse/Trainer/courselist")
-    		public ResponseEntity<List<CourseDetail>> getCoursesForTrainer(
+    		public ResponseEntity<List<CourseDetailDto>> getCoursesForTrainer(
     		          @RequestHeader("Authorization") String token) {
     			return assign.getCoursesForTrainer(token);
     		}
@@ -926,7 +963,7 @@ public class FrontController {
     		    }
     		        
     		    @GetMapping("/search/users")
-    		    public  ResponseEntity<List<String>> getusersSearch(@RequestHeader("Authorization") String token, @RequestParam("query") String query){
+    		    public  ResponseEntity<List<?>> getusersSearch(@RequestHeader("Authorization") String token, @RequestParam("query") String query){
     		   return listview.SearchEmail(token, query);
     		    }
     		    @GetMapping("/search/usersbyTrainer")
@@ -1190,7 +1227,10 @@ public ResponseEntity<?> createMeeting(@RequestBody MeetingRequest meetingReq,@R
         return zoomMeetingService.createMeetReq(meetingReq,token);
    
 }
-
+@GetMapping("/api/zoom/Join/{meetingId}")
+public ResponseEntity<?>JoinMeeting(@PathVariable Long meetingId,@RequestHeader("Authorization") String token){
+	return zoomMeetingService.JoinMeeting(token, meetingId);
+}
 @GetMapping("/api/zoom/getMyMeetings")
 public ResponseEntity<?>GetMyMeetings(@RequestHeader("Authorization") String token){
 	return zoomMeetingService.getMetting(token);
@@ -1278,6 +1318,21 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
             	   }
             	   
                }
+               @GetMapping("/settings/AttendanceThresholdMinutes")
+               public Long getAttendanceThresholdMinutes() {
+            	   try {
+            		   if(environment.equals("VPS")) {
+            			   return settingcontroller.getAttendanceThresholdMinutes();
+            		   }else {
+            			   return null;
+            		   }
+            	   }catch(Exception e) {
+            		   e.printStackTrace();
+            		   logger.error("", e);
+            		   return null;
+            	   }
+            	   
+               }
                @GetMapping("/settings/ShowSocialLogin")
                public Boolean isSocialLoginEnabled() {
             	   try {
@@ -1297,6 +1352,20 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
             	   try {
             		   if(environment.equals("VPS")) {
             	   return settingcontroller.updateViewCourseInLandingPage(isEnabled,token);
+            		   }else {
+            			   return null;
+            		   }
+            	   }catch(Exception e) {
+            		   e.printStackTrace();
+            		   logger.error("", e);
+            		   return null;
+            	   }
+               }
+               @PostMapping("/settings/updateAttendanceThreshold")
+               public Long setAttendanceThresholdMinutes(@RequestBody Long minuites,@RequestHeader("Authorization") String token) {
+            	   try {
+            		   if(environment.equals("VPS")) {
+            	   return settingcontroller.setAttendanceThresholdMinutes(minuites,token);
             		   }else {
             			   return null;
             		   }
@@ -1353,6 +1422,10 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
                }
      
   //===========================================Labelling===========================================
+               @GetMapping("/getTheme")
+               public Map<String,String>getTheme(){
+            	   return labelingctrl.getPrimaryColor();
+               }
                
                @PostMapping("/save/labellings")
                public ResponseEntity<?>SaveLabellingitems(@RequestHeader("Authorization") String token ,
@@ -1481,6 +1554,112 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
         		   e.printStackTrace();
         		   return null;
         	   }
+               }
+               
+        ///======================Batch Service========================
+               @GetMapping("/searchCourse")
+               public List<Map<String, Object>> searchCourses(@RequestParam String courseName,
+                                                      @RequestHeader ("Authorization") String token) {
+                   return batchService.searchCourses(courseName, token);
+               }
+               
+               @GetMapping("/searchBatch")
+               public List<Map<String, Object>> searchBatch(@RequestParam String batchTitle,
+                                                      @RequestHeader ("Authorization") String token) {
+                   return batchService.searchbatch(batchTitle, token);
+               }
+               
+               @GetMapping("/searchTrainer")
+               public List<Map<String, Object>> searchTrainer(@RequestParam String userName,
+                                                      @RequestHeader ("Authorization") String token) {
+                   return batchService.searchTrainers(userName, token);
+               }
+               
+               @PostMapping(value = "/batch/save")
+               public ResponseEntity<?> saveBatch(
+                       @RequestParam("batchTitle") String batchTitle,
+                       @RequestParam("startDate") LocalDate startDate,
+                       @RequestParam("endDate") LocalDate endDate,
+                       @RequestParam("noOfSeats") Long noOfSeats,
+                       @RequestParam("amount") Long amount,
+                       @RequestParam("courses") String courses, // Assuming it's a JSON string of courses
+                       @RequestParam("trainers") String trainers, // Assuming it's a JSON string of trainers
+                       @RequestParam(value = "batchImage", required = false) MultipartFile batchImage,
+                       @RequestHeader("Authorization") String token) {
+                   
+                   // Your validation logic and service call here
+                   return batchService.SaveBatch(batchTitle, startDate, endDate, noOfSeats, amount, courses, trainers, batchImage, token);
+               }
+               
+               @PatchMapping(value = "/batch/Edit/{batchId}")
+               public ResponseEntity<?> EditBatc(
+            		   @PathVariable("batchId") Long batchId,
+                       @RequestParam("batchTitle") String batchTitle,
+                       @RequestParam("startDate") LocalDate startDate,
+                       @RequestParam("endDate") LocalDate endDate,
+                       @RequestParam("noOfSeats") Long noOfSeats,
+                       @RequestParam("amount") Long amount,
+                       @RequestParam("courses") String courses, // Assuming it's a JSON string of courses
+                       @RequestParam("trainers") String trainers, // Assuming it's a JSON string of trainers
+                       @RequestParam(value = "batchImage", required = false) MultipartFile batchImage,
+                       @RequestHeader("Authorization") String token) {
+                   
+                   // Your validation logic and service call here
+                   return batchService.updateBatch(batchId,batchTitle, startDate, endDate, noOfSeats, amount, courses, trainers, batchImage, token);
+               }
+               
+               @PostMapping(value = "/batch/partial/save")
+               public ResponseEntity<?> saveBatchforCourseCreation(
+                       @RequestParam("batchTitle") String batchTitle,
+                       @RequestParam("startDate") LocalDate startDate,
+                       @RequestParam("endDate") LocalDate endDate,
+                       @RequestHeader("Authorization") String token) {
+                   
+                   // Your validation logic and service call here
+                   return batchService.SaveBatchforCourseCreation(batchTitle, startDate, endDate, token);
+               }
+
+
+               @GetMapping("/Batch/get")
+               public ResponseEntity<?> getbatch(@RequestParam Long id,
+                                                      @RequestHeader ("Authorization") String token) {
+                   return batchService.GetBatch(id, token);
+               }
+               
+               @GetMapping("/Batch/getAll")
+               public ResponseEntity<?> getAllbatch( @RequestHeader ("Authorization") String token) {
+                   return batchService.GetAllBatch( token);
+               }
+               
+               
+               @GetMapping("/Batch/getAll/{courseid}")
+               public ResponseEntity<?> getAllBatchforCourse(@PathVariable Long courseid, @RequestHeader ("Authorization") String token) {
+                   return batchService.GetAllBatchByCourseID(token, courseid);
+               }
+               
+               @GetMapping("/Batch/getEnrolledBatch")
+               public ResponseEntity<?> getAllBatchforuser( @RequestHeader ("Authorization") String token) {
+                   return batchService.GetAllBatchByuser(token);
+               }
+               
+               @DeleteMapping("/batch/delete/{batchid}")
+               public ResponseEntity<?> DeleteBatch(@PathVariable Long batchid, @RequestHeader ("Authorization") String token) {
+                   return batchService.deleteBatchById(batchid,token);
+               }
+               
+               //-------------------Attendance Service---------------
+               
+               @GetMapping("/view/StudentAttendance/{userId}")
+               public ResponseEntity<?>getAttendanceForuser(@PathVariable Long userId,@RequestHeader ("Authorization") String token, Pageable pageable){
+            	   return attendanceService.getAttendance(token, userId,pageable);
+               }
+               @GetMapping("/view/MyAttendance")
+               public ResponseEntity<?>GetMyAttendance(@RequestHeader ("Authorization") String token, Pageable pageable){
+            	   return attendanceService.getMyAttendance(token,pageable);
+               }
+               @PostMapping("/update/attendance")
+               public ResponseEntity<?>UpdateAttendance(@RequestHeader ("Authorization") String token, Long Id,String status){
+            	   return attendanceService.updateAttendance(token, Id, status);
                }
 }
 

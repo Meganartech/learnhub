@@ -25,6 +25,7 @@ public class ZoomSettings {
 	  private boolean emailNotification;
 	  private boolean hostVideo;
 	  private boolean joinBeforeHost;
+	  private Boolean waitingRoom ;
 	
 
 @OneToMany(mappedBy = "zoomSettings", cascade = CascadeType.ALL, orphanRemoval = true)

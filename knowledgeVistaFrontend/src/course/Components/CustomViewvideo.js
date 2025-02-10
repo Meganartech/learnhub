@@ -276,8 +276,9 @@ const CustomViewvideo = () => {
                 <div className="VideoFrame">
                   {videoType === "local" ? (
                     <ReactPlayer
+                    className="vdobox"
                       url={videoSource}
-                     className="vdobox"
+                        width="100%"
                       controls
                       onProgress={handleOnProgress}
                       onSeek={handleOnSeek}
@@ -300,6 +301,7 @@ const CustomViewvideo = () => {
                   ) : videoType === "youtube" ? (
                     <ReactPlayer
                      className="vdobox"
+                    width="100%"
                        playing
                       controls
                       url={videoSource ? videoSource : null}
@@ -350,8 +352,8 @@ const CustomViewvideo = () => {
                           />
                         </div>
                         <div className="child">
-                          <h4>{lesson.lessontitle}</h4>
-                          <h6>{lesson.lessonDescription}</h6>
+                          <h5 className="courseName">{lesson.lessontitle}</h5>
+                          <p className="courseDescription">{lesson.lessonDescription}</p>
                         </div>
                       </div>
                     ))}

@@ -46,7 +46,35 @@ const StudentCalenderView = () => {
 
     fetchItems();
   }, []);
-
+  const handlClickJoinUrl = async (event) => {
+    try {
+      console.log("hii in handlClickJoinUrl",event)
+        const response =await axios.get(`${baseUrl}/api/zoom/Join/${event.id}`, {
+          headers: {
+            'Authorization': token,
+          },
+        });
+  
+       console.log(response.data)
+       if (typeof response.data === 'string' && response.data.startsWith('http')) {
+        window.open(response.data, '_blank');
+    }
+      
+    } catch (error) {
+      if(error.response && error.response.status===409){
+        MySwal.fire({
+          title: 'Meeting Not Started',
+          text: 'This meeting was not Started Yet. Please try again later.!',
+          icon: 'info',
+      });
+      }else{
+      console.error(error);
+      // Optionally, show an error message
+      // MySwal.fire('Error!', 'An error occurred while deleting the meeting.', 'error');
+      throw error
+      }
+    }
+  };
   const eventStyleGetter = (event) => {
     if(event){
       return {
@@ -59,7 +87,7 @@ const StudentCalenderView = () => {
   };
   const handleEventClick = (event) => {
     if (event.joinUrl) {
-        window.open(event.joinUrl, '_blank');
+      handlClickJoinUrl(event);
     } else {
         MySwal.fire({
             title: 'No Join URL Available',

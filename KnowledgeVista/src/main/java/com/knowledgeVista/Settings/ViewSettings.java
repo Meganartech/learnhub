@@ -21,6 +21,8 @@ public class ViewSettings {
         @Column(unique=true)
 	    private String settingName;
 	    private Boolean settingValue;
+	    private String settingStrValue;
+	    private Long settingLongValue;
 		@Override
 		public String toString() {
 			return "ViewSettings [id=" + id + ", settingName=" + settingName + ", settingValue=" + settingValue + "]";

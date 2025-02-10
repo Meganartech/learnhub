@@ -44,6 +44,7 @@ const SelectPaymentGateway = ({ orderData, setorderData,setopenselectgateway }) 
 
   useEffect(() => {
     fetchpaymentTypedetails();
+    console.log(orderData)
   }, []);
 
   
@@ -182,26 +183,26 @@ const SelectPaymentGateway = ({ orderData, setorderData,setopenselectgateway }) 
               <div className="flex-grow-1">
                 <div className="row">
                   <label className="col-form-label col-sm-6">
-                    Course Name:
+                    Batch Name:
                   </label>
                   <label
                     className="col-form-label col-sm-6"
                     style={{ textAlign: "right" }}
                   >
-                    {orderData?.coursename}
+                    {orderData?.batchName}
                   </label>
                 </div>
                 <div className="horizontal-line"></div>
                 <div className="row">
                   <label className="col-form-label col-sm-6">
-                    Course Amount:
+                    batch Amount:
                   </label>
                   <label
                     className="col-form-label col-sm-6"
                     style={{ textAlign: "right" }}
                   >
                      <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1" : "fa-solid fa-dollar-sign mr-1"}></i>
-                    {orderData?.courseAmount}
+                    {orderData?.batchAmount}
                   </label>
                   {orderData?.paytype === "PART" && (
                     <>
@@ -222,7 +223,7 @@ const SelectPaymentGateway = ({ orderData, setorderData,setopenselectgateway }) 
                         style={{ textAlign: "right" }}
                       >
                          <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1" : "fa-solid fa-dollar-sign mr-1"}></i>
-                        {orderData?.amount}
+                        {orderData?.batchAmount}
                       </label>
                     </>
                   )}

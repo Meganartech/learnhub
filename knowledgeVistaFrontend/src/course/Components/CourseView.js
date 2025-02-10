@@ -11,6 +11,7 @@ const CourseView = ({ filteredCourses }) => {
   const userId = sessionStorage.getItem("userid");
   const [submitting, setsubmitting] = useState(false);
   const token = sessionStorage.getItem("token");
+  const role=sessionStorage.getItem("role");
   const navigate =useNavigate();
   const Currency=sessionStorage.getItem("Currency");
   const[openselectgateway,setopenselectgateway]=useState(false)
@@ -24,81 +25,81 @@ const CourseView = ({ filteredCourses }) => {
     paytype:"",
     url:""
 })
-  useEffect(() => {
-    const pendingPayment = JSON.parse(sessionStorage.getItem("pendingPayment"));
+  // useEffect(() => {
+  //   const pendingPayment = JSON.parse(sessionStorage.getItem("pendingPayment"));
 
-    if (pendingPayment) {
-      const { courseId, paytype } = pendingPayment;
+  //   if (pendingPayment) {
+  //     const { courseId, paytype } = pendingPayment;
 
-      // Clear pending payment data from localStorage
-      sessionStorage.removeItem("pendingPayment");
-      const userId = sessionStorage.getItem("userid");
-      // Resume the payment process
-      handlepaytype(courseId, userId, paytype);
-    }
-  }, []);
+  //     // Clear pending payment data from localStorage
+  //     sessionStorage.removeItem("pendingPayment");
+  //     const userId = sessionStorage.getItem("userid");
+  //     // Resume the payment process
+  //     handlepaytype(courseId, userId, paytype);
+  //   }
+  // }, []);
 
-  const handlepaytype = (courseId, userId, paytype) => {
-    let url = "";
-    if (paytype === "FULL") {
-      url = "/Full/getOrderSummary";
-      FetchOrderSummary(courseId, userId, url);
-    } else {
-      MySwal.fire({
-        icon: "question",
-        title: "Payment Type?",
-        text: "Want To Pay the Amount Partially or Fully? ",
-        showDenyButton: true,
-        showCancelButton: true,
-        confirmButtonColor: "#4e73df",
-        denyButtonColor: "#4e73df",
-        confirmButtonText: `Pay Fully `,
-        denyButtonText: `Pay in  Part`,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          url = "/Full/getOrderSummary";
-          FetchOrderSummary(courseId, userId, url);
-        } else if (result.isDenied) {
-          url = "/Part/getOrderSummary";
+  // const handlepaytype = (courseId, userId, paytype) => {
+  //   let url = "";
+  //   if (paytype === "FULL") {
+  //     url = "/Full/getOrderSummary";
+  //     FetchOrderSummary(courseId, userId, url);
+  //   } else {
+  //     MySwal.fire({
+  //       icon: "question",
+  //       title: "Payment Type?",
+  //       text: "Want To Pay the Amount Partially or Fully? ",
+  //       showDenyButton: true,
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#4e73df",
+  //       denyButtonColor: "#4e73df",
+  //       confirmButtonText: `Pay Fully `,
+  //       denyButtonText: `Pay in  Part`,
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         url = "/Full/getOrderSummary";
+  //         FetchOrderSummary(courseId, userId, url);
+  //       } else if (result.isDenied) {
+  //         url = "/Part/getOrderSummary";
 
-          FetchOrderSummary(courseId, userId, url);
-        }
-      });
-    }
-  };
-  const FetchOrderSummary=async(courseId, userId, url) =>{
-    try {
-          setsubmitting(true);
-          const data = JSON.stringify({
-            courseId: courseId,
-            userId: userId,
-          });
+  //         FetchOrderSummary(courseId, userId, url);
+  //       }
+  //     });
+  //   }
+  // };
+//   const FetchOrderSummary=async(courseId, userId, url) =>{
+//     try {
+//           setsubmitting(true);
+//           const data = JSON.stringify({
+//             courseId: courseId,
+//             userId: userId,
+//           });
     
-          const response = await axios.post(`${baseUrl}${url}`, data, {
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-            },
-          });
-          setsubmitting(false);
+//           const response = await axios.post(`${baseUrl}${url}`, data, {
+//             headers: {
+//               Authorization: token,
+//               "Content-Type": "application/json",
+//             },
+//           });
+//           setsubmitting(false);
 
-setorderData(response.data)
-setopenselectgateway(true)
-        }catch(error){
-          setsubmitting(false);
-          setopenselectgateway(false);
-              if(error.response && error.response.status===400){
+// setorderData(response.data)
+// setopenselectgateway(true)
+//         }catch(error){
+//           setsubmitting(false);
+//           setopenselectgateway(false);
+//               if(error.response && error.response.status===400){
              
-              MySwal.fire({
-                icon: "error",
-                title: "Error creating order:",
-                text: error.response.data ? error.response.data : "error occured",
-              });
-            }else{
-              throw error
-            }
-        }
-  }
+//               MySwal.fire({
+//                 icon: "error",
+//                 title: "Error creating order:",
+//                 text: error.response.data ? error.response.data : "error occured",
+//               });
+//             }else{
+//               throw error
+//             }
+//         }
+//   }
  
  
   const handleClick = async (event, id, amount, url) => {
@@ -122,6 +123,12 @@ setopenselectgateway(true)
         if (response.status === 200) {
           const message = response.data;
           navigate(message);
+        }else if(response.status===204){
+          MySwal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "cannot Find the  Course ",
+          });
         }
       } catch (error) {
         if (error.response.status === 401) {
@@ -129,6 +136,14 @@ setopenselectgateway(true)
             icon: "error",
             title: "Oops...",
             text: "cannot Access Course ",
+          }).then(()=>{
+            navigate("/unauthorized")
+          })
+        }else if(error.response.status === 403){
+          MySwal.fire({
+            icon: "error",
+            title: "You Cannot Access This Course",
+            text: "This Course was not  Assigned to You  ",
           });
         } else {
           // MySwal.fire({
@@ -153,6 +168,7 @@ setopenselectgateway(true)
         <SelectPaymentGateway orderData={orderData} setorderData={setorderData} setopenselectgateway={setopenselectgateway}/>
       )}
       <div className="page-header"></div>
+    
       {filteredCourses.length > 0 ? (
         <div className="row">
         
@@ -161,7 +177,7 @@ setopenselectgateway(true)
             .reverse()
             .map((item) => (
               <div className="col-md-6 col-xl-3 course" key={item.courseId}>
-                <div className="card mb-3">
+                <div className="card mb-3 ">
                   <img
                    style={{ cursor: "pointer" }}
                    onClick={(e) => {
@@ -199,11 +215,18 @@ setopenselectgateway(true)
                    <p title={item.courseDescription} className="courseDescription">
                     {item.courseDescription}
                     </p>
-                    <div>
+                   {role ==="USER" &&  <div>
                       {item.amount === 0 ? (
                         <a
                           title="Enroll For Free"
-                          onClick={(e)=>{ e.preventDefault();navigate(item.courseUrl)}}
+                          onClick={(e) => {
+                            handleClick(
+                              e,
+                              item.courseId,
+                              item.amount,
+                              item.courseUrl
+                            );
+                          }}
                           className="btn btn-sm btn-outline-success w-100"
                         >
                           Enroll for Free
@@ -220,16 +243,58 @@ setopenselectgateway(true)
                           </div>
                           <button
                             className=" btn btn-sm btn-outline-primary"
-                            onClick={() =>
-                              handlepaytype(item.courseId, userId, item.paytype)
-                            }
+                            onClick={(e) => {
+                              handleClick(
+                                e,
+                                item.courseId,
+                                item.amount,
+                                item.courseUrl
+                              );
+                            }}
                             title="Enroll Now"
                           >
                             Enroll Now
                           </button>
                         </div>
                       )}
+                    </div>}
+                    {(role ==="ADMIN"||role==="TRAINER") &&  <div>
+                      
+                      <div className="card-text">
+                      {item.amount === 0 ? (
+                        <a
+                        href="#"
+                          className=" btn btn-sm btn-outline-success w-100"
+                          onClick={(e) => {
+                            handleClick(
+                              e,
+                              item.courseId,
+                              item.amount,
+                              item.courseUrl
+                            );
+                          }}
+                        >
+                          <label>
+                          Free
+                          </label>
+                        </a>
+                      ) : (
+                        <a className="btn btn-sm  btn-outline-primary w-100"     onClick={(e) => {
+                          handleClick(
+                            e,
+                            item.courseId,
+                            item.amount,
+                            item.courseUrl
+                          );
+                        }}>
+                       <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1 " : "fa-solid fa-dollar-sign mr-1"}></i>
+                          <label>{item.amount}</label>
+                        </a>
+                      )}
                     </div>
+                         
+                       
+                    </div>}
                   </div>
                 </div>
               </div>
@@ -240,6 +305,7 @@ setopenselectgateway(true)
         <h1 className="text-light ">No Course Found </h1>
         </div>
       )}
+    
     </>
   );
 };

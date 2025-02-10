@@ -215,10 +215,19 @@ const SheduleZoomMeet = () => {
   useEffect(() => {
     calculateRoundedTime();
   }, []);
-
+  function generateRandomString() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length; // Get the actual length of the character set
+  
+    return Array.from({ length: 6 }, () => 
+      characters.charAt(Math.floor(Math.random() * charactersLength))
+    ).join('');
+  }
+  
   const [zoomrequest, setzoomrequest] = useState({
     agenda: "",
     duration: "40",
+    password:generateRandomString(),
     recurrence:Reccuranceobject,
     settings: {
       audio: "",
@@ -232,6 +241,7 @@ const SheduleZoomMeet = () => {
         },
       ],
       muteUponEntry: true,
+      waitingRoom:false,
       participantVideo: false,
       pushChangeToCalendar: true,
     },
@@ -264,39 +274,37 @@ const SheduleZoomMeet = () => {
       },
     }));
   };
-
-  const handleEmailClick = (email) => {
-    // Create a new object with the "email" property
-    const newInvitee = { email: email };
-
+  const handleEmailRemove = (emailToRemove) => {
     setSelectedEmails((prev) => {
-      // Check if the email already exists in the selectedEmails array
-      const existingEmailIndex = prev.findIndex((e) => e.email === email);
-
-      let updatedEmails;
-
-      // If email exists, remove it from the list
-      if (existingEmailIndex !== -1) {
-        updatedEmails = prev.filter((e, index) => index !== existingEmailIndex);
-      } else {
-        // If email doesn't exist, add the new object to the list
-        updatedEmails = [...prev, newInvitee];
-      }
-
-      // Update zoomrequest.settings.meetingInvitees efficiently
+      const updated = new Set(prev);
+      updated.delete(emailToRemove);
       setzoomrequest((prevZoomRequest) => ({
         ...prevZoomRequest,
         settings: {
           ...prevZoomRequest.settings,
-          meetingInvitees: updatedEmails,
+          groupinviteeDto:[...updated] ,
         },
       }));
-
-      // Return the updated emails array
-      return updatedEmails;
+      return [...updated];
     });
+  };
+  const handleEmailClick = (email) => {
+   
+    setSelectedEmails((prev)=>{
+      const updated=new Set(prev);
+      updated.add(email)
+      setzoomrequest((prevZoomRequest) => ({
+        ...prevZoomRequest,
+        settings: {
+          ...prevZoomRequest.settings,
+          groupinviteeDto:[...updated] ,
+        },
+      }));
+      return [...updated]
+    })
+    
      setSearchQuery("");
-     setUsers("");
+     setUsers([]);
   };
 
   const handleSearch = async (query) => {
@@ -324,10 +332,10 @@ const SheduleZoomMeet = () => {
             query,
           },
         });
-        const selectedEmailsSet = new Set(selectedEmails.map((emailObj) => emailObj.email));
-        const filteredUsers = response.data.filter(user => !selectedEmailsSet.has(user));
-
-        setUsers(filteredUsers);
+       // const selectedEmailsSet = new Set(selectedEmails.map((emailObj) => emailObj.email));
+       // const filteredUsers = response.data.filter(user => !selectedEmailsSet.has(user));
+            
+        setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
         throw error
@@ -418,9 +426,6 @@ const updateStartTime = (event) => {
       ...prevRequest,
       startTime: formattedStartTime,
     }));
-
-    console.log('Updated start time:', formattedStartTime);
-
     return newFormData;
   });
 };
@@ -479,10 +484,14 @@ const updateStartTime = (event) => {
         text: "Meeting Created Successfully",
         icon: "success",
         confirmButtonText: "OK",
-      }).then(() => {
-        const sentence = "New Meeting Scheduled:"
-        navigate('/mailSending', { state: { meetingData: response.data ,sentence} });
-      });
+      })
+      .then(() => {
+        window.location.reload();
+        });
+      // .then(() => {
+      //   const sentence = "New Meeting Scheduled:"
+      //   navigate('/mailSending', { state: { meetingData: response.data ,sentence} });
+      // });
     } catch (error) {
       setissubmitting(false);
       if(error.response && error.response.status===400){
@@ -518,6 +527,16 @@ const updateStartTime = (event) => {
     });
     setReccuranceDescription("")
   };
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+    if(newPassword.length>=1){
+    setzoomrequest({
+      ...zoomrequest,
+      password: newPassword,
+    });
+  }
+  };
+
   
   return (
     <div>
@@ -728,24 +747,24 @@ const updateStartTime = (event) => {
                 {selectedEmails.length >0 &&(
                   <div className="listemail"> {selectedEmails.map((email,index)=> 
                 <div key={index}  className="selectedemail">
-                    {email.email} <i onClick={() => handleEmailClick(email.email)} className="fa-solid fa-xmark"></i>
+                    {email.name} <i onClick={() => handleEmailRemove(email)} className="fa-solid fa-xmark"></i>
                   </div>)}</div>)}
             
                 <input
                   type="input"
                   id="customeinpu"
                   className="form-control"
-                  placeholder="search member..."
+                  placeholder="search member,course or Batch..."
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                 />
                 </div>
                 {users.length > 0 && (
                   <div className="user-list">
-                    {users.map((user) => (
-                      <div key={user} className="usersingle">
+                    {users.map((user,index) => (
+                      <div key={index} className="usersingle">
                         <label id="must" className="p-1" htmlFor={user} onClick={() => handleEmailClick(user)}>
-                          {user}
+                          {user.name}
                         </label>
                       </div>
                     ))}
@@ -753,7 +772,40 @@ const updateStartTime = (event) => {
                 )}
               </div>
             </div>
-
+   <div className="form-group row">
+              <label htmlFor="options"className="col-sm-2 col-form-label">
+                Security <span className="text-danger">*</span>
+              </label>
+              <div className="col-sm-9">
+                <div className="zoomopt">
+                <input
+                    type="checkbox"
+                    checked
+                    disabled
+                  /> 
+<div style={{display:"flex"}}>
+                  <p>Passcode</p>
+                  <input
+        type="text"
+        name="password"
+        value={zoomrequest.password}
+        className="form-control form-control-sm col-sm-3 ml-3"
+        onChange={handlePasswordChange}
+      />
+                </div>
+                <div className="zoomopt">
+                  <input
+                    type="checkbox"
+                    name="waitingRoom"
+                    checked={zoomrequest.settings.waitingRoom}
+                    onChange={handleOptionsChange}
+                 
+                  />
+                  <p>Waiting Room</p>
+                </div>
+             </div>
+              </div>
+            </div>
             <div className="form-group row">
               <label htmlFor="video"className="col-sm-2 col-form-label">
                 Video <span className="text-danger">*</span>

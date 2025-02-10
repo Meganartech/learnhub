@@ -340,10 +340,10 @@ const EditCourseForm = ({}) => {
                 </div>
                 </div>
             <div className="form-group row p-3">
-            <div className="col-sm-6">
+            <div className="col-sm-7">
                   <div className="row">
                   <label htmlFor="duration" 
-                  className=" col-form-label">
+                  className=" col-form-label  col-sm-5 p-0 pt-2">
                      Duration (Hours) <span className="text-danger">*</span>
                   </label>
                   <div className="col">
@@ -362,10 +362,10 @@ const EditCourseForm = ({}) => {
                     </div>
                 </div>
                 
-                <div className="col-sm-6">
+                <div className="col-sm-5">
                 <div className="row">
-                <label htmlFor="noofseats" 
-                className=" col-form-label">
+                <label htmlFor="noofseats " 
+                className=" col-form-label col-sm-5">
                   Number of Seats <span className="text-danger">*</span>
                 </label>
               <div className="col">

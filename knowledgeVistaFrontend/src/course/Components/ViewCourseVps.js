@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import baseUrl from "../../api/utils";
+import baseUrl from "../../api/utils.js";
 import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";

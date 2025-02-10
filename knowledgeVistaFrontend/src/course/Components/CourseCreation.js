@@ -5,6 +5,7 @@ import baseUrl from "../../api/utils";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Partialpaymentsetting from "./Partialpaymentsetting";
+import CreateBatchModel from "../../Batch/CreateBatchModel";
 
 const CourseCreation = () => {
   const token = sessionStorage.getItem("token");
@@ -13,9 +14,15 @@ const CourseCreation = () => {
   const [nextclick, setnextclick] = useState(false);
   const [installmentData, setInstallmentData] = useState([]);
   const [durations, setDurations] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const openModal = () => setIsModalOpen(true);   // Set modal open
+  const closeModal = () => setIsModalOpen(false);  // Set modal close
 
   const [enablechecked, setenablechecked] = useState(false);
   // Initial state for form errors
+    const [searchQueryBatches,setSearchQueryBatches]=useState('')
+    const [Batches, setBatches] = useState({});
+    const[selectedBatches,setSelectedBatches]=useState([])
   const [errors, setErrors] = useState({
     courseName: "",
     courseDescription: "",
@@ -42,8 +49,91 @@ const CourseCreation = () => {
     Noofseats: "",
     courseImage: null,
     base64Image: null,
+    batches:selectedBatches
   });
+  const searchBatches = async (e) => {
+    try {
+      setSearchQueryBatches(e.target.value)
+      const response = await axios.get(`${baseUrl}/searchBatch`, {
+        params: { batchTitle: e.target.value },
+        headers: {
+          Authorization: token,
+        },
+      });
+      setBatches(response.data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+  const handleBatchClick = (item) => {
+    setSelectedBatches((prevSelected) => {
+      // Check if the batch is already selected
+      const exists = prevSelected.find((batchPrev) => batchPrev.batchId === item.batchId);
+      let updatedBatched;
+  
+      if (exists) {
+        // If the batch already exists, do not add it again
+        updatedBatched = prevSelected;
+      } else {
+        // Add the new batch if not already selected
+        updatedBatched = [...prevSelected, { id: item.id, batchId: item.batchId, batchTitle: item.batchTitle }];
+      }
+  
+      // Update the batches in formData
+      setFormData((prev) => ({
+        ...prev,
+        batches: updatedBatched,
+      }));
+  
+      // Return the updated array
+      return updatedBatched;
+    });
+  
+    // Clear any batch selection error
+    setErrors((prev) => ({
+      ...prev,
+      batches: "",
+    }));
+  
+    // Clear search-related states if needed
+    setBatches({});
+    setSearchQueryBatches('');
+  };
+  
+  
+  const handelBatchRemove = (item) => {
+    setSelectedBatches((prevSelected) => {
+      // Ensure prevSelected is an array
+      if (!Array.isArray(prevSelected)) {
+        return []; // Return an empty array if it's not an array
+      }
+  
+      // Check if item is already selected
+      const exists = prevSelected.find((itemprev) => itemprev.id === item.id);
+      let updatedCourses;
+  
+      if (exists) {
+        // Remove the selected item from the array
+        updatedCourses = prevSelected.filter((itemprev) => itemprev.id !== item.id);
+        
+        // You can add additional logic here to add the batch to course creation if needed
+        // Example: setCourseCreationBatches(updatedCourses); (if needed)
+      } else {
 
+        updatedCourses = prevSelected; 
+        // If not found, keep the original array
+      }
+      if(updatedCourses.length===0){
+        setErrors((prev) => ({
+          ...prev,
+          batches: "Batch Cannot Be Empty",
+        }));
+      }
+      return updatedCourses; // Return the updated array
+    });
+   
+  };
+  
   // Handle changes to form inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -225,7 +315,7 @@ const CourseCreation = () => {
       "courseAmount",
       "Duration",
       "Noofseats",
-      "courseImage",
+      "courseImage"
     ];
 
     requiredFields.forEach((field) => {
@@ -237,6 +327,14 @@ const CourseCreation = () => {
         }));
       }
     });
+    if (selectedBatches=== 0) {
+      hasErrors = true;
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        batches: "Select a batch",
+      }));
+     
+    }
     if (!formData.courseImage) {
       hasErrors = true;
       setErrors((prevErrors) => ({
@@ -244,7 +342,13 @@ const CourseCreation = () => {
         courseImage: "Image is Required",
       }));
     }
-
+   if(selectedBatches.length===0){
+    hasErrors = true;
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      batches: "batch is Required",
+    }));
+   }
     if (!hasErrors) {
       setnextclick(true);
     }
@@ -263,6 +367,7 @@ const CourseCreation = () => {
       formDataToSend.append("Trainer", formData.Trainer);
       formDataToSend.append("Duration", formData.Duration);
       formDataToSend.append("Noofseats", formData.Noofseats);
+      formDataToSend.append("batches",JSON.stringify(selectedBatches))
       if (enablechecked) {
         formDataToSend.append("paytype", "PART");
 
@@ -339,7 +444,7 @@ const CourseCreation = () => {
       ) : (
         <div className="row">
           <div className="col-12">
-            <div className="navigateheaders">
+         <div className="navigateheaders">
               <div onClick={() => { navigate(-1); }}>
                 <i className="fa-solid fa-arrow-left"></i>
               </div>
@@ -453,10 +558,10 @@ const CourseCreation = () => {
 
               {/* Duration, Number of Seats, and Course Amount */}
               <div className="form-group row p-3">
-                <div className="col-sm-6" ref={Duration}>
+                <div className="col-sm-7" ref={Duration}>
                   <div className="row">
                     <label htmlFor="Duration"
-                     className="col-form-label">
+                     className="col-form-label col-sm-5 p-0 pt-2">
                       Duration (Hours) <span className="text-danger">*</span>
                     </label>
                     <div className="col">
@@ -475,9 +580,9 @@ const CourseCreation = () => {
                   </div>
                 </div>
 
-                <div className="col-sm-6" ref={Noofseats}>
+                <div className="col-sm-5" ref={Noofseats}>
                   <div className="row">
-                    <label htmlFor="Noofseats" className="col-form-label">
+                    <label htmlFor="Noofseats" className="col-form-label col-sm-5">
                       Number of Seats <span className="text-danger">*</span>
                     </label>
                     <div className="col">
@@ -495,9 +600,76 @@ const CourseCreation = () => {
                     </div>
                   </div>
                 </div>
-
-             
               </div>
+              <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">
+                    Select Batch
+                    <span className="text-danger">*</span>
+                  </label>
+                  <div className="col-sm-7">
+                  <div className="inputlike">
+                  {selectedBatches.length > 0 && (
+        <div className="listemail">
+          {selectedBatches.map((item) => (
+            <div key={item.id} className="selectedemail">
+              {item.batchTitle}{" "}
+              <i
+                onClick={() => handelBatchRemove(item)}
+                className="fa-solid fa-xmark"
+              ></i>
+            </div>
+          ))}
+        </div>
+      )}
+
+                      <input
+                        type="input"
+                        id="customeinpu"
+                        className={`form-control ${errors.batches && "is-invalid"}`}
+                        placeholder="search batch..."
+                        onChange={searchBatches}
+                        value={searchQueryBatches}
+                      />
+                      <div className="invalid-feedback">{errors.batches}</div>
+                    </div>
+                    {Batches.length > 0 && (
+        <div className="user-list">
+          {Batches.map((item) => (
+            <div key={item.id} className="usersingle">
+              <label
+                id="must"
+                className="p-1 w-100"
+                htmlFor={item.batchTitle}
+                onClick={() => handleBatchClick(item)}
+              >
+                {item.batchTitle}
+              </label>
+            </div>
+          ))}
+        </div>
+      )}
+                  </div>
+                  <div className="col-sm-2 pt-1">
+                  <button
+        type="button"
+        className="btn btn-primary"
+        style={{ minWidth: '150px' }}
+        onClick={openModal} // Trigger modal open on click
+      >
+        Add New Batch
+      </button>
+
+      {/* Pass state and functions to the CreateBatchModel component */}
+      {isModalOpen && (
+        <CreateBatchModel 
+          setSelectedBatches={setSelectedBatches}
+          closeModal={closeModal}  // Pass close function to the modal
+          setErrors={setErrors}
+        />
+      )}
+
+                  </div>
+                </div>
               <div className="form-group row" ref={courseAmount}>
                  
                     <label htmlFor="courseAmount" className="col-sm-3 col-form-label">

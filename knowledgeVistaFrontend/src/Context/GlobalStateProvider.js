@@ -39,6 +39,7 @@ export const GlobalStateProvider = ({ children }) => {
       }
     }
     fetchactiveprofile();
+    
     const fetchLabels = async () => {
       try {
         // Check if data is already in sessionStorage

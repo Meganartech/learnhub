@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ErrorBoundary from "../ErrorBoundary";
 import DisplaysocialLogin from "./DisplaysocialLogin";
 import Sitesettings from "./Sitesettings";
+import AttendanceThresholdMinutes from "./AttendanceThresholdMinutes";
 
 const SettingsComponent = () => {
   const navigate = useNavigate();
@@ -38,9 +39,13 @@ const SettingsComponent = () => {
         <ErrorBoundary>
           <DisplaysocialLogin/>
         </ErrorBoundary>
+        <ErrorBoundary>
+        <AttendanceThresholdMinutes/>
+      </ErrorBoundary>
       <ErrorBoundary>
         <Sitesettings/>
       </ErrorBoundary>
+     
        
         </div>
         </div>

@@ -100,7 +100,7 @@ const MyAssignedcourses = () => {
               </a>
             )}
           </div>
-          {courses.length === 0 ? (
+          {courses?.length === 0 ? (
             <div className="centerflex">
               <div className="enroll pb-5 pt-4">
                 <h3 className="mt-5">No courses Found </h3>
@@ -108,7 +108,7 @@ const MyAssignedcourses = () => {
             </div>
           ) : (
             <div className="row">
-              {courses.map((item) => (
+              {Array.isArray(courses) &&  courses?.map((item) => (
                 <div className="col-md-6 col-xl-3 course" key={item.courseId}>
                   <div className="card mb-3">
                     <img
