@@ -22,7 +22,7 @@ const CreateBatch = () => {
     courses:selectedCourse,
     trainers:selectedTainers,
     noOfSeats:"",
-    amount:"",
+    amount:0,
     BatchImage:null,
     base64Image:null
   })
@@ -105,13 +105,13 @@ const CreateBatch = () => {
         updatedCourses= prevSelected
       } else {
         // Add the course if not selected
-        updatedCourses= [...prevSelected, { courseId: course.courseId, courseName: course.courseName }];
+        updatedCourses= [...prevSelected, { courseId: course.courseId, courseName: course.courseName ,amount:course.amount}];
       }
  
     setbatch((prevBatch) => ({
       ...prevBatch,
       courses:updatedCourses,
-      amount: prevBatch.amount +  course.amount, // Update batch amount
+      amount: Number(prevBatch.amount) + Number(course.amount), // Update batch amount
     }));
     return updatedCourses;
   })
@@ -145,19 +145,30 @@ const CreateBatch = () => {
    
     setSelectedCourse((prevSelected) => {
       // Check if course is already selected
-      const exists = prevSelected.find((courseprev) => courseprev.courseId === course.courseId);
-       let updatedCourses
+      const exists = prevSelected.find(
+        (courseprev) => courseprev.courseId === course.courseId
+      );
+    
       if (exists) {
-       
-        updatedCourses= prevSelected.filter((courseprev) => courseprev.courseId !== course.courseId);
-        setbatch((prevBatch) => ({
-          ...prevBatch,
-          courses:updatedCourses,
-          amount: prevBatch.amount -  course.amount, // Update batch amount
-        }));
-      } 
-      return updatedCourses
+        const updatedCourses = prevSelected.filter(
+          (courseprev) => courseprev.courseId !== course.courseId
+        );
+        setbatch((prevBatch) => {
+          console.log("Before subtraction:", prevBatch.amount, "Course Amount:", course ,Number(prevBatch.amount) - Number(course.amount));
+          
+          return {
+            ...prevBatch,
+            courses: updatedCourses,
+            amount: Number(prevBatch.amount) - Number(course.amount), // Ensure proper subtraction
+          };
+        });
+    
+        return updatedCourses; // Return updated courses list
+      }
+    
+      return prevSelected; // If not found, return original list
     });
+    
     
   };
   const handletrainerRemove = (trainer) => {
@@ -341,7 +352,7 @@ const CreateBatch = () => {
           courses: [],
           trainers: [],
           noOfSeats: "",
-          amount: "",
+          amount: 0,
         });
         setSelectedCourse([]);
         setselectedTrainers([])
