@@ -16,6 +16,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const Currency=sessionStorage.getItem("Currency");
+  const Role=sessionStorage.getItem("role");
   const MySwal = withReactContent(Swal);
   const token = sessionStorage.getItem("token");
   const [Courses, setCourses] = useState([]);
@@ -39,11 +40,17 @@ const Dashboard = () => {
 const[StudentFest,setStudentFest]=useState([
     { name: '', profile: null, freeCourses: "", paidCourses: "", totalStudents: "" ,pending:""},
 ])
+
+const[StudentFestSysAdmin,setStudentFestSysAdmin]=useState([
+    { name: '', batchName: "", courseName: "" ,amount:""},
+])
   const [isvalid, setIsvalid] = useState();
    const [isEmpty, setIsEmpty] = useState();
 
   //need to change
   useEffect(() => {
+    if (Role !== "ADMIN") return;
+        console.log("called")
     const fetchData = async () => {
       try {
         const response = await axios.get(`${baseUrl}/api/v2/GetAllUser`, {
@@ -71,6 +78,7 @@ const[StudentFest,setStudentFest]=useState([
   }, []);
 
   useEffect(() => {
+    if (Role !== "ADMIN") return;
     const fetchCounts = async () => {
       try {
         //  /triggerError ===> api to trigger error    
@@ -170,7 +178,42 @@ const fetchstorage=async()=>{
     fetchStudentFects();
     fetchstorage();
   }, []);
-  const convertToGB = (value) => {
+
+
+  useEffect(() => {
+    if (Role !== "SYSADMIN") return;
+    const fetchCounts = async () => {
+      try {
+        //  /triggerError ===> api to trigger error    
+             
+        const response = await axios.get(`${baseUrl}/sysadmin/dashboard`, {
+          headers: {
+            Authorization: token,
+          },
+        });
+
+        if (response.status === 200) {
+          const data = response.data;
+          setcountdetails(data.paymentsummary);
+          setStudentFestSysAdmin(data.paymentlist);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+         
+          navigate("/unauthorized")
+          return;
+        }
+        // MySwal.fire({
+        //   icon: "error",
+        //   title: "Some Error Occurred",
+        //   text: error.message,
+        // });
+        throw error
+      }
+    };
+    fetchCounts();
+  }, []);
+const convertToGB = (value) => {
     if (value.toLowerCase().includes("mb")) {
       // Convert MB to GB
       return parseFloat(value) / 1024;
@@ -180,16 +223,16 @@ const fetchstorage=async()=>{
     }
     return 0; // Default fallback in case of an invalid value
   };
-
   // Convert all values to GB
   const totalGB = convertToGB(storagedetail.total);
   const usedGB = convertToGB(storagedetail.StorageUsed);
 
   // Calculate percentage of storage used
   const usedPercentage = (usedGB / totalGB) * 100;
-  
+
 
   return (
+    Role!="SYSADMIN"?
       <>
         <div className="page-header">
             <div className="page-block">
@@ -473,7 +516,282 @@ const fetchstorage=async()=>{
                 </div>
             </div>
                 </div>
-                </>      
+                </>  
+                :<>
+                <div className="page-header">
+            <div className="page-block">
+                <div className="row align-items-center">
+                    <div className="col-md-12">
+                        <div className="page-header-title">
+                            <h5 className="m-b-10">Dashboard </h5>
+                        </div>
+                        <ul className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="#" onClick={()=>{ navigate("/admin/dashboard")}}><i className="feather icon-home"></i></a></li>
+                            <li className="breadcrumb-item"><a href="#">Dashboard </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className="row">
+            <div className="col-lg-6 col-md-12">
+                <div className="row">
+                    <div className="col-sm-12">
+                        <div className="card support-bar overflow-hidden"  style={{height: "96%" }}>
+                            <div className="card-body pb-0">
+                                <h2 className="m-0"> <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign" : "fa-solid fa-dollar-sign"}></i> {countdetails.amountRecived}</h2>
+                                <span className="text-c-blue">Total Course Revenue</span>
+                                <p className="mb-3 mt-3">Total number of courses calculated amount.</p>
+                            
+                            </div>
+                            <div id="support-chart">
+                              
+                                <SupportChart data={[0, countdetails.paidcourse, countdetails.trainercount, countdetails.coursecount, 0]} />
+                            </div>
+                            <div className="card-footer bg-primary text-white">
+                                <div className="row text-center">
+                                    <div className="col">
+                                        <h5 className="m-0 text-white">{countdetails.paidcourse}</h5>
+                                        <span>Paid Courses</span>
+                                    </div>
+                                    <div className="col">
+                                        <h5 className="m-0 text-white">{countdetails.trainercount}</h5>
+                                        <span>Trainers</span>
+                                    </div>
+                                    <div className="col">
+                                        <h5 className="m-0 text-white">{countdetails.coursecount}</h5>
+                                        <span>Courses</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* <div className="col-sm-6">
+                        <div className="card support-bar overflow-hidden">
+                            <div className="card-body pb-0">
+                                <h2 className="m-0">Storage</h2>
+                                <span className="text-c-green">Total Storage</span>
+                                <p className="mb-3 mt-3">Number of Video Space Graph</p>
+                            </div>
+                            
+                            <div className="radial-bar" > 
+                            <RadialProgressBar percentage={usedPercentage} total={storagedetail.total}/></div>
+                            <div className="card-footer bg-success text-white">
+                                <div className="row text-center">
+                                    <div className="col">
+                                        <h5 className="m-0 text-white">{storagedetail.total}</h5>
+                                        <span>Total Space</span>
+                                    </div>
+                                    <div className="col">
+                                        <h5 className="m-0 text-white">{storagedetail.StorageUsed}</h5>
+                                        <span>used</span>
+                                    </div>
+                                    <div className="col">
+                                        <h5 className="m-0 text-white">{storagedetail.balanceStorage}</h5>
+                                        <span>Available </span>
+                                    </div>
+                             
+                                </div>
+                            </div>
+                        </div>
+                    </div> */}
+                </div>
+            </div>
+            <div className="col-lg-6 col-md-12">
+                <div className="row">
+                    <div className="col-sm-6">
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="row align-items-center">
+                                    <div className="col-8">
+                                        <h4 className="text-c-yellow">{countdetails.availableseats}</h4>
+                                        <h6 className="text-muted m-b-0">Seats</h6>
+                                    </div>
+                                    <div className="col-4 text-right">
+                                        <img src={seats} alt="seats"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="card-footer bg-c-yellow">
+                                <div className="row align-items-center">
+                                    <div className="col-9">
+                                        <p className="text-white m-b-0">Available Seats</p>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-sm-6" style={{cursor:"pointer"}} onClick={()=>{navigate("/dashboard/course")}}>
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="row align-items-center">
+                                    <div className="col-8">
+                                        <h4 className="text-c-green">{countdetails.coursecount}</h4>
+                                        <h6 className="text-muted m-b-0">Courses</h6>
+                                    </div>
+                                    <div className="col-4 text-right">
+                                        <img src={course} alt="course Icon" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="card-footer bg-c-green">
+                                <div className="row align-items-center">
+                                    <div className="col-9">
+                                        <p className="text-white m-b-0">Total Courses</p>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{cursor:"pointer"}} onClick={()=>{navigate("/view/Students")}}  className="col-sm-6">
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="row align-items-center">
+                                    <div className="col-8">
+                                        <h4 className="text-c-red">{countdetails.usercount}</h4>
+                                        <h6 className="text-muted m-b-0">{displayname && displayname.student_name
+                     ? displayname.student_name
+                    : "Student"}</h6>
+                                    </div>
+                                    <div className="col-4 text-right">
+                                        <img  src={students} alt="students"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="card-footer bg-c-red">
+                                <div className="row align-items-center">
+                                    <div className="col-9">
+                                        <p className="text-white m-b-0">Total {displayname && displayname.student_name
+                     ? displayname.student_name
+                    : "Student"}</p>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{cursor:"pointer"}} onClick={()=>{navigate("/view/Trainer")}} className="col-sm-6">
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="row align-items-center">
+                                    <div className="col-8">
+                                        <h4 className="text-c-blue">{countdetails.trainercount}</h4>
+                                        <h6 className="text-muted m-b-0">{displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}</h6>
+                                    </div>
+                                    <div className="col-4 text-right">
+                                    <img src={trainers} alt="trainers"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="card-footer bg-c-blue">
+                                <div className="row align-items-center">
+                                    <div className="col-9">
+                                        <p className="text-white m-b-0">Total {displayname && displayname.trainer_name
+                    ? displayname.trainer_name
+                    : "Trainer"}</p>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+               {/* <div className="col-xl-6 col-md-12">
+                <div className="card table-card ">
+                    <div className="card-header">
+                        <h5>Trainers</h5>
+                      
+                    </div>
+                    <div className="card-body p-0 listviewDashboard">
+                        <div className="table-responsive">
+                            <table className="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                           
+                                            Name
+                                        </th>
+                                        <th>Paid Courses</th>
+                                        <th>Free Courses</th>
+                                        <th className="text-right">Students</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {trainerFest.map((trainer,index) => (
+          <tr key={index}>
+                                        <td>
+                                           
+                                            <div className="d-inline-block align-middle">
+                                                <img src={trainer.profile!==null ? `data:image/jpeg;base64,${trainer.profile}`:undraw_profile} 
+                                                alt="user"
+                                                 className="img-radius wid-40 align-top m-r-15"/>
+                                                <div className="d-inline-block">
+                                                    <h6>{trainer.name || ""}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{trainer.paidCourses || 0}</td>
+                                        <td>{trainer.freeCourses || 0}</td>
+                                        <td className="text-right">{trainer.students||0}</td>
+                                    </tr>))}
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div> */}
+            <div className="col-xl-12 col-md-12 ">
+                <div className="card table-card ">
+                    <div className="card-header">
+                        <h5>Students</h5>
+                     
+                    </div>
+                    <div className="card-body p-0 listviewDashboard">
+                        <div className="table-responsive">
+                            <table className="table table-hover mb-0">
+                                <thead >
+                                    <tr>
+                                        <th>
+                                           
+                                            Name
+                                        </th>
+                                        <th>Batch</th>
+                                        <th>Courses</th>
+                                        <th className="text-right">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {StudentFestSysAdmin.map((Student,index) => (
+          <tr key={index}>
+                                        <td>
+                                           
+                                            <div className="d-inline-block align-middle">
+                                                <img src={Student.profile ? `data:image/jpeg;base64,${Student.profile}` : undraw_profile}
+                                                alt="user"
+                                                 className="img-radius wid-40 align-top m-r-15"/>
+                                                <div className="d-inline-block">
+                                                    <h6>{Student.name || ""}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{Student.batchName || 0}</td>
+                                        <td>{Student.courseName || 0}</td>
+                                        <td className="text-right">{Student.amount||0}</td>
+                                    </tr>))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+                </>
   );
 };
 

@@ -283,6 +283,7 @@ public class LicenseController {
 		}
 		String uemail = jwtUtil.getUsernameFromToken(token);
 		Optional<Muser> opuser = muserrepo.findByEmail(uemail);
+		Long course = 0L;
 		if (opuser.isPresent()) {
 
 			Muser user = opuser.get();
@@ -297,7 +298,7 @@ public class LicenseController {
 				License license = oplicense.get();
 				courseString = license.getCourse();
 
-				Long course = 0l;
+				
 				// System.out.println(courseString.isEmpty());
 				if (!(courseString.isEmpty())) {
 					course = Long.parseLong(courseString);
@@ -311,7 +312,7 @@ public class LicenseController {
 					logger.info("-------------------------------------------------------");
 					return new ResponseEntity<>(200, HttpStatus.OK);
 				}
-			} else if (!(oplicense.isEmpty()) && courseString.isEmpty()) {
+			} else if (course >= 900L) {
 				logger.info("-------------------------------------------------------");
 				logger.info("unlimited course");
 				logger.info("-------------------------------------------------------");
@@ -338,13 +339,13 @@ public class LicenseController {
 		java.util.Date Datecurrent = java.sql.Date.valueOf(currentDate);
 		long milliseconds = Datecurrent.getTime(); // Get the time in milliseconds
 		java.sql.Timestamp timestamp = new java.sql.Timestamp(milliseconds);
-		String val = "";
+		
 		String localFile = "";
 		for (License license : licenseList) {
 			localFile = license.getFilename();
 
 		}
-
+		String val="";
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -363,7 +364,6 @@ public class LicenseController {
 			String tra = trai.getTextContent();
 			String stude = stud.getTextContent();
 			val = vale.getTextContent();
-
 			String formattedDate = formatter.format(date) + tra + stude + val;
 
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -384,24 +384,31 @@ public class LicenseController {
 
 		for (License license : licenseList) {
 			this.valu1 = license.getKey();
-
+			String value2 = license.getKey2();
+			 Date endDate = license.getEnd_date();  
+			// Convert Date to LocalDate
+		        LocalDate licenseEndDate = endDate.toInstant()
+		                                          .atZone(ZoneId.systemDefault())
+		                                          .toLocalDate();
+			 LocalDate today = LocalDate.now();
+			boolean va=licenseEndDate.isBefore(today);
 //		    -------------------------------------testarea-----------------------------
-			if ((valu.equals(valu1)) && !(license.getEnd_date().equals(timestamp)) && !(val.isEmpty())) {
+			if ((valu.equals(valu1) || valu.equals(value2)) && !(licenseEndDate.isBefore(today))) {
 
 				valid = true;
 				logger.info("License is Valid" + valid);
 				break;
-			} else if ((val.isEmpty()) && (valu.equals(valu1))) {
-				valid = true;
-				logger.info("License is valid");
-				logger.info("License validy is unlimited");
+//			} else if ((val.isEmpty()) && (valu.equals(valu1))) {
+//				valid = true;
+//				logger.info("License is valid");
+//				logger.info("License validy is unlimited");
 
 			} else {
 				logger.info("License is InValid");
-				if (!(valu.equals(valu1))) {
+				if (!(valu.equals(valu1)) || !(valu.equals(value2)) ) {
 					valid = false;
 					logger.info("License is Modified");
-				} else if ((license.getEnd_date().equals(timestamp)) && !(val.isEmpty())) {
+				} else if (licenseEndDate.isBefore(today)) {
 					valid = false;
 					logger.info("License is Expired");
 
@@ -560,6 +567,7 @@ public class LicenseController {
 					Element storagesize = (Element) person.getElementsByTagName("storagesize").item(0);
 					Element versionName = (Element) person.getElementsByTagName("version").item(0);
 					Element keyName = (Element) person.getElementsByTagName("key").item(0);
+					Element keyName2 = (Element) person.getElementsByTagName("key2").item(0);
 					Element typeName = (Element) person.getElementsByTagName("type").item(0);
 					Element courses = (Element) person.getElementsByTagName("course").item(0);
 					Element trainer = (Element) person.getElementsByTagName("trainer").item(0);
@@ -572,6 +580,7 @@ public class LicenseController {
 
 					String storage = storagesize.getTextContent();
 					String key = keyName.getTextContent();
+					String key2 = keyName2.getTextContent();
 					String type = typeName.getTextContent();
 					String course = courses.getTextContent();
 					String trainercount = trainer.getTextContent();
@@ -580,7 +589,7 @@ public class LicenseController {
 					// licensedetails(
 					// product_name,company_name,storage,key,validity,course,trainercount,studentcount,type,file,institution)
 
-					this.licensedetails(productName, companyName, storage, key, validity, course, trainercount,
+					this.licensedetails(productName, companyName, storage, key, key2, validity, course, trainercount,
 							studentcount, type, file, institution);
 //---------------------------------------CustomerLeads call-----------------------
 
@@ -805,7 +814,7 @@ public class LicenseController {
 
 	// -----licence details
 	// vps--------------------------------------------------------
-	public String licensedetails(String product_name, String company_name, String storage, String key, String validity,
+	public String licensedetails(String product_name, String company_name, String storage, String key, String key2, String validity,
 			String course, String trainercount, String studentcount, String type, String file, String institution) {
 
 		Iterable<License> licenseIterable = licenseRepository.findAll();
@@ -827,6 +836,7 @@ public class LicenseController {
 			data.setStudents(studentcount);
 			data.setInstitution(institution);
 			data.setKey(key);
+			data.setKey2(key2);
 			data.setProduct_name(product_name);
 			data.setCourse(course);
 			;
@@ -866,6 +876,7 @@ public class LicenseController {
 					data.setEnd_date(Datefuture);
 					data.setCompany_name(company_name);
 					data.setKey(key);
+					data.setKey2(key2);
 					data.setStoragesize(size);
 					data.setTrainer(trainercount);
 					data.setStudents(studentcount);
