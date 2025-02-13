@@ -33,6 +33,9 @@ import com.knowledgeVista.Course.Controller.CheckAccess;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Controller.CourseControllerSecond;
 import com.knowledgeVista.Course.Controller.videolessonController;
+import com.knowledgeVista.Course.Quizz.Quizz;
+import com.knowledgeVista.Course.Quizz.Quizzquestion;
+import com.knowledgeVista.Course.Quizz.Service.QuizzService;
 import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.controller.QuestionController;
 import com.knowledgeVista.Course.Test.controller.Testcontroller;
@@ -182,6 +185,8 @@ public class FrontController {
 	
 	@Autowired
 	private BatchService batchService;
+	@Autowired
+	private QuizzService quizzService;
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
 	public Map<String, String> getActiveEnvironment() {
@@ -398,10 +403,10 @@ public class FrontController {
 				   }
 				   
 
-				@DeleteMapping("/test/questions/{questionId}")
-					public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId,
+				   @DeleteMapping("/test/questions")
+					public ResponseEntity<?> deleteQuestion(@RequestParam List<Long>questionIds,  @RequestParam Long testId, 
 					                                        @RequestHeader("Authorization") String token) {
-					return Question.deleteQuestion(questionId, token);
+					return Question.deleteQuestion(questionIds, token, testId);
 				}
 				
 				@PatchMapping("/test/edit/{questionId}")
@@ -438,11 +443,7 @@ public class FrontController {
 		        	return testcontroller.getTestByCourseId(courseId, token);
 		        }
 		        
-		        @DeleteMapping("/test/{testId}")
-			    public ResponseEntity<?> deleteCourseTest(@PathVariable Long testId,
-			    		@RequestHeader("Authorization") String token) {
-		        	return testcontroller.deleteCourseTest(testId,token);
-		        }
+		       
 		        
 		        @PatchMapping("/test/update/{testId}")
 		        public ResponseEntity<?> editTest(@PathVariable Long testId,
@@ -1661,5 +1662,32 @@ public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String to
                public ResponseEntity<?>UpdateAttendance(@RequestHeader ("Authorization") String token, Long Id,String status){
             	   return attendanceService.updateAttendance(token, Id, status);
                }
+               //=====================Quizz====================
+               @PostMapping("/Quizz/Save/{lessonId}")
+               public ResponseEntity<?>SaveQuizz(@RequestBody Quizz quizz,@PathVariable Long lessonId,@RequestHeader ("Authorization") String token){
+            	   return quizzService.SaveQuizz(lessonId, quizz, token);
+               }
+               @PostMapping("/Quizz/AddMore/{quizzId}")
+               public ResponseEntity<?>AddMoreQuestiontoQuizz(@RequestBody Quizzquestion question,@PathVariable Long quizzId,@RequestHeader ("Authorization") String token){
+            	   return quizzService.AddMoreQuestionInQuizz(quizzId, question, token);
+               } 
+               @GetMapping("/Quizz/{quizzId}")
+               public ResponseEntity<?>getQuizz(@PathVariable Long quizzId,@RequestHeader ("Authorization") String token){
+            	   return quizzService.GetQuizz(quizzId, token);
+               }
+               @GetMapping("/Quizz/getQuestion/{questionId}")
+               public ResponseEntity<?>getQuizzQuestion(@PathVariable Long questionId,@RequestHeader ("Authorization") String token){
+            	   return quizzService.GetQuizzQuestion(questionId, token);
+               }
+               @PatchMapping("/Quizz/UpdateQuestion/{questionId}")
+               public ResponseEntity<?>UpdateQuizzQuestion(@PathVariable Long questionId,@RequestBody Quizzquestion question,@RequestHeader ("Authorization") String token){
+            	   return quizzService.UpdateQuizzQuestion(questionId, question, token);
+               }
+               @DeleteMapping("/Quizz/Delete/{quizzId}")
+               public ResponseEntity<?>DeleteQuizzQuestion(@PathVariable Long quizzId,@RequestBody List<Long> questionIds, @RequestHeader ("Authorization") String token){
+            	   return quizzService.DeleteQuizzQuestion(questionIds, quizzId, token);
+               }
+               
+               
 }
 

@@ -3475,7 +3475,7 @@ fieldset:disabled a.btn {
 
 .btn-outline-primary:focus,
 .btn-outline-primary.focus {
-  box-shadow: 0 0 0 0rem rgba(70, 128, 255, 0.5);
+  box-shadow: 0 0 0 0rem var(--primary);
 }
 
 .btn-outline-primary.disabled,
@@ -3495,7 +3495,7 @@ fieldset:disabled a.btn {
 .btn-outline-primary:not(:disabled):not(.disabled):active:focus,
 .btn-outline-primary:not(:disabled):not(.disabled).active:focus,
 .show > .btn-outline-primary.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0rem rgba(70, 128, 255, 0.5);
+  box-shadow: 0 0 0 0rem var(--primary);
 }
 
 .btn-outline-secondary {
@@ -26401,7 +26401,6 @@ ul {
 
 .fa-xmark {
   cursor: pointer;
-  margin-bottom: 10px;
 }
 .payrow {
   display: flex;
@@ -26421,7 +26420,6 @@ span {
 }
 
 .lesson-title {
-
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflowed text */
   text-overflow: ellipsis; /* Add ellipsis for overflowed text */
@@ -26429,6 +26427,9 @@ span {
   max-width: 100%; /* Allow the title to take full available width */
   vertical-align: middle;
   padding-left:10px ;
+}
+.sheduleduration{
+  display: flex
 }
 
 .courseName{
@@ -26493,6 +26494,17 @@ span {
   max-width: 100%; 
   overflow: hidden;
  
+}
+.singlerow{
+  width: 100%;
+  display: flex;
+  align-items:flex-end;
+  justify-content: end;
+  gap: 10px;
+}
+.headingandbutton{
+  display: grid;
+  grid-template-columns: 9fr 1fr;
 }
 
 @media screen and (max-width: 480px) {

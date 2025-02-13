@@ -205,6 +205,23 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	    	
 	    	   @Query("SELECT u FROM Muser u WHERE u.role.roleName ='TRAINER' AND u.userId=?1")
 	 		  Optional<Muser> findtrainerByid(Long userid);
+	    	   
+	    	   @Query("""
+	    			    SELECT COUNT(c) > 0 
+	    			    FROM Muser u 
+	    			    JOIN u.courses c 
+	    			    WHERE u.email = :email AND c.courseId = :courseId
+	    			""")
+	    			boolean FindEnrolledOrNotByUserIdAndCourseId(@Param("email") String email, @Param("courseId") Long courseId);
+
+	    	   @Query("""
+	    			    SELECT COUNT(c) > 0 
+	    			    FROM Muser u 
+	    			    JOIN u.allotedCourses c 
+	    			    WHERE u.email = :email AND c.courseId = :courseId
+	    			""")
+	    			boolean FindAllotedOrNotByUserIdAndCourseId(@Param("email") String email, @Param("courseId") Long courseId);
+
 
 }
 

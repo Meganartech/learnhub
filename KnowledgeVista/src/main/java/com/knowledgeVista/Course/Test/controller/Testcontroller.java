@@ -345,72 +345,7 @@ public class Testcontroller {
 	    
 //-----------------------------WORKING--------------------------------------------------	    
 
-	    public ResponseEntity<?> deleteCourseTest( Long testId,  String token) {
-	        try {
-	            if (!jwtUtil.validateToken(token)) {
-	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                        .body("{\"error\": \"Invalid Token\"}");
-	            }
-
-	            // Retrieve role and email from token
-	            String role = jwtUtil.getRoleFromToken(token);
-	            String email = jwtUtil.getUsernameFromToken(token);
-	            String institution="";
-			     Optional<Muser> opuser =muserRepository.findByEmail(email);
-			     if(opuser.isPresent()) {
-			    	 Muser user=opuser.get();
-			    	 institution=user.getInstitutionName();
-			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-			   	    	if(!adminIsactive) {
-			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			   	    	}
-			     }else {
-			    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			     }
-	            if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
-
-	                // Find the CourseTest by its ID
-	                Optional<CourseTest> courseTestOptional = testRepository.findById(testId);
-	                if (!courseTestOptional.isPresent()) {
-	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CourseTest with ID " + testId + " not found");
-	                }
-	                
-	                CourseTest courseTest = courseTestOptional.get();
-	                Long courseid = courseTest.getCourseDetail().getCourseId();
-                   Optional<CourseDetail> opcourseDetail=courseDetailRepo.findByCourseIdAndInstitutionName(courseid, institution);
-	               if(opcourseDetail.isPresent()) {
-                   if ("TRAINER".equals(role)) {
-	                    Optional<Muser> trainerOptional = muserRepo.findByEmail(email);
-	                    if (!trainerOptional.isPresent()) {
-	                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Trainer with email " + email + " not found");
-	                    }
-	                    
-	                    Muser trainer = trainerOptional.get();
-	                    CourseDetail courseDetail=opcourseDetail.get();
-	                    if (!trainer.getAllotedCourses().contains(courseDetail)) {
-	                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	                    }
-	                }
-
-	                // If CourseTest exists, delete it along with its associated questions
-                   muserActivityRepo.deleteByCourseTest(courseTest);
-	                questionRepository.deleteByTest(courseTest);
-	                testRepository.delete(courseTest);
-	                return ResponseEntity.ok().body("CourseTest with ID " + testId + " and its associated questions deleted successfully");
-	               }else {
-	            	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Trainer with email " + email + " not found");
-	               }
-	               } else {
-	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	            }
-	        } catch (Exception e) {
-	            // Log the exception (you can replace this with a logging framework like Log4j)
-	            e.printStackTrace();    logger.error("", e);;
-	            // Return an internal server error response
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"An unexpected error occurred\"}");
-	        }
-	    }	    
-//``````````````````````Edit Test Details````````````````````````````````````
+	   //``````````````````````Edit Test Details````````````````````````````````````
 
 public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttempt, Double passPercentage, String token) {
     try {

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Course.LessonQuizDTO;
 import com.knowledgeVista.Course.videoLessons;
 
 public interface videoLessonRepo extends JpaRepository<videoLessons, Long> {
@@ -30,4 +31,13 @@ public interface videoLessonRepo extends JpaRepository<videoLessons, Long> {
 //	 @Query("SELECT new com.knowledgeVista.Migration.VideoLessonsMigrationDto(cd.lessonId, cd.institutionName, cd.lessontitle, cd.lessonDescription, cd.thumbnail, cd.size, cd.videofilename, cd.fileUrl) FROM videoLessons cd WHERE cd.institutionName = :institutionName")
 //	 List<VideoLessonsMigrationDto> findAllByVideoLessonsMigrationDto(@Param("institutionName") String institutionName);
 //		
+	 @Query("""
+			    SELECT new com.knowledgeVista.Course.LessonQuizDTO(
+			        v.lessonId, v.Lessontitle, q.quizzId, q.quizzName) 
+			    FROM videoLessons v
+			    LEFT JOIN v.quizz q
+			    WHERE v.courseDetail.courseId = :courseId
+			""")
+			List<LessonQuizDTO> findLessonsWithQuizByCourseId(@Param("courseId") Long courseId);
+
 }

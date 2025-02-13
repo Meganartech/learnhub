@@ -4,10 +4,11 @@ import withReactContent from "sweetalert2-react-content";
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import baseUrl from '../../api/utils';
 import axios from 'axios';
+import ErrorBoundary from '../../ErrorBoundary';
 
-const AddMoreQuestion = () => {
+const AddMoreQuizz = () => {
     const MySwal = withReactContent(Swal);
-    const { courseName,testId } = useParams();
+   const {courseName,courseID,lessonsName,lessonId,quizzName, quizzId } = useParams();
     const token = sessionStorage.getItem("token");
     const location = useLocation();
      const navigate=useNavigate();
@@ -20,7 +21,7 @@ const AddMoreQuestion = () => {
             option3: '',
             option4: ''
         },
-        selectedOption: ''
+        answer: ''
     });
 
     // State for errors
@@ -32,7 +33,7 @@ const AddMoreQuestion = () => {
             option3: '',
             option4: ''
         },
-        selectedOption: ''
+        answer: ''
     });
 
     // Function to handle input change
@@ -107,19 +108,19 @@ const AddMoreQuestion = () => {
     const handleOptionChange = (option) => {
         setQuestionData(prevData => ({
             ...prevData,
-            selectedOption: option
+            answer: option
         }));
 
         // Validate option selection
         if (option === '') {
             setErrors(prevErrors => ({
                 ...prevErrors,
-                selectedOption: 'Please select an option'
+                answer: 'Please select an option'
             }));
         } else {
             setErrors(prevErrors => ({
                 ...prevErrors,
-                selectedOption: ''
+                answer: ''
             }));
         }
     };
@@ -140,13 +141,7 @@ const AddMoreQuestion = () => {
             }));
             return
           }
-        if (questionData.selectedOption === '') {
-            setErrors(prevErrors => ({
-                ...prevErrors,
-                selectedOption: 'Please select an option'
-            }));
-            return
-        }
+       
         for (const option in questionData.options) {
             if (questionData.options[option].trim() === '') {
                 setErrors(prevErrors => ({
@@ -169,19 +164,28 @@ const AddMoreQuestion = () => {
             return
         }
     }
+    if (questionData.answer === '') {
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            answer: 'Please select an option'
+        }));
+        return
+    }
 
         // If there are no errors, proceed with saving
-        
+       
             try {
-                const formData = new FormData();
-                formData.append("questionText", questionData.questionText);
-                formData.append("answer", questionData.options[questionData.selectedOption]);
+                const questionPayload = {
+                    questionText: questionData.questionText,
+                    answer: questionData.options[questionData.answer],
+                    option1:questionData.options.option1,
+                    option2:questionData.options.option2,
+                    option3:questionData.options.option3,
+                    option4:questionData.options.option4  // Ensure options are sent as an array
 
-                // Append all options to FormData for additional context if needed
-                Object.keys(questionData.options).forEach((optionKey, index) => {
-                    formData.append(`option${index + 1}`, questionData.options[optionKey]);
-                });
-                const response = await axios.post(`${baseUrl}/test/add/${testId}`,formData, {
+                };
+               
+                const response = await axios.post(`${baseUrl}/Quizz/AddMore/${quizzId}`,questionPayload, {
                     headers: {
                         "Authorization": token
                     }
@@ -190,13 +194,27 @@ const AddMoreQuestion = () => {
                     const data =  response.data;
                     MySwal.fire({
                         title: "Success",
-                        text: "Question updated successfully",
+                        text: "Question added successfully",
                         icon: "success",
                         confirmButtonText: "OK"
                     });
-                    window.history.back();
-
+                setQuestionData({questionText: '',
+                    options: {
+                        option1: '',
+                        option2: '',
+                        option3: '',
+                        option4: ''
+                    },
+                    answer: ''})
                 } 
+                else if(response.status===204){
+                    MySwal.fire({
+                        title: "Not Found",
+                        text: "Quizz Not Found",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+                }
             } catch (error) {
                 if(error.response && error.response.status===401){
                     MySwal.fire({
@@ -219,10 +237,36 @@ const AddMoreQuestion = () => {
         }
         
     };
-
+    const handleNavigation = () => {
+        const role=sessionStorage.getItem('role')
+        if (role === "ADMIN") {
+            navigate("/course/admin/edit");
+        } else if (role === "TRAINER") {
+            navigate("/AssignedCourses");
+        } else {
+            navigate("/unauthorized");
+        }
+    };
     return (
         <div>
-    <div className="page-header"></div>
+    <div className="page-header">
+    <div className="page-block">
+                <div className="row align-items-center">
+                    <div className="col-md-12">
+                        <div className="page-header-title">
+                            <h5 className="m-b-10">Add Question</h5>
+                        </div>
+                        <ul className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="#"onClick={handleNavigation} ><i className="feather icon-layout"></i></a></li>
+                            <li className="breadcrumb-item"><a href="#" onClick={()=>{navigate(`/lessonList/${courseName}/${courseID}`)}}>{lessonsName}</a></li>
+                            <li className="breadcrumb-item"><a href="#"onClick={()=>{navigate(`/ViewQuizz/${courseName}/${courseID}/${lessonsName}/${lessonId}/${quizzName}/${quizzId}`)}}>{quizzName}</a></li>
+                            <li className="breadcrumb-item"><a href="#">Add</a></li>
+                        </ul>
+                       
+                    </div>
+                </div>
+            </div>
+    </div>
     <div className="card">
     <div className="card-body">
             <div className='navigateheaders'>
@@ -235,7 +279,7 @@ const AddMoreQuestion = () => {
      
         <div className="row">
         <div className="col-12">
-                   
+        {errors.answer && <div className="text-danger">{errors.answer}</div>}
                         <div>
                            
                             <input
@@ -255,7 +299,7 @@ const AddMoreQuestion = () => {
                                         className='mt-2'
                                         type="radio"
                                         value={questionData.options[option]}
-                                        checked={questionData.selectedOption === option}
+                                        checked={questionData.answer === option}
                                         onChange={() => handleOptionChange(option)}
                                     />
                                     <div>
@@ -272,15 +316,11 @@ const AddMoreQuestion = () => {
                                 </li>
                             ))}
                         </ul>
-                        {errors.selectedOption && <div className="invalid-feedback">{errors.selectedOption}</div>}
+                       
                         <div className='atbtndiv'>
                        <div> <button className='btn btn-secondary' onClick={() => window.history.back()}>Cancel</button>
                        </div> <div></div>
-                        <div><button className='btn btn-primary' onClick={handleSave} disabled={
-                            questionData.questionText.trim() === '' ||
-                            questionData.selectedOption === '' ||
-                            Object.values(questionData.options).some(option => option.trim() === '')
-                        }>Save</button></div>
+                        <div><button className='btn btn-primary' onClick={handleSave}>Save</button></div>
                     </div></div>
                  
                    
@@ -292,4 +332,4 @@ const AddMoreQuestion = () => {
     );
 }
 
-export default AddMoreQuestion;
+export default AddMoreQuizz;

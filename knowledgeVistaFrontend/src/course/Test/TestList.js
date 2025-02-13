@@ -19,7 +19,7 @@ const TestList = () => {
   });
   const token = sessionStorage.getItem("token");
   const [editingField, setEditingField] = useState(null); // State to track which field is being edited
-
+const [selectedIds,setselectedIds]=useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,50 +87,15 @@ const TestList = () => {
     }
   };
 
-  const handleDelete = async (testId) => {
-    MySwal.fire({
-      title: "Delete Test?",
-      text: "Are you sure you want to delete this test?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      confirmButtonText: "Delete",
-      cancelButtonText: "Cancel",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          if (testId != null) {
-            const response = await axios.delete(`${baseUrl}/test/${testId}`, {
-              headers: {
-                Authorization: token,
-               }
-            });
-            if (response.status===200) {
-              window.location.reload();
-            }
-          }
-        } catch (error) {
-          if(error.response && error.response.status===401)
-          {
-            navigate("/unauthorized")
-          }else{
-            // MySwal.fire({
-            //   title: "Error!",
-            //   text: error.response.data ? error.response.data : "error occured",
-            //   icon: "error",
-            //   confirmButtonText: "OK",
-            // });
-            throw error
-          }
-        }
-      } 
-    });
-  };
 
-  const DeleteQuestion = async (questionId) => {
+
+  const DeleteQuestion = async () => {
+    if(selectedIds.length<=0){
+      return
+    }
     MySwal.fire({
       title: "Delete Test?",
-      text: "Are you sure you want to delete this Question?",
+      text: "Are you sure you want to delete this Questions?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -139,12 +104,22 @@ const TestList = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          if (questionId != null) {
-            const response = await axios.delete(`${baseUrl}/test/questions/${questionId}`, {
-              headers:{
-                "Authorization":token
+          if (test.testId != null) {
+            const response = await axios.delete(`${baseUrl}/test/questions`, {
+              params: { 
+                testId: test.testId,
+              },
+              paramsSerializer: (params) => {
+                const queryString = new URLSearchParams();
+                selectedIds.forEach(id => queryString.append("questionIds", id)); // Append IDs correctly
+                queryString.append("testId", test.testId);
+                return queryString.toString();
+              },
+              headers: {
+                "Authorization": token
               }
             });
+            
             if (response.status===200) {
               window.location.reload();
             }
@@ -155,6 +130,16 @@ const TestList = () => {
         }
       } 
     });
+  };
+  const handleSelectAll = () => {
+    if (selectedIds.length === test.questions.length) {
+      // If all are selected, deselect all
+      setselectedIds([]);
+    } else {
+      // Select all question IDs
+      const allQuestionIds = test.questions.map(q => q.questionId);
+      setselectedIds(allQuestionIds);
+    }
   };
 
   const handleCriteriaChange = (e) => {
@@ -188,7 +173,18 @@ const TestList = () => {
       [name]: error
     }));
   };
-
+const handleQuestionselect=(id)=>{
+  setselectedIds((prevSelectedIds) => {
+    if (prevSelectedIds.includes(id)) {
+      // If the ID is already present, remove it
+      return prevSelectedIds.filter((selectedId) => selectedId !== id);
+    } else {
+      // If the ID is not present, add it
+      return [...prevSelectedIds, id];
+    }
+  });
+  
+}
   return (
     <div>
     <div className="page-header"></div>
@@ -201,8 +197,12 @@ const TestList = () => {
       <div></div>
       <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
       </div>
+      <div className='headingandbutton'>
       <h4 className='text-center 'style={{margin:"0px"}}>{courseName}</h4>
-             
+      <div>
+      {test &&   <Link to={`/test/AddMore/${courseName}/${test.testId}`} className='btn btn-primary mr-2' style={{width:"150px"}}><i className='fa fa-plus'></i> Add more </Link>
+  }  </div>      
+                </div>
      </div>
         {notFound ? (
           <div className='centerflex'>
@@ -289,14 +289,12 @@ const TestList = () => {
                 </span>
               
               </div>
-              <span className='atbtndiv' >
-                <span onClick={() => handleDelete(test.testId)}>
-                  <i className="fa-solid fa-trash text-danger" style={{ fontSize: '20px',paddingTop:"20px" }}></i>
+              <span className='singlerow' >
+                <span >
+                  <i className="fa-solid fa-trash text-danger" onClick={DeleteQuestion} style={{ fontSize: '20px',paddingTop:"20px" }}></i>
                 </span>
-                <div></div>
-                <div>
-                <Link to={`/test/AddMore/${courseName}/${test.testId}`} className='btn btn-primary mr-2' style={{width:"150px"}}><i className='fa fa-plus'></i> Add more </Link>
-                </div>
+                
+              
                 </span>
                
               {test.questions && (
@@ -304,19 +302,24 @@ const TestList = () => {
                   <table className='table table-hover  table-bordered table-sm'>
                     <thead className='thead-dark'>
                       <tr>
-                        <th scope="col">S.no</th>
+                      <th scope="col" style={{width:"50px"}}><i className="fa-solid fa-list-check " title='Select All' onClick={handleSelectAll}></i></th>
+                        <th scope="col" style={{width:"50px"}}>S.no</th>
                         <th scope="col">Question</th>
                         <th scope="col">Option 1</th>
                         <th scope="col">Option 2</th>
                         <th scope="col">Option 3</th>
                         <th scope="col">Option 4</th>
                         <th scope="col">Answer</th>
-                        <th scope="col" colSpan={2}>Actions</th>
+                        <th scope="col">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {test.questions.map((question, index) => (
                         <tr key={index}>
+                       <td><input type='checkbox' title='Select'
+                        checked={selectedIds.includes(question.questionId)} // Check if the ID is in selectedIds
+                        onChange={() => handleQuestionselect(question.questionId)} // Prevents default event propagation
+                      /></td>
                           <td>{index + 1}</td>
                           <td>{question.questionText}</td>
                           <td>{question.option1}</td>
@@ -329,13 +332,7 @@ const TestList = () => {
                               <i className='fa text-primary fa-edit'></i>
                             </Link>
                           </td>
-                          <td className='text-center'>
-                            {test.questions.length > 1 ? (
-                              <i className='fa fa-trash text-danger' onClick={() => DeleteQuestion(question.questionId)}></i>
-                            ) : (
-                              <i className='fa fa-trash text-danger' style={{ cursor: 'not-allowed', opacity: 0.5 }}></i>
-                            )}
-                          </td>
+                          
                         </tr>
                       ))}
                     </tbody>

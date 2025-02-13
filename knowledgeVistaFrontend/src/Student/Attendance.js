@@ -158,7 +158,8 @@ console.log(item.id)
                         <td className="py-2"> {item.topic}</td>
                         <td className="py-2"> {item.date}</td>
                         <td className="py-2"> <select
-        className="form-control"
+        className="btn btn-light"
+        style={{width:"100%"}}
         value={item.status}
         onChange={(e)=>{handleStatusChange(e,item)}}
       >

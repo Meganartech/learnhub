@@ -172,57 +172,112 @@ public class QuestionController {
 
 	    }
 	 
-	 
-		public ResponseEntity<?> deleteQuestion( Long questionId, String token) {
+		public ResponseEntity<?> deleteQuestion(List<Long> questionIds, String token, Long testId) {
 		    try {
 		        // Validate JWT token
 		        if (!jwtUtil.validateToken(token)) {
 		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		        }
 
-		        // Extract role from JWT token
 		        String role = jwtUtil.getRoleFromToken(token);
-		        String email=jwtUtil.getUsernameFromToken(token);
-		         String institution="";
-			     Optional<Muser> opuser =muserRepository.findByEmail(email);
-			     if(opuser.isPresent()) {
-			    	 Muser user=opuser.get();
-			    	 institution=user.getInstitutionName();
-			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-			   	    	if(!adminIsactive) {
-			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			   	    	}
-			     }else {
-		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			     }
-		        // Check if user has admin or trainer role
-		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
-		            // Fetch the question from the repository based on the provided ID
-		            Question question = questionRepository.findById(questionId).orElse(null);
-		            String questioninstitution=question.getTest().getCourseDetail().getInstitutionName();
-		            
-			        if ((questioninstitution.equals(institution)) || (!question.equals(null))) {
-		            	Long noofques=question.getTest().getNoOfQuestions()-1;
-		            	question.getTest().setNoOfQuestions(noofques);
-		            	questionRepository.save(question);
-		                questionRepository.delete(question);
-		                // Return a response indicating successful deletion
-		                return ResponseEntity.ok("Question with ID " + questionId + " deleted successfully");
-		            } else {
-		                // Return a response indicating that the question was not found
-		                return ResponseEntity.notFound().build();
-		            }
-		        } else {
-		            // Return unauthorized response if user does not have required role
+		        String email = jwtUtil.getUsernameFromToken(token);
+		        String institution = muserRepository.findinstitutionByEmail(email);
+
+		        if (institution == null) {
 		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		        }
+
+		        // Check if the admin is active
+		        boolean adminIsActive = muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+		        if (!adminIsActive) {
+		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		        }
+
+		        int deletedQuestionsCount = 0;
+
+		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+		            for (Long id : questionIds) {
+		                if (questionRepository.existsById(id)) {  // Check if the question exists before deleting
+		                    questionRepository.deleteById(id);
+		                    deletedQuestionsCount++;
+		                }
+		            }
+
+		            Optional<CourseTest> optTest = testrepo.findById(testId);
+		            if (optTest.isPresent()) {
+		                CourseTest test = optTest.get();
+		                Long noOfQuestions = test.getNoOfQuestions();
+
+		                noOfQuestions -= deletedQuestionsCount;
+
+		                if (noOfQuestions <= 0) {
+		                    testrepo.deleteById(testId); // Delete test if no questions are left
+		                } else {
+		                    test.setNoOfQuestions(noOfQuestions);
+		                    testrepo.save(test);  // Update test question count
+		                }
+		            }
+
+		            return ResponseEntity.ok("Questions deleted successfully");
+		        }
+
+		        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
 		    } catch (Exception e) {
-		        // Handle any unexpected exceptions here
-		        // You can log the error or return an appropriate response
-		    	e.printStackTrace();    logger.error("", e);;
+		        logger.error("Error deleting questions", e);
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 		    }
 		}
+
+//		public ResponseEntity<?> deleteQuestion( Long questionId, String token) {
+//		    try {
+//		        // Validate JWT token
+//		        if (!jwtUtil.validateToken(token)) {
+//		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//		        }
+//
+//		        // Extract role from JWT token
+//		        String role = jwtUtil.getRoleFromToken(token);
+//		        String email=jwtUtil.getUsernameFromToken(token);
+//		         String institution="";
+//			     Optional<Muser> opuser =muserRepository.findByEmail(email);
+//			     if(opuser.isPresent()) {
+//			    	 Muser user=opuser.get();
+//			    	 institution=user.getInstitutionName();
+//			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+//			   	    	if(!adminIsactive) {
+//			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//			   	    	}
+//			     }else {
+//		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//			     }
+//		        // Check if user has admin or trainer role
+//		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+//		            // Fetch the question from the repository based on the provided ID
+//		            Question question = questionRepository.findById(questionId).orElse(null);
+//		            String questioninstitution=question.getTest().getCourseDetail().getInstitutionName();
+//		            
+//			        if ((questioninstitution.equals(institution)) || (!question.equals(null))) {
+//		            	Long noofques=question.getTest().getNoOfQuestions()-1;
+//		            	question.getTest().setNoOfQuestions(noofques);
+//		            	questionRepository.save(question);
+//		                questionRepository.delete(question);
+//		                // Return a response indicating successful deletion
+//		                return ResponseEntity.ok("Question with ID " + questionId + " deleted successfully");
+//		            } else {
+//		                // Return a response indicating that the question was not found
+//		                return ResponseEntity.notFound().build();
+//		            }
+//		        } else {
+//		            // Return unauthorized response if user does not have required role
+//		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//		        }
+//		    } catch (Exception e) {
+//		        // Handle any unexpected exceptions here
+//		        // You can log the error or return an appropriate response
+//		    	e.printStackTrace();    logger.error("", e);;
+//		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+//		    }
+//		}
 
 	    //--------------------WORKING------
 		public ResponseEntity<?> updateQuestion( Long questionId,String questionText,

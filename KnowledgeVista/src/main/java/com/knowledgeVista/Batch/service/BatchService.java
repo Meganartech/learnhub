@@ -361,8 +361,8 @@ public class BatchService {
 	        
 	         
     	} catch (Exception e) {
-            logger.error("Exception occurred while deleting batch with ID " +e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting the batch.");
+            logger.error("Exception occurred while getting all  batch with ID " +e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while getting All the batch.");
         }
     }
 //=============================Get all BatchBy CourseId=================================
@@ -378,8 +378,8 @@ public class BatchService {
 	        
 	         
     	} catch (Exception e) {
-            logger.error("Exception occurred while deleting batch with ID " +e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting the batch.");
+            logger.error("Exception occurred while getting batch with ID " +e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while Getting the batch.");
         }
     }
     

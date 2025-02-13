@@ -49,7 +49,7 @@ const LessonList = () => {
   const deletelesson = async (Lesstitle, lessId) => {
     const formData = new FormData();
     formData.append("lessonId", lessId);
-    formData.append("Lessontitle", Lesstitle);
+    formData.append("lessonTitle", Lesstitle);
 
     MySwal.fire({
       title: "Delete Lesson?",
@@ -112,10 +112,34 @@ const LessonList = () => {
         });
       });
   };
-
+  const handleNavigation = () => {
+    const role=sessionStorage.getItem('role')
+    if (role === "ADMIN") {
+        navigate("/course/admin/edit");
+    } else if (role === "TRAINER") {
+        navigate("/AssignedCourses");
+    } else {
+        navigate("/unauthorized");
+    }
+};
   return (
     <div>
-      <div className="page-header"></div>
+      <div className="page-header">
+      <div className="page-block">
+                <div className="row align-items-center">
+                    <div className="col-md-12">
+                        <div className="page-header-title">
+                            <h5 className="m-b-10">Lessons</h5>
+                        </div>
+                        <ul className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="#"onClick={handleNavigation} ><i className="feather icon-layout"></i></a></li>
+                            <li className="breadcrumb-item"><a href="#">Lessons</a></li>
+                        </ul>
+                       
+                    </div>
+                </div>
+            </div>
+      </div>
       <div className="card">
         <div className=" card-body">
           <div className="row">
@@ -158,7 +182,10 @@ const LessonList = () => {
                     <table className="table table-hover table-bordered table-sm">
                       <thead className="thead-dark">
                         <tr>
-                          <th scope="col" style={{width:"70vw"}}>Lessons</th>
+                          <th scope="col" style={{ width: "70vw" }}>
+                            Lessons
+                          </th>
+                          <th scope="col">Quizz</th>
                           <th scope="col" colSpan="2">
                             Actions
                           </th>
@@ -169,18 +196,35 @@ const LessonList = () => {
                           <tr key={lesson.lessonId}>
                             <th>
                               <span>{index + 1}.</span>
-                              
+
                               <Link
                                 className="lesson-title"
                                 to={`/courses/${courseName}/${courseId}/${lesson.lessonId}`}
                               >
-                                {lesson.Lessontitle}
+                                {lesson.lessonTitle}
                               </Link>
                             </th>
 
                             <th>
+                              {lesson.quizzId===null?(
                               <Link
-                                to={`/edit/${courseName}/${courseId}/${lesson.Lessontitle}/${lesson.lessonId}`}
+                                to={`/AddQuizz/${courseName}/${courseId}/${lesson.lessonTitle}/${lesson.lessonId}`}
+                              >
+                                <span className="btn btn-success">
+                                  Add Quizz
+                                </span>
+                              </Link>):( <Link
+                                to={`/ViewQuizz/${courseName}/${courseId}/${lesson.lessonTitle}/${lesson.lessonId}/${lesson.quizzName}/${lesson.quizzId}`}
+                              >
+                                <span className="btn btn-success">
+                                  View Quizz
+                                </span>
+                              </Link>)}
+                            </th>
+
+                            <th>
+                              <Link
+                                to={`/edit/${courseName}/${courseId}/${lesson.lessonTitle}/${lesson.lessonId}`}
                               >
                                 {" "}
                                 <i className="fas fa-edit text-primary"></i>
@@ -193,7 +237,7 @@ const LessonList = () => {
                                   className="fas fa-trash text-danger"
                                   onClick={() =>
                                     deletelesson(
-                                      lesson.Lessontitle,
+                                      lesson.lessonTitle,
                                       lesson.lessonId
                                     )
                                   }
@@ -211,11 +255,11 @@ const LessonList = () => {
             {lessons.map((lesson, index) => (
               <div key={lesson.lessonId} className='listbackinner'>
                 <span>{index+1} .</span>
-                <Link className="lesson-title" to= {`/courses/${courseName}/${courseId}/${lesson.lessonId}`}>{lesson.Lessontitle}</Link>
+                <Link className="lesson-title" to= {`/courses/${courseName}/${courseId}/${lesson.lessonId}`}>{lesson.lessonTitle}</Link>
                
-                <Link to={`/edit/${courseName}/${courseId}/${lesson.Lessontitle}/${lesson.lessonId}`}> <i className="fas fa-edit text-primary"></i></Link>
+                <Link to={`/edit/${courseName}/${courseId}/${lesson.lessonTitle}/${lesson.lessonId}`}> <i className="fas fa-edit text-primary"></i></Link>
                 <span>
-                    <i className="fas fa-trash text-danger" onClick={()=>deletelesson(lesson.Lessontitle,lesson.lessonId)}></i></span>
+                    <i className="fas fa-trash text-danger" onClick={()=>deletelesson(lesson.lessonTitle,lesson.lessonId)}></i></span>
               </div>
              
             ))}

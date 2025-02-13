@@ -13,13 +13,16 @@ const Paymenttransactions = () => {
        orderId:"",
        userId:"",
        courseId:"",
+       batchId:"",
+       batchName:"",
        courseName:"",
 	    paymentId:"",
 	    installmentnumber:"",
         status:"",
         amountReceived:"",
          amountNeedTopay:"",
-	    date:""
+	    date:"",
+      paymentType:""
     }]);
 
     const filterData = () => {
@@ -121,9 +124,10 @@ const Paymenttransactions = () => {
             <tr>
             <th scope="col">User name</th>
             <th scope="col">Email</th>
-              <th scope="col">Course Name</th>
+              <th scope="col">Batch Name</th>
               <th scope="col">Installment Number</th>
               <th scope="col">Payment Id</th>
+              <th scope='col'>Gateway</th>
               <th scope="col">Order Id</th>
               <th scope="col">Amount Paid</th>
               <th scope="col"> Date </th>
@@ -135,9 +139,10 @@ const Paymenttransactions = () => {
              <tr key={payment.id}>
                 <td className='py-2'>{payment.username}</td>
                 <td className='py-2'>{payment.email}</td>
-                <td className='py-2'>{payment.courseName}</td>
+                <td className='py-2'>{payment.batchName}</td>
                 <td  className='py-2'> {payment.installmentnumber}</td>
                 <td className='py-2'>{payment.paymentId}</td>
+                <td className='py-2'>{payment.paymentType}</td>
                 <td className='py-2'>{payment.orderId}</td>
                 <td className='py-2'>{payment.amountReceived}</td>
                 <td className='py-2'>{payment.date}</td>

@@ -234,8 +234,8 @@ const CreateTest = () => {
       setTestName("");
 
       Swal.fire({
-        title: "Test Submitted Successfully",
-        text: "Thank you for submitting the test",
+        title: "Created .!",
+        text: "Test Created SuccessFully.!",
         icon: "success",
         confirmButtonText: "OK"
       }).then((result) => {

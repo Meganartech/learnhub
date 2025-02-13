@@ -25,8 +25,10 @@ import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
+import com.knowledgeVista.Course.LessonQuizDTO;
 import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.Payments.Course_PartPayment_Structure;
@@ -50,7 +52,8 @@ public class CourseController {
 	private CourseDetailRepository coursedetailrepository;
 	 @Autowired
 	 private JwtUtil jwtUtil;
-	 
+	 @Autowired
+	 private videoLessonRepo lessonRepo;
 	 @Autowired
 	 private installmentdetilsrepo installmentrepo ;
 	 
@@ -815,6 +818,7 @@ public class CourseController {
 	               video.setCourseDetail(null);
 	               video.setVideoFile(null);
 	               video.setVideofilename(null);
+	               video.setQuizz(null);
                    
 	           }
 	           return ResponseEntity.ok(videolessonlist);
@@ -830,59 +834,40 @@ public class CourseController {
 
 		           String role = jwtUtil.getRoleFromToken(token);
 			          String email=jwtUtil.getUsernameFromToken(token);
-			          
-			          String reqUser=jwtUtil.getUsernameFromToken(token);
-				         String institution="";
-					     Optional<Muser> opreqsUser =muserRepository.findByEmail(reqUser);
-					     if(opreqsUser.isPresent()) {
-					    	 Muser requestuser=opreqsUser.get();
-					    	 institution=requestuser.getInstitutionName();
+				         String institution=muserRepository.findinstitutionByEmail(email);
 					    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
 					   	    	if(!adminIsactive) {
 					   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 					   	    	}
-					     }else {
-				             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-					     }
-					     
-			          if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-			
-			    Optional<CourseDetail> opcourse = coursedetailrepository.findByCourseIdAndInstitutionName(courseId, institution);
-			    if (opcourse.isPresent()) {
-			    	
-			    	 if("TRAINER".equals(role)) {
-			        		Optional< Muser> trainerop= muserRepository.findByEmail(email);
-			        		  if(trainerop.isPresent()) {
-			        			  Muser trainer =trainerop.get();
-			        			  if( !trainer.getAllotedCourses().contains(opcourse.get())) {
-
-			    		              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			        			  }
-			        		  }
-			        	  }
-			        List<videoLessons> videolessonlist = opcourse.get().getVideoLessons();
-			        List<Map<String, Object>> lessonResponseList = new ArrayList<>();
-
-			        for (videoLessons video : videolessonlist) {
-			            Map<String, Object> response = new HashMap<>();
-			            response.put("Lessontitle", video.getLessontitle());
-			            response.put("lessonId", video.getLessonId());
-			            lessonResponseList.add(response);
-			        }
-
-			        return ResponseEntity.ok(lessonResponseList);
+					    
+			          if("ADMIN".equals(role)) {
+			List<LessonQuizDTO> res= lessonRepo.findLessonsWithQuizByCourseId(courseId);
+			return ResponseEntity.ok(res);
+			    }else {
+			    	if(checkAllowedOrNotForTrainer(courseId, email)) {
+			    		List<LessonQuizDTO> res= lessonRepo.findLessonsWithQuizByCourseId(courseId);
+						return ResponseEntity.ok(res);
+			    	}
+			    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			    }
 
-			    return ResponseEntity.notFound().build();
-			}else {
-
-	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	          }
+			
        } catch (Exception e) {
            e.printStackTrace();    logger.error("", e);; // Print the stack trace for debugging
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body("Error creating test: " + e.getMessage());
+                                .body("Error getting Lesson: " + e.getMessage());
        }
 		 }
-		 
+	private boolean checkAllowedOrNotForTrainer(Long courseId,String email) {
+		
+		boolean trainer=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
+		return trainer;
+	}
+private boolean checkAllowedOrNotForuser(Long courseId,String email) {
+		
+		boolean user=muserRepository.FindEnrolledOrNotByUserIdAndCourseId(email, courseId);
+		return user;
+	}
+	
+	
 }

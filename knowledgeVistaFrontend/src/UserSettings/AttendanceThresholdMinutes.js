@@ -41,8 +41,8 @@ const AttendanceThresholdMinutes = () => {
       <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
   <label>Mark absent for students joining after</label>
   <select
-    className="form-control"
-    style={{ width: "60px" }}
+    className="btn btn-light"
+    style={{ width: "80px" }}
     value={AttendanceTheresold}
     onChange={handleThresholdChange}
   >

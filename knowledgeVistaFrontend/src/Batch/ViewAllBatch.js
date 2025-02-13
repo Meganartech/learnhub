@@ -203,7 +203,7 @@ const ViewAllBatch = () => {
         </div>
       ) : (
         <div>
-          <h1 className="text-light ">No Batch Found </h1>
+          <h1 className="text-primary ">No Batch Found </h1>
         </div>
       )}
     </div>

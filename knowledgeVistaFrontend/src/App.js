@@ -91,6 +91,10 @@ import ScrollToTop from "./ScrollToTop.js";
 import ViewAllBAtchForCourse from "./Batch/ViewAllBAtchForCourse.js";
 import Attendance from "./Student/Attendance.js";
 import MyAttendance from "./Student/MyAttendance.js";
+import CreateQuizz from "./course/Quizz/CreateQuizz.js";
+import ViewQuizz from "./course/Quizz/ViewQuizz.js";
+import AddMoreQuizz from "./course/Quizz/AddMoreQuizz.js";
+import EditQuizz from "./course/Quizz/EditQuizz.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -228,6 +232,58 @@ function App() {
                     authorizationRequired={true}
                   >
                     <EditLesson />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/AddQuizz/:courseName/:courseId/:Lessontitle/:lessonId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <CreateQuizz />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/ViewQuizz/:courseName/:courseID/:lessonsName/:lessonId/:quizzName/:quizzId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <ViewQuizz/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/AddQuestionInQuizz/:courseName/:courseID/:lessonsName/:lessonId/:quizzName/:quizzId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <AddMoreQuizz/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/editQuizzQuestion/:courseName/:courseID/:lessonsName/:lessonId/:quizzName/:quizzId/:questionId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <EditQuizz/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }
