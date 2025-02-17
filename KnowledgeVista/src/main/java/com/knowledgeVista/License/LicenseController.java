@@ -377,7 +377,6 @@ public class LicenseController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("", e);
-			;
 			this.valu = "123344";
 		}
 		boolean valid = false; // Initialize valid to false
@@ -476,34 +475,38 @@ public class LicenseController {
 		boolean valid = false; // Initialize valid to false
 
 		this.valu1 = license.getKey();
+		String value2 = license.getKey2();
+		 Date endDate = license.getEnd_date();  
+		// Convert Date to LocalDate
+	        LocalDate licenseEndDate = endDate.toInstant()
+	                                          .atZone(ZoneId.systemDefault())
+	                                          .toLocalDate();
+		 LocalDate today = LocalDate.now();
 
 //		    -------------------------------------testarea-----------------------------
-		if ((valu.equals(valu1)) && !(license.getEnd_date().equals(timestamp)) && !(val.isEmpty())) {
-
+			if ((valu.equals(valu1) || valu.equals(value2)) && !(licenseEndDate.isBefore(today))) {
 			valid = true;
 			System.out.println("361" + valid);
 			logger.info("License is Valid" + valid);
 
-		} else if ((val.isEmpty()) && (valu.equals(valu1))) {
-			System.out.println("362" + valid);
-			valid = true;
-			System.out.println("else if " + valid);
-			logger.info("License is valid");
-			logger.info("License validy is unlimited");
+//		} else if ((val.isEmpty()) && (valu.equals(valu1))) {
+//			System.out.println("362" + valid);
+//			valid = true;
+//			System.out.println("else if " + valid);
+//			logger.info("License is valid");
+//			logger.info("License validy is unlimited");
 
 		} else {
 			System.out.println("363" + valid);
-			if ((license.getEnd_date().equals(timestamp)) && !(val.isEmpty())) {
+			if (!(valu.equals(valu1)) || !(valu.equals(value2)) ) {
 				valid = false;
 				System.out.println("364" + valid);
+				logger.info("License is Modified");
+
+			} else if (licenseEndDate.isBefore(today)) {
+				valid = false;
 				logger.info("License is Expired");
-
-			} else {
-				valid = true;
-				System.out.println("365" + valid);
-
 			}
-
 		}
 
 		licenceUploadDirectory = olddir;

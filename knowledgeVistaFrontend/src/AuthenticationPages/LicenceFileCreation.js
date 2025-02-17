@@ -154,9 +154,8 @@ const LicenceFileCreation = () => {
             alert("Please fill out all required fields.");
             return;
         }
-        const url = "http://localhost:8080/api/v2/download";
         try {
-            const response = await axios.get(url, {
+            const response = await axios.get(`${baseUrl}/api/v2/download`, {
                 params: formData, // Pass formData as URL parameters
                 responseType: "blob", // Handle file as a blob
                 headers: {

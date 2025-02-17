@@ -204,6 +204,12 @@ public class FrontController {
 
 	}
 
+	@GetMapping("/sysadmin/dashboard/{institutationName}")
+	public ResponseEntity<?> sysAdminDashboardByInstitytaion(@PathVariable String institutationName,@RequestHeader("Authorization") String token) {
+		return courseController.sysAdminDashboardByInstitytaion(token,institutationName);
+
+	}
+
 	@PostMapping("/course/add")
 	public ResponseEntity<?> addCourse(@RequestParam("courseImage") MultipartFile file,
 			@RequestParam("courseName") String courseName, @RequestParam("courseDescription") String description,
