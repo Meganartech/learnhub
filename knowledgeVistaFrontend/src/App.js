@@ -95,6 +95,8 @@ import CreateQuizz from "./course/Quizz/CreateQuizz.js";
 import ViewQuizz from "./course/Quizz/ViewQuizz.js";
 import AddMoreQuizz from "./course/Quizz/AddMoreQuizz.js";
 import EditQuizz from "./course/Quizz/EditQuizz.js";
+import ViewCourseOfBatch from "./Batch/ViewCourseOfBatch.js";
+import SheduleQuizz from "./Batch/SheduleQuizz.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -929,6 +931,26 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authorizationRequired={true} onlyadmin={true}>
                     <CreateBatch />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/batch/viewcourse/:batchTitle/:batchid"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
+                    <ViewCourseOfBatch/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/sheduleQuizz/:batchTitle/:batchId/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
+                    <SheduleQuizz/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }

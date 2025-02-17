@@ -1,5 +1,7 @@
 package com.knowledgeVista.Course.Quizz.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,14 +11,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.videoLessons;
 import com.knowledgeVista.Course.Quizz.Quizz;
+import com.knowledgeVista.Course.Quizz.QuizzSchedule;
 import com.knowledgeVista.Course.Quizz.Quizzquestion;
+import com.knowledgeVista.Course.Quizz.ShedueleListDto;
 import com.knowledgeVista.Course.Quizz.Repo.QuizzQuestionRepo;
+import com.knowledgeVista.Course.Quizz.Repo.QuizzSheduleRepo;
 import com.knowledgeVista.Course.Quizz.Repo.quizzRepo;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -35,6 +41,10 @@ public class QuizzService {
 		@Autowired
 		private quizzRepo quizzRepo;
 		@Autowired videoLessonRepo lessonsRepo;
+		@Autowired
+		private QuizzSheduleRepo quizzSheuleRepo;
+		@Autowired
+		private BatchRepository batchRepo;
 	  	 private static final Logger logger = LoggerFactory.getLogger(QuizzService.class);
 	
   public ResponseEntity<?>SaveQuizz(Long lessonId,Quizz quizzData,String token){
@@ -52,6 +62,9 @@ public class QuizzService {
 		  }
 		  Optional<videoLessons> less=lessonsRepo.findById(lessonId);
 		  if(less.isPresent()) {
+			  if(quizzRepo.existsQuizzByLessonID(lessonId)) {
+				  return ResponseEntity.status(HttpStatus.CONFLICT).body("Duplicate Quizz Entry");
+			  }
 			  videoLessons lesson=less.get();
 		  quizzData.setInstituionName(institution);
 		  quizzData.setLessons(lesson);
@@ -250,5 +263,81 @@ public class QuizzService {
 		  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
   }
+  
+public ResponseEntity<?>getQuizzSheduleDetails(Long courseId, String batchId,String token){
+	try {
+		 String role=jwtUtil.getRoleFromToken(token);
+		  String email=jwtUtil.getUsernameFromToken(token);
+		  boolean isalloted=false;
+			
+				  if("ADMIN".equals(role)) {
+					  isalloted=true;
+				  }else if("TRAINER".equals(role)){
+					   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
+				  }
+				  if(isalloted) {
+					  List<ShedueleListDto> shedule= quizzRepo.getQuizzShedulesByCourseIdAndBatchId(courseId, batchId);
+					  return ResponseEntity.ok(shedule);
+				  }
+				  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	}catch (Exception e) {
+		logger.error("error at GetSheduleQuizz"+e);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+				
+	}
+}
+
+public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,LocalDateTime startDate,LocalDateTime endDate, String token){
+	try {
+		 String role=jwtUtil.getRoleFromToken(token);
+		  String email=jwtUtil.getUsernameFromToken(token);
+		  String insitution=muserRepository.findinstitutionByEmail(email);
+		  if(insitution==null) {
+			  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		  }
+		  boolean isalloted=false;
+		 Optional<Quizz> opquizz= quizzRepo.findById(quizzId);
+		 Optional<Batch>opbatch=batchRepo.findBatchByIdAndInstitutionName(batchId, insitution);
+		 if(!opquizz.isPresent() ) {
+			 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Quizz Not Found");
+		 }
+		 if(!opbatch.isPresent()) {
+			 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch Not Found");
+		 }
+		 Quizz quizz=opquizz.get();
+		 Batch batch=opbatch.get();
+		Long courseId=quizz.getLessons().getCourseDetail().getCourseId();
+				  if("ADMIN".equals(role)) {
+					  isalloted=true;
+				  }else if("TRAINER".equals(role)){
+					   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
+				  }
+				  if(isalloted) {
+					  Optional<QuizzSchedule> opQuizzschedule= quizzSheuleRepo.findByQuizzIdAndBatchId(quizzId, batchId);
+					  if(opQuizzschedule.isPresent()) {
+					    QuizzSchedule shedule=opQuizzschedule.get();
+					    shedule.setEndDate(endDate);
+					    shedule.setStartDate(startDate);
+					    System.out.println(startDate+"to"+endDate);
+					    quizzSheuleRepo.save(shedule);
+					    return ResponseEntity.ok("Updated");
+					  }else {
+						  QuizzSchedule shedule=new QuizzSchedule();
+						  shedule.setBatch(batch);
+						  shedule.setQuiz(quizz);
+						  shedule.setEndDate(endDate);
+						  shedule.setStartDate(startDate);
+						  System.out.println(startDate+"to"+endDate);
+						  quizzSheuleRepo.save(shedule);
+						  return ResponseEntity.ok("saved");
+					  }
+				  }
+				  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	}catch (Exception e) {
+		logger.error("error at GetSheduleQuizz"+e);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+				
+	}
+}
 
 }

@@ -95,12 +95,18 @@ const ViewAllBatch = () => {
                       onError={(e) => {
                         e.target.src = errorimg; // Use the imported error image
                       }}
+                      onClick={(e) => {
+                        navigate(`/batch/viewcourse/${item.batchTitle}/${item.batchId}`)
+                       }}
                       alt="Batch"
                     />
                   ) : (
                     <div
                       className="img-fluid card-img-top "
                       title={item.batchTitle}
+                      onClick={(e) => {
+                        navigate(`/batch/viewcourse/${item.batchTitle}/${item.batchId}`)
+                       }}
                       style={{
                         backgroundImage: `url(${altBatchImage})`, // Set the background image as altBatchImage
                         backgroundSize: "cover", // Ensure the image covers the div
@@ -127,14 +133,9 @@ const ViewAllBatch = () => {
                       className="courseName"
                       title={item.batchTitle}
                       style={{ cursor: "pointer" }}
-                      // onClick={(e) => {
-                      //   handleClick(
-                      //     e,
-                      //     item.courseId,
-                      //     item.amount,
-                      //     item.courseUrl
-                      //   );
-                      // }}
+                      onClick={(e) => {
+                       navigate(`/batch/viewcourse/${item.batchTitle}/${item.batchId}`)
+                      }}
                     >
                       {item.batchTitle}
                     </h5>

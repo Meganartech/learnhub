@@ -19,6 +19,7 @@ public class CourseDetailDto {
     private String institutionName;
     private Long noOfSeats;
     
+    
 	public CourseDetailDto(Long courseId, String courseName, String courseUrl, String courseDescription,
 			String courseCategory, Long amount, byte[] courseImage, String paytype, Long duration,
 			String institutionName, Long noOfSeats) {
@@ -35,4 +36,22 @@ public class CourseDetailDto {
 		this.institutionName = institutionName;
 		this.noOfSeats = noOfSeats;
 	}
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	public static class courseIdNameImg{
+		private Long courseId;
+	    private String courseName;
+	    private byte[] courseImage;
+		public courseIdNameImg(Long courseId, String courseName, byte[] courseImage) {
+			super();
+			this.courseId = courseId;
+			this.courseName = courseName;
+			this.courseImage = courseImage;
+		}
+		
+	}
+
 }
+
+

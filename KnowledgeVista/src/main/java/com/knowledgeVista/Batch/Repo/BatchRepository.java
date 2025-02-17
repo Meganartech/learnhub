@@ -13,6 +13,8 @@ import com.knowledgeVista.Batch.BatchDto;
 import com.knowledgeVista.Batch.CourseDto;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.TrainerDto;
+import com.knowledgeVista.Course.CourseDetailDto;
+import com.knowledgeVista.Course.CourseDetailDto.courseIdNameImg;
 import com.knowledgeVista.User.Muser;
 
 @Repository
@@ -21,6 +23,15 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 	@Query("SELECT b FROM Batch b WHERE b.id = :id AND b.institutionName = :institutionName")
 	Optional<Batch> findBatchByIdAndInstitutionName(@Param("id") Long id, @Param("institutionName") String institutionName);
 	
+	@Query("SELECT b FROM Batch b WHERE b.batchId = :id AND b.institutionName = :institutionName")
+	Optional<Batch> findBatchByIdAndInstitutionName(@Param("id") String id, @Param("institutionName") String institutionName);
+	
+	@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto$courseIdNameImg(c.courseId, c.courseName, c.courseImage) " +
+		       "FROM Batch b " +
+		       "LEFT JOIN b.courses c " +
+		       "WHERE b.batchId = :id AND b.institutionName = :institutionName")
+		List<courseIdNameImg> findCoursesOfBatchByBatchId(@Param("id") String id, @Param("institutionName") String institutionName);
+
 	@Query("SELECT new com.knowledgeVista.Batch.BatchDto( " +
 		       "b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount, " +
 		       "COALESCE(CAST(STRING_AGG(c.courseName, ',') AS string), ''), " +

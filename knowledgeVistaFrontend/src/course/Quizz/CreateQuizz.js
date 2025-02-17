@@ -121,10 +121,6 @@ const CreateQuizz = () => {
       }
       }
      const addQuestion = () => {
-        // Check for errors in quizzName field
-       
-      
-        // Check for errors in questionText field
         if (!questionText) {
           setErrors((prevErrors) => ({
             ...prevErrors,
@@ -232,11 +228,31 @@ const CreateQuizz = () => {
       setAnswer("");
       }
     };
+
+    
     const saveQuizz = async () => {
       try {
+        const updatedQuestions = [...savedQuestions];
+        if(questionText!=''&& answer!=""&&options[0]!="" &&options[1]!="" &&options[2]!="" &&options[3]!="" ){
+          const newQuestion = {
+            questionText: questionText,
+            option1: options[0],
+            option2: options[1],
+            option3: options[2],
+            option4: options[3],
+            answer: answer
+          };
+        
+          if (selectedQuestionIndex !== null) {
+           
+            updatedQuestions[selectedQuestionIndex] = newQuestion;
+            setSavedQuestions(updatedQuestions);
+            setSelectedQuestionIndex(prevIndex => prevIndex + 1);
+          }
+        }
         const requestData = {
           quizzName: quizzName,
-          quizzquestions: savedQuestions
+          quizzquestions: updatedQuestions
         };
     
         const response = await axios.post(
@@ -270,9 +286,28 @@ navigate(`/lessonList/${courseName}/${courseId}`)
           }
         }
       });
+        } if(response.status==204){
+          MySwal.fire({
+            title: "Not FOund .!",
+            text: "Lesson Not  Found.!",
+            icon: "warning",
+            confirmButtonText: "OK"
+          })
         }
       } catch (err) {
+        if(err.response && err.response.status===409){
+          MySwal.fire({
+            title: "Duplicate Entry .!",
+            text: `${err.response.data}`,
+            icon: "error",
+            confirmButtonText: "OK"
+          })
+        }else  if(err.response && err.response.status===401){
+          navigate("/unaithorized")
+        }else{
         console.error("Error saving quiz:", err);
+        throw err
+        }
       }
     };
     

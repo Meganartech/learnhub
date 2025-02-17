@@ -6,6 +6,7 @@ import com.knowledgeVista.Course.videoLessons;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,4 +29,7 @@ public class Quizz {
 	    private videoLessons lessons;
 	 @OneToMany(mappedBy = "quizz", cascade = CascadeType.REMOVE,orphanRemoval = true)
 	    private List<Quizzquestion> Quizzquestions;
+	 
+	 @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	    private List<QuizzSchedule> schedules;
 }

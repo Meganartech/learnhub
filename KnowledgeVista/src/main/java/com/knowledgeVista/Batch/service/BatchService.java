@@ -23,6 +23,8 @@ import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.BatchDto;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Course.CourseDetailDto;
+import com.knowledgeVista.Course.CourseDetailDto.courseIdNameImg;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.User.Muser;
@@ -418,18 +420,13 @@ public class BatchService {
 	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
 	         }
 	         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-    	
-    	
         // Check if the batch exists
         Optional<Batch> optionalBatch = batchrepo.findBatchByIdAndInstitutionName(id,institutionName);
         if (optionalBatch.isEmpty()) {
             // Return 204 No Content if batch is not found
             return ResponseEntity.noContent().build();
         }
-
-     
             Batch batch = optionalBatch.get();
-
             // Remove the mappings for courses and trainers
             batch.getCourses().clear();
             batch.getTrainers().clear();
@@ -449,5 +446,24 @@ public class BatchService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting the batch.");
         }
     }
-
+public ResponseEntity<?>getCoursesoFBatch(String batchId,String token){
+	try {
+		 String role = jwtUtil.getRoleFromToken(token);
+         String email = jwtUtil.getUsernameFromToken(token);
+         String institutionName=muserRepo.findinstitutionByEmail(email);
+         if(institutionName==null) {
+        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+         }
+         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+        	 List<courseIdNameImg> courses= batchrepo.findCoursesOfBatchByBatchId(batchId, institutionName);
+        	 return ResponseEntity.ok(courses);
+         }else {
+         	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot Delete Batch");
+         }
+	}catch (Exception e) {
+		// TODO: handle exception
+		logger.error("error occured in Getting courseOF batch "+e);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+}
 }

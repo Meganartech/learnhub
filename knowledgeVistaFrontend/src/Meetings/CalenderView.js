@@ -131,7 +131,7 @@ const CalenderView = () => {
       style: {
         backgroundColor: colors[index], // Use the color from the array
         color: 'black',
-        height: '30px', // Set the height of the event
+        height: '30px'
         
       }
     };

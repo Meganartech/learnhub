@@ -4,7 +4,6 @@ import withReactContent from "sweetalert2-react-content";
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import baseUrl from '../../api/utils';
 import axios from 'axios';
-import ErrorBoundary from '../../ErrorBoundary';
 
 const AddMoreQuizz = () => {
     const MySwal = withReactContent(Swal);

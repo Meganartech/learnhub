@@ -191,13 +191,11 @@ const ViewQuizz = () => {
                 </Link>{" "}
                 <div></div>
               </div>
-              <span className='singlerow' >
+             {selectedIds.length >0 &&<span className='singlerow' >
                 <span >
                   <i className="fa-solid fa-trash text-danger" onClick={DeleteQuestion} style={{ fontSize: '20px',paddingTop:"20px" }}></i>
                 </span>
-                
-              
-                </span>
+                </span>}
               {quizz && (
                 <div className="table-container mt-2">
                   <table className="table table-hover  table-bordered table-sm">
