@@ -155,11 +155,11 @@ const ViewAllBatch = () => {
                         <i className="fas fa-trash text-danger"></i>
                       </a>
                     </div>}
-                    <p title={item.courseNames} className="batchlist">
-                      <b>Courses &nbsp;:</b> {item.courseNames}
+                    <p title={item.course.join(", ")} className="batchlist">
+                      <b>Courses &nbsp;:</b> {item.course.join(", ")}
                     </p>
-                    <p title={item.trainerNames} className="batchlist">
-                      <b>Trainers &nbsp;:</b> {item.trainerNames}
+                    <p title={item.trainer.join(", ")} className="batchlist">
+                      <b>Trainers &nbsp;:</b> {item.trainer.join(", ")}
                     </p>
                     <p title={item.duration} className="batchlist">
                       <b>Duration :</b> {item.duration}

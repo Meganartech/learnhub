@@ -1577,10 +1577,7 @@ public class FrontController {
 		return batchService.GetAllBatchByCourseID(token, courseid);
 	}
 
-	@GetMapping("/Batch/getEnrolledBatch")
-	public ResponseEntity<?> getAllBatchforuser(@RequestHeader("Authorization") String token) {
-		return batchService.GetAllBatchByuser(token);
-	}
+	
 
 	@GetMapping("/Batch/getCourses/{batchId}")
 	public ResponseEntity<?> getCourseOfBatch(@PathVariable String batchId,

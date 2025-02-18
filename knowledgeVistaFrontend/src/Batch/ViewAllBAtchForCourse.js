@@ -207,11 +207,11 @@ setopenselectgateway(true)
                           {item.batchTitle}
                         </h5>
 
-                        <p title={item.courseNames} className="batchlist">
-                          <b> Courses :</b> {item.courseNames}
+                        <p title= {item.course.join(", ")} className="batchlist">
+                          <b> Courses :</b> {item.course.join(", ")}
                         </p>
-                        <p title={item.trainerNames} className="batchlist">
-                          <b>Trainers :</b> {item.trainerNames}
+                        <p title={item.trainer.join(", ")} className="batchlist">
+                          <b>Trainers :</b> {item.trainer.join(", ")}
                         </p>
                         <p title={item.duration} className="batchlist">
                           <b>Duration :</b> {item.duration}

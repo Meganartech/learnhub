@@ -31,6 +31,8 @@ import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
+import io.jsonwebtoken.lang.Collections;
+
 @Service
 public class BatchService {
 
@@ -358,8 +360,15 @@ public class BatchService {
 	         if(institutionName==null) {
 	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
 	         }
-	        List<BatchDto> batch=batchrepo.findAllBatchDtosByInstitution(institutionName);
-	        	return ResponseEntity.ok(batch);
+	        List<Batch> batches=batchrepo.findAllBatchDtosByInstitution(institutionName);
+	        if (batches == null || batches.isEmpty()) {  // Check for null or empty list
+	        	 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	        }
+
+	        List<BatchDto> btc= batches.stream()
+	                .map(BatchDto::new)  // Convert each Batch to a DTO
+	                .collect(Collectors.toList());
+	        return ResponseEntity.ok(btc);
 	        
 	         
     	} catch (Exception e) {
@@ -375,9 +384,15 @@ public class BatchService {
 	         if(institutionName==null) {
 	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
 	         }
-	        List<BatchDto> batch=batchrepo.findAllBatchDtosByInstitutionAndCourse(institutionName, courseid);
-	        	return ResponseEntity.ok(batch);
-	        
+	        List<Batch> batches=batchrepo.findByCoursesCourseIdAndInstitutionName(courseid,institutionName);
+	        if (batches == null || batches.isEmpty()) {  // Check for null or empty list
+	        	 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	        }
+
+	        List<BatchDto> btc= batches.stream()
+	                .map(BatchDto::new)  // Convert each Batch to a DTO
+	                .collect(Collectors.toList());
+	        return ResponseEntity.ok(btc);
 	         
     	} catch (Exception e) {
             logger.error("Exception occurred while getting batch with ID " +e);
@@ -385,29 +400,7 @@ public class BatchService {
         }
     }
     
-    //================================Get ALl BAtch By User==========================
-    public ResponseEntity<?>GetAllBatchByuser(String token){
-    	try {
-	         String email = jwtUtil.getUsernameFromToken(token);
-	         Optional<Muser>opuser=muserRepo.findByEmail(email);
-	         if(opuser.isPresent()) {
-	        	 Muser user= opuser.get();
-	         
-	         String institutionName=user.getInstitutionName();
-	         if(institutionName==null ) {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-	         }
-	        List<BatchDto> batch=batchrepo.findAllBatchDtosByInstitutionAnduserId(institutionName, user.getUserId());
-	        	return ResponseEntity.ok(batch);
-	        
-	         }else {
-	         	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Not Found");
-	         }
-    	} catch (Exception e) {
-            logger.error("Exception occurred while deleting batch with ID " +e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting the batch.");
-        }
-    }
+   
 
    //==============================Delete Batch================================
     @Transactional
