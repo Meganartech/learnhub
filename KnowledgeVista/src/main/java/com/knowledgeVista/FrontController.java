@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.Attendance.AttendanceService;
+import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.service.BatchService;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
@@ -177,6 +178,9 @@ public class FrontController {
 
 	@Autowired
 	private AttendanceService attendanceService;
+	
+	@Autowired
+	private EventController eventController;
 
 	private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
 
@@ -1655,5 +1659,11 @@ public class FrontController {
 			@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate,
 			@RequestHeader("Authorization") String token) {
 		return quizzService.SaveORUpdateSheduleQuizz(quizzId, batchId, startDate, endDate, token);
+	}
+	
+	//======================Event Controller================
+	@GetMapping("/Events/Get")
+	public ResponseEntity<?>getEvents(@RequestParam int pageNumber,@RequestParam int pageSize, @RequestHeader("Authorization") String token){
+		return eventController.getEvents(token,pageNumber,pageSize);
 	}
 }

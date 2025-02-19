@@ -912,6 +912,20 @@ const Sidebar = ({ filter, handleFilterChange }) => {
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
+                  data-path="/user/ProgramCalender"
+                  onClick={(e) => handleClick(e, "/user/ProgramCalender")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-calendar-plus"></i>
+                  </span>
+                  <span className="pcoded-mtext">Program Calender</span>
+                </a>
+              </li>
+
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
                   data-path="/myPayments"
                   onClick={(e) => handleClick(e, "/myPayments")}
                   className="nav-link "

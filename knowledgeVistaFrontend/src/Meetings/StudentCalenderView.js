@@ -48,7 +48,6 @@ const StudentCalenderView = () => {
   }, []);
   const handlClickJoinUrl = async (event) => {
     try {
-      console.log("hii in handlClickJoinUrl",event)
         const response =await axios.get(`${baseUrl}/api/zoom/Join/${event.id}`, {
           headers: {
             'Authorization': token,

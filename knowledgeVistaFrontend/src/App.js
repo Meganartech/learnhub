@@ -97,6 +97,7 @@ import AddMoreQuizz from "./course/Quizz/AddMoreQuizz.js";
 import EditQuizz from "./course/Quizz/EditQuizz.js";
 import ViewCourseOfBatch from "./Batch/ViewCourseOfBatch.js";
 import SheduleQuizz from "./Batch/SheduleQuizz.js";
+import ProgramCalender from "./course/Quizz/ProgramCalender.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -844,6 +845,16 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true} onlyuser={true}>
                     <StudentCalenderView />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/user/ProgramCalender"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <ProgramCalender/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }
