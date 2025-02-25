@@ -19,12 +19,15 @@ public interface quizzRepo extends JpaRepository<Quizz, Long>{
 	@Query("SELECT q.lessons.courseDetail.courseId FROM Quizz q WHERE q.quizzId=:quizzId")
 	Long getCourseIDFromQuizzId(Long quizzId);
 	
+	
+	
 	@Query("SELECT COUNT(q) > 0 FROM Quizz q WHERE q.lessons.lessonId = :lessonID")
 	boolean existsQuizzByLessonID(@Param("lessonID") Long lessonID);
 	@Modifying
 	@Transactional
 	@Query("DELETE FROM Quizz q WHERE q.quizzId=:quizzId")
 	void deleteQuizzById(@Param("quizzId") Long quizzId);
+	
 	
 //	@Query("SELECT new com.knowledgeVista.Course.Quizz.ShedueleListDto(q.quizzId, q.quizzName, q.lessons.lessonId, q.lessons.Lessontitle) " +
 //		       "FROM Quizz q " +

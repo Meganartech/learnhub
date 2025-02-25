@@ -26661,4 +26661,46 @@ span {
 .cornerbtns button {
     min-width: 100px;  /* Ensures equal button sizes */
 }
+.full-Width{
+  display: flex;
+  justify-content: flex-end;  /* Aligns to the right */
+  align-items: center;
+}
+.timer-container {
+   
+    padding: 5px 10px;
+    background: var(--primary);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.timer-container .fa-stopwatch-20 {
+    margin-right: 8px;
+    font-size: 22px;
+    color: #FFD700; /* Gold color for stopwatch icon */
+}
+
+.timer {
+  margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+}
+.timer-container.danger {
+  background: linear-gradient(135deg, #E74C3C, #C0392B); /* Red gradient */
+  color: #fff;
+  animation: pulseBlur 1s infinite alternate ease-in-out;
+}
+
+/* Blurring & pulsing effect */
+@keyframes pulseBlur {
+  0% {
+      transform: scale(1);
+  }
+  100% {
+      transform: scale(1.05);
+  }
+}
 

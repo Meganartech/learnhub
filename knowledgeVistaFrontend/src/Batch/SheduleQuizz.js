@@ -178,7 +178,7 @@ const SheduleQuizz = () => {
     <span className="col-sm-3">Quiz Date:</span>
     <input
       type="date" // Use date input instead of datetime-local
-      className="form-control col-sm-9"
+      className="form-control col-sm-4"
       value={item.quizzDate || ""}
       min={new Date().toISOString().split("T")[0]} // Disable past dates
       onChange={(e) => handleDateChange(index, e.target.value)}

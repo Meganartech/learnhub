@@ -1,15 +1,22 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const QuizzInstruction = ({handleProceedClick,quizzName,noofQuestion}) => {
+const QuizzInstruction = ({handleProceedClick,quizzName,noofQuestion,timeLeft}) => {
   return (
    <div className='card'>
                <div className="card-body">
           <div className="row">
           <div className="col-12">
                   <div className='div3'>
+          
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-    <h4 style={{ textDecoration: "underline", margin: 0 }}>Quizz Instructions</h4>
+    <h4 style={{ textDecoration: "underline", margin: 0 }}>Quizz Instructions</h4>         <div className='full-Width'>
+                                       <div className={`timer-container }`}>
+    <p className="timer">
+        <i className="fa-solid fa-stopwatch-20"></i> Duration: {timeLeft}
+    </p>
+    </div>
+</div>
   </div>
   
                      <div className='instruction'>

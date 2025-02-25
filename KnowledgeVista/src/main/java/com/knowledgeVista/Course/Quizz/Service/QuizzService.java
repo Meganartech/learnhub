@@ -486,12 +486,15 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
     private ResponseEntity<?> handleQuizAttempt(Muser user, Quizz quizz, Long quizzId) {
         Optional<QuizAttempt> opAttempt = quizAttemptRepo.findbyquizzIdandUserId(user.getUserId(), quizzId);
         LocalDateTime startedat= LocalDateTime.now();
+
+        int duration=quizz.getDurationInMinutes();
         if (opAttempt.isPresent()) {
             QuizAttempt attempt = opAttempt.get(); 
+
             if (attempt.getScore() == null) {
                 attempt.setStartedAt(startedat);
                 quizAttemptRepo.save(attempt);
-                return getQuizQuestions(quizzId, user.getInstitutionName());
+                return getQuizQuestions(quizzId, user.getInstitutionName(),duration);
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You have already attempted the quiz.");
         }
@@ -502,13 +505,18 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
         newAttempt.setUser(user);
         newAttempt.setStartedAt(startedat);
         quizAttemptRepo.save(newAttempt);
-
-        return getQuizQuestions(quizzId, user.getInstitutionName());
+        return getQuizQuestions(quizzId, user.getInstitutionName(),duration);
     }
 
-    private ResponseEntity<?> getQuizQuestions(Long quizzId, String institutionName) {
+    private ResponseEntity<?> getQuizQuestions(Long quizzId, String institutionName,int duration) {
+    	
         List<QuizzquestionDTO> questions = quizQuestionRepo.findQuestionsByQuizIdAndInstitution(quizzId, institutionName);
-        return ResponseEntity.ok(questions);
+        Map<String, Object> response = new HashMap<>();
+        response.put("duration", duration);
+        response.put("questions", questions);
+
+        return ResponseEntity.ok(response);
+
     }
     
     public ResponseEntity<?> saveQuizzAnswers(String token,Long quizzId,List<AnswerDto> answers){
