@@ -15,17 +15,16 @@ import com.knowledgeVista.Course.Quizz.ShedueleListDto;
 @Repository
 public interface quizzRepo extends JpaRepository<Quizz, Long>{
 
-	@Modifying
-	@Transactional
-	@Query("DELETE FROM Quizz q WHERE q.quizzId=:quizzId")
-	void deleteQuizzById(@Param("quizzId") Long quizzId);
 	
 	@Query("SELECT q.lessons.courseDetail.courseId FROM Quizz q WHERE q.quizzId=:quizzId")
 	Long getCourseIDFromQuizzId(Long quizzId);
 	
 	@Query("SELECT COUNT(q) > 0 FROM Quizz q WHERE q.lessons.lessonId = :lessonID")
 	boolean existsQuizzByLessonID(@Param("lessonID") Long lessonID);
-
+	@Modifying
+	@Transactional
+	@Query("DELETE FROM Quizz q WHERE q.quizzId=:quizzId")
+	void deleteQuizzById(@Param("quizzId") Long quizzId);
 	
 //	@Query("SELECT new com.knowledgeVista.Course.Quizz.ShedueleListDto(q.quizzId, q.quizzName, q.lessons.lessonId, q.lessons.Lessontitle) " +
 //		       "FROM Quizz q " +
@@ -36,7 +35,7 @@ public interface quizzRepo extends JpaRepository<Quizz, Long>{
 //		       "AND b.batchId = :batchId")
 //		List<ShedueleListDto> getQuizzShedulesByCourseIdAndBatchId(@Param("courseId") Long courseId, @Param("batchId") String batchId);
 	
-	@Query("SELECT new com.knowledgeVista.Course.Quizz.ShedueleListDto(q.quizzId, q.quizzName, l.lessonId, l.Lessontitle, s.startDate, s.endDate) " +
+	@Query("SELECT new com.knowledgeVista.Course.Quizz.ShedueleListDto(q.quizzId, q.quizzName, l.lessonId, l.Lessontitle, s.QuizzDate) " +
 		       "FROM Quizz q " +
 		       "JOIN q.lessons l " +
 		       "JOIN l.courseDetail c " +

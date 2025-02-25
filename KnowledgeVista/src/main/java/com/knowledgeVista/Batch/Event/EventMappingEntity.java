@@ -1,5 +1,6 @@
 package com.knowledgeVista.Batch.Event;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
@@ -16,10 +17,9 @@ import jakarta.persistence.Id;
 	        columns = {
 	            @ColumnResult(name = "title", type = String.class),
 	            @ColumnResult(name = "MeetingId", type = Long.class),
-	            @ColumnResult(name = "startDateTime", type = LocalDateTime.class),
-	            @ColumnResult(name = "endDateTime", type = LocalDateTime.class),
+	            @ColumnResult(name = "QuizzDate", type = LocalDate.class),
 	            @ColumnResult(name = "duration", type = Integer.class),
-	            @ColumnResult(name = "startTime", type = String.class),
+	            @ColumnResult(name = "startTime", type = LocalDateTime.class),
 	            @ColumnResult(name = "batchString", type = String.class),
 	            @ColumnResult(name = "type", type = String.class),
 	            @ColumnResult(name="batchid",type=Long.class),

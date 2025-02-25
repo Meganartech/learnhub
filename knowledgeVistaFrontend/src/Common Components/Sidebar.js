@@ -12,7 +12,7 @@ const Sidebar = ({ filter, handleFilterChange }) => {
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const { displayname, Activeprofile } = useContext(GlobalStateContext);
-
+const [joinUrl,setjoinUrl]=useState();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,7 +38,29 @@ const Sidebar = ({ filter, handleFilterChange }) => {
         console.error("Error fetching data:", error);
       }
     };
+    const fetchVirtualMeet =async ()=>{
+      try {
+        if (userRole !== "SYSADMIN" && token) {
+          const response = await axios.get(`${baseUrl}/api/zoom/getVirtualMeet`, {
+            headers: {
+              Authorization: token,
+            },
+          });
+          if(response.status===200){
+          if (
+            typeof response.data === "string" &&
+            response.data.startsWith("http")
+          ) {
+            setjoinUrl(response.data)
+          }
+        }
+        }
+      } catch (error) {
+        console.error("Error fetching virual class:", error);
+      }
+    }
     fetchData();
+    fetchVirtualMeet();
   }, []);
   function updateActiveMenu(routePath) {
     $(".pcoded-navbar .active").not(".pcoded-trigger").removeClass("active");
@@ -475,6 +497,18 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     </li>
                   </ul>
                 </li>
+                {joinUrl && <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  onClick={(e) =>{window.open(joinUrl, "_blank");}}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-display text-primary mr-2"></i>
+                  </span>
+                  <span className="pcoded-mtext">Virual ClassRoom</span>
+                </a>
+              </li>}
                 <li className="nav-item pcoded-hasmenu">
                   <a href="#!" className="nav-link ">
                     <span className="pcoded-micon">
@@ -540,6 +574,7 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     <span className="pcoded-mtext">About us</span>
                   </a>
                 </li>
+
               </ul>
             </>
           )}
@@ -776,6 +811,18 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   </span>
                 </a>
               </li>
+              {joinUrl && <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  onClick={(e) =>{window.open(joinUrl, "_blank");}}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-display text-primary mr-2"></i>
+                  </span>
+                  <span className="pcoded-mtext">Virual ClassRoom</span>
+                </a>
+              </li>}
             </ul>
           )}
           {/* Trainer Sidebar */}
@@ -936,6 +983,18 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   <span className="pcoded-mtext">My Payments</span>
                 </a>
               </li>
+             {joinUrl && <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  onClick={(e) =>{window.open(joinUrl, "_blank");}}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-display text-primary mr-2"></i>
+                  </span>
+                  <span className="pcoded-mtext">Virual ClassRoom</span>
+                </a>
+              </li>}
             </ul>
           )}
           {/* User Sidebar */}

@@ -24,12 +24,17 @@ public class Quizz {
 	 private Long quizzId;
 	 private String quizzName;
 	 private String instituionName;
+	 private int durationInMinutes ;
+ // e.g., 30 for 30 minutes
 	  @OneToOne
 	    @JoinColumn(name = "lessonId", referencedColumnName = "lessonId", unique = true) // Foreign key in Quizz table
 	    private videoLessons lessons;
 	 @OneToMany(mappedBy = "quizz", cascade = CascadeType.REMOVE,orphanRemoval = true)
 	    private List<Quizzquestion> Quizzquestions;
 	 
-	 @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	 @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	    private List<QuizzSchedule> schedules;
+	 
+	 @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE,fetch = FetchType.LAZY, orphanRemoval = true)
+	    private List<QuizAttempt> quizAttempts;
 }

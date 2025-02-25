@@ -4,9 +4,11 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../../api/utils';
+import DurationPicker from './DurationPicker';
 
 const CreateQuizz = () => {
       const navigate=useNavigate();
+       const [examDuration, setExamDuration] = useState({ hours: "", minutes: "" });
         const MySwal = withReactContent(Swal);
         const [questionText, setQuestionText] = useState("");
         const [options, setOptions] = useState(["", "", "", ""]);
@@ -16,6 +18,8 @@ const CreateQuizz = () => {
         const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
      const token=sessionStorage.getItem("token")
        const [quizzName, setquizzName] = useState("");
+        const [duration, setDuration] = useState({ hours: "", minutes: "" });
+  const [durationInMinutes, setDurationInMinutes] = useState(0);
       const { courseName,courseId,Lessontitle,lessonId} = useParams();
       const [errors,setErrors]=useState({
         quizzName:"",
@@ -98,6 +102,20 @@ const CreateQuizz = () => {
     
         // Update the state with new errors
         setErrors(newErrors);
+    };
+    const handleCriteriaChange = (e) => {
+      const { name, value } = e.target;
+      let error = "";
+  
+      // Convert value to a number if it is an attempt count or percentage
+      
+     
+  
+      // Update error state
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: error
+      }));
     };
      const handlequizzNameChange =(e)=>{
         const { value } = e.target;
@@ -250,11 +268,15 @@ const CreateQuizz = () => {
             setSelectedQuestionIndex(prevIndex => prevIndex + 1);
           }
         }
+        if(durationInMinutes===0){
+          return;
+        }
         const requestData = {
           quizzName: quizzName,
+          durationInMinutes:durationInMinutes,
           quizzquestions: updatedQuestions
         };
-    
+      
         const response = await axios.post(
           `${baseUrl}/Quizz/Save/${lessonId}`,
           requestData,
@@ -270,7 +292,9 @@ const CreateQuizz = () => {
         setQuestionText("")
         setOptions(["", "", "", ""])
         setquizzName("");
+        setShowCriteria(false)
         if(response.status==200){
+
           const data=response.data
 MySwal.fire({
         title: "Created .!",
@@ -314,6 +338,62 @@ navigate(`/lessonList/${courseName}/${courseId}`)
   return (
     <div>
     <div className="page-header"></div>
+    {showCriteria ? (
+         <div className="card">
+        <div className="card-header">
+       
+          <div className='navigateheaders'>
+      <div onClick={()=>{setShowCriteria(false)}}><i className="fa-solid fa-arrow-left"></i></div>
+      <div></div>
+      <div onClick={()=>{navigate("/dashboard/course")}}><i className="fa-solid fa-xmark"></i></div>
+      </div>
+      <h4>Test Criteria</h4>
+      </div>
+      <div className="card-body">
+          <div className="row">
+          <div className="col-12">
+        
+          <p className="text-danger"><span>*</span> By default, each question carries one mark</p>
+          
+          <div className="form-group row">
+               <label className="col-sm-3 col-form-label">Number of Questions</label>
+               <div className="col-sm-9">
+            <input className="form-control" style={{width:"250px"}} value={savedQuestions.length} readOnly />
+            </div>
+          </div>
+
+        <div className="form-group row">
+               <label className="col-sm-3 col-form-label">Number of Questions</label>
+               <div className="col-sm-9">
+      <DurationPicker onChange={setExamDuration} durationInMinutes={durationInMinutes} setDurationInMinutes={setDurationInMinutes}  />
+      <p className="mt-2 text-gray-500">
+        Selected Duration: {examDuration.hours || 0} hr {examDuration.minutes || 0} min
+      </p>
+      </div>
+    </div>
+         
+         
+
+          <div className="atbtndiv mt-5">
+            <div>
+            <button  className="btn btn-primary" onClick={()=>{setShowCriteria(false)}}>Back</button>
+           </div> <div></div>
+           <div>
+            {savedQuestions.length > 0 && (
+                            <button
+                            className="btn btn-primary mt-4"
+                            onClick={saveQuizz}
+                            >
+                            Save
+                            </button>
+                        )} 
+                        </div>
+          </div>
+          </div>
+          </div>
+        </div>
+        </div>
+      ) : (
     <div className="card">
             <div className="card-body">
                 {}
@@ -334,7 +414,7 @@ navigate(`/lessonList/${courseName}/${courseId}`)
               <input
                 className={`form-control    ${errors.quizzName && 'is-invalid'}`}
                 value={quizzName}
-                placeholder="Test Name"
+                placeholder="Quizz Name"
                 onChange={handlequizzNameChange}
               />
               {errors.quizzName && <div className="invalid-feedback">{errors.quizzName}</div>}
@@ -426,9 +506,9 @@ navigate(`/lessonList/${courseName}/${courseId}`)
             {savedQuestions.length > 0 && (
                             <button
                             className="btn btn-primary mt-4"
-                            onClick={saveQuizz}
+                            onClick={()=>{setShowCriteria(true)}}
                             >
-                            Save
+                            Next
                             </button>
                         )} 
                         </div>
@@ -439,7 +519,7 @@ navigate(`/lessonList/${courseName}/${courseId}`)
     
       </div>
       </div>
-
+)}
 
     </div>
   )

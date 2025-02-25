@@ -2,6 +2,9 @@ package com.knowledgeVista.Course.Quizz;
 
 
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,7 +37,9 @@ public class Quizzquestion {
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "quizzId", referencedColumnName = "quizzId", nullable = false)
 	    private Quizz quizz;
-	    
+	    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<QuizAttemptAnswer> quizAttemptAnswers;
+
 	    public Quizzquestion(Long questionId, String questionText, String option1, String option2, String option3, String option4, String answer) {
 	        this.questionId = questionId;
 	        this.questionText = questionText;

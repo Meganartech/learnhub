@@ -224,7 +224,7 @@ const LessonList = () => {
                                   to={`/AddQuizz/${courseName}/${courseId}/${lesson.lessonTitle}/${lesson.lessonId}`}
                                 >
                                   <span className="btn btn-success">
-                                    Add Quizz
+                                    Add Quizz&nbsp;
                                   </span>
                                 </Link>
                               ) : (

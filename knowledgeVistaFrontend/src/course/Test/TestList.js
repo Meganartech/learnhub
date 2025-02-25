@@ -95,7 +95,7 @@ const [selectedIds,setselectedIds]=useState([]);
     }
     MySwal.fire({
       title: "Delete Test?",
-      text: "Are you sure you want to delete this Questions?",
+      text: "Are you sure you want to delete Selected Questions?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -185,6 +185,45 @@ const handleQuestionselect=(id)=>{
   });
   
 }
+const handleDelete = async (questID) => { 
+  MySwal.fire({
+    title: "Delete Question?",
+    text: "Are you sure you want to delete this question?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    confirmButtonText: "Delete",
+    cancelButtonText: "Cancel",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        if (test.testId != null) {
+          const response = await axios.delete(`${baseUrl}/test/questions`, {
+            params: { 
+              testId: test.testId,
+            },
+            paramsSerializer: (params) => {
+              const queryString = new URLSearchParams();
+              queryString.append("questionIds", questID); // Use questID instead of selectedIds
+              queryString.append("testId", test.testId);
+              return queryString.toString();
+            },
+            headers: {
+              "Authorization": token
+            }
+          });
+          
+          if (response.status === 200) {
+            window.location.reload();
+          }
+        }
+      } catch (error) {
+        console.error("Error deleting question:", error);
+      }
+    } 
+  });
+};
+
   return (
     <div>
     <div className="page-header"></div>
@@ -199,9 +238,22 @@ const handleQuestionselect=(id)=>{
       </div>
       <div className='headingandbutton'>
       <h4 className='text-center 'style={{margin:"0px"}}>{courseName}</h4>
-      <div>
+      <div style={{ width: "200px", display: "flex", gap: "10px" }}>
+                 
+      {test &&     <button className="hidebtn" onClick={DeleteQuestion} disabled={selectedIds.length <= 0}
+                  style={{
+                   opacity: selectedIds.length > 0 ? 1 : 0.5, // Dim when disabled
+                   cursor: selectedIds.length > 0 ? "pointer" : "not-allowed", // Show disabled cursor
+                 }}>
+                   {" "}
+                   <i
+                     className="fa-solid fa-trash text-danger"
+                     style={{ fontSize: "20px", paddingTop: "20px" }}
+                   ></i>
+                 </button>}
       {test &&   <Link to={`/test/AddMore/${courseName}/${test.testId}`} className='btn btn-primary mr-2' style={{width:"150px"}}><i className='fa fa-plus'></i> Add more </Link>
-  }  </div>      
+  }  
+  </div>      
                 </div>
      </div>
         {notFound ? (
@@ -289,20 +341,20 @@ const handleQuestionselect=(id)=>{
                 </span>
               
               </div>
-              <span className='singlerow' >
-                <span >
-                  <i className="fa-solid fa-trash text-danger" onClick={DeleteQuestion} style={{ fontSize: '20px',paddingTop:"20px" }}></i>
-                </span>
-                
-              
-                </span>
                
               {test.questions && (
                 <div className="table-container mt-2">
                   <table className='table table-hover  table-bordered table-sm'>
                     <thead className='thead-dark'>
                       <tr>
-                      <th scope="col" style={{width:"50px"}}><i className="fa-solid fa-list-check " title='Select All' onClick={handleSelectAll}></i></th>
+                      <th scope="col" style={{ width: "50px" }}>
+                          <input
+                            type="checkbox"
+                            checked={selectedIds?.length===test?.questions?.length}
+                            title="Select All"
+                            onChange={handleSelectAll}
+                          />
+                        </th>
                         <th scope="col" style={{width:"50px"}}>S.no</th>
                         <th scope="col">Question</th>
                         <th scope="col">Option 1</th>
@@ -310,7 +362,7 @@ const handleQuestionselect=(id)=>{
                         <th scope="col">Option 3</th>
                         <th scope="col">Option 4</th>
                         <th scope="col">Answer</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col" colSpan={2}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -331,6 +383,9 @@ const handleQuestionselect=(id)=>{
                             <Link to={`/test/Edit/${question.questionId}`}>
                               <i className='fa text-primary fa-edit'></i>
                             </Link>
+                          </td>
+                          <td className='text-center'>
+                          <i className='fa fa-trash text-danger' onClick={() => handleDelete(question.questionId)}></i>
                           </td>
                           
                         </tr>

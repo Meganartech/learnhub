@@ -4,51 +4,67 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import axios from "axios";
+import DurationPickerEdit from "./DurationPickerEdit";
 const ViewQuizz = () => {
   const { courseName, courseID, lessonsName, lessonId, quizzName, quizzId } =
     useParams();
   const navigate = useNavigate();
   const MySwal = withReactContent(Swal);
+  const[quizzDetails,setquizzDetails]=useState({
+
+  });
+  
+          const [duration, setDuration] = useState({ hours: "", minutes: "" });
+          
+                 const [examDuration, setExamDuration] = useState({ hours: "", minutes: "" });
+    const [durationInMinutes, setDurationInMinutes] = useState(0);
   const [quizz, setquizz] = useState([]);
   const [submitting, setsubmitting] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const token = sessionStorage.getItem("token");
-  const [selectedIds,setselectedIds]=useState([]);
-  useEffect(() => {
-    const fetchQuizzQuestions = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/Quizz/${quizzId}`, {
-          headers: {
-            Authorization: token,
-          },
-        });
-        setsubmitting(false);
-        if (response.status === 200) {
-       
-          const data = response.data;
-          setquizz(data);
-        }
-        if(response.status===204){
-          navigate(`/AddQuizz/${courseName}/${courseID}/${lessonsName}/${lessonId}`)
-        }
-      } catch (error) {
-        setsubmitting(false);
-        if (error.response && error.response.status === 401) {
-          navigate("/unauthorized");
-        } else if (error.response && error.response.status === 404) {
-          setNotFound(true);
-        } else {
-          // MySwal.fire({
-          //   title: "Error",
-          //   text: error.response,
-          //   icon: "error",
-          //   confirmButtonText: "OK"
-          // });
-          throw error;
-        }
-      }
-    };
+  const [selectedIds, setselectedIds] = useState([]);
+  const fetchQuizzQuestions = async () => {
+    try {
+      setsubmitting(true)
+      const response = await axios.get(`${baseUrl}/Quizz/${quizzId}`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      setsubmitting(false);
+      if (response.status === 200) {
+        setquizzDetails(response?.data);
 
+        setDuration(() => ({
+          hours: Math.floor(response?.data?.durationInMinutes / 60),
+          minutes: response?.data?.durationInMinutes % 60
+        }));
+        const data = response?.data?.quizzquestions;
+        setquizz(data);
+      }
+      if (response.status === 204) {
+        navigate(
+          `/AddQuizz/${courseName}/${courseID}/${lessonsName}/${lessonId}`
+        );
+      }
+    } catch (error) {
+      setsubmitting(false);
+      if (error.response && error.response.status === 401) {
+        navigate("/unauthorized");
+      } else if (error.response && error.response.status === 404) {
+        setNotFound(true);
+      } else {
+        // MySwal.fire({
+        //   title: "Error",
+        //   text: error.response,
+        //   icon: "error",
+        //   confirmButtonText: "OK"
+        // });
+        throw error;
+      }
+    }
+  };
+  useEffect(() => {
     fetchQuizzQuestions();
   }, []);
   const handleNavigation = () => {
@@ -61,7 +77,7 @@ const ViewQuizz = () => {
       navigate("/unauthorized");
     }
   };
-  const handleQuestionselect=(id)=>{
+  const handleQuestionselect = (id) => {
     setselectedIds((prevSelectedIds) => {
       if (prevSelectedIds.includes(id)) {
         // If the ID is already present, remove it
@@ -71,11 +87,10 @@ const ViewQuizz = () => {
         return [...prevSelectedIds, id];
       }
     });
-    
-  }
+  };
   const DeleteQuestion = async () => {
-    if(selectedIds.length<=0){
-      return
+    if (selectedIds.length <= 0) {
+      return;
     }
     MySwal.fire({
       title: "Delete Test?",
@@ -89,25 +104,83 @@ const ViewQuizz = () => {
       if (result.isConfirmed) {
         try {
           if (quizzId != null) {
-            const response = await axios.delete(`${baseUrl}/Quizz/Delete/${quizzId}`, {
-              data: selectedIds, 
-              headers: {
-                "Authorization": token
+            const response = await axios.delete(
+              `${baseUrl}/Quizz/Delete/${quizzId}`,
+              {
+                data: selectedIds,
+                headers: {
+                  Authorization: token,
+                },
               }
-            });
-            
-            if (response.status===200) {
+            );
+
+            if (response.status === 200) {
               window.location.reload();
             }
           }
         } catch (error) {
-          setselectedIds([])
-          console.error('Error deleting test:', error);
-          throw error
+          setselectedIds([]);
+          console.error("Error deleting test:", error);
+          throw error;
         }
-      } 
-      setselectedIds([])
+      }
+      setselectedIds([]);
     });
+    fetchQuizzQuestions();
+  };
+
+
+  const handleDelete = async (questid) => {
+   
+    MySwal.fire({
+      title: "Delete Test?",
+      text: "Are you sure you want to delete this Questions?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          if (quizzId != null) {
+            const arr = [];
+arr.push(questid);
+            const response = await axios.delete(
+              `${baseUrl}/Quizz/Delete/${quizzId}`,
+              {
+                data: arr,
+                headers: {
+                  Authorization: token,
+                },
+              }
+            );
+
+            if (response.status === 200) {
+              window.location.reload();
+            }
+          }
+        } catch (error) {
+          console.error("Error deleting question:", error);
+          throw error;
+        }
+      }
+      setselectedIds([]);
+    });
+  };
+  const handleUpdateDuration = async (totalMinutes) => {
+    try {
+     
+      const response = await axios.patch(`${baseUrl}/Quizz/updateDuration/${quizzId}/${totalMinutes}`,{},{
+        headers: {
+          Authorization: token,
+        },
+        
+      });
+      fetchQuizzQuestions();
+    } catch (err) {
+      console.error("Error updating quiz duration:", err);
+    }
   };
   const handleSelectAll = () => {
     if (selectedIds.length === quizz.length) {
@@ -115,7 +188,7 @@ const ViewQuizz = () => {
       setselectedIds([]);
     } else {
       // Select all question IDs
-      const allQuestionIds = quizz.map(q => q.questionId);
+      const allQuestionIds = quizz.map((q) => q.questionId);
       setselectedIds(allQuestionIds);
     }
   };
@@ -145,7 +218,7 @@ const ViewQuizz = () => {
                   </a>
                 </li>
                 <li className="breadcrumb-item">
-                  <a href="#">{quizzName}</a>
+                  <a href="#">{quizzDetails?.quizzName || quizzName}</a>
                 </li>
               </ul>
             </div>
@@ -180,45 +253,92 @@ const ViewQuizz = () => {
               )}
               <div className="headingandbutton">
                 <h4 className="text-center " style={{ margin: "0px" }}>
-                  {quizzName}
+                  {quizzDetails?.quizzName || quizzName}
                 </h4>
-                <Link
-                  to={`/AddQuestionInQuizz/${courseName}/${courseID}/${lessonsName}/${lessonId}/${quizzName}/${quizzId}`}
-                  className="btn btn-primary mr-2"
-                  style={{ width: "130px" }}
-                >
-                  <i className="fa fa-plus"></i> Add more{" "}
-                </Link>{" "}
+                <div style={{ width: "200px", display: "flex", gap: "10px" }}>
+                 
+                    <button className="hidebtn" onClick={DeleteQuestion} disabled={selectedIds.length <= 0}
+                     style={{
+                      opacity: selectedIds.length > 0 ? 1 : 0.5, // Dim when disabled
+                      cursor: selectedIds.length > 0 ? "pointer" : "not-allowed", // Show disabled cursor
+                    }}>
+                      {" "}
+                      <i
+                        className="fa-solid fa-trash text-danger"
+                        style={{ fontSize: "20px", paddingTop: "20px" }}
+                      ></i>
+                    </button>
+                  <Link
+                    to={`/AddQuestionInQuizz/${courseName}/${courseID}/${lessonsName}/${lessonId}/${quizzName}/${quizzId}`}
+                    className="btn btn-primary mr-2"
+                    style={{ width: "130px" }}
+                  >
+                    <i className="fa fa-plus"></i> Add more{" "}
+                  </Link>{" "}
+                </div>
                 <div></div>
               </div>
-             {selectedIds.length >0 &&<span className='singlerow' >
-                <span >
-                  <i className="fa-solid fa-trash text-danger" onClick={DeleteQuestion} style={{ fontSize: '20px',paddingTop:"20px" }}></i>
+ <div className='singletest'>
+ <span>
+                  <b>Lesson Name:</b> {lessonsName}
                 </span>
-                </span>}
+                <span>
+                  <b>Course Name:</b> {courseName}
+                </span>
+                <span>
+                  <b>No Of Question :</b> {quizz?.length}
+                </span>
+                <span style={{display:"flex",alignItems:"center"}}>
+                  <b >Duration :</b> &nbsp; 
+                  <div className="col-sm-9">
+      <DurationPickerEdit onChange={handleUpdateDuration} durationInMinutes={durationInMinutes} setDurationInMinutes={setDurationInMinutes}  duration={duration} setDuration={setDuration} />
+    
+      </div>
+                </span>
+              
+              </div>
               {quizz && (
                 <div className="table-container mt-2">
                   <table className="table table-hover  table-bordered table-sm">
                     <thead className="thead-dark">
                       <tr>
-                      <th scope="col" style={{width:"50px"}}><i className="fa-solid fa-list-check " title='Select All' onClick={handleSelectAll}></i></th>
-                        <th scope="col" style={{width:"50px"}}>S.no</th>
+                        <th scope="col" style={{ width: "50px" }}>
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.length===quizz.length}
+                            title="Select All"
+                            onChange={handleSelectAll}
+                          />
+                        </th>
+                        <th scope="col" style={{ width: "50px" }}>
+                          S.no
+                        </th>
                         <th scope="col">Question</th>
                         <th scope="col">Option 1</th>
                         <th scope="col">Option 2</th>
                         <th scope="col">Option 3</th>
                         <th scope="col">Option 4</th>
-                        <th scope="col" >Answer</th>
-                        <th scope="col"style={{width:"50px"}}>Action</th>
+                        <th scope="col">Answer</th>
+                        <th scope="col" colSpan={2} style={{ width: "50px" }}>
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {quizz.map((question, index) => (
                         <tr key={index}>
-                          <td><input type='checkbox' title='Select'
-                        checked={selectedIds.includes(question.questionId)} // Check if the ID is in selectedIds
-                        onChange={() => handleQuestionselect(question.questionId)} // Prevents default event propagation
-                      /></td>
+                          <td>
+                            <input
+                              type="checkbox"
+                              title="Select"
+                              checked={selectedIds.includes(
+                                question.questionId
+                              )} // Check if the ID is in selectedIds
+                              onChange={() =>
+                                handleQuestionselect(question.questionId)
+                              } // Prevents default event propagation
+                            />
+                          </td>
                           <td>{index + 1}</td>
                           <td>{question.questionText}</td>
                           <td>{question.option1}</td>
@@ -234,6 +354,10 @@ const ViewQuizz = () => {
                               <i className="fas fa-edit text-primary"></i>
                             </Link>
                           </td>
+                          <td className='text-center'>
+                          <i className='fa fa-trash text-danger' onClick={() => handleDelete(question.questionId)}></i>
+                          </td>
+                          
                         </tr>
                       ))}
                     </tbody>

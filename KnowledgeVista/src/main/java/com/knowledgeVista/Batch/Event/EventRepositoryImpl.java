@@ -93,46 +93,47 @@ public class EventRepositoryImpl implements EventRepository {
 
         // ✅ Query to Get Paginated Data
         String sql = """
-            SELECT * FROM (
-                SELECT 
-                    m.topic AS title, 
-                    m.meeting_id AS MeetingId, 
-                    NULL AS startDateTime, 
-                    NULL AS endDateTime,    
-                    m.duration AS duration, 
-                    m.start_time AS startTime, 
-                    b.batch_id AS batchString,
-                    'MEET' AS type,
-                    b.id As batchid,
-                    b.batch_title AS batchName,
-                    NULL As quizzid
-                FROM meeting m
-                JOIN meeting_batch_mapping mbm ON m.pk_id = mbm.meeting_id
-                JOIN batch b ON mbm.batch_id = b.id
-                WHERE b.id IN (:batchIds)
+        	    SELECT * FROM (
+        	        SELECT 
+        	            m.topic AS title, 
+        	            m.meeting_id AS MeetingId, 
+        	            NULL AS QuizzDate,    
+        	            m.duration AS duration, 
+        	            TO_TIMESTAMP(m.start_time, 'YYYY-MM-DD"T"HH24:MI:SS') AS startTime,
+        	            b.batch_id AS batchString,
+        	            'MEET' AS type,
+        	            b.id AS batchid,
+        	            b.batch_title AS batchName,
+        	            NULL AS quizzid
+        	        FROM meeting m
+        	        JOIN meeting_batch_mapping mbm ON m.pk_id = mbm.meeting_id
+        	        JOIN batch b ON mbm.batch_id = b.id
+        	        WHERE b.id IN (:batchIds)
+        	         AND TO_DATE(m.start_time, 'YYYY-MM-DD') >= CURRENT_DATE -- ✅ Filter past meetings
 
-                UNION ALL
+        	        UNION ALL
 
-                SELECT 
-                    q.quizz_name AS title,
-                    NULL AS MeetingId,
-                    qs.start_date AS startDateTime,
-                    qs.end_date AS endDateTime,
-                    NULL AS duration,
-                    NULL AS startTime,
-                    b.batch_id AS batchString,
-                    'QUIZZ' AS type,
-                    b.id As batchid,
-                    b.batch_title AS batchName,
-                    q.quizz_id As quizzid
-                FROM quizz_schedule qs
-                JOIN batch b ON qs.batch_id = b.id
-                JOIN quizz q ON qs.quiz_id = q.quizz_id
-                WHERE b.id IN (:batchIds)
-            ) AS combined_results
-            ORDER BY startDateTime
-            LIMIT :pageSize OFFSET :offset
-        """;
+        	        SELECT 
+        	            q.quizz_name AS title,
+        	            NULL AS MeetingId,
+        	            CAST(qs.quizz_date AS TIMESTAMP) AS QuizzDate,
+        	            q.duration_in_minutes AS duration,
+        	            NULL AS startTime,
+        	            b.batch_id AS batchString,
+        	            'QUIZZ' AS type,
+        	            b.id AS batchid,
+        	            b.batch_title AS batchName,
+        	            q.quizz_id AS quizzid
+        	        FROM quizz_schedule qs
+        	        JOIN batch b ON qs.batch_id = b.id
+        	        JOIN quizz q ON qs.quiz_id = q.quizz_id
+        	        WHERE b.id IN (:batchIds)
+        	        AND qs.quizz_date >= CURRENT_DATE -- ✅ Filter past quizzes
+        	    ) AS combined_results
+        	    ORDER BY COALESCE(startTime, QuizzDate) 
+        	    LIMIT :pageSize OFFSET :offset
+        	""";
+
 
         Query query = entityManager.createNativeQuery(sql, "EventMapping");
         query.setParameter("batchIds", batchIds);

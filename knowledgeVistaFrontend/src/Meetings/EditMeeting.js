@@ -15,6 +15,7 @@ const EditMeeting = () => {
   const formattedDate = today.toISOString().split("T")[0];
   const token = sessionStorage.getItem("token");
   const Productversion = sessionStorage.getItem("LicenceVersion");
+    const [reccurance, setreccurance] = useState("Daily");
   const [issubmitting, setissubmitting] = useState(false);
   const timezones = [
     { name: "Pacific/Midway", id: "Pacific/Midway" },
@@ -675,7 +676,9 @@ const formattedDate = localStartTime.toLocaleDateString('en-CA'); // 'en-CA' giv
       setReccuranceDescription={setReccuranceDescription}
        setzoomrequest={setzoomrequest}
        Reccuranceobject={Reccuranceobject} 
-      setReccuranceobject={setReccuranceobject}/>}
+      setReccuranceobject={setReccuranceobject}
+      reccurance={reccurance}
+      setreccurance={setreccurance}/>}
 
             <div className="form-group row">
               <label htmlFor="when" className="col-sm-2 col-form-label">

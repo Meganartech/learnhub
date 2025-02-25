@@ -157,10 +157,17 @@ const ProgramCalender = () => {
               {item.title}
             </td>
             <td>
-              {new Date(item.startTime).toLocaleDateString()}{" "}
-              {new Date(item.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}{" "}
-              ({item.duration} min)
-            </td>
+  {item.startTime && !isNaN(new Date(item.startTime)) ? (
+    <>
+      {new Date(item.startTime).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })}{" "}
+      {new Date(item.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}{" "}
+      ({item.duration} min)
+    </>
+  ) : (
+    "Invalid Date/Time"
+  )}
+</td>
+
             <td>{item.batchName}</td>
             <td>
               <button className="btn btn-success" onClick={() => handlClickJoinUrl(item.meetingId)}>
@@ -179,15 +186,20 @@ const ProgramCalender = () => {
               <i className="fa-regular fa-circle-question mr-2"></i>
               {item.title}
             </td>
+            
             <td>
-              {new Date(item.startDateTime).toLocaleDateString()}{" "}
-              {new Date(item.startDateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}{" "}
-              - {new Date(item.endDateTime).toLocaleDateString()}{" "}
-              {new Date(item.endDateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-            </td>
+  {item.quizzDate && !isNaN(new Date(item.quizzDate)) ? (
+    new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "long", year: "numeric" }).format(new Date(item.quizzDate))
+  ) : (
+    "Invalid Date"
+  )}
+ &nbsp;({Math.floor(item.duration / 60)} hr {item.duration % 60} min)
+</td>
+
+
             <td>{item.batchName}</td>
             <td>
-              <button className="btn btn-success">Start</button>
+              <button className="btn btn-success" onClick={()=>{navigate(`/Quizz/${item.title}/${item.quizzid}/${item.batchName}/${item.batchid}`)}}>Start</button>
             </td>
           </tr>
         );

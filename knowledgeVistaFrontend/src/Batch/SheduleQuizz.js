@@ -41,44 +41,28 @@ const SheduleQuizz = () => {
     fetchSheduleQuizzDetails();
   }, []);
 
-  // const handleDateChange = (index, field, value) => {
-  //   setSchedule((prev) => {
-  //     const newSchedule = [...prev];
-  //     newSchedule[index][field] = value;
-  //     newSchedule[index].enabled = true; // Enable save button on change
-  //     return newSchedule;
-  //   });
-  // };
-  const handleDateChange = (index, field, value) => {
+  
+  const handleDateChange = async (index, value) => {
     setSchedule((prev) => {
       const newSchedule = [...prev];
-      newSchedule[index][field] = value;
-
-      // Validate the start date to be greater than the current date
-      if (field === "startDate") {
-        const currentDate = new Date().toISOString().slice(0, 16); // Current date in YYYY-MM-DDTHH:MM format
-        if (newSchedule[index].startDate < currentDate) {
-          MySwal.fire({
-            title: "Invalid Date",
-            text: "Start date and time must be in the future.",
-            icon: "warning",
-          });
-          newSchedule[index][field] = ""; // Reset the value
-        }
+      newSchedule[index].quizDate = value;
+  
+      // Validate the quizDate to be greater than or equal to today
+      const currentDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+      if (value < currentDate) {
+        MySwal.fire({
+          title: "Invalid Date",
+          text: "Quiz date must be in the future.",
+          icon: "warning",
+        });
+      } else {
+        saveOrUpdateSchedule(newSchedule[index]); // Automatically call API
       }
-
-      // Validate end date not to be less than start date
-      if (field === "endDate" && newSchedule[index].startDate && newSchedule[index].endDate) {
-        if (newSchedule[index].endDate < newSchedule[index].startDate) {
-         
-          newSchedule[index][field] = ""; // Reset the value
-        }
-      }
-
-      newSchedule[index].enabled = true; // Enable save button on change
+  
       return newSchedule;
     });
   };
+  
 
 
   // API call function
@@ -91,8 +75,7 @@ const SheduleQuizz = () => {
           params: {
             quizzId: quiz.quizzId,
             batchId,
-            startDate: quiz.startDate,
-            endDate: quiz.endDate,
+            quizDate: quiz.quizDate,
           },
           headers: { Authorization: token },
         }
@@ -101,7 +84,6 @@ const SheduleQuizz = () => {
         MySwal.fire({ title:`${response?.data}`, text: `Shedule ${response?.data} SuccessFully`, icon: "success" });
         setSchedule((prev) => {
           const newSchedule = [...prev];
-          newSchedule[index].enabled = null; // Disable button after saving
           return newSchedule;
         });
       } else if (response.status === 204) {
@@ -179,7 +161,7 @@ const SheduleQuizz = () => {
                <tr>
                  <th>Quizz</th>
                  <th>Lesson</th>
-                 <th colSpan={3}>Schedule Duration</th>
+                 <th colSpan={1}>Schedule Duration</th>
                </tr>
              </thead>
              {submitting ? (
@@ -190,60 +172,20 @@ const SheduleQuizz = () => {
                   <tr key={index}>
                     <td>{item.quizzName}</td>
                     <td>{item.lessontitle}</td>
-                    {/* <td>
-                      <div className="row">
-                      <span className="col-sm-2">From: </span>
-                      <input
-                        type="datetime-local"
-                        className="form-control col-sm-9"
-                        value={item.startDate || ""}
-                        onChange={(e) => handleDateChange(index, "startDate", e.target.value)}
-                      />
-                      </div>
-                    </td>
-                    <td>
-                      <div className="row">
-                      <span  className="col-sm-2">To: </span>
-                      <input
-                        type="datetime-local"
-                         className="form-control col-sm-9"
-                        value={item.endDate || ""}
-                        onChange={(e) => handleDateChange(index, "endDate", e.target.value)}
-                      />
-                      </div>
-                    </td> */}
+                   
                   <td>
-                            <div className="row">
-                              <span className="col-sm-2">From: </span>
-                              <input
-                                type="datetime-local"
-                                className="form-control col-sm-9"
-                                value={item.startDate || ""}
-                                min={new Date().toISOString().slice(0, 16)} // Disable past dates
-                                onChange={(e) => handleDateChange(index, "startDate", e.target.value)}
-                              />
-                            </div>
-                          </td>
-                          <td>
-                            <div className="row">
-                              <span className="col-sm-2">To: </span>
-                              <input
-                                type="datetime-local"
-                                className="form-control col-sm-9"
-                                value={item.endDate || ""}
-                                min={item.startDate } // Disable end date before start date
-                                onChange={(e) => handleDateChange(index, "endDate", e.target.value)}
-                              />
-                            </div>
-                          </td>
+  <div className="row">
+    <span className="col-sm-3">Quiz Date:</span>
+    <input
+      type="date" // Use date input instead of datetime-local
+      className="form-control col-sm-9"
+      value={item.quizzDate || ""}
+      min={new Date().toISOString().split("T")[0]} // Disable past dates
+      onChange={(e) => handleDateChange(index, e.target.value)}
+    />
+  </div>
+</td>
 
-                      {item.enabled && (
-                           <td>
-                        <button className="btn btn-primary" onClick={() => saveOrUpdateSchedule(item, index)}>
-                          Save
-                        </button>
-                        </td>
-                      )}
                    
                   </tr>
                 ))}

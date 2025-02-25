@@ -26651,4 +26651,14 @@ span {
   background-color: #f1f1f1;
   border-radius: 10px; 
 } */
+.cornerbtns {
+    display: flex;
+    justify-content: space-between;  /* Pushes elements to extreme left & right */
+    align-items: center;
+    margin-top: 20px;  /* Add some spacing */
+}
+
+.cornerbtns button {
+    min-width: 100px;  /* Ensures equal button sizes */
+}
 

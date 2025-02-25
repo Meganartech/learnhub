@@ -4,11 +4,12 @@ const EditReccuringMeet = ({
     setReccuranceDescription,
   setzoomrequest,
   Reccuranceobject,
-  setReccuranceobject
+  setReccuranceobject,
+  reccurance,
+  setreccurance
 }
 ) => {
       const [selectedOption, setSelectedOption] = useState("noEnd");
-      const [reccurance, setreccurance] = useState("Daily");
       const [repeatevery, setrepeatevery] = useState(1);
       const [occurson, setOccurson] = useState("day");
       const [occurancess, setoccurancess] = useState(1);
@@ -384,6 +385,7 @@ const EditReccuringMeet = ({
           ...prev,
           type: 3,
         }));
+        setreccurance(e.target.value);
       }else{
         setzoomrequest((prev) => ({
           ...prev,
@@ -679,7 +681,7 @@ const EditReccuringMeet = ({
           <option value="Daily">Daily</option>
           <option value="Weekly">Weekly</option>
           <option value="Monthly">Monthly</option>
-          {/* <option value="NoFixedTime">No Fixed Time</option> */}
+          <option value="NoFixedTime">No Fixed Time</option>
         </select>
       </div>
       {reccurance != "NoFixedTime" && (

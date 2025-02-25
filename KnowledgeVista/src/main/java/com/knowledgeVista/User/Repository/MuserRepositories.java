@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Migration.MuserMigrationDto;
@@ -35,14 +36,23 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	
 	@Query("SELECT u.institutionName FROM Muser u WHERE u.role.roleName = :rolename")
 	String getInstitution(String rolename);
+	
 	@Query("SELECT u.email FROM Muser u WHERE u.userId=?1")
    String FindEmailByuserId(Long userId);
+	
 	@Query("SELECT u.institutionName FROM Muser u WHERE u.email = ?1")
   String findinstitutionByEmail(String email);
+	
+
+
 	 @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName) " +
 	           "FROM Muser u " +
 	           "WHERE u.email = :email")
 	    Optional<MuserDto> findDetailsByEmailforSysadmin(@Param("email") String email);
+	 
+	 @Query("SELECT b FROM Muser u JOIN u.enrolledbatch b WHERE u.email = ?1 AND b.id = ?2")
+	 Optional<Batch> getBatchByEmailandBatchId(String email, Long batchId);
+
 	
 	  @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName) " +
 	           "FROM Muser u " +

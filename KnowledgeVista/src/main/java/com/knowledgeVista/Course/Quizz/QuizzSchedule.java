@@ -1,5 +1,6 @@
 package com.knowledgeVista.Course.Quizz;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.knowledgeVista.Batch.Batch;
@@ -38,11 +39,7 @@ public class QuizzSchedule {
 	    @ManyToOne
 	    @JoinColumn(name = "batch_id", nullable = false)
 	    private Batch batch;
-
 	    @Column(nullable = false)
-	    private LocalDateTime startDate;
-
-	    @Column(nullable = false)
-	    private LocalDateTime endDate;
+	    private LocalDate QuizzDate;  
 
 }

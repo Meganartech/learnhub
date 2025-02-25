@@ -37,6 +37,7 @@ import com.knowledgeVista.Course.Controller.CourseControllerSecond;
 import com.knowledgeVista.Course.Controller.videolessonController;
 import com.knowledgeVista.Course.Quizz.Quizz;
 import com.knowledgeVista.Course.Quizz.Quizzquestion;
+import com.knowledgeVista.Course.Quizz.DTO.AnswerDto;
 import com.knowledgeVista.Course.Quizz.Service.QuizzService;
 import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.controller.QuestionController;
@@ -1184,6 +1185,10 @@ public class FrontController {
 			@RequestHeader("Authorization") String token) {
 		return zoomMeetingService.getMeetDetailsForEdit(token, meetingId);
 	}
+	@GetMapping("/api/zoom/getVirtualMeet")
+	public ResponseEntity<?>getvirtualMeet(@RequestHeader("Authorization") String token){
+		return zoomMeetingService.getVirtualClass(token);
+	}
 
 	@PatchMapping("/api/zoom/meet/{meetingId}")
 	public ResponseEntity<?> EditMeetingByMeetingId(@RequestBody MeetingRequest meetingReq,
@@ -1641,6 +1646,12 @@ public class FrontController {
 			@RequestHeader("Authorization") String token) {
 		return quizzService.UpdateQuizzQuestion(questionId, question, token);
 	}
+	
+	@PatchMapping("/Quizz/updateDuration/{quizzId}/{durationInMinutes}")
+	public ResponseEntity<?> updateDurationInMinutes(@PathVariable Long quizzId, @PathVariable int durationInMinutes,
+			@RequestHeader("Authorization") String token) {
+		return quizzService.UpdateQuizzDuration(quizzId, durationInMinutes, token);
+	}
 
 	@DeleteMapping("/Quizz/Delete/{quizzId}")
 	public ResponseEntity<?> DeleteQuizzQuestion(@PathVariable Long quizzId, @RequestBody List<Long> questionIds,
@@ -1656,11 +1667,19 @@ public class FrontController {
 
 	@PostMapping("/Quizz/Shedule/{courseId}/{batchId}")
 	public ResponseEntity<?> SaveORUpdateSheduleQuizz(@RequestParam Long quizzId, @RequestParam String batchId,
-			@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate,
+			@RequestParam LocalDate quizDate, 
 			@RequestHeader("Authorization") String token) {
-		return quizzService.SaveORUpdateSheduleQuizz(quizzId, batchId, startDate, endDate, token);
+		return quizzService.SaveORUpdateSheduleQuizz(quizzId, batchId, quizDate, token);
 	}
 	
+	@GetMapping("/Quizz/Start")
+	public ResponseEntity<?>StartQuizz(@RequestParam Long quizzId, @RequestParam Long batchId,@RequestHeader("Authorization") String token){
+		return quizzService.startQuizz(token, quizzId, batchId);
+	}
+	@PostMapping("/Quizz/submit")
+	public ResponseEntity<?>SaveQuizz(@RequestParam Long quizzId, @RequestBody   List<AnswerDto> answers,@RequestHeader("Authorization") String token){
+		return quizzService.saveQuizzAnswers(token, quizzId, answers);
+	}
 	//======================Event Controller================
 	@GetMapping("/Events/Get")
 	public ResponseEntity<?>getEvents(@RequestParam int pageNumber,@RequestParam int pageSize, @RequestHeader("Authorization") String token){

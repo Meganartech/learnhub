@@ -2,49 +2,70 @@ package com.knowledgeVista.Course.Quizz.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.videoLessons;
+import com.knowledgeVista.Course.Quizz.QuizAttempt;
+import com.knowledgeVista.Course.Quizz.QuizAttemptAnswer;
 import com.knowledgeVista.Course.Quizz.Quizz;
 import com.knowledgeVista.Course.Quizz.QuizzSchedule;
 import com.knowledgeVista.Course.Quizz.Quizzquestion;
 import com.knowledgeVista.Course.Quizz.ShedueleListDto;
+import com.knowledgeVista.Course.Quizz.DTO.AnswerDto;
+import com.knowledgeVista.Course.Quizz.DTO.AnswerDto.QuizAnswerResult;
+import com.knowledgeVista.Course.Quizz.DTO.QuizzquestionDTO;
+import com.knowledgeVista.Course.Quizz.Repo.QuizzAttemptAnswerRepo;
 import com.knowledgeVista.Course.Quizz.Repo.QuizzQuestionRepo;
 import com.knowledgeVista.Course.Quizz.Repo.QuizzSheduleRepo;
+import com.knowledgeVista.Course.Quizz.Repo.QuizzattemptRepo;
 import com.knowledgeVista.Course.Quizz.Repo.quizzRepo;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
+import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @Service
 public class QuizzService {
     
-	 @Autowired
-	 private JwtUtil jwtUtil;
+	 private final JwtUtil jwtUtil;
+	    private final MuserRepositories muserRepository;
+	    private final QuizzQuestionRepo quizQuestionRepo;
+	    private final quizzRepo quizzRepo;
+	    private final videoLessonRepo lessonsRepo;
+	    private final QuizzSheduleRepo quizzSheuleRepo;
+	    private final BatchRepository batchRepo;
+	    private final QuizzattemptRepo quizAttemptRepo;
+	    private final QuizzAttemptAnswerRepo answerRepo;
 
-		@Autowired
-		private MuserRepositories muserRepository;
-		@Autowired
-		private QuizzQuestionRepo quizQuestionRepo;
-		@Autowired
-		private quizzRepo quizzRepo;
-		@Autowired videoLessonRepo lessonsRepo;
-		@Autowired
-		private QuizzSheduleRepo quizzSheuleRepo;
-		@Autowired
-		private BatchRepository batchRepo;
+	    public QuizzService(JwtUtil jwtUtil, 
+	                       MuserRepositories muserRepository, 
+	                       QuizzQuestionRepo quizQuestionRepo, 
+	                       quizzRepo quizzRepo, 
+	                       videoLessonRepo lessonsRepo, 
+	                       QuizzSheduleRepo quizzSheuleRepo, 
+	                       BatchRepository batchRepo, 
+	                       QuizzattemptRepo quizAttemptRepo, 
+	                       QuizzAttemptAnswerRepo answerRepo) {
+	        this.jwtUtil = jwtUtil;
+	        this.muserRepository = muserRepository;
+	        this.quizQuestionRepo = quizQuestionRepo;
+	        this.quizzRepo = quizzRepo;
+	        this.lessonsRepo = lessonsRepo;
+	        this.quizzSheuleRepo = quizzSheuleRepo;
+	        this.batchRepo = batchRepo;
+	        this.quizAttemptRepo = quizAttemptRepo;
+	        this.answerRepo = answerRepo;
+	    }
 	  	 private static final Logger logger = LoggerFactory.getLogger(QuizzService.class);
 	
   public ResponseEntity<?>SaveQuizz(Long lessonId,Quizz quizzData,String token){
@@ -132,14 +153,22 @@ public class QuizzService {
 			  if(opquizz.isPresent()) {
 				  Quizz quizz=opquizz.get();
 				  if("ADMIN".equals(role)) {
+					  quizz.setLessons(null);
+					  quizz.setSchedules(null);
+					  quizz.setQuizAttempts(null);
 					  List<Quizzquestion> questions= quizQuestionRepo.findByQuizzId(quizzId);
-					  return ResponseEntity.ok(questions);
+					  quizz.setQuizzquestions(questions);
+					  return ResponseEntity.ok(quizz);
 				  }else {
 					  Long courseID=quizz.getLessons().getCourseDetail().getCourseId();
 					  boolean isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseID);
 					  if(isalloted) {
+						  quizz.setLessons(null);
+						  quizz.setSchedules(null);
+						  quizz.setQuizAttempts(null);
 						  List<Quizzquestion> questions= quizQuestionRepo.findByQuizzId(quizzId);
-						  return ResponseEntity.ok(questions);
+						  quizz.setQuizzquestions(questions);
+						  return ResponseEntity.ok(quizz);
 					  }else {
 						  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You Cannot Access This Page");
 					  }
@@ -186,6 +215,7 @@ public class QuizzService {
 		  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
   }
+  
   public ResponseEntity<?>DeleteQuizzQuestion(List<Long>questionIds,Long quizzId ,String token){
 	  try {
 		  if (!jwtUtil.validateToken(token)) {
@@ -204,13 +234,15 @@ public class QuizzService {
 					   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseID);
 				  }
 				  if(isalloted) {
-					  quizQuestionRepo.deleteByQuestionIdsAndQuizzId(questionIds, quizzId);
+					  List<Quizzquestion> questions= quizQuestionRepo.findByQuestionIdInAndQuizzQuizzId(questionIds, quizzId);
+					  quizQuestionRepo.deleteAll(questions);
 					  Long remainingQuestions = quizQuestionRepo.countByQuizzId(quizzId);
 					  System.out.println(remainingQuestions);
 		                if (remainingQuestions == 0) {
-		                	System.out.println("in delete");
-		                	   quizzRepo.deleteQuizzById(quizzId);
-		                       quizzRepo.flush();
+		                	quizzSheuleRepo.deleteByquizzID(quizzId);
+		                	quizAttemptRepo.deleteByQuizzId(quizzId);
+		                	 quizzRepo.deleteQuizzById(quizzId);
+
 		                }
 					  return ResponseEntity.ok("Delted Successfully");
 				  }
@@ -264,6 +296,39 @@ public class QuizzService {
 	}
   }
   
+  public ResponseEntity<?>UpdateQuizzDuration(Long QuizzId,int durationInMinutes,String token){
+	  try {
+		  if (!jwtUtil.validateToken(token)) {
+              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
+          }
+		  String role=jwtUtil.getRoleFromToken(token);
+		  String email=jwtUtil.getUsernameFromToken(token);
+		  boolean isalloted=false;
+			  Optional<Quizz> opquest=quizzRepo.findById(QuizzId);
+			  if(opquest.isPresent()) {
+				  Quizz quizz=opquest.get();
+				  if("ADMIN".equals(role)) {
+					  isalloted=true;
+				  }else if("TRAINER".equals(role)){
+					  Long courseID=quizz.getLessons().getCourseDetail().getCourseId();
+					   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseID);
+				  }
+				  if(isalloted) {
+					 quizz.setDurationInMinutes(durationInMinutes);
+					   quizzRepo.save(quizz);
+					  return ResponseEntity.ok("updated Successfully");
+				  }
+				  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("you Are Not allowed to access This Page");
+			  }else {
+				  return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No Quizz Found ");
+			  }
+		  
+	  }catch (Exception e) {
+		  logger.error("error at updatingDuration"+e);
+		  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+  }
+  
 public ResponseEntity<?>getQuizzSheduleDetails(Long courseId, String batchId,String token){
 	try {
 		 String role=jwtUtil.getRoleFromToken(token);
@@ -287,7 +352,7 @@ public ResponseEntity<?>getQuizzSheduleDetails(Long courseId, String batchId,Str
 	}
 }
 
-public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,LocalDateTime startDate,LocalDateTime endDate, String token){
+public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,LocalDate QuizzDate, String token){
 	try {
 		 String role=jwtUtil.getRoleFromToken(token);
 		  String email=jwtUtil.getUsernameFromToken(token);
@@ -316,18 +381,14 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
 					  Optional<QuizzSchedule> opQuizzschedule= quizzSheuleRepo.findByQuizzIdAndBatchId(quizzId, batchId);
 					  if(opQuizzschedule.isPresent()) {
 					    QuizzSchedule shedule=opQuizzschedule.get();
-					    shedule.setEndDate(endDate);
-					    shedule.setStartDate(startDate);
-					    System.out.println(startDate+"to"+endDate);
+					    shedule.setQuizzDate(QuizzDate);
 					    quizzSheuleRepo.save(shedule);
 					    return ResponseEntity.ok("Updated");
 					  }else {
 						  QuizzSchedule shedule=new QuizzSchedule();
 						  shedule.setBatch(batch);
 						  shedule.setQuiz(quizz);
-						  shedule.setEndDate(endDate);
-						  shedule.setStartDate(startDate);
-						  System.out.println(startDate+"to"+endDate);
+						  shedule.setQuizzDate(QuizzDate);
 						  quizzSheuleRepo.save(shedule);
 						  return ResponseEntity.ok("saved");
 					  }
@@ -339,5 +400,143 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
 				
 	}
 }
+//===========================================Quizz Question sending=========================================================
 
+    public ResponseEntity<?> startQuizz(String token, Long quizzId, Long batchId) {
+        try {
+            if (!jwtUtil.validateToken(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
+            }
+
+            String email = jwtUtil.getUsernameFromToken(token);
+            Optional<Muser> opmuser = muserRepository.findByEmail(email);
+
+            if (opmuser.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+            }
+
+            Muser user = opmuser.get();
+            if (!"USER".equals(user.getRole().getRoleName())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only students can attempt the quiz.");
+            }
+            
+            Batch batch = user.getEnrolledbatch().stream()
+                    .filter(b -> b.getId().equals(batchId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (batch == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not enrolled in this batch.");
+            }
+
+            Optional<Quizz> opQuizz = quizzRepo.findById(quizzId);
+            if (opQuizz.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Quiz Not Found.");
+            }
+            Quizz quizz=opQuizz.get();
+            LocalDate sheduledDate = quizzSheuleRepo.getsheduleDate(quizzId, batchId);
+           
+
+            LocalDate now = LocalDate.now();
+            if (now.isBefore(sheduledDate)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Quiz has not started yet.");
+            }
+            if (now.isAfter(sheduledDate)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Quiz has expired.");
+            }
+
+            return handleQuizAttempt(user, quizz, quizzId);
+        } catch (Exception e) {
+            logger.error("Error Getting Quiz Questions", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private ResponseEntity<?> handleQuizAttempt(Muser user, Quizz quizz, Long quizzId) {
+        Optional<QuizAttempt> opAttempt = quizAttemptRepo.findbyquizzIdandUserId(user.getUserId(), quizzId);
+        LocalDateTime startedat= LocalDateTime.now();
+        if (opAttempt.isPresent()) {
+            QuizAttempt attempt = opAttempt.get(); 
+            if (attempt.getScore() == null) {
+                attempt.setStartedAt(startedat);
+                quizAttemptRepo.save(attempt);
+                return getQuizQuestions(quizzId, user.getInstitutionName());
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You have already attempted the quiz.");
+        }
+        // New Attempt
+        QuizAttempt newAttempt = new QuizAttempt();
+        newAttempt.setAttemptNumber(1);
+        newAttempt.setQuiz(quizz); 
+        newAttempt.setUser(user);
+        newAttempt.setStartedAt(startedat);
+        quizAttemptRepo.save(newAttempt);
+
+        return getQuizQuestions(quizzId, user.getInstitutionName());
+    }
+
+    private ResponseEntity<?> getQuizQuestions(Long quizzId, String institutionName) {
+        List<QuizzquestionDTO> questions = quizQuestionRepo.findQuestionsByQuizIdAndInstitution(quizzId, institutionName);
+        return ResponseEntity.ok(questions);
+    }
+    
+    public ResponseEntity<?> saveQuizzAnswers(String token,Long quizzId,List<AnswerDto> answers){
+    	try {
+    		 if (!jwtUtil.validateToken(token)) {
+                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
+             }
+
+             String email = jwtUtil.getUsernameFromToken(token);
+             Long id=muserRepository.findidByEmail(email);
+            Optional<QuizAttempt> opattempt= quizAttemptRepo.findbyquizzIdandUserId(id, quizzId);
+            if(opattempt.isEmpty()) {
+            	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Attempt Not Found");
+            }
+            QuizAttempt attempt=opattempt.get();
+            if(attempt.getScore()==null) {
+            	LocalDateTime now = LocalDateTime.now();
+            	attempt.setSubmittedAt(now);
+            	QuizAnswerResult result = saveAnswers(answers, attempt);
+                // Update attempt with score
+                attempt.setScore(result.getScore());
+                attempt.setSubmittedAt(LocalDateTime.now());
+                quizAttemptRepo.save(attempt);
+
+                return ResponseEntity.ok("Quiz Submitted. Score: " + result.getScore());
+            }else {
+            	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(" Quizz Already Attended");
+            }
+             
+    	}catch (Exception e) {
+    		logger.error("error At Saving Quizz answers"+e);
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+    }
+    private QuizAnswerResult saveAnswers(List<AnswerDto> answers, QuizAttempt attempt) {
+        List<QuizAttemptAnswer> saveAnswers = new ArrayList<>();
+        double score = 0.0;
+        for (AnswerDto answerDto : answers) {
+            Optional<Quizzquestion> opQuestion = quizQuestionRepo.findById(answerDto.getQuestionId());
+            if (opQuestion.isPresent()) {
+                Quizzquestion question = opQuestion.get();
+                boolean isCorrect = answerDto.getSelected().equals(question.getAnswer());
+                QuizAttemptAnswer answer = new QuizAttemptAnswer();
+                answer.setQuizAttempt(attempt);
+                answer.setQuestion(question);
+                answer.setSelectedOption(answerDto.getSelected());
+                answer.setIsCorrect(isCorrect);
+                saveAnswers.add(answer);
+                if (isCorrect) {
+                    score += 1; // Each correct answer adds 1 point
+                }
+            }
+        }
+        List<QuizAttemptAnswer> savedAnswers =answerRepo.saveAll(saveAnswers);
+        QuizAnswerResult res=new QuizAnswerResult();
+        res.setSavedAnswers(savedAnswers);
+        res.setScore(score);        
+        return res;
+    }
 }
+
+
