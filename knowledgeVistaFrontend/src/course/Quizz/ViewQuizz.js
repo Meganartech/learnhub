@@ -23,6 +23,36 @@ const ViewQuizz = () => {
   const [notFound, setNotFound] = useState(false);
   const token = sessionStorage.getItem("token");
   const [selectedIds, setselectedIds] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newQuizzName, setNewQuizzName] = useState(quizzName);
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleUpdateQuizzName = async () => {
+ 
+    if (!newQuizzName.trim()) return;
+
+    try {
+      const response = await fetch(`${baseUrl}/Quizz/updatename/${quizzId}/${encodeURIComponent(newQuizzName)}`, {
+        method: "PATCH",
+        headers: {
+          "Authorization": token
+        },
+      });
+
+      if (response.status===200) {
+        setIsEditing(false);
+        fetchQuizzQuestions()
+      } else {
+        console.error("Failed to update quiz name");
+      }
+    } catch (error) {
+      console.error("Error updating quiz name:", error);
+    }
+  };
+
   const fetchQuizzQuestions = async () => {
     try {
       setsubmitting(true)
@@ -41,6 +71,7 @@ const ViewQuizz = () => {
         }));
         const data = response?.data?.quizzquestions;
         setquizz(data);
+        setNewQuizzName(response?.data?.quizzName)
       }
       if (response.status === 204) {
         navigate(
@@ -252,9 +283,25 @@ arr.push(questid);
                 </div>
               )}
               <div className="headingandbutton">
-                <h4 className="text-center " style={{ margin: "0px" }}>
-                  {quizzDetails?.quizzName || quizzName}
-                </h4>
+              <div className="text-center">
+      {isEditing ? (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <input
+            type="text"
+            value={newQuizzName}
+            onChange={(e) => setNewQuizzName(e.target.value)}
+            autoFocus
+          />
+         <button className="hidebtn" 
+            onClick={handleUpdateQuizzName}> <i className="fa-solid fa-check"
+          ></i></button>
+        </div>
+      ) : (
+        <h4 className="text-center"  onDoubleClick={handleDoubleClick}>
+          {quizzDetails.quizzName|| quizzName}
+        </h4>
+      )}
+    </div>
                 <div style={{ width: "200px", display: "flex", gap: "10px" }}>
                  
                     <button className="hidebtn" onClick={DeleteQuestion} disabled={selectedIds.length <= 0}

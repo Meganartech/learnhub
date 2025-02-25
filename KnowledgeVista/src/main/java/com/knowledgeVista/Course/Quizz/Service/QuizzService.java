@@ -295,7 +295,38 @@ public class QuizzService {
 		  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
   }
-  
+  public ResponseEntity<?>UpdateQuizzName(Long QuizzId,String QuizzName,String token){
+	  try {
+		  if (!jwtUtil.validateToken(token)) {
+              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
+          }
+		  String role=jwtUtil.getRoleFromToken(token);
+		  String email=jwtUtil.getUsernameFromToken(token);
+		  boolean isalloted=false;
+			  Optional<Quizz> opquest=quizzRepo.findById(QuizzId);
+			  if(opquest.isPresent()) {
+				  Quizz quizz=opquest.get();
+				  if("ADMIN".equals(role)) {
+					  isalloted=true;
+				  }else if("TRAINER".equals(role)){
+					  Long courseID=quizz.getLessons().getCourseDetail().getCourseId();
+					   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseID);
+				  }
+				  if(isalloted) {
+					 quizz.setQuizzName(QuizzName);
+					   quizzRepo.save(quizz);
+					  return ResponseEntity.ok("updated Successfully");
+				  }
+				  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("you Are Not allowed to access This Page");
+			  }else {
+				  return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No Quizz Found ");
+			  }
+		  
+	  }catch (Exception e) {
+		  logger.error("error at updatingDuration"+e);
+		  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+  }
   public ResponseEntity<?>UpdateQuizzDuration(Long QuizzId,int durationInMinutes,String token){
 	  try {
 		  if (!jwtUtil.validateToken(token)) {

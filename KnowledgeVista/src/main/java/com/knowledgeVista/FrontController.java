@@ -1652,6 +1652,11 @@ public class FrontController {
 			@RequestHeader("Authorization") String token) {
 		return quizzService.UpdateQuizzDuration(quizzId, durationInMinutes, token);
 	}
+	@PatchMapping("/Quizz/updatename/{quizzId}/{quizzname}")
+	public ResponseEntity<?> updateQuizzname(@PathVariable Long quizzId, @PathVariable String quizzname ,
+			@RequestHeader("Authorization") String token) {
+		return quizzService.UpdateQuizzName(quizzId, quizzname, token);
+	}
 
 	@DeleteMapping("/Quizz/Delete/{quizzId}")
 	public ResponseEntity<?> DeleteQuizzQuestion(@PathVariable Long quizzId, @RequestBody List<Long> questionIds,
