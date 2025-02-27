@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
 import undraw_profile from "../images/profile.png"
@@ -7,8 +7,9 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
 import errorimg from "../images/errorimg.png"
+import { GlobalStateContext } from '../Context/GlobalStateProvider';
 const AssignCourse = () => {
-
+ const { displayname } = useContext(GlobalStateContext);
   const { userId } = useParams();
   const [img, setImg] = useState();
   const [userData, setUserData] = useState({});
@@ -103,7 +104,44 @@ const handleAssignCourse = async () => {
 
   return (
     <div>
-    <div className="page-header"></div>
+    <div className="page-header">
+    <div className="page-block">
+          <div className="row align-items-center">
+            <div className="col-md-12">
+              <div className="page-header-title">
+                <h5 className="m-b-10">Settings </h5>
+              </div>
+              <ul className="breadcrumb">
+                <li className="breadcrumb-item">
+                  <a
+                    href="#"
+                    onClick={() => {
+                      navigate("/admin/dashboard");
+                    }}
+                    title="dashboard"
+                  >
+                    <i className="feather icon-home"></i>
+                  </a>
+                </li>
+                <li className="breadcrumb-item">
+                  <a href="#" onClick={()=>{navigate("/view/Students")}}>
+                    {" "}
+                    {displayname && displayname.student_name
+                      ? displayname.student_name
+                      : "Student"}{" "}
+                    Details{" "}
+                  </a>
+                </li>
+                <li className="breadcrumb-item">
+                  <a href="#" >
+                    Assign Course
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </div>
     <div className="card">
       <div className="card-body">
       <div className="row">

@@ -396,6 +396,17 @@ const [joinUrl,setjoinUrl]=useState();
                     <li>
                       <a
                         href="#"
+                        data-path="/settings/Weightage"
+                        onClick={(e) => {
+                          handleClick(e, "/settings/Weightage");
+                        }}
+                      >
+                        <i className="fa-solid fa-sliders mr-2"></i>Grade Weightage
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
                         data-path="/certificate"
                         onClick={(e) => {
                           handleClick(e, "/certificate");
@@ -939,7 +950,20 @@ const [joinUrl,setjoinUrl]=useState();
                   <span className="pcoded-micon">
                     <i className="fa-solid  fa-clipboard-user"></i>
                   </span>
-                  <span className="pcoded-mtext">My Attendance</span>
+                  <span className="pcoded-mtext"> Attendance</span>
+                </a>
+              </li>
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/view/MyQuizzScore"
+                  onClick={(e) => handleClick(e, "/view/MyQuizzScore")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-regular fa-circle-question mr-2"></i>
+                  </span>
+                  <span className="pcoded-mtext"> Quizz </span>
                 </a>
               </li>
               <li className="nav-item no-hasmenu">
@@ -952,7 +976,7 @@ const [joinUrl,setjoinUrl]=useState();
                   <span className="pcoded-micon">
                     <i className="fa-solid fa-video"></i>
                   </span>
-                  <span className="pcoded-mtext">My Meetings</span>
+                  <span className="pcoded-mtext"> Meetings</span>
                 </a>
               </li>
 
@@ -969,7 +993,19 @@ const [joinUrl,setjoinUrl]=useState();
                   <span className="pcoded-mtext">Program Calender</span>
                 </a>
               </li>
-
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/myGrades"
+                  onClick={(e) => handleClick(e, "/myGrades")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-solid fa-award"></i>
+                  </span>
+                  <span className="pcoded-mtext">Grades</span>
+                </a>
+              </li>
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
@@ -980,9 +1016,10 @@ const [joinUrl,setjoinUrl]=useState();
                   <span className="pcoded-micon">
                     <i className="fa-solid fa-credit-card"></i>
                   </span>
-                  <span className="pcoded-mtext">My Payments</span>
+                  <span className="pcoded-mtext"> Payments</span>
                 </a>
               </li>
+           
              {joinUrl && <li className="nav-item no-hasmenu">
                 <a
                   href="#"

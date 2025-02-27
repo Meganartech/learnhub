@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import baseUrl from '../api/utils';
-
+import { GlobalStateContext } from '../Context/GlobalStateProvider';
 const Attendance = () => {
+   const { displayname } = useContext(GlobalStateContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState( location.state?.user);
@@ -101,7 +102,44 @@ console.log(item.id)
 
   return (
     <div>
-      <div className="page-header"></div>
+      <div className="page-header">
+      <div className="page-block">
+          <div className="row align-items-center">
+            <div className="col-md-12">
+              <div className="page-header-title">
+                <h5 className="m-b-10">Settings </h5>
+              </div>
+              <ul className="breadcrumb">
+                <li className="breadcrumb-item">
+                  <a
+                    href="#"
+                    onClick={() => {
+                      navigate("/admin/dashboard");
+                    }}
+                    title="dashboard"
+                  >
+                    <i className="feather icon-home"></i>
+                  </a>
+                </li>
+                <li className="breadcrumb-item">
+                  <a href="#" onClick={()=>{navigate("/view/Students")}}>
+                    {" "}
+                    {displayname && displayname.student_name
+                      ? displayname.student_name
+                      : "Student"}{" "}
+                    Details{" "}
+                  </a>
+                </li>
+                <li className="breadcrumb-item">
+                  <a href="#" >
+                    Attendance
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="row">
         <div className="col-sm-12">
           <div className="card">

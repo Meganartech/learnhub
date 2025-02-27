@@ -30,7 +30,16 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	@Query("SELECT b.id FROM Muser u JOIN u.enrolledbatch b WHERE u.email = ?1")
 	List<Long> findBatchIdsByEmail(String email);
 
-	
+	@Query("""
+		    SELECT q.quizzId 
+		    FROM Muser u
+		    JOIN u.courses c
+		    JOIN c.videoLessons v
+		    JOIN v.quizz q
+		    WHERE u.email = :email
+		""")
+		List<Long> findQuizzIdsByUserEmail(@Param("email") String email);
+
 	@Query("SELECT u.userId FROM Muser u WHERE u.email = ?1")
 	Long  findidByEmail(String email);
 	

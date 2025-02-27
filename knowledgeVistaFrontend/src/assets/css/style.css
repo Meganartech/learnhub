@@ -26704,3 +26704,38 @@ span {
   }
 }
 
+.skeleton-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 2.5s infinite;
+  border-radius: 5px;
+}
+
+.skeleton-title {
+  width: 50%;
+  height: 1.2rem;
+}
+
+.skeleton-input {
+  width: 100%;
+  height: calc(1.5em + 1.25rem + 2px);;
+}
+
+.skeleton-button {
+  width: 100px;
+  height: 35px;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

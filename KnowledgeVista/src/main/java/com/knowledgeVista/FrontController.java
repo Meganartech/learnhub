@@ -3,7 +3,6 @@ package com.knowledgeVista;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -28,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.Attendance.AttendanceService;
 import com.knowledgeVista.Batch.Event.EventController;
+import com.knowledgeVista.Batch.Weightage.Weightage;
+import com.knowledgeVista.Batch.Weightage.service.weightageService;
 import com.knowledgeVista.Batch.service.BatchService;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
@@ -192,6 +193,9 @@ public class FrontController {
 	private BatchService batchService;
 	@Autowired
 	private QuizzService quizzService;
+	
+	@Autowired
+	private weightageService weightageService;
 
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
@@ -1685,9 +1689,28 @@ public class FrontController {
 	public ResponseEntity<?>SaveQuizz(@RequestParam Long quizzId, @RequestBody   List<AnswerDto> answers,@RequestHeader("Authorization") String token){
 		return quizzService.saveQuizzAnswers(token, quizzId, answers);
 	}
+	@GetMapping("/get/QuizzHistory")
+	public ResponseEntity<?> getQuizzHistory(
+	    @RequestHeader("Authorization") String token,
+	    @RequestParam(defaultValue = "0") int page,
+	    @RequestParam(defaultValue = "10") int size
+	) {
+	    return quizzService.getQuizzHistory(token, page, size); 
+	}
+
 	//======================Event Controller================
 	@GetMapping("/Events/Get")
 	public ResponseEntity<?>getEvents(@RequestParam int pageNumber,@RequestParam int pageSize, @RequestHeader("Authorization") String token){
 		return eventController.getEvents(token,pageNumber,pageSize);
+	}
+	//=============================Weightage Service=========================
+	@PostMapping("/save/Weightage")
+	public ResponseEntity<?>saveOrUpdateWeightage(@RequestBody Weightage weightage, @RequestHeader("Authorization") String token){
+		return weightageService.saveOrUpdateWeightageDetails(weightage, token);
+	}
+	
+	@GetMapping("/get/Weightage")
+	public ResponseEntity<?>GetWeightage( @RequestHeader("Authorization") String token){
+		return weightageService.GetWeightageDetails(token);
 	}
 }

@@ -360,11 +360,42 @@ const ViewStudentList = () => {
       }
     });
   };
-  
 
   return (
     <div>
-      <div className="page-header"></div>
+      <div className="page-header">
+        <div className="page-block">
+          <div className="row align-items-center">
+            <div className="col-md-12">
+              <div className="page-header-title">
+                <h5 className="m-b-10">Settings </h5>
+              </div>
+              <ul className="breadcrumb">
+                <li className="breadcrumb-item">
+                  <a
+                    href="#"
+                    onClick={() => {
+                      navigate("/admin/dashboard");
+                    }}
+                    title="dashboard"
+                  >
+                    <i className="feather icon-home"></i>
+                  </a>
+                </li>
+                <li className="breadcrumb-item">
+                  <a href="#">
+                    {" "}
+                    {displayname && displayname.student_name
+                      ? displayname.student_name
+                      : "Student"}{" "}
+                    Details{" "}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="row">
         <div className="col-sm-12">
           <div className="card">
@@ -580,16 +611,14 @@ const ViewStudentList = () => {
                           )}
                         </td>
                         <td>
-                        <Link
+                          <Link
                             to={`/view/Attendance/${user.userId}`}
                             state={{ user }} // Pass user details in state
-                          
                             className="hidebtn"
-                           
                             title="Attendance"
                           >
                             <i className="fa-solid fa-clipboard-user"></i>
-                         </Link>
+                          </Link>
                         </td>
                       </tr>
                     ))}

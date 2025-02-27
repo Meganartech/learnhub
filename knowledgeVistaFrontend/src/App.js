@@ -99,6 +99,9 @@ import ViewCourseOfBatch from "./Batch/ViewCourseOfBatch.js";
 import SheduleQuizz from "./Batch/SheduleQuizz.js";
 import ProgramCalender from "./course/Quizz/ProgramCalender.js";
 import StartQuizz from "./course/Quizz/StartQuizz.js";
+import WeightageSetting from "./UserSettings/WeightageSetting.js";
+import Grades from "./Student/Grades.js";
+import QuizzScore from "./Student/QuizzScore.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -391,6 +394,17 @@ function App() {
                 </ErrorBoundary>
               }
             />
+             <Route
+              path="/myGrades"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <Grades />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+           
              
             <Route
               path="/myStudents"
@@ -587,6 +601,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
+
             <Route
               path="/view/MyAttendance"
               element={
@@ -596,6 +611,19 @@ function App() {
                     onlyuser={true}
                   >
                     <MyAttendance />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/MyQuizzScore"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    onlyuser={true}
+                  >
+                    <QuizzScore/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }
@@ -883,6 +911,16 @@ function App() {
                 </ErrorBoundary>
               }
             /> */}
+             <Route
+              path="/settings/Weightage"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyadmin={true}>
+                    <WeightageSetting />
+                  </PrivateRoute>{" "}
+                </ErrorBoundary>
+              }
+            />
             <Route
               path="/settings/mailSettings"
               element={

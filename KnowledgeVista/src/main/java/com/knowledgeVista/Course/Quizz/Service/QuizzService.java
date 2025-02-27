@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import com.knowledgeVista.Course.Quizz.Quizzquestion;
 import com.knowledgeVista.Course.Quizz.ShedueleListDto;
 import com.knowledgeVista.Course.Quizz.DTO.AnswerDto;
 import com.knowledgeVista.Course.Quizz.DTO.AnswerDto.QuizAnswerResult;
+import com.knowledgeVista.Course.Quizz.DTO.QuizzHistoryDto;
 import com.knowledgeVista.Course.Quizz.DTO.QuizzquestionDTO;
 import com.knowledgeVista.Course.Quizz.Repo.QuizzAttemptAnswerRepo;
 import com.knowledgeVista.Course.Quizz.Repo.QuizzQuestionRepo;
@@ -535,7 +539,7 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
             if(attempt.getScore()==null) {
             	LocalDateTime now = LocalDateTime.now();
             	attempt.setSubmittedAt(now);
-            	QuizAnswerResult result = saveAnswers(answers, attempt);
+            	QuizAnswerResult result = saveAnswers(answers, attempt,quizzId);
                 // Update attempt with score
                 attempt.setScore(result.getScore());
                 attempt.setSubmittedAt(LocalDateTime.now());
@@ -551,9 +555,10 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
     		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
     }
-    private QuizAnswerResult saveAnswers(List<AnswerDto> answers, QuizAttempt attempt) {
+    private QuizAnswerResult saveAnswers(List<AnswerDto> answers, QuizAttempt attempt,Long quizzId) {
         List<QuizAttemptAnswer> saveAnswers = new ArrayList<>();
         double score = 0.0;
+        long totalQuestions =quizQuestionRepo.countByQuizzId(quizzId);
         for (AnswerDto answerDto : answers) {
             Optional<Quizzquestion> opQuestion = quizQuestionRepo.findById(answerDto.getQuestionId());
             if (opQuestion.isPresent()) {
@@ -573,9 +578,38 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
         List<QuizAttemptAnswer> savedAnswers =answerRepo.saveAll(saveAnswers);
         QuizAnswerResult res=new QuizAnswerResult();
         res.setSavedAnswers(savedAnswers);
-        res.setScore(score);        
+        double percentage = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0.0;
+        res.setScore(percentage);        
         return res;
     }
+    
+    public ResponseEntity<?> getQuizzHistory(String token, int page, int size) {
+	try {
+		if (!jwtUtil.validateToken(token)) {
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+         }
+
+         String role = jwtUtil.getRoleFromToken(token);
+         String email = jwtUtil.getUsernameFromToken(token);
+         String institutionName=muserRepository.findinstitutionByEmail(email);
+         if(institutionName==null) {
+        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+         }
+         if(!"USER".equals(role)) {
+        	 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("only Studennts Can Access This Page");
+         }
+         List<Long> quizzIdlist=muserRepository.findQuizzIdsByUserEmail(email);
+         Pageable pageable = PageRequest.of(page, size); // No sorting here
+         Page<QuizzHistoryDto> quizHistory = quizzRepo.getUserQuizzHistoryByEmail(email, quizzIdlist, pageable);
+
+         return ResponseEntity.ok(quizHistory);
+	}catch (Exception e) {
+		// TODO: handle exception
+		logger.error("error At getQuizzHistory"+e);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+}
+
 }
 
 
