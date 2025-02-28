@@ -32,6 +32,22 @@ public interface quizzRepo extends JpaRepository<Quizz, Long>{
 	void deleteQuizzById(@Param("quizzId") Long quizzId);
 	
 	@Query(value = """
+		    SELECT 
+		        q.quizzId
+		    FROM QuizzSchedule qs
+		    JOIN Batch b ON qs.batch.batchId = b.batchId
+		    JOIN Quizz q ON qs.quiz.quizzId = q.quizzId
+		    LEFT JOIN QuizAttempt qa ON qs.quiz.quizzId = qa.quiz.quizzId 
+		        AND qa.user.email = :email
+		    WHERE qs.quiz.quizzId IN (:quizzIds)
+		    ORDER BY qs.QuizzDate DESC
+		""")
+		List<Long> getQuizzIDSheduledByUser(
+		    @Param("email") String email, 
+		    @Param("quizzIds") List<Long> quizzIds
+		);// return scheduled 
+	
+	@Query(value = """
 		    SELECT new com.knowledgeVista.Course.Quizz.DTO.QuizzHistoryDto(
 		        q.quizzName, 
 		        q.quizzId, 
@@ -55,7 +71,6 @@ public interface quizzRepo extends JpaRepository<Quizz, Long>{
 		    LEFT JOIN QuizAttempt qa ON qs.quiz.quizzId = qa.quiz.quizzId 
 		        AND qa.user.email = :email
 		    WHERE qs.quiz.quizzId IN (:quizzIds)
-		        AND qs.QuizzDate < CURRENT_DATE
 		    ORDER BY qs.QuizzDate DESC
 		""")
 		Page<QuizzHistoryDto> getUserQuizzHistoryByEmail(

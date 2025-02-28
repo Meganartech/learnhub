@@ -1,5 +1,6 @@
 package com.knowledgeVista.Course.Quizz.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -598,11 +599,23 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
          if(!"USER".equals(role)) {
         	 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("only Studennts Can Access This Page");
          }
+       
          List<Long> quizzIdlist=muserRepository.findQuizzIdsByUserEmail(email);
+         List<Long> scheduledQuizzIds = quizzRepo.getQuizzIDSheduledByUser(email, quizzIdlist);
+         Double quizzPercentage = quizAttemptRepo.getTotalScoreForUser(email, scheduledQuizzIds);
+         
+         double totalQuizzPercentage = scheduledQuizzIds.size() * 100;
+         double quizPercentage100 = (quizzPercentage != null && totalQuizzPercentage > 0) 
+                                     ? (quizzPercentage / totalQuizzPercentage) * 100 : 0.0;
          Pageable pageable = PageRequest.of(page, size); // No sorting here
          Page<QuizzHistoryDto> quizHistory = quizzRepo.getUserQuizzHistoryByEmail(email, quizzIdlist, pageable);
-
-         return ResponseEntity.ok(quizHistory);
+         DecimalFormat df = new DecimalFormat("#.##");
+         String formattedPercentage = df.format(quizPercentage100);
+         Map<String, Object> response = new HashMap<>();
+         response.put("quizz", quizHistory); // Extracting content from Page
+         response.put("percentage", formattedPercentage);
+         
+         return ResponseEntity.ok(response);
 	}catch (Exception e) {
 		// TODO: handle exception
 		logger.error("error At getQuizzHistory"+e);

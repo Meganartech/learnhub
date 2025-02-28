@@ -927,19 +927,7 @@ const [joinUrl,setjoinUrl]=useState();
                 </a>
               </li>
 
-              <li className="nav-item no-hasmenu">
-                <a
-                  href="#"
-                  data-path="/MyCertificateList"
-                  onClick={(e) => handleClick(e, "/MyCertificateList")}
-                  className="nav-link "
-                >
-                  <span className="pcoded-micon">
-                    <i className="fa-solid fa-award"></i>
-                  </span>
-                  <span className="pcoded-mtext">Certificates</span>
-                </a>
-              </li>
+             
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
@@ -964,6 +952,32 @@ const [joinUrl,setjoinUrl]=useState();
                     <i className="fa-regular fa-circle-question mr-2"></i>
                   </span>
                   <span className="pcoded-mtext"> Quizz </span>
+                </a>
+              </li>
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/view/MyTestScore"
+                  onClick={(e) => handleClick(e, "/view/MyTestScore")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-regular fa-circle-question mr-2"></i>
+                  </span>
+                  <span className="pcoded-mtext"> Test </span>
+                </a>
+              </li>
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/MyCertificateList"
+                  onClick={(e) => handleClick(e, "/MyCertificateList")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-solid fa-award"></i>
+                  </span>
+                  <span className="pcoded-mtext">Certificates</span>
                 </a>
               </li>
               <li className="nav-item no-hasmenu">

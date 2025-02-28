@@ -3,6 +3,8 @@ package com.knowledgeVista.Attendance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -55,7 +57,7 @@ public class AttendanceService {
 	}
 	
 
-	  private double calculateAttendance(Long userId) {
+	public double calculateAttendance(Long userId) {
 		  try {
 			  Long totalOccurance=attendanceRepo.countClassesForUser(userId);
 			  Long presentCount=attendanceRepo.countClassesPresentForUser(userId);
@@ -64,7 +66,8 @@ public class AttendanceService {
 				}
 
 				double percentage = ((double) presentCount / totalOccurance) * 100;
-				return percentage;
+				  BigDecimal roundedPercentage = new BigDecimal(percentage).setScale(2, RoundingMode.HALF_UP);
+			        return roundedPercentage.doubleValue();
 			  
 		  }catch (Exception e) {
 			

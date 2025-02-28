@@ -12,32 +12,32 @@ const SheduleQuizz = () => {
   const MySwal = withReactContent(Swal);
   const token = sessionStorage.getItem("token");
   const [schedule, setSchedule] = useState([]);
-
-  useEffect(() => {
-    const fetchSheduleQuizzDetails = async () => {
-      try {
-        setSubmitting(true);
-        const response = await axios.get(
-          `${baseUrl}/Quizz/getSheduledQuizz/${courseId}/${batchId}`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-        if (response.status === 200) {
-          setSubmitting(false);
-          setSchedule(response.data);
+  const fetchSheduleQuizzDetails = async () => {
+    try {
+      setSubmitting(true);
+      const response = await axios.get(
+        `${baseUrl}/Quizz/getSheduledQuizz/${courseId}/${batchId}`,
+        {
+          headers: {
+            Authorization: token,
+          },
         }
-      } catch (error) {
+      );
+      if (response.status === 200) {
         setSubmitting(false);
-        if (error.response && error.response.status === 401) {
-          navigate("/unauthorized");
-        } else {
-          throw error;
-        }
+        setSchedule(response.data);
       }
-    };
+    } catch (error) {
+      setSubmitting(false);
+      if (error.response && error.response.status === 401) {
+        navigate("/unauthorized");
+      } else {
+        throw error;
+      }
+    }
+  };
+  useEffect(() => {
+ 
     fetchSheduleQuizzDetails();
   }, []);
 
@@ -86,6 +86,7 @@ const SheduleQuizz = () => {
           const newSchedule = [...prev];
           return newSchedule;
         });
+        fetchSheduleQuizzDetails();
       } else if (response.status === 204) {
         MySwal.fire({ title: "Not Found!", text: "Error occurred", icon: "warning" });
       }

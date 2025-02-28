@@ -102,6 +102,7 @@ import StartQuizz from "./course/Quizz/StartQuizz.js";
 import WeightageSetting from "./UserSettings/WeightageSetting.js";
 import Grades from "./Student/Grades.js";
 import QuizzScore from "./Student/QuizzScore.js";
+import TestScore from "./course/Test/TestScore.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -624,6 +625,19 @@ function App() {
                     onlyuser={true}
                   >
                     <QuizzScore/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/MyTestScore"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    onlyuser={true}
+                  >
+                    <TestScore/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }

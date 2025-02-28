@@ -26,4 +26,8 @@ public interface QuizzattemptRepo extends JpaRepository<QuizAttempt, Long> {
     @Query("SELECT COALESCE(SUM(qa.score), 0) FROM QuizAttempt qa " +
             "WHERE qa.user.id = :userId AND qa.quiz.id IN :quizIds")
      Double getTotalScoreForUser(@Param("userId") Long userId, @Param("quizIds") List<Long> quizIds);
+    
+    @Query("SELECT COALESCE(SUM(qa.score), 0) FROM QuizAttempt qa " +
+            "WHERE qa.user.email = :email AND qa.quiz.id IN :quizIds")
+     Double getTotalScoreForUser(@Param("email") String email, @Param("quizIds") List<Long> quizIds);
 }

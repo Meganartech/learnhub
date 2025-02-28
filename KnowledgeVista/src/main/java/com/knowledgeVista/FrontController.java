@@ -30,6 +30,7 @@ import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
 import com.knowledgeVista.Batch.Weightage.service.weightageService;
 import com.knowledgeVista.Batch.service.BatchService;
+import com.knowledgeVista.Batch.service.GradeService;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Course.Controller.CheckAccess;
@@ -183,6 +184,8 @@ public class FrontController {
 	
 	@Autowired
 	private EventController eventController;
+	@Autowired 
+	private GradeService gradeService;
 
 	private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
 
@@ -449,6 +452,14 @@ public class FrontController {
 		return testcontroller.editTest(testId, testName, noOfAttempt, passPercentage, token);
 	}
 
+	@GetMapping("/get/TestHistory")
+	public ResponseEntity<?> getTestHistory(
+	    @RequestHeader("Authorization") String token,
+	    @RequestParam(defaultValue = "0") int page,
+	    @RequestParam(defaultValue = "10") int size
+	) {
+	    return testcontroller.getTestHistory(token, page, size);
+	}
 //----------------------PaymentIntegration----------------------	
 	@PostMapping("/Batch/getOrderSummary")
 	public ResponseEntity<?> getBatchOrderSummary(@RequestBody Map<String, Long> requestData,
@@ -1712,5 +1723,10 @@ public class FrontController {
 	@GetMapping("/get/Weightage")
 	public ResponseEntity<?>GetWeightage( @RequestHeader("Authorization") String token){
 		return weightageService.GetWeightageDetails(token);
+	}
+	//========================Grade Service====================
+	@GetMapping("/get/Grade/{batchId}")
+	public ResponseEntity<?>getGradeScore( @RequestHeader("Authorization") String token,@PathVariable Long batchId){
+		return gradeService.getGrades(token, batchId);
 	}
 }

@@ -39,6 +39,14 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 		    WHERE u.email = :email
 		""")
 		List<Long> findQuizzIdsByUserEmail(@Param("email") String email);
+	@Query("""
+		    SELECT t.testId 
+		    FROM Muser u
+		    JOIN u.courses c
+		    JOIN CourseTest t ON t.courseDetail = c
+		    WHERE u.email = :email
+		""")
+		List<Long> findTestIdsByUserEmail(@Param("email") String email);
 
 	@Query("SELECT u.userId FROM Muser u WHERE u.email = ?1")
 	Long  findidByEmail(String email);

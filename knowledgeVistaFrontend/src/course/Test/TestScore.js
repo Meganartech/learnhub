@@ -1,54 +1,64 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import baseUrl from "../api/utils";
 import { useNavigate } from "react-router-dom";
+import baseUrl from "../../api/utils";
 
-const QuizzScore = () => {
-  const [score, setscore] = useState([]);
+const TesttestScore = () => {
+  const [testScore, settestScore] = useState([
+    {
+      courseName: "",
+      courseId: "",
+      testName: "",
+      testId: "",
+      testDate: "",
+      nthAttempt: "",
+      percentage: "",
+      status: "",
+    },
+  ]);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
-  
-    const [currentPage, setCurrentPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(1);
-   const itemsperpage = 10;
-    const [datacounts, setdatacounts] = useState({
-      start: "",
-      end: "",
-      total: "",
-    });
-    const[percentage,setpercentage]=useState(0)
-  const fetQuizzHistory = async (page=0) => {
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsperpage = 10;
+  const [datacounts, setdatacounts] = useState({
+    start: "",
+    end: "",
+    total: "",
+  });
+  const [percentage, setpercentage] = useState(0);
+  const fetTestHistory = async (page = 0) => {
     try {
-      const response = await axios.get(`${baseUrl}/get/QuizzHistory`, {
+      const response = await axios.get(`${baseUrl}/get/TestHistory`, {
         headers: {
           Authorization: token,
         },
         params: { pageNumber: page, pageSize: itemsperpage },
       });
       if (response?.status == 200) {
-          const data = response?.data?.quizz;
-          setscore(data.content); // Update users with content from pageable
-          setTotalPages(data.totalPages);
-          setpercentage(response?.data?.percentage);
-          setdatacounts((prev) => ({
-            start: currentPage * itemsperpage + 1,
-            end: currentPage * itemsperpage + itemsperpage,
-            total: data.totalElements,
-          }));
-        
+        const data = response?.data?.test;
+        settestScore(data?.content); // Update users with content from pageable
+        setTotalPages(data?.totalPages);
+        setpercentage(response?.data?.percentage);
+        setdatacounts((prev) => ({
+          start: currentPage * itemsperpage + 1,
+          end: currentPage * itemsperpage + itemsperpage,
+          total: data?.totalElements,
+        }));
       }
-      console.log(response.data);
+      console.log(response?.data);
     } catch (err) {
       console.log(err);
     }
   };
   useEffect(() => {
-    fetQuizzHistory(currentPage);
-}, [currentPage]);
+    fetTestHistory(currentPage);
+  }, [currentPage]);
 
-const handlePageChange = (newPage) => {
-  setCurrentPage(newPage);
-};
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
   const renderPaginationButtons = () => {
     const buttons = [];
     for (let i = 0; i < totalPages; i++) {
@@ -90,50 +100,45 @@ const handlePageChange = (newPage) => {
                 </div>
               </div>
               <div className="tableheader ">
-                <h4>Quizz History</h4>
+                <h4>Test History</h4>
               </div>
-              </div>
-              <div className="card-body">
-                <div className="table-container">
-                  <table className="table table-hover table-bordered table-sm">
-                    <thead className="thead-dark">
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Quizz Name</th>
-                        <th scope="col">Date</th>
-                        <th scope="col"> Started at</th>
-                        <th scope="col"> Submitted at</th>
-                        <th scope="col">Score</th>
-                        <th scope="col">Max Score</th>
-                        <th scope="col"> Status </th>
+            </div>
+            <div className="card-body">
+              <div className="table-container">
+                <table className="table table-hover table-bordered table-sm">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">course Name</th>
+                      <th scope="col">Test Name</th>
+                      <th scope="col"> Attempt</th>
+                      <th scope="col"> Submitted at</th>
+                      <th scope="col">Test Score</th>
+                      <th scope="col"> Status </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {testScore?.map((item, index) => (
+                      <tr key={index}>
+                        <th> {index + 1}</th>
+                        <td className="py-2"> {item?.courseName}</td>
+
+                        <td className="py-2">{item.testName}</td>
+                        <td className="py-2"> {item?.nthAttempt}</td>
+                        <td className="py-2">
+                          {item?.testDate
+                            ? new Date(item.testDate).toLocaleDateString()
+                            : "N/A"}
+                        </td>
+
+                        <td className="py-2"> {item?.percentage}</td>
+                        <td className="py-2"> {item?.status}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {score?.map((item, index) => (
-                        <tr key={index}>
-                          <th> {index + 1}</th>
-                          <td className="py-2"> {item?.quizzName}</td>
-                       
-                          <td className="py-2">{item.quizzDate}</td>
-                          <td className="py-2">
-                            {item?.startedAt
-                              ? new Date(item.startedAt).toLocaleString()
-                              : "N/A"}
-                          </td>
-                          <td className="py-2">
-                            {item?.submittedAt
-                              ? new Date(item.submittedAt).toLocaleString()
-                              : "N/A"}
-                          </td>
-                          <td className="py-2"> {item?.score}</td>
-                          <td className="py-2">{item.totalQuestions*100}</td>
-                          <td className="py-2"> {item?.status}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="cornerbtn">
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="cornerbtn">
                 <ul className="pagination">
                   <li
                     className={`page-item ${
@@ -171,8 +176,9 @@ const handlePageChange = (newPage) => {
                 </ul>
                 <div>
                   <label className="text-primary">
-                    ( {datacounts.start}- {datacounts.start + score.length - 1})
-                    of {datacounts.total}
+                    ( {datacounts.start}-{" "}
+                    {datacounts.start + testScore.length - 1}) of{" "}
+                    {datacounts.total}
                   </label>
                 </div>
               </div>
@@ -181,12 +187,12 @@ const handlePageChange = (newPage) => {
                   Total Attendance : {percentage}%
                 </label>
               </h5>
-              </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
   );
 };
 
-export default QuizzScore;
+export default TesttestScore;

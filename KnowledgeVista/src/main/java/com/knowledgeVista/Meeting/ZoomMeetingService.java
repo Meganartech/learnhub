@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.knowledgeVista.Attendance.AttendanceService2;
 import com.knowledgeVista.Attendance.Attendancedetails;
 import com.knowledgeVista.Attendance.Repo.AttendanceRepo;
 import com.knowledgeVista.Batch.Batch;
@@ -95,7 +96,8 @@ private OccurancesRepo occurancesRepo;
 		 private ZoomMethods zoomMethod;
         @Autowired
         private AttendanceRepo attendanceRepo;
-
+        @Autowired
+        private AttendanceService2 attendanceService2;
         @Value("${spring.environment}")
 	    private String environment;
         
@@ -130,8 +132,7 @@ private OccurancesRepo occurancesRepo;
         		   }
 	    		if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 	    				 meetingStartTimes.put(MeetingId, now); 
-	    				
-	    				  scheduler.schedule(() -> MarkRemainingAsAbsent(meet.getMeetingId()),min, TimeUnit.MINUTES);
+	    				 attendanceService2.scheduleMarkAbsent(meet.getMeetingId(), min);
 	                      System.out.println("min="+min);
 	                 return ResponseEntity.ok(meet.getJoinUrl());	 
 	    		}

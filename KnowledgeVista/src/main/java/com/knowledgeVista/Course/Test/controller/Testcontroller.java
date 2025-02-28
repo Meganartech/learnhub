@@ -1,5 +1,6 @@
 package com.knowledgeVista.Course.Test.controller;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,15 +11,20 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Course.Quizz.DTO.QuizzHistoryDto;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.Question;
+import com.knowledgeVista.Course.Test.TestHistoryDto;
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.Course.Test.Repository.QuestionRepository;
 import com.knowledgeVista.Course.Test.Repository.TestRepository;
@@ -432,7 +438,44 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
 	            array[i] = temp;
 	        }
 	    }
+//==============================Test History===============================
+	    public ResponseEntity<?> getTestHistory(String token, int page, int size) {
+	    	try {
+	    		if (!jwtUtil.validateToken(token)) {
+	                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	             }
 
-	    
+	             String role = jwtUtil.getRoleFromToken(token);
+	             String email = jwtUtil.getUsernameFromToken(token);
+	             String institutionName=muserRepository.findinstitutionByEmail(email);
+	             if(institutionName==null) {
+	            	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+	             }
+	             if(!"USER".equals(role)) {
+	            	 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("only Studennts Can Access This Page");
+	             }
+	             List<Long> testIds=muserRepository.findTestIdsByUserEmail(email);
+	             Pageable pageable = PageRequest.of(page, size); // No sorting here
+	             Page<TestHistoryDto> testHistory = muserActivityRepo.getTestHistoryByEmailAndTestIds(email, testIds, pageable);
+	             List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email);
+	             int totalTest = totalTestIds.size();
+	             Double result = muserActivityRepo.getTotalPercentageForUserandTestIDs(email, totalTestIds);
+	             
+	             double totalPercentage = (result != null && totalTest > 0) 
+	                                       ? (result / (totalTest * 100)) * 100 : 0.0;
+	             DecimalFormat df = new DecimalFormat("#.##");
+	             String formattedPercentage = df.format(totalPercentage);
+
+	             // Create response map
+	             Map<String, Object> response = new HashMap<>();
+	             response.put("test", testHistory); // Extracting content from Page
+	             response.put("percentage", formattedPercentage);
+	             return ResponseEntity.ok(response);
+	    	}catch (Exception e) {
+	    		// TODO: handle exception
+	    		logger.error("error At getQuizzHistory"+e);
+	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	}
 	    
 	}
+}
