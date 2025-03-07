@@ -439,7 +439,7 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
 	        }
 	    }
 //==============================Test History===============================
-	    public ResponseEntity<?> getTestHistory(String token, int page, int size) {
+	    public ResponseEntity<?> getTestHistory(String token,Long batchId, int page, int size) {
 	    	try {
 	    		if (!jwtUtil.validateToken(token)) {
 	                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -454,10 +454,10 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
 	             if(!"USER".equals(role)) {
 	            	 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("only Studennts Can Access This Page");
 	             }
-	             List<Long> testIds=muserRepository.findTestIdsByUserEmail(email);
+	             List<Long> testIds=muserRepository.findTestIdsByUserEmail(email,batchId);
 	             Pageable pageable = PageRequest.of(page, size); // No sorting here
 	             Page<TestHistoryDto> testHistory = muserActivityRepo.getTestHistoryByEmailAndTestIds(email, testIds, pageable);
-	             List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email);
+	             List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email,batchId);
 	             int totalTest = totalTestIds.size();
 	             Double result = muserActivityRepo.getTotalPercentageForUserandTestIDs(email, totalTestIds);
 	             

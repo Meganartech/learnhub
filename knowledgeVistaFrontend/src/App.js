@@ -103,6 +103,7 @@ import WeightageSetting from "./UserSettings/WeightageSetting.js";
 import Grades from "./Student/Grades.js";
 import QuizzScore from "./Student/QuizzScore.js";
 import TestScore from "./course/Test/TestScore.js";
+import StudentsBatch from "./Batch/StudentsBatch.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -1015,6 +1016,16 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
                     <ViewCourseOfBatch/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/batch/ViewStudents/:batchTitle/:batchid"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
+                    <StudentsBatch/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }

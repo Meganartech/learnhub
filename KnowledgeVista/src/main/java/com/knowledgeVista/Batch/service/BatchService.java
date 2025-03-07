@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ import com.knowledgeVista.Course.CourseDetailDto.courseIdNameImg;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
@@ -446,7 +450,7 @@ public ResponseEntity<?>getCoursesoFBatch(String batchId,String token){
         	 List<courseIdNameImg> courses= batchrepo.findCoursesOfBatchByBatchId(batchId, institutionName);
         	 return ResponseEntity.ok(courses);
          }else {
-         	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot Delete Batch");
+         	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot  access This Page");
          }
 	}catch (Exception e) {
 		// TODO: handle exception
@@ -454,4 +458,59 @@ public ResponseEntity<?>getCoursesoFBatch(String batchId,String token){
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
+//=================get batch Users======================
+public ResponseEntity<?>getUsersoFBatch(String batchId,String token,int pageNumber,int pageSize){
+	try {
+		 String role = jwtUtil.getRoleFromToken(token);
+         String email = jwtUtil.getUsernameFromToken(token);
+         String institutionName=muserRepo.findinstitutionByEmail(email);
+         if(institutionName==null) {
+        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+         }
+         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+        	 Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        	 Page<MuserDto> users= batchrepo.GetMuserDetailsByBatchID(batchId,pageable);
+        	 return ResponseEntity.ok(users);
+         }else {
+         	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot Access This page");
+         }
+	}catch (Exception e) {
+		// TODO: handle exception
+		logger.error("error occured in Getting courseOF batch "+e);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+}
+//==================================searchBatchUsers==================
+public ResponseEntity<Page<MuserDto>> searchBatchUserByAdminorTrainer( String username, String email, String phone, LocalDate dob,
+	       String skills, int page, int size,String token,String batchId
+	        ) {
+		try{
+			if (!jwtUtil.validateToken(token)) {
+				  return ResponseEntity.ok(Page.empty());
+		    }
+			String role=jwtUtil.getRoleFromToken(token);
+			  String emailad = jwtUtil.getUsernameFromToken(token);
+		         String institutionName=muserRepo.findinstitutionByEmail(emailad);
+		         if(institutionName==null) {
+		        	 return ResponseEntity.ok(Page.empty());
+		         }
+			 
+			 if(role.equals("ADMIN")|| role.equals("TRAINER") ) {
+		    Pageable pageable = PageRequest.of(page, size);
+		Page<MuserDto> Uniquestudents=batchrepo.searchUsersByBatch(batchId, username, email, phone, dob, institutionName, "USER", skills, pageable);
+		return ResponseEntity.ok(Uniquestudents);
+			 }else {
+
+				  return ResponseEntity.ok(Page.empty());
+			 }
+			
+		}catch (Exception e) {
+		    e.printStackTrace();
+		    logger.error("", e);
+		    // Return an empty Page with a 200 OK status
+		    return ResponseEntity.ok(Page.empty());
+		}
+	}
+
+
 }

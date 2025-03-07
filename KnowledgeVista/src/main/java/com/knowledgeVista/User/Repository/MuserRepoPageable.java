@@ -12,12 +12,6 @@ import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 
 public interface MuserRepoPageable extends PagingAndSortingRepository<Muser, Long> {
-//	 @Query("SELECT u FROM Muser u WHERE u.role.roleName = :rolename")
-//	    Page<Muser> findByRoleName(@Param("rolename") String roleName, Pageable pageable);
-//	 
-//	 @Query("SELECT u FROM Muser u WHERE u.role.roleName = :rolename AND u.institutionName = :institutionname")
-//	 Page<Muser> findByRoleNameAndInstitutionName(@Param("rolename") String roleName, @Param("institutionname") String institutionName,Pageable pageable);
-
 	 @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills,u.institutionName) " +
 	           "FROM Muser u WHERE u.role.roleName = :rolename")
 	    Page<MuserDto> findByRoleName(@Param("rolename") String roleName, Pageable pageable);

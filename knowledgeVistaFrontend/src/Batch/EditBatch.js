@@ -628,7 +628,7 @@ useEffect(()=>{
                     htmlFor="courseAmount"
                     className="col-sm-3 col-form-label"
                   >
-                    Course Amount <span className="text-danger">*</span>
+                    Batch Amount <span className="text-danger">*</span>
                   </label>
                   <div className="col-sm-9">
                     <input

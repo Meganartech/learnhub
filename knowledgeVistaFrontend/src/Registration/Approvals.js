@@ -40,10 +40,12 @@ const Approvals = () => {
             Authorization: token,
           },
           params: {
-            username,
-            email,
-            phone,
-            skills,
+           
+            username: encodeURIComponent(username),
+        email: encodeURIComponent(email),
+        phone: encodeURIComponent(phone),
+        dob: encodeURIComponent(dob),
+        skills: encodeURIComponent(skills),
             role,
             page: currentPage,
             size: 10,

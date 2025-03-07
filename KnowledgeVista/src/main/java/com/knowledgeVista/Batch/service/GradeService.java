@@ -55,7 +55,7 @@ private GradeDto getGradesbyBatchId(Muser user,Weightage weightage,Long batchId,
 	 
       String email=user.getEmail();
       // Quiz Score Calculation========================================================
-      List<Long> quizzIdList = muserRepo.findQuizzIdsByUserEmail(email);
+      List<Long> quizzIdList = muserRepo.findQuizzIdsByUserEmail(email,batchId);
       List<Long> scheduledQuizzIds = quizRepo.getQuizzIDSheduledByUser(email, quizzIdList);
       Double quizzPercentage = quizzattemptRepo.getTotalScoreForUser(user.getUserId(), scheduledQuizzIds);
       
@@ -65,7 +65,7 @@ private GradeDto getGradesbyBatchId(Muser user,Weightage weightage,Long batchId,
       double weightedQuiz = round((quizPercentage100 * weightage.getQuizzWeightage()) / 100);
 
       // Test Score Calculation==============================================================
-      List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email);
+      List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email, batchId);
       int totalTest = totalTestIds.size();
       Double result = testActivityRepo.getTotalPercentageForUserandTestIDs(email, totalTestIds);
       
@@ -74,7 +74,7 @@ private GradeDto getGradesbyBatchId(Muser user,Weightage weightage,Long batchId,
       double weightedTest = round((totalPercentage * weightage.getTestWeightage()) / 100);
 
       // Attendance Score Calculation======================================================
-      Double attendancePercentage = attendanceService.calculateAttendance(user.getUserId());
+      Double attendancePercentage = attendanceService.calculateAttendance(user.getUserId(),batchId);
       attendancePercentage = (attendancePercentage != null) ? attendancePercentage : 0.0;
       double weightedAttendance = round((attendancePercentage * weightage.getAttendanceWeightage()) / 100);
 
@@ -89,7 +89,7 @@ private GradeDto getGradesbyBatchId(Muser user,Weightage weightage,Long batchId,
       
 
 }
-public ResponseEntity<?> getGrades(String token, Long batchId) {
+public ResponseEntity<?> getGrades(String token) {
     try {
         if (!jwtUtil.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Token");
@@ -109,7 +109,7 @@ public ResponseEntity<?> getGrades(String token, Long batchId) {
        List<GradeDto>grades=new ArrayList<GradeDto>();
        List<Batch>batches=user.getEnrolledbatch();
        for(Batch batch: batches) {
-    	   GradeDto grade=getGradesbyBatchId(user, weightage, batchId, batch.getBatchTitle());
+    	   GradeDto grade=getGradesbyBatchId(user, weightage, batch.getId(), batch.getBatchTitle());
     	   grades.add(grade);
        }
        Map<String, Object> res = new HashMap<>();

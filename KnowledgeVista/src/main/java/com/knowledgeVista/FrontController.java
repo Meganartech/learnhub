@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.Attendance.AttendanceService;
+import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
 import com.knowledgeVista.Batch.Weightage.service.weightageService;
@@ -452,13 +453,14 @@ public class FrontController {
 		return testcontroller.editTest(testId, testName, noOfAttempt, passPercentage, token);
 	}
 
-	@GetMapping("/get/TestHistory")
+	@GetMapping("/get/TestHistory/{batchId}")
 	public ResponseEntity<?> getTestHistory(
+			@PathVariable Long batchId,
 	    @RequestHeader("Authorization") String token,
 	    @RequestParam(defaultValue = "0") int page,
 	    @RequestParam(defaultValue = "10") int size
 	) {
-	    return testcontroller.getTestHistory(token, page, size);
+	    return testcontroller.getTestHistory(token,batchId, page, size);
 	}
 //----------------------PaymentIntegration----------------------	
 	@PostMapping("/Batch/getOrderSummary")
@@ -906,6 +908,11 @@ public class FrontController {
 	}
 	// ----------------------------ListView------------------------
 
+	@GetMapping("/view/batch/{email}")
+	public List<SearchDto> getBatchOfUser(
+			@PathVariable String email ,@RequestHeader("Authorization") String token) {
+		return listview.getBatchesOfUser(token, email);
+	}
 	@GetMapping("/view/users")
 	public ResponseEntity<?> getUsersByRoleName(@RequestHeader("Authorization") String token,
 			@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
@@ -1029,7 +1036,6 @@ public class FrontController {
 			@RequestParam(value = "email", required = false) String email,
 			@RequestParam(value = "phone", required = false) String phone,
 			@RequestParam(value = "dob", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dob,
-
 			@RequestParam(value = "skills", required = false) String skills,
 			@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "size", defaultValue = "10") int size, @RequestHeader("Authorization") String token) {
@@ -1613,18 +1619,36 @@ public class FrontController {
 	public ResponseEntity<?> DeleteBatch(@PathVariable Long batchid, @RequestHeader("Authorization") String token) {
 		return batchService.deleteBatchById(batchid, token);
 	}
+	
+	@GetMapping("/Batch/getStudents")
+	public ResponseEntity<?> getStudentsOfBatch(@RequestParam String id,@RequestParam int pageNumber,@RequestParam int pageSize, @RequestHeader("Authorization") String token) {
+		return batchService.getUsersoFBatch(id, token, pageNumber, pageSize);
+	}
+	
+	@GetMapping("/Batch/search/User")
+	public ResponseEntity<Page<MuserDto>> searchBatchUserByadminOrTrainer(
+			@RequestParam(value = "batchId", required = true) String batchId,
+			@RequestParam(value = "username", required = false) String username,
+			@RequestParam(value = "email", required = false) String email,
+			@RequestParam(value = "phone", required = false) String phone,
+			@RequestParam(value = "dob", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dob,
+			@RequestParam(value = "skills", required = false) String skills,
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "size", defaultValue = "10") int size, @RequestHeader("Authorization") String token) {
+		return batchService.searchBatchUserByAdminorTrainer(username, email, phone, dob, skills, page, size, token, batchId);
+	}
 
 	// -------------------Attendance Service---------------
 
-	@GetMapping("/view/StudentAttendance/{userId}")
-	public ResponseEntity<?> getAttendanceForuser(@PathVariable Long userId,
+	@GetMapping("/view/StudentAttendance/{userId}/{batchId}")
+	public ResponseEntity<?> getAttendanceForuser(@PathVariable Long userId,@PathVariable Long batchId,
 			@RequestHeader("Authorization") String token, Pageable pageable) {
-		return attendanceService.getAttendance(token, userId, pageable);
+		return attendanceService.getAttendance(token, userId,batchId, pageable);
 	}
 
-	@GetMapping("/view/MyAttendance")
-	public ResponseEntity<?> GetMyAttendance(@RequestHeader("Authorization") String token, Pageable pageable) {
-		return attendanceService.getMyAttendance(token, pageable);
+	@GetMapping("/view/MyAttendance/{batchId}")
+	public ResponseEntity<?> GetMyAttendance(@PathVariable Long batchId,@RequestHeader("Authorization") String token, Pageable pageable) {
+		return attendanceService.getMyAttendance(token,batchId, pageable);
 	}
 
 	@PostMapping("/update/attendance")
@@ -1700,13 +1724,14 @@ public class FrontController {
 	public ResponseEntity<?>SaveQuizz(@RequestParam Long quizzId, @RequestBody   List<AnswerDto> answers,@RequestHeader("Authorization") String token){
 		return quizzService.saveQuizzAnswers(token, quizzId, answers);
 	}
-	@GetMapping("/get/QuizzHistory")
+	@GetMapping("/get/QuizzHistory/{batchId}")
 	public ResponseEntity<?> getQuizzHistory(
+		@PathVariable Long batchId,
 	    @RequestHeader("Authorization") String token,
 	    @RequestParam(defaultValue = "0") int page,
 	    @RequestParam(defaultValue = "10") int size
 	) {
-	    return quizzService.getQuizzHistory(token, page, size); 
+	    return quizzService.getQuizzHistory(token,batchId, page, size); 
 	}
 
 	//======================Event Controller================
@@ -1725,8 +1750,8 @@ public class FrontController {
 		return weightageService.GetWeightageDetails(token);
 	}
 	//========================Grade Service====================
-	@GetMapping("/get/Grade/{batchId}")
-	public ResponseEntity<?>getGradeScore( @RequestHeader("Authorization") String token,@PathVariable Long batchId){
-		return gradeService.getGrades(token, batchId);
+	@GetMapping("/get/Grade")
+	public ResponseEntity<?>getGradeScore( @RequestHeader("Authorization") String token){
+		return gradeService.getGrades(token);
 	}
 }

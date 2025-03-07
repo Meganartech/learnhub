@@ -40,11 +40,12 @@ const ViewTrainerList = () => {
             Authorization: token,
           },
           params: {
-            username,
-            email,
-            phone,
-            dob,
-            skills,
+           
+            username: encodeURIComponent(username),
+        email: encodeURIComponent(email),
+        phone: encodeURIComponent(phone),
+        dob: encodeURIComponent(dob),
+        skills: encodeURIComponent(skills),
             page: currentPage,
             size: 10,
           },

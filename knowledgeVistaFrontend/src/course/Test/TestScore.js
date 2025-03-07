@@ -1,9 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import baseUrl from "../../api/utils";
 
 const TesttestScore = () => {
+ 
+  const[batchId,setbatchId]=useState(null);
+  const location=useLocation();
+  const[batches,setbatches]=useState([{
+    id:"",
+    name:"",
+    type:""
+  }])
   const [testScore, settestScore] = useState([
     {
       courseName: "",
@@ -28,9 +36,31 @@ const TesttestScore = () => {
     total: "",
   });
   const [percentage, setpercentage] = useState(0);
-  const fetTestHistory = async (page = 0) => {
+  const fetchBatches = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/get/TestHistory`, {
+      const email=sessionStorage.getItem("email")
+      const response = await axios.get(`${baseUrl}/view/batch/${email}`, {
+        headers: {
+          Authorization: token,
+        }
+      });
+      if (response?.status == 200) {
+       setbatches(response.data)
+       if (response.data.length > 0) {
+        setbatchId(response.data[0].id);
+        fetTestHistory(currentPage);
+      }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const fetTestHistory = async (page = 0) => {
+    if(!batchId){
+      return
+    }
+    try {
+      const response = await axios.get(`${baseUrl}/get/TestHistory/${batchId}`, {
         headers: {
           Authorization: token,
         },
@@ -53,9 +83,12 @@ const TesttestScore = () => {
     }
   };
   useEffect(() => {
-    fetTestHistory(currentPage);
-  }, [currentPage]);
-
+    fetchBatches();
+  
+  }, [location]);
+useEffect(()=>{
+  fetTestHistory(currentPage);
+},[currentPage,batchId,location])
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
@@ -99,8 +132,16 @@ const TesttestScore = () => {
                   <i className="fa-solid fa-xmark"></i>
                 </div>
               </div>
-              <div className="tableheader ">
+              <div className="tableheader2 ">
                 <h4>Test History</h4>
+                <select  className="selectstyle btn btn-success text-left has-ripple "
+                 value={batchId} onChange={(e) => setbatchId(Number(e.target.value))}>
+        {batches.map((batch) => (
+          <option className="bg-light text-dark " key={batch.id} value={batch.id}>
+            {batch.name}
+          </option>
+        ))}
+      </select>
               </div>
             </div>
             <div className="card-body">
@@ -184,7 +225,7 @@ const TesttestScore = () => {
               </div>
               <h5 className="text-right">
                 <label className="text-primary">
-                  Total Attendance : {percentage}%
+                  Total Percentage : {percentage}%
                 </label>
               </h5>
             </div>

@@ -44,12 +44,7 @@ public interface CourseDetailRepository  extends JpaRepository<CourseDetail,Long
 	 @Query("SELECT COALESCE(SUM(cd.Noofseats - SIZE(cd.users)), 0) FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
 	 Long countTotalAvailableSeats(@Param("institutionName") String institutionName);
 
-	 @Query("SELECT new com.knowledgeVista.Batch.SearchDto(u.courseId, u.courseName, 'COURSE') " +
-  	       "FROM CourseDetail u " +
-  	       "WHERE u.institutionName = :institutionName " +
-  	       "AND LOWER(u.courseName) LIKE LOWER(CONCAT('%', :Query, '%'))")
-  	List<SearchDto> findCoursesAsSearchDto(@Param("Query") String Query, @Param("institutionName") String institutionName);
-	 
+	
 	 @Query("SELECT c.courseId, c.courseName, c.amount " +
 		       "FROM CourseDetail c " +
 		       "WHERE (:courseName IS NOT NULL AND :courseName <> '' AND LOWER(c.courseName) LIKE LOWER(CONCAT('%', :courseName, '%'))) " +

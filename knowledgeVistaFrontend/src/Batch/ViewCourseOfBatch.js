@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import baseUrl from "../api/utils";
-
 import errorimg from "../images/errorimg.png";
 const ViewCourseOfBatch = () => {
   const { batchTitle,batchid } = useParams();
@@ -44,7 +43,7 @@ const ViewCourseOfBatch = () => {
                 <div className="row align-items-center">
                     <div className="col-md-12">
                         <div className="page-header-title">
-                            <h5 className="m-b-10">Courses Of Batch</h5>
+                            <h5 className="m-b-10">Courses Of {batchTitle}</h5>
                         </div>
                         <ul className="breadcrumb">
                             <li className="breadcrumb-item"><a href="#"onClick={()=>{navigate("/batch/viewall")}} ><i className="fa-solid fa-object-group"></i></a></li>
@@ -61,26 +60,67 @@ const ViewCourseOfBatch = () => {
         </div>
       ) : (
       <div>   
-         <div className="card" style={{ height: "82vh", overflowY: "auto" }}>
-      <div className="card-body">
-        <div className="navigateheaders">
-          <div
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            <i className="fa-solid fa-arrow-left"></i>
-          </div>
-          <div></div>
-          <div
-            onClick={() => {
-              navigate("/dashboard/course");
-            }}
-          >
-            <i className="fa-solid fa-xmark"></i>
-          </div>
+        <div style={{display:"flex",gap:"10px" ,flexWrap:"wrap"}}>
+   <div className="pointer" style={{width:"300px"}}>
+  <div className="card">
+    <div className="card-body">
+      <div className="row align-items-center">
+        <div className="col">
+          <h3>49.54<i className="fa-solid fa-indian-rupee-sign text-c-green m-l-10"></i></h3>
+          <h6 className="text-muted m-b-0">
+            Revenu
+          </h6>
         </div>
-        <h4>Batch : {batchTitle}</h4>
+      </div>
+    </div>
+  </div>
+</div>
+<div className=" pointer" style={{width:"300px"}} onClick={()=>navigate(`/batch/ViewStudents/${batchTitle}/${batchid}`)}>
+  <div className="card">
+    <div className="card-body">
+      <div className="row align-items-center">
+        <div className="col">
+          <h3>40 <i className="fa fa-users text-c-purple m-l-10"></i></h3>
+          <h6 className="text-muted m-b-0">
+            Students
+          </h6>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+</div>
+<div className=" pointer" style={{width:"300px"}}>
+  <div className="card">
+    <div className="card-body">
+      <div className="row align-items-center">
+        <div className="col">
+          <h3>55% <i className="fa-solid fa-thumbs-up text-c-yellow"></i></h3>
+          <h6 className="text-muted m-b-0">
+            Pass
+          </h6>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+</div>
+<div className=" pointer" style={{width:"300px"}}>
+  <div className="card">
+    <div className="card-body">
+      <div className="row align-items-center">
+        <div className="col">
+          <h3>45%<i className="fa-solid fa-thumbs-down text-c-red"></i></h3>
+          <h6 className="text-muted m-b-0">
+            Fail
+          </h6>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+</div>
+</div>
         {courses.length > 0 ? ( // Corrected condition placement
         <div className="row">
           {courses
@@ -124,8 +164,6 @@ const ViewCourseOfBatch = () => {
           <h1 className="text-light">No Course Found</h1>
         </div>
       )}
-      </div>
-      </div>
       </div>)}
     
     </div>

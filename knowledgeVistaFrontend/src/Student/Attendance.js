@@ -5,6 +5,12 @@ import baseUrl from '../api/utils';
 import { GlobalStateContext } from '../Context/GlobalStateProvider';
 const Attendance = () => {
    const { displayname } = useContext(GlobalStateContext);
+   const[batchId,setbatchId]=useState(null);
+       const[batches,setbatches]=useState([{
+         id:"",
+         name:"",
+         type:""
+       }])
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState( location.state?.user);
@@ -19,10 +25,34 @@ const Attendance = () => {
   const [totalPages, setTotalPages] = useState(0); // To handle the total pages
    const itemsperpage=10
  const [percentage,setpercentage]=useState(0);
-
+ const fetchBatches = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}/view/batch/${user.email}`, {
+      headers: {
+        Authorization: token,
+      }
+    });
+    if (response?.status == 200) {
+     setbatches(response.data)
+     if (response.data.length > 0) {
+      setbatchId(response.data[0].id);
+      fetchAttendanceForUser()
+    }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+ useEffect(() => {
+    fetchBatches();
+  
+  }, [location]);
   const fetchAttendanceForUser = async () => {
     try {
-      const res = await axios.get(`${baseUrl}/view/StudentAttendance/${user.userId}?page=${currentPage}&size=${itemsperpage}`, {
+      if(!batchId){
+        return
+      }
+      const res = await axios.get(`${baseUrl}/view/StudentAttendance/${user.userId}/${batchId}?page=${currentPage}&size=${itemsperpage}`, {
         headers: {
           Authorization: token
         }
@@ -53,7 +83,7 @@ const Attendance = () => {
 
   useEffect(() => {
     fetchAttendanceForUser();
-  }, [currentPage]); // Fetch attendance every time currentPage changes
+  }, [currentPage,batchId,location]); // Fetch attendance every time currentPage changes
 
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
@@ -161,8 +191,16 @@ console.log(item.id)
                   <i className="fa-solid fa-xmark"></i>
                 </div>
               </div>
-              <div className="tableheader ">
+              <div className="tableheader2 ">
                 <h4>Attendance</h4>
+                <select  className="selectstyle btn btn-success text-left has-ripple "
+                 value={batchId} onChange={(e) => setbatchId(Number(e.target.value))}>
+        {batches.map((batch) => (
+          <option className="bg-light text-dark " key={batch.id} value={batch.id}>
+            {batch.name}
+          </option>
+        ))}
+      </select>
               </div>{" "}
               <div className="detailstab">
                 <div>

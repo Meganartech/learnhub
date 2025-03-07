@@ -758,7 +758,7 @@ const updateStartTime = (event) => {
                   type="input"
                   id="customeinpu"
                   className="form-control"
-                  placeholder="search member,course or Batch..."
+                  placeholder="search member or Batch..."
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                 />

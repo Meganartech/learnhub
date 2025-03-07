@@ -5,6 +5,12 @@ import baseUrl from "../api/utils";
 
 const MyAttendance = () => {
   const navigate = useNavigate();
+   const[batchId,setbatchId]=useState(null);
+    const[batches,setbatches]=useState([{
+      id:"",
+      name:"",
+      type:""
+    }])
   const [datacounts, setdatacounts] = useState({
     start: "",
     end: "",
@@ -16,10 +22,32 @@ const MyAttendance = () => {
   const token = sessionStorage.getItem("token");
   const [attendance, setattendance] = useState([]);
   const [percentage, setpercentage] = useState(0);
+  const fetchBatches = async () => {
+    try {
+      const email=sessionStorage.getItem("email")
+      const response = await axios.get(`${baseUrl}/view/batch/${email}`, {
+        headers: {
+          Authorization: token,
+        }
+      });
+      if (response?.status == 200) {
+       setbatches(response.data)
+       if (response.data.length > 0) {
+        setbatchId(response.data[0].id);
+        fetchAttendance()
+      }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const fetchAttendance = async () => {
+    if(!batchId){
+      return
+    }
     try {
       const res = await axios.get(
-        `${baseUrl}/view/MyAttendance?page=${currentPage}&size=${itemsperpage}`,
+        `${baseUrl}/view/MyAttendance/${batchId}?page=${currentPage}&size=${itemsperpage}`,
         {
           headers: {
             Authorization: token,
@@ -48,9 +76,14 @@ const MyAttendance = () => {
       }
     }
   };
+ 
+    useEffect(() => {
+      fetchBatches(); 
+    }, []);
+
   useEffect(() => {
     fetchAttendance();
-  }, [currentPage]);
+  }, [currentPage,batchId]);
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
       setCurrentPage(newPage);
@@ -97,8 +130,16 @@ const MyAttendance = () => {
                   <i className="fa-solid fa-xmark"></i>
                 </div>
               </div>
-              <div className="tableheader ">
+              <div className="tableheader2 ">
                 <h4>Attendance</h4>
+                <select  className="selectstyle btn btn-success text-left has-ripple "
+                 value={batchId} onChange={(e) => setbatchId(Number(e.target.value))}>
+        {batches.map((batch) => (
+          <option className="bg-light text-dark " key={batch.id} value={batch.id}>
+            {batch.name}
+          </option>
+        ))}
+      </select>
               </div>{" "}
             </div>
             <div className="card-body">

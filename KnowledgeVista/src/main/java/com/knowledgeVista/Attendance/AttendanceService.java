@@ -31,7 +31,7 @@ public class AttendanceService {
 	private static final Logger logger = LoggerFactory.getLogger(AttendanceService.class);
 
 	
-	public ResponseEntity<?> getAttendance(String token, Long userId, Pageable pageable) {
+	public ResponseEntity<?> getAttendance(String token, Long userId,Long batchId, Pageable pageable) {
 	    try {
 	        if (!jwtUtil.validateToken(token)) {
 	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
@@ -41,8 +41,8 @@ public class AttendanceService {
 	            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	        }
 	        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
-	            Page<AttendanceDto> attendancePage = attendanceRepo.findAttendanceByUserId(userId, pageable);
-	            double percentage = calculateAttendance(userId);
+	            Page<AttendanceDto> attendancePage = attendanceRepo.findAttendanceByUserId(userId,batchId, pageable);
+	            double percentage = calculateAttendance(userId,batchId);
 	            Map<String, Object> response = new HashMap<>();
 	            response.put("attendance", attendancePage);
 	            response.put("percentage", percentage);
@@ -57,10 +57,10 @@ public class AttendanceService {
 	}
 	
 
-	public double calculateAttendance(Long userId) {
+	public double calculateAttendance(Long userId,Long batchId) {
 		  try {
-			  Long totalOccurance=attendanceRepo.countClassesForUser(userId);
-			  Long presentCount=attendanceRepo.countClassesPresentForUser(userId);
+			  Long totalOccurance=attendanceRepo.countClassesForUserAndBatch(userId,batchId);
+			  Long presentCount=attendanceRepo.countClassesPresentForUser(userId,batchId);
 			  if (totalOccurance == null || totalOccurance == 0) {
 				    return 0.0; // Avoid division by zero
 				}
@@ -102,7 +102,7 @@ public ResponseEntity<?>updateAttendance(String token,Long id,String status){
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
-public ResponseEntity<?> getMyAttendance(String token, Pageable pageable) {
+public ResponseEntity<?> getMyAttendance(String token,Long batchId, Pageable pageable) {
     try {
     	 if (!jwtUtil.validateToken(token)) {
 	    		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
@@ -114,8 +114,8 @@ public ResponseEntity<?> getMyAttendance(String token, Pageable pageable) {
 	        	 if(userId==null) {
 	        		 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	        	 }
-	        	 Page<AttendanceDto> attendancePage = attendanceRepo.findAttendanceByUserId(userId, pageable);		          
-	        	 double percentage = calculateAttendance(userId);
+	        	 Page<AttendanceDto> attendancePage = attendanceRepo.findAttendanceByUserId(userId,batchId, pageable);		          
+	        	 double percentage = calculateAttendance(userId,batchId);
 		            Map<String, Object> response = new HashMap<>();
 		            response.put("attendance", attendancePage);
 		            response.put("percentage", percentage);

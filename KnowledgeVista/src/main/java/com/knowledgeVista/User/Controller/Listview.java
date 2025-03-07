@@ -2,6 +2,7 @@ package com.knowledgeVista.User.Controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,12 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.stereotype.Service;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
-import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.MuserRequiredDto;
@@ -28,13 +26,11 @@ import com.knowledgeVista.User.Approvals.MuserApprovals;
 import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-@CrossOrigin
-@RestController
+
+@Service
 public class Listview {
 	@Autowired
 	private MuserRepositories muserrepositories;
-	@Autowired
-	private CourseDetailRepository courseRepo;
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	 @Autowired 
@@ -257,9 +253,7 @@ public ResponseEntity< List<?>> SearchEmail(String token,String Query){
    	  if (institutionname != null && !institutionname.isEmpty()) {
    	   
    	    	List<SearchDto> list1= muserrepositories.findEmailsAsSearchDto(Query, institutionname);
-   	    	List<SearchDto>list2= courseRepo.findCoursesAsSearchDto(Query, institutionname);
    	    	List<SearchDto> list3 = batchrepo.findbatchAsSearchDto(Query, institutionname);
-   	    	list1.addAll(list2);
    	    	list1.addAll(list3);
    	    	return ResponseEntity.ok(list1);
    	     }else {
@@ -587,5 +581,21 @@ public ResponseEntity<Page<MuserDto>> searchStudentsOfTrainer( String username, 
 		}
 	}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+public List<SearchDto> getBatchesOfUser(String token, String email) {
+    try {
+        // Validate token
+        if (!jwtUtil.validateToken(token)) {
+            return Collections.emptyList(); // Return an empty list if token is invalid
+        }
+
+        // Fetch batches for the user
+        return muserrepositories.getBatchOfUser(email);
+        
+    } catch (Exception e) {
+        e.printStackTrace(); // Log the exception
+        return Collections.emptyList(); // Return an empty list in case of an error
+    }
+}
 
 }

@@ -18767,7 +18767,7 @@ strong {
 
 .page-header {
   background: transparent;
-  margin-top: -140px;
+  margin-top: -150px;
   margin-bottom: 30px;
 }
 
@@ -20932,12 +20932,13 @@ pre[class*="language-"]:before {
 
 .pcoded-header .m-header {
   width: 230px;
-  position: relative;
+  position: fixed;
   height: 50px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0 25px;
+  background-color: var(--primary);
 }
 .logo {
   width: 150px;
@@ -21378,7 +21379,7 @@ pre[class*="language-"]:before {
   transition: all 0.3s ease-in-out;
   width: 230px;
   height: calc(100% - 50px);
-  margin-top: 50px;
+  margin-top: -140px;
   border-radius: 0 6px 0 0;
   top: 0;
   background: #101b33;
@@ -22612,7 +22613,7 @@ pre[class*="language-"]:before {
   position: relative;
   display: block;
   padding: 25px;
-  margin-top: 140px;
+  margin-top: 200px;
 }
 
 .pcoded-main-container {
@@ -23246,11 +23247,13 @@ pre[class*="language-"]:before {
 .pcoded-header.header-blue {
   background: var(--primary);
   color: rgba(255, 255, 255, 0.8);
+  position: fixed;
+  padding-bottom: 5px;
 }
 
-.pcoded-header.header-blue:not(.headerpos-fixed) {
+/* .pcoded-header.header-blue:not(.headerpos-fixed) {
   background: transparent;
-}
+} */
 
 .pcoded-header.header-blue .profile-notification li > a {
   color: #373a3c;
@@ -25457,7 +25460,7 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
 }
 .course {
   transition: transform 0.3s ease; /* Smooth zoom effect */
-  width:280px;
+  width:280px !important;
   max-height: 372px; /*Extra Added*/
   overflow: hidden;  /*Extra Added*/
 }
@@ -26738,4 +26741,14 @@ span {
   100% {
     background-position: -200% 0;
   }
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin: 0 auto;
+  gap: 20px;
+  place-items: center;
+  max-width: 1200px;
+  width: 100%;
 }

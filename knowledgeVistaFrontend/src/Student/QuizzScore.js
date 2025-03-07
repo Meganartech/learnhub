@@ -1,13 +1,19 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import baseUrl from "../api/utils";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const QuizzScore = () => {
   const [score, setscore] = useState([]);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
-  
+  const[batchId,setbatchId]=useState(null);
+  const location=useLocation();
+   const[batches,setbatches]=useState([{
+     id:"",
+     name:"",
+     type:""
+   }])
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
    const itemsperpage = 10;
@@ -17,9 +23,31 @@ const QuizzScore = () => {
       total: "",
     });
     const[percentage,setpercentage]=useState(0)
+    const fetchBatches = async (page = 0) => {
+      try {
+        const email=sessionStorage.getItem("email")
+        const response = await axios.get(`${baseUrl}/view/batch/${email}`, {
+          headers: {
+            Authorization: token,
+          }
+        });
+        if (response?.status == 200) {
+         setbatches(response.data)
+         if (response.data.length > 0) {
+          setbatchId(response.data[0].id);
+          fetQuizzHistory(currentPage);
+        }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
   const fetQuizzHistory = async (page=0) => {
+    if(!batchId){
+      return
+    }
     try {
-      const response = await axios.get(`${baseUrl}/get/QuizzHistory`, {
+      const response = await axios.get(`${baseUrl}/get/QuizzHistory/${batchId}`, {
         headers: {
           Authorization: token,
         },
@@ -43,8 +71,11 @@ const QuizzScore = () => {
     }
   };
   useEffect(() => {
+      fetchBatches(); 
+    }, [location]);
+  useEffect(() => {
     fetQuizzHistory(currentPage);
-}, [currentPage]);
+}, [currentPage,batchId,location]);
 
 const handlePageChange = (newPage) => {
   setCurrentPage(newPage);
@@ -89,8 +120,16 @@ const handlePageChange = (newPage) => {
                   <i className="fa-solid fa-xmark"></i>
                 </div>
               </div>
-              <div className="tableheader ">
+              <div className="tableheader2 ">
                 <h4>Quizz History</h4>
+                <select  className="selectstyle btn btn-success text-left has-ripple "
+                 value={batchId} onChange={(e) => setbatchId(Number(e.target.value))}>
+        {batches.map((batch) => (
+          <option className="bg-light text-dark " key={batch.id} value={batch.id}>
+            {batch.name}
+          </option>
+        ))}
+      </select>
               </div>
               </div>
               <div className="card-body">

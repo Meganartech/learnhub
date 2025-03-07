@@ -51,11 +51,15 @@ public interface MusertestactivityRepo extends JpaRepository<MuserTestActivity, 
 			        t.courseDetail.courseName, 
 			        t.courseDetail.courseId,
 			        t.testName, 
-			         t.testId, 
+			        t.testId, 
 			        COALESCE(mta.testDate, NULL) AS testDate, 
 			        COALESCE(mta.nthAttempt, 0) AS nthAttempt, 
 			        COALESCE(mta.percentage, 0) AS percentage,
-			        CASE WHEN mta.test.testId IS NULL THEN 'ABSENT' ELSE 'PRESENT' END
+			        CASE 
+			            WHEN mta.test.testId IS NULL THEN 'N/A' 
+			            WHEN COALESCE(mta.percentage, 0) >= t.passPercentage THEN 'PASS' 
+			            ELSE 'FAIL' 
+			        END AS status
 			    )
 			    FROM CourseTest t
 			    LEFT JOIN MuserTestActivity mta 
@@ -63,6 +67,10 @@ public interface MusertestactivityRepo extends JpaRepository<MuserTestActivity, 
 			        AND mta.user.email = :email
 			    WHERE t.testId IN :testIds
 			""")
-			Page<TestHistoryDto> getTestHistoryByEmailAndTestIds(@Param("email") String email, @Param("testIds") List<Long> testIds ,Pageable pageable);
+			Page<TestHistoryDto> getTestHistoryByEmailAndTestIds(
+			    @Param("email") String email, 
+			    @Param("testIds") List<Long> testIds,
+			    Pageable pageable
+			);
 
 	 }

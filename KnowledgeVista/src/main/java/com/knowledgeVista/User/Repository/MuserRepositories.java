@@ -30,23 +30,29 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	@Query("SELECT b.id FROM Muser u JOIN u.enrolledbatch b WHERE u.email = ?1")
 	List<Long> findBatchIdsByEmail(String email);
 
+
+	
 	@Query("""
 		    SELECT q.quizzId 
 		    FROM Muser u
-		    JOIN u.courses c
+		    JOIN u.enrolledbatch b
+		    JOIN b.courses c
 		    JOIN c.videoLessons v
 		    JOIN v.quizz q
 		    WHERE u.email = :email
+		    AND b.id=:batchId
 		""")
-		List<Long> findQuizzIdsByUserEmail(@Param("email") String email);
+		List<Long> findQuizzIdsByUserEmail(@Param("email") String email,@Param("batchId")Long batchId);
 	@Query("""
 		    SELECT t.testId 
 		    FROM Muser u
-		    JOIN u.courses c
+		    JOIN u.enrolledbatch b
+		    JOIN b.courses c
 		    JOIN CourseTest t ON t.courseDetail = c
 		    WHERE u.email = :email
+		    AND b.id=:batchId
 		""")
-		List<Long> findTestIdsByUserEmail(@Param("email") String email);
+		List<Long> findTestIdsByUserEmail(@Param("email") String email,@Param("batchId")Long batchId);
 
 	@Query("SELECT u.userId FROM Muser u WHERE u.email = ?1")
 	Long  findidByEmail(String email);
@@ -252,6 +258,15 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	    			    WHERE u.email = :email AND c.courseId = :courseId
 	    			""")
 	    			boolean FindAllotedOrNotByUserIdAndCourseId(@Param("email") String email, @Param("courseId") Long courseId);
+	    	   
+	    	   @Query("""
+	    			    SELECT new com.knowledgeVista.Batch.SearchDto(b.id, b.batchTitle, 'BATCH') 
+	    			    FROM Muser u 
+	    			    JOIN u.enrolledbatch b
+	    			    WHERE u.email = :email
+	    			""")
+	    			List<SearchDto> getBatchOfUser(@Param("email") String email);
+
 
 
 }

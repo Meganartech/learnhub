@@ -584,7 +584,7 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
         return res;
     }
     
-    public ResponseEntity<?> getQuizzHistory(String token, int page, int size) {
+    public ResponseEntity<?> getQuizzHistory(String token,Long batchId, int page, int size) {
 	try {
 		if (!jwtUtil.validateToken(token)) {
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -600,7 +600,7 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
         	 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("only Studennts Can Access This Page");
          }
        
-         List<Long> quizzIdlist=muserRepository.findQuizzIdsByUserEmail(email);
+         List<Long> quizzIdlist=muserRepository.findQuizzIdsByUserEmail(email,batchId);
          List<Long> scheduledQuizzIds = quizzRepo.getQuizzIDSheduledByUser(email, quizzIdlist);
          Double quizzPercentage = quizAttemptRepo.getTotalScoreForUser(email, scheduledQuizzIds);
          

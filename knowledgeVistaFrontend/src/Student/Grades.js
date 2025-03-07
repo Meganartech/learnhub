@@ -4,7 +4,6 @@ import baseUrl from "../api/utils";
 import { useNavigate } from "react-router-dom";
 
 const Grades = () => {
-  const batchId = 1;
   const [grades, setgrades] = useState([
     {
       batchName: "",
@@ -27,7 +26,7 @@ const Grades = () => {
   const navigate = useNavigate();
   const fetchGradeDetails = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/get/Grade/${batchId}`, {
+      const response = await axios.get(`${baseUrl}/get/Grade`, {
         headers: {
           Authorization: token,
         },
