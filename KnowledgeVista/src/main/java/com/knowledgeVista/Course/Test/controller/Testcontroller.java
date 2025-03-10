@@ -478,4 +478,34 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
 	    	}
 	    
 	}
+	    public ResponseEntity<?> getTestHistoryforUser(String token,Long batchId,String email, int page, int size) {
+	    	try {
+	    		if (!jwtUtil.validateToken(token)) {
+	                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	             }
+	             String role = jwtUtil.getRoleFromToken(token);            
+	             if("ADMIN".equals(role)||"TRAINER".equals(role)) {       
+	             List<Long> testIds=muserRepository.findTestIdsByUserEmail(email,batchId);
+	             Pageable pageable = PageRequest.of(page, size); // No sorting here
+	             Page<TestHistoryDto> testHistory = muserActivityRepo.getTestHistoryByEmailAndTestIds(email, testIds, pageable);
+	             List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email,batchId);
+	             int totalTest = totalTestIds.size();
+	             Double result = muserActivityRepo.getTotalPercentageForUserandTestIDs(email, totalTestIds);
+	             double totalPercentage = (result != null && totalTest > 0) 
+	                                       ? (result / (totalTest * 100)) * 100 : 0.0;
+	             DecimalFormat df = new DecimalFormat("#.##");
+	             String formattedPercentage = df.format(totalPercentage);
+	             Map<String, Object> response = new HashMap<>();
+	             response.put("test", testHistory); // Extracting content from Page
+	             response.put("percentage", formattedPercentage);
+	             return ResponseEntity.ok(response);
+	             }
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User cannot access This Page");
+	    	}catch (Exception e) {
+	    		logger.error("error At getQuizzHistory"+e);
+	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	}
+	    
+	}
+
 }

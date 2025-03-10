@@ -462,6 +462,16 @@ public class FrontController {
 	) {
 	    return testcontroller.getTestHistory(token,batchId, page, size);
 	}
+	@GetMapping("/get/TestHistoryForUser/{email}/{batchId}")
+	public ResponseEntity<?> getTestHistoryforUser(
+			@PathVariable Long batchId,
+			@PathVariable String email,
+	    @RequestHeader("Authorization") String token,
+	    @RequestParam(defaultValue = "0") int page,
+	    @RequestParam(defaultValue = "10") int size
+	) {
+	    return testcontroller.getTestHistoryforUser(token, batchId, email, page, size);
+	}
 //----------------------PaymentIntegration----------------------	
 	@PostMapping("/Batch/getOrderSummary")
 	public ResponseEntity<?> getBatchOrderSummary(@RequestBody Map<String, Long> requestData,
@@ -1640,6 +1650,10 @@ public class FrontController {
 
 	// -------------------Attendance Service---------------
 
+	@GetMapping("/view/getAttendancAnalysis/{userId}/{batchId}")
+	public ResponseEntity<?> GetAttendanceAnalysis(@PathVariable Long userId,@PathVariable Long batchId,@RequestHeader("Authorization") String token) {
+		return attendanceService.GetAttendanceAnalysis(token, userId,batchId);
+	}
 	@GetMapping("/view/StudentAttendance/{userId}/{batchId}")
 	public ResponseEntity<?> getAttendanceForuser(@PathVariable Long userId,@PathVariable Long batchId,
 			@RequestHeader("Authorization") String token, Pageable pageable) {
@@ -1733,6 +1747,24 @@ public class FrontController {
 	) {
 	    return quizzService.getQuizzHistory(token,batchId, page, size); 
 	}
+	@GetMapping("/get/QuizzHistoryForuser/{email}/{batchId}")
+	public ResponseEntity<?> getQuizzHistory(
+		@PathVariable Long batchId,
+		@PathVariable String email,
+	    @RequestHeader("Authorization") String token,
+	    @RequestParam(defaultValue = "0") int page,
+	    @RequestParam(defaultValue = "10") int size
+	) {
+	    return quizzService.getQuizzHistoryforUserByAdmin(token, batchId, email, page, size);
+	}
+	@GetMapping("/get/QuizzAnalysis/{batchId}/{email}")
+	public ResponseEntity<?> getQuizzAnalysis(
+		@PathVariable Long batchId,
+		@PathVariable String email,
+	    @RequestHeader("Authorization") String token
+	) {
+	    return quizzService.getQuizzAnalysis(token, batchId, email);
+	}
 
 	//======================Event Controller================
 	@GetMapping("/Events/Get")
@@ -1753,5 +1785,15 @@ public class FrontController {
 	@GetMapping("/get/Grade")
 	public ResponseEntity<?>getGradeScore( @RequestHeader("Authorization") String token){
 		return gradeService.getGrades(token);
+	}
+	
+	@GetMapping("/get/TestGradeAnalysis/{email}/{batchId}")
+	public ResponseEntity<?>getGradeTestAnalysis( @RequestHeader("Authorization") String token,@PathVariable Long batchId,@PathVariable String email){
+		return gradeService.getTestAndGradeAnalysis(token, email, batchId);
+	}
+	
+	@GetMapping("/get/getGradeForUser/{email}/{batchId}")
+	public ResponseEntity<?>getGradesofStudent( @RequestHeader("Authorization") String token,@PathVariable Long batchId,@PathVariable String email){
+		return gradeService.getGradesofStudent(token, email, batchId);
 	}
 }

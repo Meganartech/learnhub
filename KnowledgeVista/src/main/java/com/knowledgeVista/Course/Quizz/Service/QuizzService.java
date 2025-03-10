@@ -27,6 +27,7 @@ import com.knowledgeVista.Course.Quizz.Quizzquestion;
 import com.knowledgeVista.Course.Quizz.ShedueleListDto;
 import com.knowledgeVista.Course.Quizz.DTO.AnswerDto;
 import com.knowledgeVista.Course.Quizz.DTO.AnswerDto.QuizAnswerResult;
+import com.knowledgeVista.Course.Quizz.DTO.QScoreNameIdDto;
 import com.knowledgeVista.Course.Quizz.DTO.QuizzHistoryDto;
 import com.knowledgeVista.Course.Quizz.DTO.QuizzquestionDTO;
 import com.knowledgeVista.Course.Quizz.Repo.QuizzAttemptAnswerRepo;
@@ -583,7 +584,36 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
         res.setScore(percentage);        
         return res;
     }
-    
+    public ResponseEntity<?> getQuizzHistoryforUserByAdmin(String token,Long batchId,String email, int page, int size) {
+    	try {
+    		if (!jwtUtil.validateToken(token)) {
+                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+             }
+             String role = jwtUtil.getRoleFromToken(token);
+           if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+             List<Long> quizzIdlist=muserRepository.findQuizzIdsByUserEmail(email,batchId);
+             List<Long> scheduledQuizzIds = quizzRepo.getQuizzIDSheduledByUser(email, quizzIdlist);
+             Double quizzPercentage = quizAttemptRepo.getTotalScoreForUser(email, scheduledQuizzIds);
+             
+             double totalQuizzPercentage = scheduledQuizzIds.size() * 100;
+             double quizPercentage100 = (quizzPercentage != null && totalQuizzPercentage > 0) 
+                                         ? (quizzPercentage / totalQuizzPercentage) * 100 : 0.0;
+             Pageable pageable = PageRequest.of(page, size); // No sorting here
+             Page<QuizzHistoryDto> quizHistory = quizzRepo.getUserQuizzHistoryByEmail(email, quizzIdlist, pageable);
+             DecimalFormat df = new DecimalFormat("#.##");
+             String formattedPercentage = df.format(quizPercentage100);
+             Map<String, Object> response = new HashMap<>();
+             response.put("quizz", quizHistory); // Extracting content from Page
+             response.put("percentage", formattedPercentage);
+             return ResponseEntity.ok(response);
+           }
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Users cannot access this Page");
+    	}catch (Exception e) {
+    		// TODO: handle exception
+    		logger.error("error At getQuizzHistory"+e);
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    	}
+    }
     public ResponseEntity<?> getQuizzHistory(String token,Long batchId, int page, int size) {
 	try {
 		if (!jwtUtil.validateToken(token)) {
@@ -622,7 +652,36 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
+    public ResponseEntity<?> getQuizzAnalysis(String token,Long batchId, String email) {
+    	try {
+    		if (!jwtUtil.validateToken(token)) {
+                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+             }
+             String role=jwtUtil.getRoleFromToken(token);
+             System.out.println(email+batchId);
+             if("ADMIN".equals(role)||"TRAINER".equals(role)) {           	
+            	 List<Long> quizzIdlist=muserRepository.findQuizzIdsByUserEmail(email,batchId); 
+                 List<Long> scheduledQuizzIds = quizzRepo.getQuizzIDSheduledByUser(email, quizzIdlist);       
+            List<QScoreNameIdDto>Scores=quizAttemptRepo.getScoresDtoListForUser(email, scheduledQuizzIds);
+            Double quizzPercentage = quizAttemptRepo.getTotalScoreForUser(email, scheduledQuizzIds);           
+            double totalQuizzPercentage = scheduledQuizzIds.size() * 100;
+            double quizPercentage100 = (quizzPercentage != null && totalQuizzPercentage > 0) 
+                                        ? (quizzPercentage / totalQuizzPercentage) * 100 : 0.0;
+            DecimalFormat df = new DecimalFormat("#.##");
+            String formattedPercentage = df.format(quizPercentage100);
+            Map<String, Object> response = new HashMap<>();
+            response.put("scores", Scores); // Extracting content from Page
+            response.put("percentage", formattedPercentage);
+             return ResponseEntity.ok(response);
+             }
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user cannot access this page");
+    	}catch (Exception e) {
+    		// TODO: handle exception
+    		logger.error("error At getQuizzAnalysis"+e);
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    	}
 
+    }
 }
 
 

@@ -89,8 +89,6 @@ import ViewAllBatch from "./Batch/ViewAllBatch.js";
 import EditBatch from "./Batch/EditBatch.js";
 import ScrollToTop from "./ScrollToTop.js";
 import ViewAllBAtchForCourse from "./Batch/ViewAllBAtchForCourse.js";
-import Attendance from "./Student/Attendance.js";
-import MyAttendance from "./Student/MyAttendance.js";
 import CreateQuizz from "./course/Quizz/CreateQuizz.js";
 import ViewQuizz from "./course/Quizz/ViewQuizz.js";
 import AddMoreQuizz from "./course/Quizz/AddMoreQuizz.js";
@@ -104,6 +102,12 @@ import Grades from "./Student/Grades.js";
 import QuizzScore from "./Student/QuizzScore.js";
 import TestScore from "./course/Test/TestScore.js";
 import StudentsBatch from "./Batch/StudentsBatch.js";
+import BatchDashboard from "./Batch/StudentBatchDashboard.js";
+import Attendance from "./Attendance/Attendance.js"
+import MyAttendance from "./Attendance/MyAttendance.js"
+import QuizzHistorybatch from "./course/Quizz/QuizzHistorybatch.js";
+import UserTestHistory from "./course/Test/UserTestHistory.js";
+import UserGrades from "./Student/UserGrades.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -406,6 +410,16 @@ function App() {
                 </ErrorBoundary>
               }
             />
+           <Route
+              path="/view/Grades/:email/:batchTitle/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
+                    <UserGrades />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
            
              
             <Route
@@ -591,7 +605,7 @@ function App() {
               }
             />
              <Route
-              path="/view/Attendance/:id"
+              path="/view/Attendance/:paramBatchId?"
               element={
                 <ErrorBoundary>
                   <PrivateRoute
@@ -639,6 +653,19 @@ function App() {
                     onlyuser={true}
                   >
                     <TestScore/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/view/TestScore/:email/:batchName/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <UserTestHistory/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }
@@ -706,6 +733,19 @@ function App() {
                     authorizationRequired={true}
                   >
                     <TrainerProfile />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+              <Route
+              path="/view/Student/Dashboard/:studentemail/:userId/:batchId/:batchTitle"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <BatchDashboard />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
@@ -909,6 +949,16 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true} onlyuser={true}>
                     <StartQuizz/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/Quizz/gethistory/:email/:batchName/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
+                    <QuizzHistorybatch/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }

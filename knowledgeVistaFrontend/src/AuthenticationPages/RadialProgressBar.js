@@ -30,7 +30,7 @@ const RadialProgressBar = ({ percentage, total }) => {
   }, [percentage]); // Run the effect when percentage changes
 
   return (
-    <div style={{ width: 100, height: 100, transform: "rotate(-125deg)" }}>
+    <div style={{ width: "100%", height: "100%", transform: "rotate(-125deg)" }}>
       <CircularProgressbarWithChildren
         value={progress} // Bind the progress state to the value
         strokeWidth={12}

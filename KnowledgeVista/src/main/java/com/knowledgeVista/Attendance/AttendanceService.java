@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
+
 import com.knowledgeVista.Attendance.Repo.AttendanceRepo;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -57,7 +59,52 @@ public class AttendanceService {
 	}
 	
 
-	public double calculateAttendance(Long userId,Long batchId) {
+public ResponseEntity<?> GetAttendanceAnalysis(String token,Long userId, Long batchId) {
+    Map<String, Object> attendanceData = new HashMap<>();
+    
+    try {
+    	 if (!jwtUtil.validateToken(token)) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+	        }
+	        String role = jwtUtil.getRoleFromToken(token);
+	        if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+        Long totalDays = attendanceRepo.countClassesForUserAndBatch(userId, batchId);
+        Long presentDays = attendanceRepo.countClassesPresentForUser(userId, batchId);
+        Long absentDays = totalDays - presentDays;
+
+        if (totalDays == null || totalDays == 0) {
+            attendanceData.put("totalDays", 0);
+            attendanceData.put("presentDays", 0);
+            attendanceData.put("absentDays", 0);
+            attendanceData.put("presentPercentage", 0.0);
+            attendanceData.put("absentPercentage", 0.0);
+            return ResponseEntity.ok(attendanceData);
+        }
+
+        double presentPercentage = ((double) presentDays / totalDays) * 100;
+        double absentPercentage = ((double) absentDays / totalDays) * 100;
+
+        // Round to 2 decimal places
+        BigDecimal roundedPresentPercentage = new BigDecimal(presentPercentage).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal roundedAbsentPercentage = new BigDecimal(absentPercentage).setScale(2, RoundingMode.HALF_UP);
+
+        // Add values to the map
+        attendanceData.put("totalDays", totalDays);
+        attendanceData.put("presentDays", presentDays);
+        attendanceData.put("absentDays", absentDays);
+        attendanceData.put("presentPercentage", roundedPresentPercentage.doubleValue());
+        attendanceData.put("absentPercentage", roundedAbsentPercentage.doubleValue());
+
+        return ResponseEntity.ok(attendanceData);
+	        }else {
+	        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("users Cannot access this page");
+	        }
+        
+    } catch (Exception e) {
+        logger.error("Error calculating attendance percentage: " + e.getMessage());
+        return ResponseEntity.status(500).body("Error calculating attendance percentage");
+    }
+}	public double calculateAttendance(Long userId,Long batchId) {
 		  try {
 			  Long totalOccurance=attendanceRepo.countClassesForUserAndBatch(userId,batchId);
 			  Long presentCount=attendanceRepo.countClassesPresentForUser(userId,batchId);

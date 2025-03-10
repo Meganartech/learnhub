@@ -613,7 +613,7 @@ const ViewStudentList = () => {
                         </td>
                         <td>
                           <Link
-                            to={`/view/Attendance/${user.userId}`}
+                            to={`/view/Attendance`}
                             state={{ user }} // Pass user details in state
                             className="hidebtn"
                             title="Attendance"

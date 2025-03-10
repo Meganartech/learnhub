@@ -1,9 +1,10 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import baseUrl from '../api/utils';
 import { GlobalStateContext } from '../Context/GlobalStateProvider';
 const Attendance = () => {
+  const { paramBatchId } = useParams();
    const { displayname } = useContext(GlobalStateContext);
    const[batchId,setbatchId]=useState(null);
        const[batches,setbatches]=useState([{
@@ -33,19 +34,26 @@ const Attendance = () => {
       }
     });
     if (response?.status == 200) {
-     setbatches(response.data)
-     if (response.data.length > 0) {
-      setbatchId(response.data[0].id);
-      fetchAttendanceForUser()
+      let batchList = response.data;
+      
+      if (paramBatchId  ) {
+        batchList = batchList.filter(batch => String(batch.id) === paramBatchId);
+
+        setbatchId(Number(paramBatchId));
+        setbatches(batchList); 
+      } else if (batchList.length > 0) {
+
+        setbatches(batchList); 
+        setbatchId(batchList[0].id);
+      }
     }
-    }
+
   } catch (err) {
     console.log(err);
   }
 };
  useEffect(() => {
     fetchBatches();
-  
   }, [location]);
   const fetchAttendanceForUser = async () => {
     try {
@@ -108,7 +116,6 @@ const Attendance = () => {
   };
   const handleStatusChange = async (event,item) => {
     const newStatus = event.target.value;
-console.log(item.id)
     try {
       await axios.post(
         `${baseUrl}/update/attendance`,
@@ -137,7 +144,7 @@ console.log(item.id)
           <div className="row align-items-center">
             <div className="col-md-12">
               <div className="page-header-title">
-                <h5 className="m-b-10">Settings </h5>
+                <h5 className="m-b-10">Attendance </h5>
               </div>
               <ul className="breadcrumb">
                 <li className="breadcrumb-item">
@@ -193,14 +200,24 @@ console.log(item.id)
               </div>
               <div className="tableheader2 ">
                 <h4>Attendance</h4>
-                <select  className="selectstyle btn btn-success text-left has-ripple "
-                 value={batchId} onChange={(e) => setbatchId(Number(e.target.value))}>
-        {batches.map((batch) => (
-          <option className="bg-light text-dark " key={batch.id} value={batch.id}>
-            {batch.name}
-          </option>
-        ))}
-      </select>
+                <select 
+  className="selectstyle btn btn-success text-left has-ripple" 
+  value={batches.some(batch => batch.id === batchId) ? batchId : ""}
+  onChange={(e) => {
+    const selectedValue = e.target.value;
+    setbatchId(selectedValue ? Number(selectedValue) : null);
+  }}
+>
+  <option value="" disabled className="bg-light text-dark">
+    Select a Batch
+  </option>
+  {batches.map((batch) => (
+    <option className="bg-light text-dark" key={batch.id} value={batch.id}>
+      {batch.name}
+    </option>
+  ))}
+</select>
+
               </div>{" "}
               <div className="detailstab">
                 <div>

@@ -314,7 +314,7 @@ const StudentsBatch = () => {
                         <td className="py-2"> {user.username}</td>
                         <td className="py-2">
                           <Link
-                            to={`/view/Student/profile/${user.email}`}
+                            to={`/view/Student/Dashboard/${user.email}/${user.userId}/${batchid}/${batchTitle}`}
                             state={{ user }} // Pass user details in state
                           >
                             {user.email}

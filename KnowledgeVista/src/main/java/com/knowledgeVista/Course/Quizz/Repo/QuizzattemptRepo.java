@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.knowledgeVista.Course.Quizz.QuizAttempt;
+import com.knowledgeVista.Course.Quizz.DTO.QScoreNameIdDto;
 
 import jakarta.transaction.Transactional;
 
@@ -30,4 +31,10 @@ public interface QuizzattemptRepo extends JpaRepository<QuizAttempt, Long> {
     @Query("SELECT COALESCE(SUM(qa.score), 0) FROM QuizAttempt qa " +
             "WHERE qa.user.email = :email AND qa.quiz.id IN :quizIds")
      Double getTotalScoreForUser(@Param("email") String email, @Param("quizIds") List<Long> quizIds);
+    
+    @Query("SELECT new com.knowledgeVista.Course.Quizz.DTO.QScoreNameIdDto(qa.quiz.quizzId, qa.quiz.quizzName, qa.score) " +
+            "FROM QuizAttempt qa " +
+            "WHERE qa.user.email = :email AND qa.quiz.quizzId IN :quizIds")
+     List<QScoreNameIdDto> getScoresDtoListForUser(@Param("email") String email, @Param("quizIds") List<Long> quizIds);
+
 }
