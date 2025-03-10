@@ -35,6 +35,10 @@ public interface OrderuserRepo extends JpaRepository<Orderuser,Long>{
 	@Query("SELECT SUM(o.amountReceived) FROM Orderuser o WHERE o.institutionName = :institutionName AND o.amountReceived > 0")
     Long getTotalAmountReceivedByInstitution(@Param("institutionName") String institutionName);
 	
+	@Query("SELECT SUM(o.amountReceived) FROM Orderuser o WHERE o.batchId = :batchId AND o.amountReceived > 0")
+	Long getTotalAmountReceivedByBatchId(@Param("batchId") Long batchId);
+
+	
 	@Query("""
 		    SELECT o 
 		    FROM Orderuser o 

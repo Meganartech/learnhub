@@ -2,6 +2,7 @@ package com.knowledgeVista.Batch.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto.courseIdNameImg;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Payments.repos.OrderuserRepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -43,6 +45,8 @@ public class BatchService {
     private MuserRepositories muserRepo;
     @Autowired
     private BatchRepository batchrepo;
+    @Autowired
+    private OrderuserRepo orderuserRepo;
     private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
     public List<Map<String, Object>> searchCourses(String courseName, String token) {
@@ -512,5 +516,29 @@ public ResponseEntity<Page<MuserDto>> searchBatchUserByAdminorTrainer( String us
 		}
 	}
 
+public ResponseEntity<?>getuserCountAndRevenue(Long batchId,String token){
+	try {
+		 String role = jwtUtil.getRoleFromToken(token);
+         String email = jwtUtil.getUsernameFromToken(token);
+         String institutionName=muserRepo.findinstitutionByEmail(email);
+         if(institutionName==null) {
+        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+         }
+         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+        	 Long revenue= orderuserRepo.getTotalAmountReceivedByBatchId(batchId);
+        	 Long students=batchrepo.countAllUsersByBatchId(batchId);
+        	 Map<String,Long> response=new HashMap<String, Long>();
+        	 response.put("revenue", revenue);
+        	 response.put("students", students);
+        	 return ResponseEntity.ok(response);
+         }else {
+         	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot Access This page");
+         }
+	}catch (Exception e) {
+		// TODO: handle exception
+		logger.error("error occured in Getting courseOF batch "+e);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+}
 
 }

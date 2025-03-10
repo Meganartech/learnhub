@@ -1635,6 +1635,11 @@ public class FrontController {
 		return batchService.getUsersoFBatch(id, token, pageNumber, pageSize);
 	}
 	
+	@GetMapping("/Batch/getcounts")
+	public ResponseEntity<?> getuserCountAndRevenue(@RequestParam Long id, @RequestHeader("Authorization") String token) {
+		return batchService.getuserCountAndRevenue(id, token);
+	}
+	
 	@GetMapping("/Batch/search/User")
 	public ResponseEntity<Page<MuserDto>> searchBatchUserByadminOrTrainer(
 			@RequestParam(value = "batchId", required = true) String batchId,

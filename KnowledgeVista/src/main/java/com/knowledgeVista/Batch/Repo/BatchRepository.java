@@ -100,6 +100,12 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 		           "WHERE b.id = :id")
 		    List<Muser> findAllusersByBatchId(@Param("id") Long id);
 		   
+		   @Query("SELECT COUNT(u) FROM Batch b " +
+			       "JOIN b.users u " +
+			       "WHERE b.id = :id")
+			Long countAllUsersByBatchId(@Param("id") Long id);
+
+		   
 		   @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills,u.institutionName) " +
 				   "FROM Batch b " +
 		           "JOIN b.users u " +

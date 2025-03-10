@@ -9,33 +9,66 @@ const ViewCourseOfBatch = () => {
   const token = sessionStorage.getItem("token");
   const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchCourseOFBatch = async () => {
-      try {
-        setsubmitting(true);
-        const response = await axios.get(
-          `${baseUrl}/Batch/getCourses/${batchid}`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-        setsubmitting(false);
-        if (response.status === 200) {
-          setCourses(response.data);
+  const numericBatchId = batchid.split("_")[1];
+  const[counts,setcounts]=useState({
+    revenue:"",
+    students:""
+  })
+  const fetchcountsOfBatch = async () => {
+    try {
+      setsubmitting(true);
+      const response = await axios.get(
+        `${baseUrl}/Batch/getcounts`,
+        {
+          params:{
+            id:numericBatchId
+          },
+          headers: {
+            Authorization: token,
+          },
         }
-      } catch (error) {
-        setsubmitting(false);
-        console.log(error);
-        if (error.response && error.response.status === 401) {
-          navigate("/unauthorized");
-        } else {
-          throw error;
-        }
+      );
+      setsubmitting(false);
+      if (response.status === 200) {
+        setcounts(response.data);
       }
-    };
+    } catch (error) {
+      setsubmitting(false);
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        navigate("/unauthorized");
+      }
+    }
+  };
+  const fetchCourseOFBatch = async () => {
+    try {
+      setsubmitting(true);
+      const response = await axios.get(
+        `${baseUrl}/Batch/getCourses/${batchid}`,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      setsubmitting(false);
+      if (response.status === 200) {
+        setCourses(response.data);
+      }
+    } catch (error) {
+      setsubmitting(false);
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        navigate("/unauthorized");
+      } else {
+        throw error;
+      }
+    }
+  };
+  useEffect(() => {
+    
     fetchCourseOFBatch();
+    fetchcountsOfBatch()
   }, []);
   return (
     <div className="parent">
@@ -62,13 +95,13 @@ const ViewCourseOfBatch = () => {
       <div>   
         <div style={{display:"flex",gap:"10px" ,flexWrap:"wrap"}}>
    <div className="pointer" style={{width:"300px"}}>
-  <div className="card">
+  <div className="card" onClick={()=>{navigate("/payment/transactionHitory")}}>
     <div className="card-body">
       <div className="row align-items-center">
         <div className="col">
-          <h3>49.54<i className="fa-solid fa-indian-rupee-sign text-c-green m-l-10"></i></h3>
+          <h3>{counts.revenue}<i className="fa-solid fa-indian-rupee-sign text-c-green m-l-10"></i></h3>
           <h6 className="text-muted m-b-0">
-            Revenu
+            Revenue
           </h6>
         </div>
       </div>
@@ -80,7 +113,7 @@ const ViewCourseOfBatch = () => {
     <div className="card-body">
       <div className="row align-items-center">
         <div className="col">
-          <h3>40 <i className="fa fa-users text-c-purple m-l-10"></i></h3>
+          <h3>{counts.students} <i className="fa fa-users text-c-purple m-l-10"></i></h3>
           <h6 className="text-muted m-b-0">
             Students
           </h6>
