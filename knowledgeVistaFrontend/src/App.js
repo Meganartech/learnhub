@@ -108,6 +108,11 @@ import MyAttendance from "./Attendance/MyAttendance.js"
 import QuizzHistorybatch from "./course/Quizz/QuizzHistorybatch.js";
 import UserTestHistory from "./course/Test/UserTestHistory.js";
 import UserGrades from "./Student/UserGrades.js";
+import CreateModuleTest from "./course/ModuleTest.js/CreateModuleTest.js";
+import ListModuleTest from "./course/ModuleTest.js/ListModuleTest.js";
+import ViewModuleTest from "./course/ModuleTest.js/ViewModuleTest.js";
+import AddMoreMQuestion from "./course/ModuleTest.js/AddMoreMQuestion.js";
+import EditModuleQuestion from "./course/ModuleTest.js/EditModuleQuestion.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -666,6 +671,72 @@ function App() {
                     authorizationRequired={true}
                   >
                     <UserTestHistory/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            {/* ModuleTest apis */}
+            <Route
+              path="/course/AddModuleTest/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <CreateModuleTest />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/course/moduleTest/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <ListModuleTest />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/moduleTest/AddmoreQuestion/:courseName/:courseId/:mtestName/:mtestId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <AddMoreMQuestion/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/moduleTest/EditQuestion/:courseName/:courseId/:mtestName/:mtestId/:questionId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <EditModuleQuestion/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/view/ModuleTest/:courseName/:courseId/:mtestname/:mtestId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <ViewModuleTest />
                   </PrivateRoute>
                 </ErrorBoundary>
               }

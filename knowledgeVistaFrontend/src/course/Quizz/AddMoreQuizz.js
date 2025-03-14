@@ -4,6 +4,7 @@ import withReactContent from "sweetalert2-react-content";
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import baseUrl from '../../api/utils';
 import axios from 'axios';
+import useGlobalNavigation from '../../AuthenticationPages/useGlobalNavigation';
 
 const AddMoreQuizz = () => {
     const MySwal = withReactContent(Swal);
@@ -236,16 +237,7 @@ const AddMoreQuizz = () => {
         }
         
     };
-    const handleNavigation = () => {
-        const role=sessionStorage.getItem('role')
-        if (role === "ADMIN") {
-            navigate("/course/admin/edit");
-        } else if (role === "TRAINER") {
-            navigate("/AssignedCourses");
-        } else {
-            navigate("/unauthorized");
-        }
-    };
+    const handleNavigation = useGlobalNavigation();
     return (
         <div>
     <div className="page-header">

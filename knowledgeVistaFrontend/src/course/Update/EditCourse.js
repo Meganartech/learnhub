@@ -112,6 +112,13 @@ const EditCourse = ({ filteredCourses }) => {
                             >
                               Test
                             </Link>
+                            <div className="dropdown-divider"></div>
+                            <Link
+                              to={`/course/moduleTest/${item.courseName}/${item.courseId}`}
+                              className="dropdown-item"
+                            >
+                              Module Test
+                            </Link>
                           </div>
                         </div>
                         <Link to={`/course/edit/${item.courseId}`}>

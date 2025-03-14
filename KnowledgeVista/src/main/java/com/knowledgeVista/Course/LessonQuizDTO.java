@@ -12,5 +12,6 @@ public class LessonQuizDTO {
     private String lessonTitle;
     private Long quizzId;
     private String quizzName;
+    
 }
 

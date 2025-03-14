@@ -20,7 +20,10 @@ import jakarta.transaction.Transactional;
 public interface MusertestactivityRepo extends JpaRepository<MuserTestActivity, Long> {
 	
 	List<MuserTestActivity> findByuser(Muser user); 
-	  long countByUser(Muser user);
+	@Query("SELECT COUNT(a) FROM MuserTestActivity a WHERE a.user.userId = :userId AND a.test.testId=:testId")
+	long countByUserAndTestId(@Param("userId") Long userId,@Param("testId") Long testId);
+	
+
 	  @Transactional
 	    void deleteByUser(Muser user);
 	  

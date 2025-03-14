@@ -5,6 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import axios from "axios";
 import DurationPickerEdit from "./DurationPickerEdit";
+import useGlobalNavigation from "../../AuthenticationPages/useGlobalNavigation";
 const ViewQuizz = () => {
   const { courseName, courseID, lessonsName, lessonId, quizzName, quizzId } =
     useParams();
@@ -98,16 +99,7 @@ const ViewQuizz = () => {
   useEffect(() => {
     fetchQuizzQuestions();
   }, []);
-  const handleNavigation = () => {
-    const role = sessionStorage.getItem("role");
-    if (role === "ADMIN") {
-      navigate("/course/admin/edit");
-    } else if (role === "TRAINER") {
-      navigate("/AssignedCourses");
-    } else {
-      navigate("/unauthorized");
-    }
-  };
+  const handleNavigation = useGlobalNavigation();
   const handleQuestionselect = (id) => {
     setselectedIds((prevSelectedIds) => {
       if (prevSelectedIds.includes(id)) {

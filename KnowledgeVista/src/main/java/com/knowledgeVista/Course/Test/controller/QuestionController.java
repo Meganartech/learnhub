@@ -2,6 +2,7 @@ package com.knowledgeVista.Course.Test.controller;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,9 @@ import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.MuserTestActivity;
+import com.knowledgeVista.Course.Test.MuserTestAnswer;
 import com.knowledgeVista.Course.Test.Question;
+import com.knowledgeVista.Course.Test.Repository.MtestAnswerRepo;
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.Course.Test.Repository.QuestionRepository;
 import com.knowledgeVista.Course.Test.Repository.TestRepository;
@@ -33,6 +36,8 @@ public class QuestionController {
 	 @Autowired
 	    private QuestionRepository questionRepository;
 	 @Autowired
+		private MtestAnswerRepo testAnswerRepo;
+	 @Autowired
 	    private TestRepository testrepo;
 		@Autowired
 		private MuserRepositories muserRepository;
@@ -42,6 +47,7 @@ public class QuestionController {
 		private MusertestactivityRepo muserActivityRepo;
 		
 	  	 private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
+	  	 
 
 
 		public ResponseEntity<?> calculateMarks( List<Map<String, Object>> answers, Long courseId, String token) {
@@ -76,12 +82,17 @@ public class QuestionController {
 		            activity.setUser(user);
 		            activity.setTest(test);
 		            activity.setTestDate(LocalDateTime.now().toLocalDate());
+		            activity=  muserActivityRepo.save(activity);
 
 		            double passpercentage = test.getPassPercentage();
 		            Long noofQuestion = test.getNoOfQuestions();
 
 		            int totalMarks = 0;
+		            List<MuserTestAnswer> answertrack=new ArrayList<MuserTestAnswer>();
 		            for (Map<String, Object> answer : answers) {
+		            	MuserTestAnswer selectedanswer=new MuserTestAnswer();
+		            	selectedanswer.setTestActivity(activity);
+		            	
 		                long questionId = Long.parseLong(answer.get("questionId").toString());
 		                String selectedAnswer = answer.get("selectedAnswer").toString();
 
@@ -89,14 +100,19 @@ public class QuestionController {
 		                        .orElseThrow(() -> new IllegalArgumentException("Question not found with id: " + questionId));
 
 		                if (question.getAnswer().equals(selectedAnswer)) {
+		                	selectedanswer.setIsCorrect(true);
 		                    totalMarks++;
 		                }
+		                selectedanswer.setIsCorrect(false);
+		                selectedanswer.setQuestion(question);
+		                selectedanswer.setSelectedOption(selectedAnswer);
+		               answertrack.add(selectedanswer);
 		            }
-
+                     testAnswerRepo.saveAll(answertrack);
 		            Double markacquired = ((double) totalMarks / noofQuestion) * 100;
 		            activity.setPercentage(markacquired);
 		            
-		           Long count= muserActivityRepo.countByUser(user);
+		            long count = muserActivityRepo.countByUserAndTestId(user.getUserId(),test.getTestId());
 		           activity.setNthAttempt(count+1);
 		            muserActivityRepo.save(activity);
 
@@ -228,56 +244,6 @@ public class QuestionController {
 		    }
 		}
 
-//		public ResponseEntity<?> deleteQuestion( Long questionId, String token) {
-//		    try {
-//		        // Validate JWT token
-//		        if (!jwtUtil.validateToken(token)) {
-//		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//		        }
-//
-//		        // Extract role from JWT token
-//		        String role = jwtUtil.getRoleFromToken(token);
-//		        String email=jwtUtil.getUsernameFromToken(token);
-//		         String institution="";
-//			     Optional<Muser> opuser =muserRepository.findByEmail(email);
-//			     if(opuser.isPresent()) {
-//			    	 Muser user=opuser.get();
-//			    	 institution=user.getInstitutionName();
-//			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-//			   	    	if(!adminIsactive) {
-//			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//			   	    	}
-//			     }else {
-//		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//			     }
-//		        // Check if user has admin or trainer role
-//		        if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
-//		            // Fetch the question from the repository based on the provided ID
-//		            Question question = questionRepository.findById(questionId).orElse(null);
-//		            String questioninstitution=question.getTest().getCourseDetail().getInstitutionName();
-//		            
-//			        if ((questioninstitution.equals(institution)) || (!question.equals(null))) {
-//		            	Long noofques=question.getTest().getNoOfQuestions()-1;
-//		            	question.getTest().setNoOfQuestions(noofques);
-//		            	questionRepository.save(question);
-//		                questionRepository.delete(question);
-//		                // Return a response indicating successful deletion
-//		                return ResponseEntity.ok("Question with ID " + questionId + " deleted successfully");
-//		            } else {
-//		                // Return a response indicating that the question was not found
-//		                return ResponseEntity.notFound().build();
-//		            }
-//		        } else {
-//		            // Return unauthorized response if user does not have required role
-//		            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//		        }
-//		    } catch (Exception e) {
-//		        // Handle any unexpected exceptions here
-//		        // You can log the error or return an appropriate response
-//		    	e.printStackTrace();    logger.error("", e);;
-//		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-//		    }
-//		}
 
 	    //--------------------WORKING------
 		public ResponseEntity<?> updateQuestion( Long questionId,String questionText,

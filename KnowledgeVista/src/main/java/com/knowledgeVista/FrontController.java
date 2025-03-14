@@ -34,6 +34,7 @@ import com.knowledgeVista.Batch.service.BatchService;
 import com.knowledgeVista.Batch.service.GradeService;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
+import com.knowledgeVista.Course.VideoLessonDTO.SaveModuleTestRequest;
 import com.knowledgeVista.Course.Controller.CheckAccess;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Controller.CourseControllerSecond;
@@ -46,6 +47,8 @@ import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.controller.QuestionController;
 import com.knowledgeVista.Course.Test.controller.Testcontroller;
 import com.knowledgeVista.Course.certificate.certificateController;
+import com.knowledgeVista.Course.moduleTest.ModuleTest;
+import com.knowledgeVista.Course.moduleTest.service.ModuleTestService;
 import com.knowledgeVista.Email.EmailController;
 import com.knowledgeVista.Email.EmailRequest;
 import com.knowledgeVista.Email.Mailkeys;
@@ -201,6 +204,9 @@ public class FrontController {
 	@Autowired
 	private weightageService weightageService;
 
+	@Autowired
+	private ModuleTestService ModuleTestService;
+	
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
 	public Map<String, String> getActiveEnvironment() {
@@ -1801,4 +1807,54 @@ public class FrontController {
 	public ResponseEntity<?>getGradesofStudent( @RequestHeader("Authorization") String token,@PathVariable Long batchId,@PathVariable String email){
 		return gradeService.getGradesofStudent(token, email, batchId);
 	}
-}
+	//======================================ModuleTest =============================================
+	@GetMapping("/search/lesson/{courseId}")
+	public ResponseEntity<?>searchLessonByTitle(@PathVariable Long courseId,@RequestParam("query") String query,@RequestHeader("Authorization") String token){
+		return ModuleTestService.searchLessons(token, query,courseId);
+	}
+	@GetMapping("/get/moduleTest/{mtestId}")
+	public ResponseEntity<?>getModuleTestById(@PathVariable Long mtestId,@RequestHeader("Authorization") String token){
+		return ModuleTestService.getModuleTestById(mtestId, token);
+	}
+	@GetMapping("/course/moduleTest/{courseId}")
+	public ResponseEntity<?>getModuleTestforCourse(@PathVariable Long courseId,@RequestHeader("Authorization") String token){
+		return ModuleTestService.getModuleTestListByCourseId(courseId, token);
+	}
+	 @PostMapping("/ModuleTest/save")
+	 public ResponseEntity<?> saveModuleTest(
+		        @RequestBody SaveModuleTestRequest request,  // Use a DTO for structured request
+		        @RequestHeader("Authorization") String token) {
+
+		    return ModuleTestService.SaveModuleTest(token, request.getLessonIds(), request.getModuleTest(), request.getCourseId());
+		}
+	 
+	 @PostMapping("/Moduletest/addMoreQuestion/{mtestId}")
+		public ResponseEntity<?> AddmoreModuleQuestion(@PathVariable Long mtestId, @RequestParam String questionText,
+				@RequestParam String option1, @RequestParam String option2, @RequestParam String option3,
+				@RequestParam String option4, @RequestParam String answer, @RequestHeader("Authorization") String token) {
+			return ModuleTestService.addMoreModuleQuestion(mtestId, questionText, option1, option2, option3, option4, answer, token);
+		}
+	 @DeleteMapping("/ModuleTest/questions")
+		public ResponseEntity<?> deleteModuleQuestion(@RequestParam List<Long> questionIds, @RequestParam Long testId,
+				@RequestHeader("Authorization") String token) {
+			return ModuleTestService.deleteModuleQuestion(questionIds, token, testId);
+		}
+	 @PatchMapping("/ModuleTest/update/{testId}")
+		public ResponseEntity<?> editModuleTest(@PathVariable Long testId,
+				@RequestParam(value = "mtestName", required = false) String testName,
+				@RequestParam(value = "mnoOfAttempt", required = false) Long noOfAttempt,
+				@RequestParam(value = "mpassPercentage", required = false) Double passPercentage,
+				@RequestHeader("Authorization") String token) {
+			return ModuleTestService.editModuleTest(testId, testName, noOfAttempt, passPercentage, token);
+		}
+	 @GetMapping("/ModuleTest/getQuestion/{questionId}")
+		public ResponseEntity<?> getModuleQuestion(@PathVariable Long questionId, @RequestHeader("Authorization") String token) {
+			return ModuleTestService.getModuleQuestion(questionId, token);
+		}
+	 @PatchMapping("/ModuleTest/edit/{questionId}")
+		public ResponseEntity<?> updateModuleQuestion(@PathVariable Long questionId, @RequestParam String questionText,
+				@RequestParam String option1, @RequestParam String option2, @RequestParam String option3,
+				@RequestParam String option4, @RequestParam String answer, @RequestHeader("Authorization") String token) {
+			return ModuleTestService.updateModuleQuestion(questionId, questionText, option1, option2, option3, option4, answer, token);
+		}
+	}

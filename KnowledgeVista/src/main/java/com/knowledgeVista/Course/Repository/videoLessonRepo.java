@@ -9,28 +9,35 @@ import org.springframework.data.repository.query.Param;
 
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.LessonQuizDTO;
+import com.knowledgeVista.Course.VideoLessonDTO;
 import com.knowledgeVista.Course.videoLessons;
 
 public interface videoLessonRepo extends JpaRepository<videoLessons, Long> {
+	
+	@Query("SELECT new com.knowledgeVista.Course.VideoLessonDTO(v.lessonId, v.Lessontitle) " +
+		       "FROM videoLessons v WHERE LOWER(v.Lessontitle) LIKE LOWER(CONCAT('%', :title, '%')) " +
+		       "AND v.courseDetail.courseId = :courseId AND v.institutionName = :institution")
+		List<VideoLessonDTO> searchByTitle(@Param("title") String title, 
+		                                   @Param("institution") String institution, 
+		                                   @Param("courseId") Long courseId);
+ 
+	  @Query("SELECT vd FROM videoLessons vd WHERE vd.lessonId IN :lessonIds AND vd.institutionName = :institutionName")
+	  List<videoLessons> findByLessonIdsAndInstitutionName(
+	      @Param("lessonIds") List<Long> lessonIds, 
+	      @Param("institutionName") String institutionName
+	  );
 
 	 @Query("SELECT cd FROM videoLessons cd WHERE cd.id = :videoLessons AND cd.institutionName = :institutionName")
-	 Optional<videoLessons> findBylessonIdAndInstitutionName(@Param("videoLessons") Long courseId, @Param("institutionName") String institutionName);
+	 Optional<videoLessons> findBylessonIdAndInstitutionName(@Param("videoLessons") Long videoLesson, @Param("institutionName") String institutionName);
    
 	 @Query("SELECT vd FROM videoLessons vd WHERE vd.institutionName = :institutionName ")
 	 List<videoLessons>findAllByInstitutionName(String institutionName);
 	 @Query("SELECT cd.courseDetail FROM videoLessons cd WHERE cd.lessonId = :lessonId ")
 	 Optional<CourseDetail> FindbyCourseByLessonId(Long lessonId);
-	
-//	 @Query("SELECT documentPath FROM videoLessons vd WHERE vd.lessonId = :lessonId ")
-//	 String findDocumetByid(Long lessonId);
 	 
 	 @Query("SELECT SUM(v.size) FROM videoLessons v WHERE v.institutionName = :institutionName")
 	 Long findTotalSizeByInstitution(@Param("institutionName") String institutionName);
-	 
-	 
-//	 @Query("SELECT new com.knowledgeVista.Migration.VideoLessonsMigrationDto(cd.lessonId, cd.institutionName, cd.lessontitle, cd.lessonDescription, cd.thumbnail, cd.size, cd.videofilename, cd.fileUrl) FROM videoLessons cd WHERE cd.institutionName = :institutionName")
-//	 List<VideoLessonsMigrationDto> findAllByVideoLessonsMigrationDto(@Param("institutionName") String institutionName);
-//		
+	 		
 	 @Query("""
 			    SELECT new com.knowledgeVista.Course.LessonQuizDTO(
 			        v.lessonId, v.Lessontitle, q.quizzId, q.quizzName) 

@@ -251,7 +251,7 @@ const handleDelete = async (questID) => {
                      style={{ fontSize: "20px", paddingTop: "20px" }}
                    ></i>
                  </button>}
-      {test &&   <Link to={`/test/AddMore/${courseName}/${test.testId}`} className='btn btn-primary mr-2' style={{width:"150px"}}><i className='fa fa-plus'></i> Add more </Link>
+      {test &&   <Link to={`/test/AddMore/${courseName}/${test.testId}`} className='btn btn-primary' style={{width:"150px"}}><i className='fa fa-plus mr-2'></i> Add more </Link>
   }  
   </div>      
                 </div>
@@ -337,7 +337,7 @@ const handleDelete = async (questID) => {
                   )}
                 </span>
                 <span>
-                  <b>Number of Questions:</b> {test.noOfQuestions}
+                  <b>No of Questions:</b> {test.noOfQuestions}
                 </span>
               
               </div>

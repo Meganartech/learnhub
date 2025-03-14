@@ -25,6 +25,7 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.Question;
 import com.knowledgeVista.Course.Test.TestHistoryDto;
+import com.knowledgeVista.Course.Test.Repository.MtestAnswerRepo;
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.Course.Test.Repository.QuestionRepository;
 import com.knowledgeVista.Course.Test.Repository.TestRepository;
@@ -283,8 +284,12 @@ public class Testcontroller {
 
 	                        if (opTest.isPresent()) {
 	                            CourseTest test = opTest.get();
-	                            long attemptCount = muserActivityRepo.countByUser(user);
+	                            
+	                            long attemptCount = muserActivityRepo.countByUserAndTestId(user.getUserId(),test.getTestId());
 	                            // Check if user exceeds allowed attempts
+	                            System.out.println(user.getUserId());
+	                            System.out.println(attemptCount); 
+	                            System.out.println(test.getNoofattempt()); 
 	                            if (attemptCount >= test.getNoofattempt()) {
 	                                return ResponseEntity.badRequest().body("Attempt Limit Exceeded");
 	                                
