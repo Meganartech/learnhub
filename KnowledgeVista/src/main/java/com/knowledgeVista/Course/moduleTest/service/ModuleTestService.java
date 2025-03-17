@@ -1,28 +1,31 @@
 package com.knowledgeVista.Course.moduleTest.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.VideoLessonDTO;
 import com.knowledgeVista.Course.videoLessons;
+import com.knowledgeVista.Course.Quizz.ShedueleListDto;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
-import com.knowledgeVista.Course.Test.Question;
 import com.knowledgeVista.Course.moduleTest.MQuestion;
+import com.knowledgeVista.Course.moduleTest.MTSheduleListDto;
 import com.knowledgeVista.Course.moduleTest.ModuleTest;
+import com.knowledgeVista.Course.moduleTest.SheduleModuleTest;
 import com.knowledgeVista.Course.moduleTest.repo.MQuestionRepo;
 import com.knowledgeVista.Course.moduleTest.repo.ModuleTestActivityRepo;
 import com.knowledgeVista.Course.moduleTest.repo.ModuleTestAnswerRepo;
+import com.knowledgeVista.Course.moduleTest.repo.SheduleModuleTestRepo;
 import com.knowledgeVista.Course.moduleTest.repo.moduleTestRepo;
-import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
@@ -43,7 +46,11 @@ public class ModuleTestService {
 	@Autowired
 	private ModuleTestActivityRepo moduletestActivityrepo;
 	@Autowired
+	private BatchRepository batchRepo;
+	@Autowired
 	private ModuleTestAnswerRepo moduleTestAnswerRepo;
+	@Autowired
+	private SheduleModuleTestRepo sheduleTestRepo;
 
 	private static final Logger logger = LoggerFactory.getLogger(ModuleTestService.class);
 
@@ -335,6 +342,78 @@ public class ModuleTestService {
 			e.printStackTrace();
 			logger.error("", e);		
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("message" + e.getMessage());
+		}
+	}
+
+	
+	public ResponseEntity<?>SaveORUpdateSheduleModuleTest(Long mtestId, String batchId,LocalDate testDate, String token){
+		try {
+			 String role=jwtUtil.getRoleFromToken(token);
+			  String email=jwtUtil.getUsernameFromToken(token);
+			  String insitution=muserRepository.findinstitutionByEmail(email);
+			  if(insitution==null) {
+				  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			  }
+			  boolean isalloted=false;
+			 Optional<ModuleTest> opmtest= moduletestRepo.findById(mtestId);
+			 Optional<Batch>opbatch=batchRepo.findBatchByIdAndInstitutionName(batchId, insitution);
+			 if(!opmtest.isPresent() ) {
+				 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ModuleTest Not Found");
+			 }
+			 if(!opbatch.isPresent()) {
+				 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch Not Found");
+			 }
+			 ModuleTest mtest=opmtest.get();
+			 Batch batch=opbatch.get();
+			Long courseId=mtest.getCourseDetail().getCourseId();
+					  if("ADMIN".equals(role)) {
+						  isalloted=true;
+					  }else if("TRAINER".equals(role)){
+						   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
+					  }
+					  if(isalloted) {
+						  Optional<SheduleModuleTest> opQuizzschedule= sheduleTestRepo.findByModuleTestIdAndBatchId(mtestId, batchId);
+						  if(opQuizzschedule.isPresent()) {
+						    SheduleModuleTest shedule=opQuizzschedule.get();
+						    shedule.setTestDate(testDate);
+						    sheduleTestRepo.save(shedule);
+						    return ResponseEntity.ok("Updated");
+						  }else {
+							  SheduleModuleTest shedule=new SheduleModuleTest();
+							  shedule.setBatch(batch);
+							  shedule.setMtest(mtest);
+							  shedule.setTestDate(testDate);
+							  sheduleTestRepo.save(shedule);
+							  return ResponseEntity.ok("saved");
+						  }
+					  }
+					  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}catch (Exception e) {
+			logger.error("error at SaveOrUpdateSheduleModuleTest"+e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+					
+		}
+	}
+	public ResponseEntity<?>getModuleTestSheduleDetails(Long courseId, String batchId,String token){
+		try {
+			 String role=jwtUtil.getRoleFromToken(token);
+			  String email=jwtUtil.getUsernameFromToken(token);
+			  boolean isalloted=false;
+				
+					  if("ADMIN".equals(role)) {
+						  isalloted=true;
+					  }else if("TRAINER".equals(role)){
+						   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
+					  }
+					  if(isalloted) {
+						  List<MTSheduleListDto> shedule= moduletestRepo.getQuizzShedulesByCourseIdAndBatchId(courseId, batchId);
+						  return ResponseEntity.ok(shedule);
+					  }
+					  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}catch (Exception e) {
+			logger.error("error at getModuleTestShedules "+e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+					
 		}
 	}
 

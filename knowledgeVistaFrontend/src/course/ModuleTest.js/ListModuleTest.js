@@ -58,7 +58,7 @@ if(response.status===200){
                 </div>
             </div>
     </div>
-    <div className="card" style={{minHeight:"80vh"}}>
+    <div className="card" style={{minHeight:"78vh"}}>
     <div className="card-body">
             <div className='navigateheaders'>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-arrow-left"></i></div>

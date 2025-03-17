@@ -1641,10 +1641,6 @@ public class FrontController {
 		return batchService.getUsersoFBatch(id, token, pageNumber, pageSize);
 	}
 	
-	@GetMapping("/Batch/getcounts")
-	public ResponseEntity<?> getuserCountAndRevenue(@RequestParam Long id, @RequestHeader("Authorization") String token) {
-		return batchService.getuserCountAndRevenue(id, token);
-	}
 	
 	@GetMapping("/Batch/search/User")
 	public ResponseEntity<Page<MuserDto>> searchBatchUserByadminOrTrainer(
@@ -1797,6 +1793,10 @@ public class FrontController {
 	public ResponseEntity<?>getGradeScore( @RequestHeader("Authorization") String token){
 		return gradeService.getGrades(token);
 	}
+	@GetMapping("/Batch/getcounts")
+	public ResponseEntity<?> getbatchAnalysis(@RequestParam Long id, @RequestHeader("Authorization") String token) {
+		return gradeService.getBatchAnalysis(id, token);
+	}
 	
 	@GetMapping("/get/TestGradeAnalysis/{email}/{batchId}")
 	public ResponseEntity<?>getGradeTestAnalysis( @RequestHeader("Authorization") String token,@PathVariable Long batchId,@PathVariable String email){
@@ -1856,5 +1856,19 @@ public class FrontController {
 				@RequestParam String option1, @RequestParam String option2, @RequestParam String option3,
 				@RequestParam String option4, @RequestParam String answer, @RequestHeader("Authorization") String token) {
 			return ModuleTestService.updateModuleQuestion(questionId, questionText, option1, option2, option3, option4, answer, token);
+		}
+	 
+	 @PostMapping("/ModuleTest/Shedule")
+		public ResponseEntity<?> SaveORUpdateSheduleModuleTest(@RequestParam Long mtestId, @RequestParam String batchId,
+				@RequestParam LocalDate testdate, 
+				@RequestHeader("Authorization") String token) {
+			return ModuleTestService.SaveORUpdateSheduleModuleTest(mtestId, batchId, testdate, token);
+		}
+	 
+	 
+	 @GetMapping("/ModuleTest/GetSheduleDetails/{courseId}/{batchId}")
+		public ResponseEntity<?> getSheduleModuleTest(@PathVariable Long courseId, @PathVariable String batchId,
+				@RequestHeader("Authorization") String token) {
+			return ModuleTestService.getModuleTestSheduleDetails(courseId, batchId, token);
 		}
 	}

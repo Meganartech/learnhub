@@ -5,6 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import { useNavigate, useParams } from "react-router-dom";
 import baseUrl from "../../api/utils";
 import axios from "axios";
+import useGlobalNavigation from "../../AuthenticationPages/useGlobalNavigation";
 const CreateModuleTest = () => {
     const navigate=useNavigate();
     const { courseName,courseId} = useParams();
@@ -385,9 +386,26 @@ const CreateModuleTest = () => {
   const removeLesson = (lessonId) => {
     setselectedLessons(selectedLessons.filter((l) => l.lessonId !== lessonId));
   };
+  const handleNavigation = useGlobalNavigation();
     return (
       <div>
-      <div className="page-header"></div>
+      <div className="page-header">
+      <div className="page-block">
+                <div className="row align-items-center">
+                    <div className="col-md-12">
+                        <div className="page-header-title">
+                            <h5 className="m-b-10">Create Test</h5>
+                        </div>
+                        <ul className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="#"onClick={handleNavigation} ><i className="feather icon-layout"></i></a></li>
+                            <li className="breadcrumb-item"><a href="#" onClick={navigate(`/course/moduleTest/${courseName}/${courseId}`)}>Module Tests</a></li>
+                            <li className="breadcrumb-item"><a href="#">Create </a></li>
+                        </ul>
+                       
+                    </div>
+                </div>
+            </div>
+      </div>
         {showCriteria ? (
            <div className="card">
           <div className="card-header">

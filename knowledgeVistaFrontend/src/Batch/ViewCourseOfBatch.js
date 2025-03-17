@@ -1,8 +1,16 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import baseUrl from "../api/utils";
 import errorimg from "../images/errorimg.png";
+import StudentChart from "../AuthenticationPages/StudentChart";
+import DonutChart from "../AuthenticationPages/DonutChart";
+import Attendance from "../icons/Attendance.svg"
+import users from "../icons/users.svg"
+import rupee from "../icons/rupee.svg"
+import result from "../icons/result.svg"
+import revenueChart from"../images/revenueChart.png"
+import { GlobalStateContext } from "../Context/GlobalStateProvider";
 const ViewCourseOfBatch = () => {
   const { batchTitle,batchid } = useParams();
   const [submitting, setsubmitting] = useState(false);
@@ -10,9 +18,16 @@ const ViewCourseOfBatch = () => {
   const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
   const numericBatchId = batchid.split("_")[1];
+  const { displayname } = useContext(GlobalStateContext);
   const[counts,setcounts]=useState({
-    revenue:"",
-    students:""
+  PASS:"",
+	FAIL:"",
+	TOTAL:"",
+	PRESENT:"",
+	REVENUE:"",
+	STUDENTS:"",
+	SEATS:"",
+	ABSENT:""
   })
   const fetchcountsOfBatch = async () => {
     try {
@@ -93,66 +108,105 @@ const ViewCourseOfBatch = () => {
         </div>
       ) : (
       <div>   
-        <div style={{display:"flex",gap:"10px" ,flexWrap:"wrap"}}>
-   <div className="pointer" style={{width:"300px"}}>
-  <div className="card" onClick={()=>{navigate("/payment/transactionHitory")}}>
+        <div className="student-card-container">
+
+  <div className="card pointer student-card " onClick={() => navigate(`/batch/ViewStudents/${batchTitle}/${batchid}`)}>
     <div className="card-body">
-      <div className="row align-items-center">
-        <div className="col">
-          <h3>{counts.revenue}<i className="fa-solid fa-indian-rupee-sign text-c-green m-l-10"></i></h3>
-          <h6 className="text-muted m-b-0">
-            Revenue
-          </h6>
+      <div className="student-header">
+          <h4>Revenue</h4>
+          <img src={rupee} alt="rupee" />
+
+          </div>
+          <img src={revenueChart} className="revenueimg" alt="revenur chart"/>
+          <h4 className="mt-1 text-right"><i className="fa-solid fa-indian-rupee-sign p-1"></i>{counts.REVENUE}</h4>
+        
+        </div>
+      </div>
+  
+
+  <div className="card pointer student-card" onClick={() => navigate(`/batch/ViewStudents/${batchTitle}/${batchid}`)} >
+    <div className="card-body">
+      <div className="student-header">
+        <h4>{displayname?.student_name || "Students"}</h4>
+        <img src={users} alt="users" />
+      </div>
+
+      <div className="student-content">
+        {/* Pie Chart */}
+        <StudentChart 
+          totalSeats={counts?.SEATS} 
+          enrolledStudents={counts?.STUDENTS} 
+          color2={"#0198C7"} 
+          color1={"#81ECE1"} 
+          labels={["Enrolled Students", "Number of Seats"]}
+        />
+
+        {/* Student Count and Labels */}
+        <div className="student-info">
+         <div> <h6>{counts.STUDENTS}</h6>
+          <p>{displayname?.student_name || "Students"}</p>
+          </div>
+
+          <div className="student-labels">
+            <div><span className="color-label" style={{ backgroundColor: "#0198C7" }}></span> No of Seats</div>
+            <div><span className="color-label" style={{ backgroundColor: "#81ECE1" }}></span> Enrolled </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<div className=" pointer" style={{width:"300px"}} onClick={()=>navigate(`/batch/ViewStudents/${batchTitle}/${batchid}`)}>
-  <div className="card">
+  <div className="card pointer student-card" onClick={() => navigate(`/batch/ViewStudents/${batchTitle}/${batchid}`)}>
     <div className="card-body">
-      <div className="row align-items-center">
-        <div className="col">
-          <h3>{counts.students} <i className="fa fa-users text-c-purple m-l-10"></i></h3>
-          <h6 className="text-muted m-b-0">
-            Students
-          </h6>
+      <div className="student-header">
+        <h4>Result</h4>
+        <img src={result} alt="result" />
+      </div>
+
+      <div className="student-content">
+        <DonutChart passCount={counts.PASS} failCount={counts.FAIL}  />
+
+        <div className="student-info">
+         <div></div>
+          <div className="student-labels">
+            <div><span className="color-label" style={{ backgroundColor: "#4CAF50" }}></span> Pass </div>
+            <div><span className="color-label" style={{ backgroundColor: "#E53935" }}></span> Fail </div>
+          </div>
         </div>
-      
       </div>
     </div>
   </div>
-</div>
-<div className=" pointer" style={{width:"300px"}}>
-  <div className="card">
+  <div className="card student-card ">
     <div className="card-body">
-      <div className="row align-items-center">
-        <div className="col">
-          <h3>55% <i className="fa-solid fa-thumbs-up text-c-yellow"></i></h3>
-          <h6 className="text-muted m-b-0">
-            Pass
-          </h6>
+      <div className="student-header">
+        <h4>Attendance</h4>
+        <img src={Attendance} alt="attendance" />
+      </div>
+
+      <div className="student-content">
+        {/* Pie Chart */}
+        <StudentChart 
+
+          totalSeats={100} 
+          enrolledStudents={counts.PRESENT} 
+          color2={"#142459"} 
+          color1={"#4680FF"} 
+          labels={["Attended Session", "Not Attended Session"]}
+        />
+
+        {/* Student Count and Labels */}
+        <div className="student-info">
+         <div></div>
+          <div className="student-labels">
+            <div><span className="color-label" style={{ backgroundColor: "#4680FF" }}></span> Present </div>
+            <div><span className="color-label" style={{ backgroundColor: "#142459" }}></span> Absent </div>
+          </div>
         </div>
-      
       </div>
     </div>
   </div>
-</div>
-<div className=" pointer" style={{width:"300px"}}>
-  <div className="card">
-    <div className="card-body">
-      <div className="row align-items-center">
-        <div className="col">
-          <h3>45%<i className="fa-solid fa-thumbs-down text-c-red"></i></h3>
-          <h6 className="text-muted m-b-0">
-            Fail
-          </h6>
-        </div>
-      
-      </div>
-    </div>
-  </div>
-</div>
+
+
+
 </div>
         {courses.length > 0 ? ( // Corrected condition placement
         <div className="row">
@@ -185,7 +239,14 @@ const ViewCourseOfBatch = () => {
                       className="btn btn-sm btn-outline-success w-100"
                     onClick={()=>{navigate(`/sheduleQuizz/${batchTitle}/${batchid}/${item.courseName}/${item.courseId}`)}}
                     >
-                      Schedule Quizz
+                    <label>  Schedule Quizz</label>
+                    </a>
+                    <a
+                      title="Schedule Module Test"
+                      className="btn btn-sm btn-outline-primary w-100 mt-2"
+                    onClick={()=>{navigate(`/sheduleModuleTest/${batchTitle}/${batchid}/${item.courseName}/${item.courseId}`)}}
+                    >
+                    <label>  Schedule Module Test</label>
                     </a>
                   </div>
                 </div>

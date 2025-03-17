@@ -3539,7 +3539,12 @@ fieldset:disabled a.btn {
   color: #9ccc65;
   border-color: #9ccc65;
 }
-
+.btn label{
+  margin: 0px;
+}
+.btn-outline-success:hover label{
+  color: #fff;
+}
 .btn-outline-success:hover {
   color: #fff;
   background-color: #9ccc65;
@@ -26467,6 +26472,7 @@ ul {
 .payrow .payimgdiv {
   padding: 10px;
 }
+
 @media screen and (max-width: 945px) {
   .twosplits {
     grid-template-columns: 1fr;
@@ -26809,4 +26815,73 @@ span {
   place-items: center;
   max-width: 1200px;
   width: 100%;
+}
+.student-card-container{
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  gap:10px;
+  flex-wrap: wrap;
+}
+.student-card {
+  width: 300px;
+  height: 220px;
+  cursor: pointer;
+}
+
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.revenueimg{
+  width: 270px;
+
+}
+.student-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.student-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.student-info > div:first-child {
+  min-height: 60px;
+}
+
+.student-info h6 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.student-info p {
+  font-size: 14px;
+  margin: 2px 0 10px 0;
+}
+
+.student-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.student-labels div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.color-label {
+  width: 20px;
+margin-right:2px ;
+  height: 6px;
+  display: inline-block;
+  border-radius: 2px;
 }

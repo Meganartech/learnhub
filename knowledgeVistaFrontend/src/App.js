@@ -113,6 +113,7 @@ import ListModuleTest from "./course/ModuleTest.js/ListModuleTest.js";
 import ViewModuleTest from "./course/ModuleTest.js/ViewModuleTest.js";
 import AddMoreMQuestion from "./course/ModuleTest.js/AddMoreMQuestion.js";
 import EditModuleQuestion from "./course/ModuleTest.js/EditModuleQuestion.js";
+import SheduleModuleTest from "./course/ModuleTest.js/SheduleModuleTest.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -1157,6 +1158,16 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
                     <SheduleQuizz/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/sheduleModuleTest/:batchTitle/:batchId/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
+                    <SheduleModuleTest/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }

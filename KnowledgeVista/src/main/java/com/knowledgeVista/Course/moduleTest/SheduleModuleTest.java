@@ -1,4 +1,4 @@
-package com.knowledgeVista.Course.Quizz;
+package com.knowledgeVista.Course.moduleTest;
 
 import java.time.LocalDate;
 import com.knowledgeVista.Batch.Batch;
@@ -20,23 +20,23 @@ import lombok.Setter;
 @Setter
 @Table(
 	    uniqueConstraints = @UniqueConstraint(
-	        columnNames = {"batch_id", "quiz_id"}
+	        columnNames = {"batch_id", "mtest_id"}
 	    )
 	)
 @NoArgsConstructor
-public class QuizzSchedule {
+public class SheduleModuleTest {
 	 @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long scheduleId;
 
 	    @ManyToOne
-	    @JoinColumn(name = "quiz_id", nullable = false)
-	    private Quizz quiz;
+	    @JoinColumn(name = "mtest_id", nullable = false)
+	    private ModuleTest mtest;
 
 	    @ManyToOne
 	    @JoinColumn(name = "batch_id", nullable = false)
 	    private Batch batch;
+	    
 	    @Column(nullable = false)
-	    private LocalDate QuizzDate;  
-
+	    private LocalDate testDate;  
 }

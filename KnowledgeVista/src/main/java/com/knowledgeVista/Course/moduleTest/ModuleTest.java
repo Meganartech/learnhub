@@ -5,10 +5,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.videoLessons;
-import com.knowledgeVista.Course.Test.Question;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,7 +38,8 @@ public class ModuleTest {
     private Long mnoOfQuestions;
     private Long mnoOfAttempt;
     private Double mpassPercentage;
-      
+	 @OneToMany(mappedBy = "mtest", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	    private List<SheduleModuleTest> schedules;
 	@OneToMany(mappedBy = "mtest", cascade = CascadeType.ALL ,orphanRemoval = true)
     private List<MQuestion> questions;
 
