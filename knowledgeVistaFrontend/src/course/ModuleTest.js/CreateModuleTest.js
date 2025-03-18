@@ -242,7 +242,7 @@ const CreateModuleTest = () => {
             mpassPercentage: mpassPercentage,
             questions: savedQuestions,
         },
-        lessonIds: selectedLessons.map(lesson => lesson.id),  // Now sent in request body
+        lessonIds: selectedLessons.map(lesson => lesson.lessonId),  // Now sent in request body
         courseId: courseId,
     };
     
@@ -398,7 +398,7 @@ const CreateModuleTest = () => {
                         </div>
                         <ul className="breadcrumb">
                             <li className="breadcrumb-item"><a href="#"onClick={handleNavigation} ><i className="feather icon-layout"></i></a></li>
-                            <li className="breadcrumb-item"><a href="#" onClick={navigate(`/course/moduleTest/${courseName}/${courseId}`)}>Module Tests</a></li>
+                            <li className="breadcrumb-item"><a href="#" onClick={()=>{navigate(`/course/moduleTest/${courseName}/${courseId}`)}}>Module Tests</a></li>
                             <li className="breadcrumb-item"><a href="#">Create </a></li>
                         </ul>
                        

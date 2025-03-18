@@ -160,7 +160,7 @@ useEffect(()=>{
                   </thead>
                   <tbody>
                     {testScore?.map((item, index) => (
-                      <tr key={index}>
+                      <tr key={index} className="pointer" onClick={()=>{navigate(`/test/start/${item.courseName}/${item.courseId}`)}}>
                         <th> {index + 1}</th>
                         <td className="py-2"> {item?.courseName}</td>
 
