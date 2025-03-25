@@ -20,6 +20,7 @@ import jakarta.transaction.Transactional;
 public interface MusertestactivityRepo extends JpaRepository<MuserTestActivity, Long> {
 	
 	List<MuserTestActivity> findByuser(Muser user); 
+	
 	@Query("SELECT COUNT(a) FROM MuserTestActivity a WHERE a.user.userId = :userId AND a.test.testId=:testId")
 	long countByUserAndTestId(@Param("userId") Long userId,@Param("testId") Long testId);
 	
@@ -32,23 +33,40 @@ public interface MusertestactivityRepo extends JpaRepository<MuserTestActivity, 
 	  @Query("DELETE FROM MuserTestActivity act WHERE act.test = :test")
 	  void deleteByCourseTest(CourseTest test);
 	  
-	
 	  @Query("""
-			    SELECT COALESCE(SUM(mta.percentage), 0.0) 
-			    FROM MuserTestActivity mta
-			    WHERE mta.nthAttempt = (
-			        SELECT MAX(mta2.nthAttempt) 
-			        FROM MuserTestActivity mta2 
-			        WHERE mta2.user.userId = mta.user.userId 
-			          AND mta2.test.testId = mta.test.testId
-			    )
-			    AND mta.user.email = :email
-			    AND mta.test.testId IN :testIds
+		SELECT	    COALESCE(SUM(total_percentage) / :count, 0.0) 
+			    FROM (
+			        SELECT mta.percentage AS total_percentage
+			        FROM MuserTestActivity mta
+			        WHERE mta.nthAttempt = (
+			            SELECT MAX(mta2.nthAttempt)
+			            FROM MuserTestActivity mta2
+			            WHERE mta2.user.userId = mta.user.userId
+			              AND mta2.test.testId = mta.test.testId
+			        )
+			        AND mta.user.email = :email
+			        AND mta.test.testId IN :testIds
+
+			        UNION ALL
+			        SELECT mta2.percentage AS total_percentage 
+			        FROM ModuleTestActivity mta2
+			        WHERE mta2.nthAttempt = (
+			            SELECT MAX(mta3.nthAttempt)
+			            FROM ModuleTestActivity mta3
+			            WHERE mta3.user.userId = mta2.user.userId
+			              AND mta3.Mtest.mtestId = mta2.Mtest.mtestId
+			        )
+			        AND mta2.user.email = :email
+			        AND mta2.Mtest.mtestId IN :mtestIds
+			    ) combined
 			""")
-			Double getTotalPercentageForUserandTestIDs(@Param("email") String email, @Param("testIds") List<Long> testIds);
-	  
-	 
-	  
+			Double getPercentageForUser(@Param("email") String email, 
+			                            @Param("testIds") List<Long> testIds, 
+			                            @Param("mtestIds") List<Long> mtestIds
+			                            ,@Param("count") int count);
+
+
+
 	  @Query("""
 			    SELECT new com.knowledgeVista.Course.Test.TestHistoryDto(
 			        t.courseDetail.courseName, 

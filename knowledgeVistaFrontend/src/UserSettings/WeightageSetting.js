@@ -28,7 +28,6 @@ const WeightageSetting = () => {
       setsubmitting(false);
       if (res.status === 200) {
         setnotfound(false);
-        console.log("fetched..");
         setPassingPercentage(res?.data?.passPercentage);
         setWeights(() => ({
           test: res?.data?.testWeightage,
@@ -145,6 +144,12 @@ const WeightageSetting = () => {
         <div className="form-group row" key={key}>
           <label className="col-sm-3 col-form-label">
             {key.charAt(0).toUpperCase() + key.slice(1)} Weightage (%)
+            {key === "test" && (
+        <>
+          <br />
+          <small className="text-muted">(Test + Module Test)</small>
+        </>
+      )}
           </label>
           <div className="col-sm-4">
             <input
@@ -191,6 +196,12 @@ const WeightageSetting = () => {
         <div className="form-group row" key={key}>
           <label className="col-sm-3 col-form-label">
             {key.charAt(0).toUpperCase() + key.slice(1)} Weightage (%)
+            {key === "test" && (
+        <>
+          <br />
+          <small className="text-muted">(Test + Module Test)</small>
+        </>
+      )}
           </label>
           <div className="col-sm-4">
             <input

@@ -2,11 +2,9 @@ package com.knowledgeVista.Payments.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,29 +12,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
-import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Email.EmailService;
 import com.knowledgeVista.Notification.Service.NotificationService;
-import com.knowledgeVista.Payments.Course_PartPayment_Structure;
-import com.knowledgeVista.Payments.InstallmentDetails;
 import com.knowledgeVista.Payments.Orderuser;
 import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.Stripesettings;
 import com.knowledgeVista.Payments.repos.OrderuserRepo;
 import com.knowledgeVista.Payments.repos.PaymentsettingRepository;
 import com.knowledgeVista.Payments.repos.Striperepo;
-import com.knowledgeVista.Payments.repos.partpayrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
-import com.razorpay.RazorpayException;
 import com.stripe.Stripe;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
@@ -63,6 +54,8 @@ public class PaymentIntegration {
 	private Striperepo stripereop;
 	@Autowired
 	private BatchRepository batchrepo;
+	@Autowired
+	private EmailService emailService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PaymentIntegration.class);
 
@@ -240,18 +233,14 @@ private ResponseEntity<String> SetBatchToUser(Orderuser savedorder){
 			batch.getUsers().add(user);
 			batchrepo.save(batch);
 		}
-//		for(CourseDetail course:courses) {
-//			if (!user.getCourses().contains(course)) {
-//				user.getCourses().add(course);
-//				muserRepository.save(user);
-//			}
-//		}
+
+
 		user.getCourses().addAll(
 			    courses.stream()
 			           .filter(course -> !user.getCourses().contains(course)) // Filter out existing courses
 			           .toList() // Collect remaining courses into a list
 			);
-
+    sendEnrollmentMail(courses, batch, user);
 			muserRepository.save(user);
 		String courseUrl = batch.getBatchUrl();
 		String heading = " Payment Credited !";
@@ -289,7 +278,65 @@ private ResponseEntity<String> SetBatchToUser(Orderuser savedorder){
 	
 }
 
+public void sendEnrollmentMail(List<CourseDetail> courses,Batch batch,Muser student) {
+	List<String> bcc = null;
+	List<String> cc = null;
+	String institutionname = student.getInstitutionName();
 
+	String body = String.format(
+	    "<html>"
+	        + "<body>"
+	        + "<h2>Welcome to LearnHub - Your Learning Journey Begins!</h2>"
+	        + "<p>Dear %s,</p>"
+	        + "<p>Congratulations! You have been successfully enrolled in <strong>Batch: %s</strong> at LearnHub.</p>"
+	        + "<p>Below are your login credentials:</p>"
+	        + "<p>In this batch, you will be learning the below  courses:</p>"
+	        + "<ul>%s</ul>" // Placeholder for dynamic course list
+	        + "<p>To get started:</p>"
+	        + "<ul>"
+	        + "<li>Log in to your LearnHub account.</li>"
+	        + "<li>Access your enrolled courses.</li>"
+	        + "<li>Engage with trainers and fellow students.</li>"
+	        + "<li>Complete assignments and track your progress.</li>"
+	        + "</ul>"
+	        + "<p>If you need any assistance, our support team is here to help.</p>"
+	        + "<p>We are excited to have you on board and wish you success in your learning journey!</p>"
+	        + "<p>Best Regards,<br>LearnHub Team</p>"
+	        + "</body>"
+	        + "</html>",
+	    student.getUsername(),  // Student Name
+	    batch.getBatchTitle(),   // Batch Name
+	    generateCourseList(batch.getCourses()) // Converts list of courses to HTML list items
+	);
+
+	if (institutionname != null && !institutionname.isEmpty()) {
+	    try {
+	        List<String> emailList = new ArrayList<>();
+	        emailList.add(student.getEmail());
+	        emailService.sendHtmlEmailAsync(
+	            institutionname, 
+	            emailList,
+	            cc, 
+	            bcc, 
+	            "Welcome to LearnHub - Batch Enrollment Successful!", 
+	            body
+	        );
+	    } catch (Exception e) {
+	        logger.error("Error sending mail: " + e.getMessage());
+	    }
+	}
+
+	// Helper method to format courses as an HTML list
+	
+
+}
+private String generateCourseList(List<CourseDetail> courses) {
+    StringBuilder courseList = new StringBuilder();
+    for (CourseDetail course : courses) {
+        courseList.append("<li>").append(course.getCourseName()).append("</li>");
+    }
+    return courseList.toString();
+}
 
 //	public void notifiinstallment(Long courseId, Long userId) {
 //		Optional<CourseDetail> courseOptional = coursedetail.findById(courseId);

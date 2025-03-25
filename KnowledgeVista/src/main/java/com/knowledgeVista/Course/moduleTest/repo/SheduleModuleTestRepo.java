@@ -1,5 +1,6 @@
 package com.knowledgeVista.Course.moduleTest.repo;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,7 @@ public interface SheduleModuleTestRepo extends JpaRepository<SheduleModuleTest, 
 	
 	@Query("SELECT q FROM SheduleModuleTest q WHERE q.mtest.mtestId = :mtestId AND q.batch.batchId = :batchId")
 	Optional<SheduleModuleTest> findByModuleTestIdAndBatchId(@Param("mtestId") Long mtestId, @Param("batchId") String batchId);
+	
+	@Query("SELECT q.testDate FROM SheduleModuleTest q WHERE q.mtest.mtestId = :mtestId AND q.batch.id = :batchId")
+    LocalDate getSheduledDate(@Param("mtestId") Long mtestId,@Param("batchId") Long batchId);
 }

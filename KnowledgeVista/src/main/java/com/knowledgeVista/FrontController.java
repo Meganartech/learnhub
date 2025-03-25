@@ -1871,4 +1871,12 @@ public class FrontController {
 				@RequestHeader("Authorization") String token) {
 			return ModuleTestService.getModuleTestSheduleDetails(courseId, batchId, token);
 		}
+	 @GetMapping("/ModuleTest/Start")
+		public ResponseEntity<?>StartModuleTest(@RequestParam Long mtestId, @RequestParam Long batchId,@RequestHeader("Authorization") String token){
+			return ModuleTestService.startModuleTest(token, mtestId, batchId);
+		}
+	 @PostMapping("/ModuleTest/submit")
+		public ResponseEntity<?>SaveModuleTestAnswer(@RequestParam Long mtestId, @RequestBody   List<AnswerDto> answers,@RequestHeader("Authorization") String token){
+			return ModuleTestService.saveModuleTestAnswers(token, mtestId, answers);
+		}
 	}

@@ -42,7 +42,7 @@ function BarChartComponent({quizScores}) {
       },
       dataLabels: {
         enabled: true,
-        formatter: (val) => val.toFixed(0),
+        formatter: (val) => val?.toFixed(0),
       },
       stroke: {
         show: true,

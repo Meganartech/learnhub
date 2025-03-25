@@ -76,11 +76,11 @@ public class GradeService {
 
 		// Test Score
 		// Calculation==============================================================
-		List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email, batchId);
-		int totalTest = totalTestIds.size();
-		Double result = testActivityRepo.getTotalPercentageForUserandTestIDs(email, totalTestIds);
-
-		double totalPercentage = (result != null && totalTest > 0) ? (result / (totalTest * 100)) * 100 : 0.0;
+		 List<Long> testIds=muserRepo.findTestIdsByUserEmail(email,batchId);
+         List<Long>mtestIds=muserRepo.findMTestIdsByUserEmail(email, batchId);
+         int count=testIds.size()+mtestIds.size();
+         Double totalPercentage = testActivityRepo.getPercentageForUser(email, testIds, mtestIds,count);
+         
 		double weightedTest = round((totalPercentage * weightage.getTestWeightage()) / 100);
 
 		// Attendance Score
@@ -140,11 +140,10 @@ public class GradeService {
 
 	public ResponseEntity<?> getTestAndGradeAnalysis(String token, String stuemail, Long batchId) {
 		try {
-			List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(stuemail, batchId);
-			int totalTest = totalTestIds.size();
-			Double result = testActivityRepo.getTotalPercentageForUserandTestIDs(stuemail, totalTestIds);
-
-			double totalPercentage = (result != null && totalTest > 0) ? (result / (totalTest * 100)) * 100 : 0.0;
+			 List<Long> testIds=muserRepo.findTestIdsByUserEmail(stuemail,batchId);
+	         List<Long>mtestIds=muserRepo.findMTestIdsByUserEmail(stuemail, batchId);
+	         int count=testIds.size()+mtestIds.size();
+	         Double totalPercentage = testActivityRepo.getPercentageForUser(stuemail, testIds, mtestIds,count);
 			Optional<Muser> opuser = muserRepo.findByEmail(stuemail);
 			if (opuser.isEmpty()) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
@@ -164,7 +163,6 @@ public class GradeService {
 			return ResponseEntity.ok(res);
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -343,11 +341,10 @@ public class GradeService {
 
 		// Test Score
 		// Calculation==============================================================
-		List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email, batchId);
-		int totalTest = totalTestIds.size();
-		Double result = testActivityRepo.getTotalPercentageForUserandTestIDs(email, totalTestIds);
-
-		double totalPercentage = (result != null && totalTest > 0) ? (result / (totalTest * 100)) * 100 : 0.0;
+		 List<Long> testIds=muserRepo.findTestIdsByUserEmail(email,batchId);
+         List<Long>mtestIds=muserRepo.findMTestIdsByUserEmail(email, batchId);
+         int count=testIds.size()+mtestIds.size();
+         Double totalPercentage = testActivityRepo.getPercentageForUser(email, testIds, mtestIds,count);
 		double weightedTest = round((totalPercentage * weightage.getTestWeightage()) / 100);
 
 		// Attendance Score

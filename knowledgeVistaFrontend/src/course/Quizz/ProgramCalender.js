@@ -23,7 +23,7 @@ const ProgramCalender = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/Events/Get?pageNumber=${currentPage}&pageSize=${itemsperpage}`, {
+        const response = await axios.get(`${baseUrl}/Events/Get?pageNumber=${currentPage+1}&pageSize=${itemsperpage}`, {
           headers: {
             Authorization: token,
           },
@@ -98,6 +98,13 @@ const ProgramCalender = () => {
       }
     }
   };
+  const handleStart=(item)=>{
+if(item?.type==="MTEST"){
+  navigate(`/ModuleTest/${item.title}/${item.quizzid}/${item.batchName}/${item.batchid}`);
+}else if(item.type==="QUIZZ"){
+  navigate(`/Quizz/${item.title}/${item.quizzid}/${item.batchName}/${item.batchid}`);
+}
+  }
   return (
     <div>
       <div className="page-header"></div>
@@ -141,6 +148,7 @@ const ProgramCalender = () => {
                       <th scope="col">Schedule </th>
                       <th scope="col">Batch</th>
                       <th scope="col">Action</th>
+                      
                     </tr>
                   </thead>
                   <tbody>
@@ -199,7 +207,8 @@ const ProgramCalender = () => {
 
             <td>{item.batchName}</td>
             <td>
-              <button className="btn btn-success" onClick={()=>{navigate(`/Quizz/${item.title}/${item.quizzid}/${item.batchName}/${item.batchid}`)}}>Start</button>
+              <button className="btn btn-success" onClick={()=>{handleStart(item)}}>Start</button>
+              {item.status?<i className="fa-regular fa-circle-check pl-2"></i>:""}
             </td>
           </tr>
         );

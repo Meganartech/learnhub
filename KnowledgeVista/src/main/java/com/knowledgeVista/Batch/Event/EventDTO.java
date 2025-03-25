@@ -20,8 +20,11 @@ private String type;
 private Long batchid;
 private String batchName;
 private Long quizzid;
+private boolean status;
+
 public EventDTO(String title, Long MeetingId, LocalDate QuizzDate,
-        Integer duration, LocalDateTime startTime, String batchString, String type,Long batchid,String batchName,Long quizzid) {
+        Integer duration, LocalDateTime startTime, String batchString, String type,Long batchid,String batchName,Long quizzid, boolean status
+) {
 this.title = title;
 this.MeetingId = MeetingId;
 this.QuizzDate=QuizzDate;
@@ -32,6 +35,7 @@ this.type = type;
 this.batchid=batchid;
 this.batchName=batchName;
 this.quizzid=quizzid;
+this.status=status;
 }
 }
 

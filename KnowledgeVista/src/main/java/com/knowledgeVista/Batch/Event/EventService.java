@@ -11,8 +11,8 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
-    public Map<String, Object> getEventsForBatch(List<Long> batchId,int pageNumber,int pageSize) {
-        return eventRepository.getEventsByBatchIds(batchId,pageNumber,pageSize);
+    public Map<String, Object> getEventsForBatch(List<Long> batchId,Long userId,int pageNumber,int pageSize) {
+        return eventRepository.getEventsByBatchIds(batchId,userId,pageNumber,pageSize);
     }
 }
 

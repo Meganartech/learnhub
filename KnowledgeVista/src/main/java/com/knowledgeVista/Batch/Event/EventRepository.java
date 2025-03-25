@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface EventRepository {
 	@Query(value = "SELECT * FROM event_table WHERE batch_id IN (:batchIds) ORDER BY quizz_date", nativeQuery = true)
-	 Map<String, Object> getEventsByBatchIds(@Param("batchIds") List<Long> batchIds,int pageNumber,int pageSize);
+	 Map<String, Object> getEventsByBatchIds(@Param("batchIds") List<Long> batchIds,Long userId,int pageNumber,int pageSize);
 
 }
 

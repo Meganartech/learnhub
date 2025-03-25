@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,7 +43,8 @@ public class Testcontroller {
 	    private CourseDetailRepository courseDetailRepo;
 		@Autowired
 		private MusertestactivityRepo muserActivityRepo;
-		
+		@Autowired
+		private TestHistoryService testHistoryService;
 		@Autowired
 		private MuserRepositories muserRepo;
 	    @Autowired
@@ -460,20 +462,18 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
 	            	 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("only Studennts Can Access This Page");
 	             }
 	             List<Long> testIds=muserRepository.findTestIdsByUserEmail(email,batchId);
-	             Pageable pageable = PageRequest.of(page, size); // No sorting here
-	             Page<TestHistoryDto> testHistory = muserActivityRepo.getTestHistoryByEmailAndTestIds(email, testIds, pageable);
-	             List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email,batchId);
-	             int totalTest = totalTestIds.size();
-	             Double result = muserActivityRepo.getTotalPercentageForUserandTestIDs(email, totalTestIds);
-	             
-	             double totalPercentage = (result != null && totalTest > 0) 
-	                                       ? (result / (totalTest * 100)) * 100 : 0.0;
+	             List<Long>mtestIds=muserRepository.findMTestIdsByUserEmail(email, batchId);
+	             System.out.println(testIds);
+	             System.out.println(mtestIds);
+	             Pageable pageable = PageRequest.of(page, size, Sort.by("testDate").descending());
+	             Page<TestHistoryDto> history = testHistoryService.getTestHistory(email, testIds, mtestIds, pageable);
+	             int count=testIds.size()+mtestIds.size();
+	             Double percentage = muserActivityRepo.getPercentageForUser(email, testIds, mtestIds,count);
 	             DecimalFormat df = new DecimalFormat("#.##");
-	             String formattedPercentage = df.format(totalPercentage);
-
+	             String formattedPercentage = df.format(percentage);
 	             // Create response map
 	             Map<String, Object> response = new HashMap<>();
-	             response.put("test", testHistory); // Extracting content from Page
+	             response.put("test", history); // Extracting content from Page
 	             response.put("percentage", formattedPercentage);
 	             return ResponseEntity.ok(response);
 	    	}catch (Exception e) {
@@ -490,20 +490,20 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
 	             }
 	             String role = jwtUtil.getRoleFromToken(token);            
 	             if("ADMIN".equals(role)||"TRAINER".equals(role)) {       
-	             List<Long> testIds=muserRepository.findTestIdsByUserEmail(email,batchId);
-	             Pageable pageable = PageRequest.of(page, size); // No sorting here
-	             Page<TestHistoryDto> testHistory = muserActivityRepo.getTestHistoryByEmailAndTestIds(email, testIds, pageable);
-	             List<Long> totalTestIds = muserRepo.findTestIdsByUserEmail(email,batchId);
-	             int totalTest = totalTestIds.size();
-	             Double result = muserActivityRepo.getTotalPercentageForUserandTestIDs(email, totalTestIds);
-	             double totalPercentage = (result != null && totalTest > 0) 
-	                                       ? (result / (totalTest * 100)) * 100 : 0.0;
-	             DecimalFormat df = new DecimalFormat("#.##");
-	             String formattedPercentage = df.format(totalPercentage);
-	             Map<String, Object> response = new HashMap<>();
-	             response.put("test", testHistory); // Extracting content from Page
-	             response.put("percentage", formattedPercentage);
-	             return ResponseEntity.ok(response);
+
+		             List<Long> testIds=muserRepository.findTestIdsByUserEmail(email,batchId);
+		             List<Long>mtestIds=muserRepository.findMTestIdsByUserEmail(email, batchId);
+		             Pageable pageable = PageRequest.of(page, size, Sort.by("testDate").descending());
+		             Page<TestHistoryDto> history = testHistoryService.getTestHistory(email, testIds, mtestIds, pageable);
+		             int count=testIds.size()+mtestIds.size();
+		             Double percentage = muserActivityRepo.getPercentageForUser(email, testIds, mtestIds,count);
+		             DecimalFormat df = new DecimalFormat("#.##");
+		             String formattedPercentage = df.format(percentage);
+		             // Create response map
+		             Map<String, Object> response = new HashMap<>();
+		             response.put("test", history); // Extracting content from Page
+		             response.put("percentage", formattedPercentage);
+		             return ResponseEntity.ok(response);
 	             }
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User cannot access This Page");
 	    	}catch (Exception e) {

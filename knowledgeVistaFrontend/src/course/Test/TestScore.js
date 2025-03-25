@@ -155,24 +155,27 @@ useEffect(()=>{
                       <th scope="col"> Attempt</th>
                       <th scope="col"> Submitted at</th>
                       <th scope="col">Test Score</th>
+                      <th scope="col">Type</th>
                       <th scope="col"> Status </th>
                     </tr>
                   </thead>
                   <tbody>
                     {testScore?.map((item, index) => (
-                      <tr key={index} className="pointer" onClick={()=>{navigate(`/test/start/${item.courseName}/${item.courseId}`)}}>
+                      <tr key={index} className="pointer" >
                         <th> {index + 1}</th>
                         <td className="py-2"> {item?.courseName}</td>
 
                         <td className="py-2">{item.testName}</td>
                         <td className="py-2"> {item?.nthAttempt}</td>
                         <td className="py-2">
-                          {item?.testDate
-                            ? new Date(item.testDate).toLocaleDateString()
-                            : "N/A"}
+                        {item?.testDate && item.status !== "NOT ATTEMPTED"
+  ? new Date(item.testDate).toLocaleDateString()
+  : "N/A"}
+
                         </td>
 
                         <td className="py-2"> {item?.percentage}</td>
+                        <td className="py-2">{item?.type=="TEST"? "Test":"Module Test" }</td>
                         <td className="py-2"> {item?.status}</td>
                       </tr>
                     ))}

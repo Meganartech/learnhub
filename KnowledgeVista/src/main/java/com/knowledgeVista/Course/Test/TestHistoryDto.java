@@ -21,9 +21,10 @@ public class TestHistoryDto {
 	    private Long nthAttempt;
 	    private Double percentage;
 	    private String status;
+	    private String type;
 	    
 		public TestHistoryDto(String courseName, Long courseId, String testName, Long testId, LocalDate testDate,
-				Long nthAttempt, Double percentage, String status) {
+				Long nthAttempt, Double percentage, String status, String type) {
 			super();
 			this.courseName = courseName;
 			this.courseId = courseId;
@@ -33,5 +34,6 @@ public class TestHistoryDto {
 			this.nthAttempt = nthAttempt;
 			this.percentage = percentage;
 			this.status = status;
+			this.type=type;
 		}
 }

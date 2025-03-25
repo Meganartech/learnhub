@@ -113,7 +113,7 @@ public class QuestionController {
 		            activity.setPercentage(markacquired);
 		            
 		            long count = muserActivityRepo.countByUserAndTestId(user.getUserId(),test.getTestId());
-		           activity.setNthAttempt(count+1);
+		           activity.setNthAttempt(count);
 		            muserActivityRepo.save(activity);
 
 		            String message;

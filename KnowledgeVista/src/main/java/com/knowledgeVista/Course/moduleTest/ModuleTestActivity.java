@@ -3,13 +3,9 @@ package com.knowledgeVista.Course.moduleTest;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.knowledgeVista.Course.CourseDetail;
-import com.knowledgeVista.Course.Test.CourseTest;
-import com.knowledgeVista.Course.Test.MuserTestAnswer;
 import com.knowledgeVista.User.Muser;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,9 +30,6 @@ public class ModuleTestActivity {
 	   @ManyToOne
 	    @JoinColumn(name = "userId")
 	    private Muser user;
-     @ManyToOne
-     @JoinColumn(name="courseId")
-     private CourseDetail course;
 	    @ManyToOne 
 	    @JoinColumn(name = "mtestId")
 	    @JsonBackReference

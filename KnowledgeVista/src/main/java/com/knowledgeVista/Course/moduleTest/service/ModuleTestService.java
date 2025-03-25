@@ -1,7 +1,11 @@
 package com.knowledgeVista.Course.moduleTest.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,18 +18,29 @@ import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.VideoLessonDTO;
 import com.knowledgeVista.Course.videoLessons;
+import com.knowledgeVista.Course.Quizz.QuizAttempt;
+import com.knowledgeVista.Course.Quizz.QuizAttemptAnswer;
+import com.knowledgeVista.Course.Quizz.Quizz;
+import com.knowledgeVista.Course.Quizz.Quizzquestion;
 import com.knowledgeVista.Course.Quizz.ShedueleListDto;
+import com.knowledgeVista.Course.Quizz.DTO.AnswerDto;
+import com.knowledgeVista.Course.Quizz.DTO.QuizzquestionDTO;
+import com.knowledgeVista.Course.Quizz.DTO.AnswerDto.ModuleTestAnswerResult;
+import com.knowledgeVista.Course.Quizz.DTO.AnswerDto.QuizAnswerResult;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.Course.moduleTest.MQuestion;
 import com.knowledgeVista.Course.moduleTest.MTSheduleListDto;
 import com.knowledgeVista.Course.moduleTest.ModuleTest;
+import com.knowledgeVista.Course.moduleTest.ModuleTestActivity;
+import com.knowledgeVista.Course.moduleTest.ModuleTestAnswer;
 import com.knowledgeVista.Course.moduleTest.SheduleModuleTest;
 import com.knowledgeVista.Course.moduleTest.repo.MQuestionRepo;
 import com.knowledgeVista.Course.moduleTest.repo.ModuleTestActivityRepo;
 import com.knowledgeVista.Course.moduleTest.repo.ModuleTestAnswerRepo;
 import com.knowledgeVista.Course.moduleTest.repo.SheduleModuleTestRepo;
 import com.knowledgeVista.Course.moduleTest.repo.moduleTestRepo;
+import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
@@ -416,5 +431,141 @@ public class ModuleTestService {
 					
 		}
 	}
+
+	
+	//======================================
+	
+
+    public ResponseEntity<?> startModuleTest(String token, Long mtestId, Long batchId) {
+        try {
+            if (!jwtUtil.validateToken(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
+            }
+
+            String email = jwtUtil.getUsernameFromToken(token);
+            Optional<Muser> opmuser = muserRepository.findByEmail(email);
+
+            if (opmuser.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+            }
+
+            Muser user = opmuser.get();
+            if (!"USER".equals(user.getRole().getRoleName())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only students can attempt the quiz.");
+            }
+            
+            Batch batch = user.getEnrolledbatch().stream()
+                    .filter(b -> b.getId().equals(batchId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (batch == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not enrolled in this batch.");
+            }
+
+            Optional<ModuleTest> opmtest = moduletestRepo.findById(mtestId);
+            if (opmtest.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Module Test Not Found.");
+            }
+            ModuleTest mtest=opmtest.get();
+            System.out.println(batchId+ "f0"+mtestId);
+            LocalDate sheduledDate = sheduleTestRepo.getSheduledDate(mtest.getMtestId(), batchId);
+           System.out.println(sheduledDate);
+
+            LocalDate now = LocalDate.now();
+           
+            if (now.isBefore(sheduledDate)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Module Test has not started yet.");
+            }
+            if (now.isAfter(sheduledDate)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Module Test has expired.");
+            }
+            return getMtestQuestions(mtestId);
+        } catch (Exception e) {
+            logger.error("Error Getting ModuleTest Question Questions", e);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+   
+
+    private ResponseEntity<?> getMtestQuestions(Long mtestId) {
+    	
+        List<MQuestion> questions = MquestionRepo.getQuestionsBymtestId(mtestId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("questions", questions);
+        return ResponseEntity.ok(response);
+
+    }
+   
+    public ResponseEntity<?> saveModuleTestAnswers(String token,Long mtestId,List<AnswerDto> answers){
+    	try {
+    		 if (!jwtUtil.validateToken(token)) {
+                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
+             }
+
+             String email = jwtUtil.getUsernameFromToken(token);
+             Optional<Muser> opmuser = muserRepository.findByEmail(email);
+
+             if (opmuser.isEmpty()) {
+                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+             }
+
+             Muser user = opmuser.get();
+             Long id=user.getUserId();
+            Long count= moduletestActivityrepo.countByUserAndTestId(id, mtestId);
+            Optional<ModuleTest> opmtest = moduletestRepo.findById(mtestId);
+            if (opmtest.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Module Test Not Found.");
+            }
+            ModuleTest mtest=opmtest.get();
+                 ModuleTestActivity attempt =new ModuleTestActivity();
+            	LocalDate now = LocalDate.now();
+            	attempt.setTestDate(now);
+            	attempt.setNthAttempt(count+1);
+            	attempt.setMtest(mtest);
+            	attempt.setUser(user);
+            	attempt= moduletestActivityrepo.save(attempt);
+            	ModuleTestAnswerResult result = saveAnswers(answers, attempt,mtestId);
+                // Update attempt with score
+                attempt.setPercentage(result.getScore());
+                moduletestActivityrepo.save(attempt);
+
+                return ResponseEntity.ok("module Test Submitted. Score: " + result.getScore());
+           
+             
+    	}catch (Exception e) {
+    		logger.error("error At Saving Module Test answers"+e);
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+    }
+    private ModuleTestAnswerResult saveAnswers(List<AnswerDto> answers, ModuleTestActivity attempt,Long quizzId) {
+        List<ModuleTestAnswer> saveAnswers = new ArrayList<>();
+        double score = 0.0;
+        long totalQuestions =MquestionRepo.countBymtestId(quizzId);
+        for (AnswerDto answerDto : answers) {
+            Optional<MQuestion> opQuestion = MquestionRepo.findById(answerDto.getQuestionId());
+            if (opQuestion.isPresent()) {
+            	MQuestion question = opQuestion.get();
+                boolean isCorrect = answerDto.getSelected().equals(question.getAnswer());
+                ModuleTestAnswer answer = new ModuleTestAnswer();
+                answer.setModuletestActivity(attempt);
+                answer.setQuestion(question);
+                answer.setSelectedOption(answerDto.getSelected());
+                answer.setIsCorrect(isCorrect);
+                saveAnswers.add(answer);
+                if (isCorrect) {
+                    score += 1; // Each correct answer adds 1 point
+                }
+            }
+        }
+        List<ModuleTestAnswer> savedAnswers =moduleTestAnswerRepo.saveAll(saveAnswers);
+        ModuleTestAnswerResult res=new ModuleTestAnswerResult();
+        res.setSavedAnswers(savedAnswers);
+        double percentage = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0.0;
+        res.setScore(percentage);        
+        return res;
+    }
 
 }

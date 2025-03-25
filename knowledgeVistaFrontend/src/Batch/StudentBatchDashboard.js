@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import Profile from '../Student/Profile'
+import Profile from '../Student/Profile.js'
 import RadialProgressBar from '../AuthenticationPages/RadialProgressBar'
 import axios from 'axios'
 import baseUrl from '../api/utils'

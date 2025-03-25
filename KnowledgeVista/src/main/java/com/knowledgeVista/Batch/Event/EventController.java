@@ -28,17 +28,18 @@ public class EventController {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		         }
 		         String email = jwtUtil.getUsernameFromToken(token);
-		         String institutionName=muserRepo.findinstitutionByEmail(email);
-		         if(institutionName==null) {
-		        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+		         Long userId=muserRepo.findidByEmail(email);
+		         if(userId==null) {
+		        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Id Not Found");
 		         }
 		         List<Long>batchids=muserRepo.findBatchIdsByEmail(email);
-		         Map<String, Object> events=eventservice.getEventsForBatch(batchids,pageNumber,pageSize);
+		         Map<String, Object> events=eventservice.getEventsForBatch(batchids,userId,pageNumber,pageSize);
 		        return ResponseEntity.ok(events);
 		         
 	    	}catch (Exception e) {
 				// TODO: handle exception
 	    		logger.error("error in getting Events" + e);
+	    		e.printStackTrace();
 	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 	    }

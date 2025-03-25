@@ -3,6 +3,7 @@ package com.knowledgeVista.Course.Quizz.DTO;
 import java.util.List;
 
 import com.knowledgeVista.Course.Quizz.QuizAttemptAnswer;
+import com.knowledgeVista.Course.moduleTest.ModuleTestAnswer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,4 +35,21 @@ public static class QuizAnswerResult {
 		this.score = score;
 	}
 }
+public static class ModuleTestAnswerResult {
+    private List<ModuleTestAnswer> savedAnswers;
+    private double score;
+	public List<ModuleTestAnswer> getSavedAnswers() {
+		return savedAnswers;
+	}
+	public void setSavedAnswers(List<ModuleTestAnswer> savedAnswers) {
+		this.savedAnswers = savedAnswers;
+	}
+	public double getScore() {
+		return score;
+	}
+	public void setScore(double score) {
+		this.score = score;
+	}
+}
+
 }

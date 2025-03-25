@@ -1,6 +1,8 @@
 package com.knowledgeVista.User.Controller;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -12,8 +14,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.knowledgeVista.DownloadManagement.CustomerLeads;
+import com.knowledgeVista.DownloadManagement.Customer_downloads;
+import com.knowledgeVista.Email.EmailService;
 import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.Madmin_Licence;
 import com.knowledgeVista.License.mAdminLicenceRepo;
@@ -41,6 +47,9 @@ public class MserRegistrationController {
 	private LicenseController licencecontrol;
 @Autowired
 private MuserApprovalRepo MuserApproval;
+
+@Autowired
+private EmailService emailservice;
 	@Autowired
 	private mAdminLicenceRepo madminrepo;
 	
@@ -117,32 +126,93 @@ private MuserApprovalRepo MuserApproval;
 		            madminrepo.save(madmin);
 	     		   licencecontrol.uploadSAS(madmin, savedadmin);
 	     	   }
+	          List<String> bcc = null;
+	          List<String> cc = null;
+	          String institutionname = institutionName;
+
+	          String body = String.format(
+	        		    "<html>"
+	        		        + "<body>"
+	        		        + "<h2>Welcome to LearnHub Admin Portal!</h2>"
+	        		        + "<p>Dear %s,</p>"
+	        		        + "<p>We are excited to welcome you as an administrator at LearnHub.</p>"
+	        		        + "<p>Here are your login credentials:</p>"
+	        		        + "<ul>"
+	        		        + "<li><strong>Username (Email):</strong> %s</li>"
+	        		        + "<li><strong>Password:</strong> %s</li>"
+	        		        + "</ul>"
+	        		        + "<p>With your admin access, you can:</p>"
+	        		        + "<ul>"
+	        		        + "<li>Add and manage courses.</li>"
+	        		        + "<li>Add and manage Student and Trainers.</li>"
+	        		        + "<li>Approve the Registered Trainer.</li>"
+	        		        + "<li>Allot Courses For Trainers .</li>"
+	        		        + "<li>Oversee Revenue  Details.</li>"
+	        		        + "<li>Oversee student enrollments.</li>"
+	        		        + "<li>Update course content.</li>"
+	        		        + "<li>Support students in their learning journey.</li>"
+	        		        + "<li>And Many More.....</li>"
+	        		        + "</ul>"
+	        		        + "<p>If you need any assistance, our support team is always here to help.</p>"
+	        		        + "<p>We appreciate your dedication and look forward to a great collaboration!</p>"
+	        		        + "<p>Best Regards,<br>LearnHub Team</p>"
+	        		        + "</body>"
+	        		        + "</html>",
+	        		    user.getUsername(), // Admin Name
+	        		    user.getEmail(), // Admin Username (email)
+	        		    psw // Admin Password
+	        		);
+
+
+	          if (institutionname != null && !institutionname.isEmpty()) {
+	              try {
+	            	  List<String> emailList = new ArrayList<>();
+	            	  emailList.add(email);
+	                  emailservice.sendHtmlEmailAsync(
+	                      institutionname, 
+	                      emailList,
+	                      cc, 
+	                      bcc, 
+	                      "Welcome to LearnHub - Start Your Administrator Journey Today!", 
+	                      body
+	                  );
+	              } catch (Exception e) {
+	                  logger.error("Error sending mail: " + e.getMessage());
+	              }
+	          }
+
+
 	          
-//	            RestTemplate restTemplate = new RestTemplate();
+	          RestTemplate restTemplate = new RestTemplate();
 
+	          String apiUrl = baseUrl + "/Developer/CustomerDownloads";
+	          String apiUrl2 = baseUrl + "/Developer/CustomerLeads";
 
-	            
-//	            String apiUrl = baseUrl +"/Developer/CustomerDownloads";
-//	            String apiUrl2 = baseUrl + "/Developer/CustomerLeads";
-//
-//                
-//	            Customer_downloads custDown = new Customer_downloads();
-//	            custDown.setName(user.getUsername());
-//	            custDown.setEmail(user.getEmail());
-//	            custDown.setCountryCode(user.getCountryCode());
-//	            custDown.setPhone(user.getPhone());
-//	            
-//	            CustomerLeads custlead=new CustomerLeads();
-//	            custlead.setName(user.getUsername());
-//	            custlead.setEmail(user.getEmail());
-//	            custlead.setCountryCode(user.getCountryCode());
-//	            custlead.setPhone(user.getPhone());
-//	            
-//	            restTemplate.postForEntity(apiUrl, custDown, String.class);
-//
-//	            restTemplate.postForEntity(apiUrl2, custlead, String.class);
-	     	  
-	           
+	          Customer_downloads custDown = new Customer_downloads();
+	          custDown.setName(user.getUsername());
+	          custDown.setEmail(user.getEmail());
+	          custDown.setCountryCode(user.getCountryCode());
+	          custDown.setPhone(user.getPhone());
+
+	          CustomerLeads custlead = new CustomerLeads();
+	          custlead.setName(user.getUsername());
+	          custlead.setEmail(user.getEmail());
+	          custlead.setCountryCode(user.getCountryCode());
+	          custlead.setPhone(user.getPhone());
+
+	          try {
+	              restTemplate.postForEntity(apiUrl, custDown, String.class);
+	          } catch (Exception e) {
+	              // Log the error but do not send it to the frontend
+	              System.err.println("Error posting to CustomerDownloads: " + e.getMessage());
+	          }
+
+	          try {
+	              restTemplate.postForEntity(apiUrl2, custlead, String.class);
+	          } catch (Exception e) {
+	              // Log the error but do not send it to the frontend
+	              System.err.println("Error posting to CustomerLeads: " + e.getMessage());
+	          }
 	        return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	            }else {
 	            	
@@ -211,6 +281,51 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	            }
 	            }
 	            muserrepositories.save(user);
+	            List<String> bcc = null;
+	            List<String> cc = null;
+	            String institutionname = existingInstitute;
+
+	            String body = String.format(
+	                "<html>"
+	                    + "<body>"
+	                    + "<h2>Welcome to LearnHub!</h2>"
+	                    + "<p>Dear %s,</p>"
+	                    + "<p>We are excited to have you on board at %s, your gateway to knowledge and growth.</p>"
+	                    + "<p>Here are your login credentials to access your courses:</p>"
+	                    + "<ul>"
+	                    + "<li><strong>Username (Email):</strong> %s</li>"
+	                    + "<li><strong>Password:</strong> %s</li>"
+	                    + "</ul>"
+	                    + "<p>Start exploring your enrolled courses, engage with trainers, and enhance your learning experience.</p>"
+	                    + "<p>If you need any support, feel free to reach out to our help desk.</p>"
+	                    + "<p>Happy Learning!</p>"
+	                    + "<p>Best Regards,<br>%s Team</p>"
+	                    + "</body>"
+	                    + "</html>",
+	                username, // Student Name
+	                existingInstitute,
+	                email, // Student Username (email)
+	                psw, // Student Password
+	                existingInstitute
+	            );
+
+	            if (institutionname != null && !institutionname.isEmpty()) {
+	                try {
+	                    List<String> emailList = new ArrayList<>();
+	                    emailList.add(email);
+	                    emailservice.sendHtmlEmailAsync(
+	                        institutionname, 
+	                        emailList,
+	                        cc, 
+	                        bcc, 
+	                        "Welcome to LearnHub - Start Your Learning Journey!", 
+	                        body
+	                    );
+	                } catch (Exception e) {
+	                    logger.error("Error sending mail: " + e.getMessage());
+	                }
+	            }
+
 	          return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	            }else {
 	            	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error getting role\"}");

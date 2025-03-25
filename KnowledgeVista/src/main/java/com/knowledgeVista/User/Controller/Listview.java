@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
+import com.knowledgeVista.Email.EmailService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.MuserRequiredDto;
@@ -41,6 +42,8 @@ public class Listview {
 	private MuserApprovalPageable approvalpage;
 	@Autowired
 	private BatchRepository batchrepo;
+	@Autowired
+	private EmailService emailservice;
 
 	 private static final Logger logger = LoggerFactory.getLogger(Listview.class);
 
@@ -462,6 +465,54 @@ public ResponseEntity<?>ApproveUser(Long id,String token){
 				muser.setSkills(approval.getSkills());
 				muser.setCountryCode(approval.getCountryCode());
 				muserrepositories.save(muser);
+				List<String> bcc = null;
+				List<String> cc = null;
+				String institutionname = approval.getInstitutionName();
+
+				String body = String.format(
+				    "<html>"
+				        + "<body>"
+				        + "<h2>Welcome to LearnHub Trainer Portal!</h2>"
+				        + "<p>Dear %s,</p>"
+				        + "<p>We are thrilled to have you as a trainer at LearnHub. Your expertise will help shape the learning journey of many students.</p>"
+				        + "<p>Here are your login credentials:</p>"
+				        + "<ul>"
+				        + "<li><strong>Username (Email):</strong> %s</li>"
+				        + "<li><strong>Password:</strong> %s</li>"
+				        + "</ul>"
+				        + "<p>As a trainer, you can:</p>"
+				        + "<ul>"
+				        + "<li>Create and manage courses.</li>"
+				        + "<li>Interact with students and address their queries.</li>"
+				        + "<li>Track student progress and provide valuable feedback.</li>"
+				        + "</ul>"
+				        + "<p>If you need any assistance, our support team is here to help.</p>"
+				        + "<p>We look forward to your contribution in making learning more impactful!</p>"
+				        + "<p>Best Regards,<br>LearnHub Team</p>"
+				        + "</body>"
+				        + "</html>",
+				        approval.getUsername(), // Trainer Name
+				    approval.getEmail(), // Trainer Username (email)
+				    approval.getPsw() // Trainer Password
+				);
+
+				if (institutionname != null && !institutionname.isEmpty()) {
+				    try {
+				        List<String> emailList = new ArrayList<>();
+				        emailList.add(approval.getEmail());
+				        emailservice.sendHtmlEmailAsync(
+				            institutionname, 
+				            emailList,
+				            cc, 
+				            bcc, 
+				            "Welcome to LearnHub - Trainer Access Granted!", 
+				            body
+				        );
+				    } catch (Exception e) {
+				        logger.error("Error sending mail: " + e.getMessage());
+				    }
+				}
+
 				MuserApproval.deleteById(id);
 				return ResponseEntity.ok("user Approved Successfully");
 			}else {

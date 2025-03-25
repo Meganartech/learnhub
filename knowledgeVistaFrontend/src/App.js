@@ -114,6 +114,7 @@ import ViewModuleTest from "./course/ModuleTest.js/ViewModuleTest.js";
 import AddMoreMQuestion from "./course/ModuleTest.js/AddMoreMQuestion.js";
 import EditModuleQuestion from "./course/ModuleTest.js/EditModuleQuestion.js";
 import SheduleModuleTest from "./course/ModuleTest.js/SheduleModuleTest.js";
+import StartModuleTest from "./course/ModuleTest.js/StartModuleTest.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -725,6 +726,16 @@ function App() {
                     authorizationRequired={true}
                   >
                     <EditModuleQuestion/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/ModuleTest/:mtestName/:mtestId/:batchName/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <StartModuleTest/>
                   </PrivateRoute>
                 </ErrorBoundary>
               }
