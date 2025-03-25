@@ -338,10 +338,14 @@ public class BatchService {
     public ResponseEntity<?>GetBatch(Long id,String token){
     	try {
 	         String email = jwtUtil.getUsernameFromToken(token);
+	         String role= jwtUtil.getRoleFromToken(token);
+	         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
+	        	 
 	         String institutionName=muserRepo.findinstitutionByEmail(email);
 	         if(institutionName==null) {
 	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
 	         }
+	         
 	        Optional<BatchDto> opbatch=batchrepo.findBatchDtoByIdAndInstitutionName(id, institutionName);
 	        if(opbatch.isPresent()) {
 	        	BatchDto batch=opbatch.get();
@@ -351,7 +355,9 @@ public class BatchService {
 	        }else {
 	        	return ResponseEntity.status(HttpStatus.NO_CONTENT).body("batch Not Found");
 	        }
-	         
+	         }else {return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Stdents Cannot Access This Page");
+	  	       
+	         } 
     	} catch (Exception e) {
             logger.error("Exception occurred while deleting batch with ID " + id, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while Getting the batch.");

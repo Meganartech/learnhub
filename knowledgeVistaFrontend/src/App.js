@@ -1137,7 +1137,7 @@ function App() {
               path="/batch/addNew"
               element={
                 <ErrorBoundary>
-                  <PrivateRoute authorizationRequired={true} onlyadmin={true}>
+                  <PrivateRoute authorizationRequired={true} authenticationRequired={true}>
                     <CreateBatch />
                   </PrivateRoute>
                 </ErrorBoundary>
@@ -1197,7 +1197,7 @@ function App() {
               path="/batch/viewall/:courseId"
               element={
                 <ErrorBoundary>
-                  <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
                     <ViewAllBAtchForCourse/>
                   </PrivateRoute>
                 </ErrorBoundary>
@@ -1207,7 +1207,7 @@ function App() {
               path="/batch/Edit/:id"
               element={
                 <ErrorBoundary>
-                  <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
                     <EditBatch />
                   </PrivateRoute>
                 </ErrorBoundary>

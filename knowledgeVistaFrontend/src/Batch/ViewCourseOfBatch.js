@@ -110,7 +110,7 @@ const ViewCourseOfBatch = () => {
       <div>   
         <div className="student-card-container">
 
-  <div className="card pointer student-card " onClick={() => navigate(`/batch/ViewStudents/${batchTitle}/${batchid}`)}>
+  <div className="card pointer student-card " onClick={() => navigate(`/payment/transactionHitory`)}>
     <div className="card-body">
       <div className="student-header">
           <h4>Revenue</h4>
