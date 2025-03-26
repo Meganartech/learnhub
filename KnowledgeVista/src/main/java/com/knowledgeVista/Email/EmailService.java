@@ -3,10 +3,8 @@ package com.knowledgeVista.Email;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,76 +20,40 @@ public class EmailService {
 	  
 	  @Autowired
 	  private MailkeysRepo mailkeyrepo;
+	  @Value("${spring.mail.host}")
+	    private String defaultHost;
+
+	    @Value("${spring.mail.port}")
+	    private int defaultPort;
+
+	    @Value("${spring.mail.username}")
+	    private String defaultUsername;
+
+	    @Value("${spring.mail.password}")
+	    private String defaultPassword;
 	  
-	  public ResponseEntity<?> sendHtmlEmail(String InstitutionName,List<String> to, List<String> cc, List<String> bcc, String subject, String body) throws MessagingException {
-		 System.out.println("hereee..in send mail");
-		  JavaMailSender mailSender = getJavaMailSender(InstitutionName);
-          if(mailSender==null) {
-        	  System.out.println("hereee..in mailsender not found mail");
-        	  return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-          }
-		  MimeMessage mimeMessage = mailSender.createMimeMessage();
-	        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-	        String from= this.getfrom(InstitutionName);
-	        if(from==null) {
-	        	 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-	        }
-           helper.setFrom(from);
-	        if (to != null && !to.isEmpty()) {
-	            helper.setTo(to.toArray(new String[0]));
-	        }
-
-	        if (cc != null && !cc.isEmpty()) {
-	            helper.setCc(cc.toArray(new String[0]));
-	        }
-
-	        if (bcc != null && !bcc.isEmpty()) {
-	            helper.setBcc(bcc.toArray(new String[0]));
-	        }
-
-	        helper.setSubject(subject);
-	        helper.setText(body, true);  
-
-	        mailSender.send(mimeMessage);
-	        System.out.println("Sendeded"+to);
-	       return ResponseEntity.ok("Mail Sent");
-	    }
-	  @Async // This makes the method run asynchronously
+	  	  @Async // This makes the method run asynchronously
 	    public void sendHtmlEmailAsync(String institutionName, List<String> to, List<String> cc, List<String> bcc, String subject, String body) throws MessagingException {
-	        System.out.println("hereee..in send mail");
-
+	     
 	        JavaMailSender mailSender = getJavaMailSender(institutionName);
-	        if (mailSender == null) {
-	            System.out.println("hereee..in mailsender not found mail");
-	            return; // Since it's async, we just return instead of sending a ResponseEntity
-	        }
-
 	        MimeMessage mimeMessage = mailSender.createMimeMessage();
 	        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 	        String from = this.getfrom(institutionName);
-	        if (from == null) {
-	            return;
-	        }
-
 	        helper.setFrom(from);
-
 	        if (to != null && !to.isEmpty()) {
 	            helper.setTo(to.toArray(new String[0]));
 	        }
-
 	        if (cc != null && !cc.isEmpty()) {
 	            helper.setCc(cc.toArray(new String[0]));
 	        }
-
 	        if (bcc != null && !bcc.isEmpty()) {
 	            helper.setBcc(bcc.toArray(new String[0]));
 	        }
-
 	        helper.setSubject(subject);
 	        helper.setText(body, true);  
 
 	        mailSender.send(mimeMessage);
-	        System.out.println("Sent email to: " + to);
+	        System.out.println("Sent email to: " + to); 
 	    }
 	  public String getfrom(String institution) {
 		  Optional<Mailkeys> opkeys = mailkeyrepo.FindMailkeyByInstituiton(institution);
@@ -99,32 +61,35 @@ public class EmailService {
 			  Mailkeys keys =opkeys.get();
 			  return keys.getEmailid();
 		  } else {
-			    return null;   
+			    return defaultUsername;   
 			    }
 	  }
 	  
 	  public JavaMailSender getJavaMailSender(String institution) {
-		  Optional<Mailkeys> opkeys = mailkeyrepo.FindMailkeyByInstituiton(institution);
-		  if(opkeys.isPresent()) {
-			  Mailkeys keys =opkeys.get();
-			  JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		        mailSender.setHost(keys.getHostname()); // Set host from Mailkeys
-		        mailSender.setPort(Integer.parseInt(keys.getPort())); // Set port
-		        
-		        mailSender.setUsername(keys.getEmailid()); // Set username (email ID)
-		        mailSender.setPassword(keys.getPassword()); // Set password
+	        Optional<Mailkeys> opkeys = mailkeyrepo.FindMailkeyByInstituiton(institution);
+	        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-		        // Optional properties for TLS/SSL, protocol, etc.
-		        Properties props = mailSender.getJavaMailProperties();
-		        props.put("mail.transport.protocol", "smtp");
-		        props.put("mail.smtp.auth", "true");
-		        props.put("mail.smtp.starttls.enable", "true");
-		        props.put("mail.debug", "true"); // Optional, set to true for debugging
-		        
-		        return mailSender;  // Return the configured mail sender
-		    } else {
-		    return null;   
-		    }
-	  }
-	  
+	        if (opkeys.isPresent()) {
+	            Mailkeys keys = opkeys.get();
+	            mailSender.setHost(keys.getHostname());
+	            mailSender.setPort(Integer.parseInt(keys.getPort()));
+	            mailSender.setUsername(keys.getEmailid());
+	            mailSender.setPassword(keys.getPassword());
+	        } else {
+	            // ✅ Fallback to default application.properties values
+	            mailSender.setHost(defaultHost);
+	            mailSender.setPort(defaultPort);
+	            mailSender.setUsername(defaultUsername);
+	            mailSender.setPassword(defaultPassword);
+	        }
+
+	        // ✅ Common mail properties (TLS, SMTP authentication)
+	        Properties props = mailSender.getJavaMailProperties();
+	        props.put("mail.transport.protocol", "smtp");
+	        props.put("mail.smtp.auth", "true");
+	        props.put("mail.smtp.starttls.enable", "true");
+	        props.put("mail.debug", "true"); // Optional, set to true for debugging
+
+	        return mailSender;
+	    }
 }

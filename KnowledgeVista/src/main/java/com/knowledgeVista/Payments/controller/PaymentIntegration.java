@@ -32,6 +32,8 @@ import com.stripe.Stripe;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Service
 public class PaymentIntegration {
 
@@ -83,7 +85,7 @@ public class PaymentIntegration {
 			return null; // or throw an exception
 		}
 	}
-	public ResponseEntity<String> updateStripepaymentid(Map<String, String> requestData, String token) {
+	public ResponseEntity<String> updateStripepaymentid(HttpServletRequest request, Map<String, String> requestData, String token) {
 		    try {
 		        String sessionId = requestData.get("sessionId"); // You have the sessionId, not paymentId
 		        if (sessionId == null) {
@@ -132,7 +134,7 @@ public class PaymentIntegration {
 
 		             Orderuser  savedorder=   ordertablerepo.save(orderUser);
 
-		             return this.SetBatchToUser(savedorder);
+		             return this.SetBatchToUser(request,savedorder);
 		            } else {
 		                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Payment details not found");
 		            }
@@ -149,7 +151,7 @@ public class PaymentIntegration {
 		}
 
 	
-	public ResponseEntity<String> updatePaymentId(Map<String, String> requestData, String token) {
+	public ResponseEntity<String> updatePaymentId(HttpServletRequest request, Map<String, String> requestData, String token) {
 		try {
 			String orderId = requestData.get("orderId");
 			String paymentId = requestData.get("paymentId");
@@ -182,7 +184,7 @@ public class PaymentIntegration {
 
 					Orderuser savedorder = ordertablerepo.save(orderUser); // Update the OrderUser entity with the
 																			// paymentId 
-					return SetBatchToUser(savedorder);
+					return SetBatchToUser(request ,savedorder);
 
 
 				} else {
@@ -202,7 +204,7 @@ public class PaymentIntegration {
 		}
 	}
 
-private ResponseEntity<String> SetBatchToUser(Orderuser savedorder){
+private ResponseEntity<String> SetBatchToUser(HttpServletRequest request, Orderuser savedorder){
 	Optional<Muser> optionalUser = muserRepository.findById(savedorder.getUserId());
 	if(savedorder.getBatchId()==null) {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("batchId Not Found");
@@ -240,7 +242,7 @@ private ResponseEntity<String> SetBatchToUser(Orderuser savedorder){
 			           .filter(course -> !user.getCourses().contains(course)) // Filter out existing courses
 			           .toList() // Collect remaining courses into a list
 			);
-    sendEnrollmentMail(courses, batch, user);
+    sendEnrollmentMail(request,courses, batch, user);
 			muserRepository.save(user);
 		String courseUrl = batch.getBatchUrl();
 		String heading = " Payment Credited !";
@@ -278,10 +280,22 @@ private ResponseEntity<String> SetBatchToUser(Orderuser savedorder){
 	
 }
 
-public void sendEnrollmentMail(List<CourseDetail> courses,Batch batch,Muser student) {
+public void sendEnrollmentMail(HttpServletRequest request,List<CourseDetail> courses,Batch batch,Muser student) {
 	List<String> bcc = null;
 	List<String> cc = null;
 	String institutionname = student.getInstitutionName();
+       String domain = request.getHeader("origin"); // Extracts the domain dynamically
+
+         // Fallback if "Origin" header is not present (e.g., direct backend requests)
+         if (domain == null || domain.isEmpty()) {
+             domain = request.getScheme() + "://" + request.getServerName();
+             if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+                 domain += ":" + request.getServerPort();
+             }
+         }
+
+         // Construct the Sign-in Link
+         String signInLink = domain + "/login";
 
 	String body = String.format(
 	    "<html>"
@@ -295,12 +309,15 @@ public void sendEnrollmentMail(List<CourseDetail> courses,Batch batch,Muser stud
 	        + "<p>To get started:</p>"
 	        + "<ul>"
 	        + "<li>Log in to your LearnHub account.</li>"
-	        + "<li>Access your enrolled courses.</li>"
+	        + "<li>Access your enrolled courses in My Courses Tab.</li>"
 	        + "<li>Engage with trainers and fellow students.</li>"
 	        + "<li>Complete assignments and track your progress.</li>"
 	        + "</ul>"
 	        + "<p>If you need any assistance, our support team is here to help.</p>"
-	        + "<p>We are excited to have you on board and wish you success in your learning journey!</p>"
+
+
+	                  + "<p>Click the link below to sign in:</p>"
+	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
 	        + "<p>Best Regards,<br>LearnHub Team</p>"
 	        + "</body>"
 	        + "</html>",

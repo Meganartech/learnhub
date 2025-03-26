@@ -11,7 +11,6 @@ const CourseCreation = () => {
   const token = sessionStorage.getItem("token");
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
-  const [nextclick, setnextclick] = useState(false);
   const [installmentData, setInstallmentData] = useState([]);
   const [durations, setDurations] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); 
@@ -305,8 +304,12 @@ const CourseCreation = () => {
         }));
       });
   };
-  const handlenextclick = (e) => {
-    e.preventDefault();
+ 
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    
+    try {
+      e.preventDefault();
     let hasErrors = false;
     const requiredFields = [
       "courseName",
@@ -350,13 +353,6 @@ const CourseCreation = () => {
     }));
    }
     if (!hasErrors) {
-      setnextclick(true);
-    }
-  };
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
       // Create a FormData object to send the form data
       const formDataToSend = new FormData();
       formDataToSend.append("courseName", formData.courseName.trim());
@@ -392,6 +388,7 @@ const CourseCreation = () => {
         const { message, courseId, coursename } = reply;
         navigate(`/course/Addlesson/${coursename}/${courseId}`)
       }
+    }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         MySwal.fire({
@@ -429,19 +426,7 @@ const CourseCreation = () => {
   <div className="page-header"></div>
   <div className="card">
     <div className="card-body">
-      {nextclick ? (
-        <Partialpaymentsetting
-          enablechecked={enablechecked}
-          setenablechecked={setenablechecked}
-          handleSubmit={handleSubmit}
-          setnextclick={setnextclick}
-          courseamount={formData.courseAmount}
-          setDurations={setDurations}
-          durations={durations}
-          installmentData={installmentData}
-          setInstallmentData={setInstallmentData}
-        />
-      ) : (
+    
         <div className="row">
           <div className="col-12">
          <div className="navigateheaders">
@@ -697,13 +682,13 @@ const CourseCreation = () => {
               <button className="btn btn-secondary" type="button" onClick={() => { navigate(-1); }}>
                 Cancel
               </button>
-              <button className="btn btn-primary" onClick={handlenextclick}>
-                Next
+              <button className="btn btn-primary" onClick={handleSubmit}>
+                Submit
               </button>
             </div>
           </div>
         </div>
-      )}
+      
     </div>
   </div>
 </div>

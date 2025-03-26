@@ -621,8 +621,12 @@ public class LicenseController {
 					updateData.setLicencestartdate(startdate);
 					updateData.setLicenceEndDate(endDate);
 					updateData.setIsLicenseExpired(false);
+					   try {
 					restTemplate.put(apiurl3, updateData, String.class);
-
+					   }catch (Exception e) {
+						logger.error("error in CustomerLeads"+ e);
+						System.out.println("error At Customer Leads" +e);
+					}
 					String apiurl4 = baseUrl + "/Developer/CustomerDownload/" + email;
 					Customer_downloads custdown = new Customer_downloads();
 					custdown.setCountryCode(user.getCountryCode());
@@ -633,8 +637,12 @@ public class LicenseController {
 					custdown.setStudentCount(StudentCount);
 					custdown.setTrainerCount(TrainerCount);
 					custdown.setVersion(version);
-
+                     try {
 					restTemplate.put(apiurl4, updateData, String.class);
+                     }catch (Exception e) {
+						logger.error("error At Customer Doumloads"+e);
+						System.out.println("error At Customer Doumloads"+e);
+					}
 
 //----------------------------------------CustomerLeads---------------------------
 

@@ -28,6 +28,8 @@ import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Service
 public class Listview {
 	@Autowired
@@ -436,7 +438,7 @@ public ResponseEntity<?>RejectUser(Long id,String token){
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
-public ResponseEntity<?>ApproveUser(Long id,String token){
+public ResponseEntity<?>ApproveUser(HttpServletRequest request,Long id,String token){
 	try{
 		if (!jwtUtil.validateToken(token)) {
 			  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -468,7 +470,18 @@ public ResponseEntity<?>ApproveUser(Long id,String token){
 				List<String> bcc = null;
 				List<String> cc = null;
 				String institutionname = approval.getInstitutionName();
+				 String domain = request.getHeader("origin"); // Extracts the domain dynamically
 
+		          // Fallback if "Origin" header is not present (e.g., direct backend requests)
+		          if (domain == null || domain.isEmpty()) {
+		              domain = request.getScheme() + "://" + request.getServerName();
+		              if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+		                  domain += ":" + request.getServerPort();
+		              }
+		          }
+
+		          // Construct the Sign-in Link
+		          String signInLink = domain + "/login";
 				String body = String.format(
 				    "<html>"
 				        + "<body>"
@@ -488,6 +501,8 @@ public ResponseEntity<?>ApproveUser(Long id,String token){
 				        + "</ul>"
 				        + "<p>If you need any assistance, our support team is here to help.</p>"
 				        + "<p>We look forward to your contribution in making learning more impactful!</p>"
+	                  + "<p>Click the link below to sign in:</p>"
+	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
 				        + "<p>Best Regards,<br>LearnHub Team</p>"
 				        + "</body>"
 				        + "</html>",

@@ -24,6 +24,7 @@ import com.knowledgeVista.License.LicenseController;
 import com.knowledgeVista.License.Madmin_Licence;
 import com.knowledgeVista.License.mAdminLicenceRepo;
 import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.MuserAddInfoDto;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.MuserProfileDTO;
 import com.knowledgeVista.User.MuserRequiredDto;
@@ -33,6 +34,8 @@ import com.knowledgeVista.User.Approvals.MuserApprovals;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class MserRegistrationController {
@@ -68,7 +71,7 @@ private EmailService emailservice;
 		 return muserrepositories.countByRoleName("ADMIN");
 	 }
 
-	public ResponseEntity<?> registerAdmin( String username, String psw, String email, String institutionName, LocalDate dob,String role,
+	public ResponseEntity<?> registerAdmin(HttpServletRequest request, String username, String psw, String email, String institutionName, LocalDate dob,String role,
 	                                         String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode) {
 	    try {
 	    	Long count=muserrepositories.count();
@@ -130,44 +133,61 @@ private EmailService emailservice;
 	          List<String> cc = null;
 	          String institutionname = institutionName;
 
+	          String domain = request.getHeader("origin"); // Extracts the domain dynamically
+
+	          // Fallback if "Origin" header is not present (e.g., direct backend requests)
+	          if (domain == null || domain.isEmpty()) {
+	              domain = request.getScheme() + "://" + request.getServerName();
+	              if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+	                  domain += ":" + request.getServerPort();
+	              }
+	          }
+
+	          // Construct the Sign-in Link
+	          String signInLink = domain + "/login";
+
+	          // Email Body
 	          String body = String.format(
-	        		    "<html>"
-	        		        + "<body>"
-	        		        + "<h2>Welcome to LearnHub Admin Portal!</h2>"
-	        		        + "<p>Dear %s,</p>"
-	        		        + "<p>We are excited to welcome you as an administrator at LearnHub.</p>"
-	        		        + "<p>Here are your login credentials:</p>"
-	        		        + "<ul>"
-	        		        + "<li><strong>Username (Email):</strong> %s</li>"
-	        		        + "<li><strong>Password:</strong> %s</li>"
-	        		        + "</ul>"
-	        		        + "<p>With your admin access, you can:</p>"
-	        		        + "<ul>"
-	        		        + "<li>Add and manage courses.</li>"
-	        		        + "<li>Add and manage Student and Trainers.</li>"
-	        		        + "<li>Approve the Registered Trainer.</li>"
-	        		        + "<li>Allot Courses For Trainers .</li>"
-	        		        + "<li>Oversee Revenue  Details.</li>"
-	        		        + "<li>Oversee student enrollments.</li>"
-	        		        + "<li>Update course content.</li>"
-	        		        + "<li>Support students in their learning journey.</li>"
-	        		        + "<li>And Many More.....</li>"
-	        		        + "</ul>"
-	        		        + "<p>If you need any assistance, our support team is always here to help.</p>"
-	        		        + "<p>We appreciate your dedication and look forward to a great collaboration!</p>"
-	        		        + "<p>Best Regards,<br>LearnHub Team</p>"
-	        		        + "</body>"
-	        		        + "</html>",
-	        		    user.getUsername(), // Admin Name
-	        		    user.getEmail(), // Admin Username (email)
-	        		    psw // Admin Password
-	        		);
+	              "<html>"
+	                  + "<body>"
+	                  + "<h2>Welcome to LearnHub Admin Portal!</h2>"
+	                  + "<p>Dear %s,</p>"
+	                  + "<p>We are excited to welcome you as an administrator at LearnHub.</p>"
+	                  + "<p>Here are your login credentials:</p>"
+	                  + "<ul>"
+	                  + "<li><strong>Username (Email):</strong> %s</li>"
+	                  + "<li><strong>Password:</strong> %s</li>"
+	                  + "</ul>"
+	                  + "<p>With your admin access, you can:</p>"
+	                  + "<ul>"
+	                  + "<li>Add and manage courses.</li>"
+	                  + "<li>Add and manage Student and Trainers.</li>"
+	                  + "<li>Approve the Registered Trainer.</li>"
+	                  + "<li>Allot Courses For Trainers.</li>"
+	                  + "<li>Oversee Revenue Details.</li>"
+	                  + "<li>Oversee student enrollments.</li>"
+	                  + "<li>Update course content.</li>"
+	                  + "<li>Support students in their learning journey.</li>"
+	                  + "<li>And Many More.....</li>"
+	                  + "</ul>"
+	                  + "<p>If you need any assistance, our support team is always here to help.</p>"
+	                  + "<p>Click the link below to sign in:</p>"
+	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
+	                  + "<p>We appreciate your dedication and look forward to a great collaboration!</p>"
+	                  + "<p>Best Regards,<br>LearnHub Team</p>"
+	                  + "</body>"
+	                  + "</html>",
+	              user.getUsername(), // Admin Name
+	              user.getEmail(), // Admin Username (email)
+	              psw // Admin Password
+	          );
 
 
 	          if (institutionname != null && !institutionname.isEmpty()) {
 	              try {
 	            	  List<String> emailList = new ArrayList<>();
 	            	  emailList.add(email);
+	            	  System.out.println("sending.."+email);
 	                  emailservice.sendHtmlEmailAsync(
 	                      institutionname, 
 	                      emailList,
@@ -177,6 +197,7 @@ private EmailService emailservice;
 	                      body
 	                  );
 	              } catch (Exception e) {
+	            	  System.out.println("cant send email"+e.getMessage());
 	                  logger.error("Error sending mail: " + e.getMessage());
 	              }
 	          }
@@ -225,7 +246,7 @@ private EmailService emailservice;
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
 	    }
 	}
-public ResponseEntity<?>RegisterStudent(String username, String psw, String email,  LocalDate dob,String role,
+public ResponseEntity<?>RegisterStudent(HttpServletRequest request,String username, String psw, String email,  LocalDate dob,String role,
 	                                         String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode){
 	try {
 		if(!environment.equals("VPS")) {
@@ -284,13 +305,24 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	            List<String> bcc = null;
 	            List<String> cc = null;
 	            String institutionname = existingInstitute;
+	            String domain = request.getHeader("origin"); // Extracts the domain dynamically
 
+		          // Fallback if "Origin" header is not present (e.g., direct backend requests)
+		          if (domain == null || domain.isEmpty()) {
+		              domain = request.getScheme() + "://" + request.getServerName();
+		              if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+		                  domain += ":" + request.getServerPort();
+		              }
+		          }
+
+		          // Construct the Sign-in Link
+		          String signInLink = domain + "/login";
 	            String body = String.format(
 	                "<html>"
 	                    + "<body>"
 	                    + "<h2>Welcome to LearnHub!</h2>"
 	                    + "<p>Dear %s,</p>"
-	                    + "<p>We are excited to have you on board at %s, your gateway to knowledge and growth.</p>"
+	                    + "<p>We are excited to have you on board at LearnHub, your gateway to knowledge and growth.</p>"
 	                    + "<p>Here are your login credentials to access your courses:</p>"
 	                    + "<ul>"
 	                    + "<li><strong>Username (Email):</strong> %s</li>"
@@ -298,15 +330,15 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	                    + "</ul>"
 	                    + "<p>Start exploring your enrolled courses, engage with trainers, and enhance your learning experience.</p>"
 	                    + "<p>If you need any support, feel free to reach out to our help desk.</p>"
+	                  + "<p>Click the link below to sign in:</p>"
+	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
 	                    + "<p>Happy Learning!</p>"
-	                    + "<p>Best Regards,<br>%s Team</p>"
+	                    + "<p>Best Regards,<br>LearnHub Team</p>"
 	                    + "</body>"
 	                    + "</html>",
 	                username, // Student Name
-	                existingInstitute,
 	                email, // Student Username (email)
-	                psw, // Student Password
-	                existingInstitute
+	                psw // Student Password
 	            );
 
 	            if (institutionname != null && !institutionname.isEmpty()) {
@@ -317,7 +349,7 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	                        institutionname, 
 	                        emailList,
 	                        cc, 
-	                        bcc, 
+	                        bcc,  
 	                        "Welcome to LearnHub - Start Your Learning Journey!", 
 	                        body
 	                    );
@@ -325,6 +357,7 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	                    logger.error("Error sending mail: " + e.getMessage());
 	                }
 	            }
+	            System.out.println("hii");
 
 	          return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	            }else {
@@ -338,77 +371,132 @@ public ResponseEntity<?>RegisterStudent(String username, String psw, String emai
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
 	    }
 }
+public ResponseEntity<?> RegisterTrainer(HttpServletRequest request, String username, String psw, String email,  
+        LocalDate dob, String role, String phone, String skills, MultipartFile profile, 
+        Boolean isActive, String countryCode) {
+    try {
+        if (!environment.equals("VPS")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot Register as Trainer in Sas Environment");
+        }
+       MuserAddInfoDto adminInfo = muserrepositories.getAdminInfo(email);
+System.out.println(adminInfo.toString());
+        if (adminInfo.getAdminCount() == 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Institution Found");
+        }
+        if (adminInfo.getAdminCount() > 1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot Register as Trainer in Sas Environment");
+        }
+        if (adminInfo.getInstitutionName() == null || adminInfo.getInstitutionName().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Institution not Found");
+        } 
+        if (adminInfo.isEmailExists()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
+        }
 
-public ResponseEntity<?>RegisterTrainer(String username, String psw, String email,  LocalDate dob,String role,
-        String phone, String skills, MultipartFile profile, Boolean isActive,String countryCode){
-try {
-if(!environment.equals("VPS")) {
-return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot Register as Trainer in Sas Environment");
-}
-Long admincount=muserrepositories.countByRoleName("ADMIN");
-if(admincount==0) {
-return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Institution Found");
-}
-if(admincount>1) {
-return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot Register as Trainer in Sas Environment");
-}
-Optional<Muser> existingUser = muserrepositories.findByEmail(email);
-
-String existingInstitute =muserrepositories.getInstitution("ADMIN");
-if(existingInstitute.isEmpty()) {
-return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("institution not Found");
-}
-
-if (existingUser.isPresent()) {
-return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
-} 
+        String adminEmail = adminInfo.getAdminEmail();
+        String existingInstitute = adminInfo.getInstitutionName();
 
 
-Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName("TRAINER");
-if(oproleUser.isPresent()) {
-MuserRoles roleuser=oproleUser.get();
-if (username == null || username.trim().isEmpty()) {
-    // Extract the part before '@' from the email
-    if (email != null && email.contains("@")) {
-        username = email.substring(0, email.indexOf("@"));
+        Optional<MuserRoles> oproleUser = muserrolerepository.findByRoleName("TRAINER");
+        if (oproleUser.isPresent()) {
+            MuserRoles roleuser = oproleUser.get();
+
+            if (username == null || username.trim().isEmpty()) {
+                // Extract the part before '@' from the email
+                if (email != null && email.contains("@")) {
+                    username = email.substring(0, email.indexOf("@"));
+                }
+            }
+
+            // Save trainer approval request
+            MuserApprovals user = new MuserApprovals();
+            user.setUsername(username);
+            user.setEmail(email);
+            user.setIsActive(isActive);
+            user.setPsw(psw);
+            user.setPhone(phone);
+            user.setDob(dob);
+            user.setSkills(skills);
+            user.setInstitutionName(existingInstitute);
+            user.setCountryCode(countryCode);	   
+            user.setRole(roleuser);     
+
+            if (profile != null && !profile.isEmpty()) {                
+                try {
+                    user.setProfile(profile.getBytes());
+                } catch (IOException e) {
+                    logger.error("Error processing profile image", e);
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("{\"message\": \"Error processing profile image\"}");
+                }
+            }
+
+            MuserApproval.save(user);
+
+            // Send Approval Email to Admin
+            sendApprovalEmail(request, adminEmail, user);
+
+            return ResponseEntity.ok().body("{\"message\": \"Trainer registration pending approval.\"}");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("{\"message\": \"Error getting role\"}");
+        }
+
+    } catch (Exception e) {
+        logger.error("Error registering trainer", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("{\"message\": \"Internal Server Error\"}");
     }
 }
-MuserApprovals user = new MuserApprovals();
-user.setUsername(username);
-user.setEmail(email);
-user.setIsActive(isActive);
-user.setPsw(psw);
-user.setPhone(phone);
-user.setDob(dob);
-user.setSkills(skills);
-user.setInstitutionName(existingInstitute);
-user.setCountryCode(countryCode);	   
-user.setRole(roleuser);     
+private void sendApprovalEmail(HttpServletRequest request, String adminEmail, MuserApprovals trainer) {
+    try {
+        // Extract domain dynamically
+        String domain = request.getHeader("origin");
+        if (domain == null || domain.isEmpty()) {
+            domain = request.getScheme() + "://" + request.getServerName();
+            if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+                domain += ":" + request.getServerPort();
+            }
+        }
 
-if (profile != null && !profile.isEmpty()) {                
-try {
-user.setProfile(profile.getBytes());
+        // Construct the Approvals Page Link
+        String approvalLink = domain + "/view/Approvals";
 
-} catch (IOException e) {
-e.printStackTrace();
-logger.error("", e);
-return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error compressing image\"}");
-}
-}
-MuserApproval.save(user);
-return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
-}else {
-return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error getting role\"}");
+        StringBuilder body = new StringBuilder();
+        body.append("<html><body>");
+        body.append("<h2>Trainer Approval Request</h2>");
+        body.append("<p>Dear Admin,</p>");
+        body.append("<p>A new trainer has registered and is awaiting your approval.</p>");
+        body.append("<p><strong>Trainer Details:</strong></p>");
+        body.append("<ul>");
+        body.append("<li><strong>Name:</strong> ").append(trainer.getUsername()).append("</li>");
+        body.append("<li><strong>Email:</strong> ").append(trainer.getEmail()).append("</li>");
+        body.append("<li><strong>Phone:</strong> ").append(trainer.getPhone()).append("</li>");
+        body.append("<li><strong>Skills:</strong> ").append(trainer.getSkills() != null ? trainer.getSkills() : "Not specified").append("</li>");
+        body.append("<li><strong>Date of Birth:</strong> ").append(trainer.getDob() != null ? trainer.getDob().toString() : "Not specified").append("</li>");
+        body.append("<li><strong>Institution:</strong> ").append(trainer.getInstitutionName()).append("</li>");
+        body.append("</ul>");
+        body.append("<p><a href='").append(approvalLink).append("' style='font-size:16px; color:blue;'>Review Approvals</a></p>");
+        body.append("<p>Best Regards,<br>LearnHub Team</p>");
+        body.append("</body></html>");
 
-}
 
-} catch (Exception e) {
-e.printStackTrace();
-logger.error("", e);
-return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Internal Server Error\"}");
-}
-}
+        List<String> addminEmailList=new ArrayList<String>();
+        addminEmailList.add(adminEmail);
+        emailservice.sendHtmlEmailAsync(
+            trainer.getInstitutionName(), 
+            addminEmailList,
+            null, 
+            null, 
+            "Trainer Approval Required - LearnHub", 
+            body.toString()
+        );
 
+        logger.info("Trainer approval email sent to Admin: " + adminEmail);
+    } catch (Exception e) {
+        logger.error("Error sending trainer approval email: " + e.getMessage());
+    }
+}
 
 
 	

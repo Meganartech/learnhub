@@ -47,10 +47,8 @@ import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.controller.QuestionController;
 import com.knowledgeVista.Course.Test.controller.Testcontroller;
 import com.knowledgeVista.Course.certificate.certificateController;
-import com.knowledgeVista.Course.moduleTest.ModuleTest;
 import com.knowledgeVista.Course.moduleTest.service.ModuleTestService;
 import com.knowledgeVista.Email.EmailController;
-import com.knowledgeVista.Email.EmailRequest;
 import com.knowledgeVista.Email.Mailkeys;
 import com.knowledgeVista.License.LicenceControllerSecond;
 import com.knowledgeVista.License.LicenseController;
@@ -83,7 +81,6 @@ import com.knowledgeVista.User.LabellingItems.controller.FooterDetailsController
 import com.knowledgeVista.User.LabellingItems.controller.LadellingitemController;
 import com.knowledgeVista.User.Usersettings.RoleDisplayController;
 import com.knowledgeVista.User.Usersettings.Role_display_name;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
@@ -541,13 +538,13 @@ public class FrontController {
 //		        }
 
 	@PostMapping("/buyCourse/payment")
-	public ResponseEntity<String> updatePaymentId(@RequestBody Map<String, String> requestData,
+	public ResponseEntity<String> updatePaymentId(HttpServletRequest request, @RequestBody Map<String, String> requestData,
 			@RequestHeader("Authorization") String token) {
 		if (paylist != null && activeProfile.equals("demo")) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 		} else {
-			return payment.updatePaymentId(requestData, token);
+			return payment.updatePaymentId(request,requestData, token);
 		}
 	}
 
@@ -563,13 +560,13 @@ public class FrontController {
 	}
 
 	@PostMapping("/buyCourse/updateStripepaymentid")
-	public ResponseEntity<String> updateStripepaymentid(@RequestBody Map<String, String> requestData,
+	public ResponseEntity<String> updateStripepaymentid(HttpServletRequest request ,@RequestBody Map<String, String> requestData,
 			@RequestHeader("Authorization") String token) {
 		if (paylist != null && activeProfile.equals("demo")) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 		} else {
-			return payment.updateStripepaymentid(requestData, token);
+			return payment.updateStripepaymentid( request ,requestData, token);
 		}
 	}
 
@@ -786,21 +783,21 @@ public class FrontController {
 
 //--------------------AddUser---------------------------
 	@PostMapping("/admin/addTrainer")
-	public ResponseEntity<?> addTrainer(@RequestParam(required = false) String username, @RequestParam String psw,
+	public ResponseEntity<?> addTrainer(HttpServletRequest request,@RequestParam(required = false) String username, @RequestParam String psw,
 			@RequestParam String email, @RequestParam(required = false) LocalDate dob, @RequestParam String phone,
 			@RequestParam(required = false) String skills, @RequestParam(required = false) MultipartFile profile,
 			@RequestParam Boolean isActive, @RequestParam(defaultValue = "+91") String countryCode,
 			@RequestHeader("Authorization") String token) {
-		return adduser.addTrainer(username, psw, email, dob, phone, skills, profile, isActive, countryCode, token);
+		return adduser.addTrainer(request,username, psw, email, dob, phone, skills, profile, isActive, countryCode, token);
 	}
 
 	@PostMapping("/admin/addStudent")
-	public ResponseEntity<?> addStudent(@RequestParam(required = false) String username, @RequestParam String psw,
+	public ResponseEntity<?> addStudent(HttpServletRequest request,@RequestParam(required = false) String username, @RequestParam String psw,
 			@RequestParam String email, @RequestParam(required = false) LocalDate dob, @RequestParam String phone,
 			@RequestParam(required = false) String skills, @RequestParam(required = false) MultipartFile profile,
 			@RequestParam Boolean isActive, @RequestParam(defaultValue = "+91") String countryCode,
 			@RequestHeader("Authorization") String token) {
-		return adduser.addStudent(username, psw, email, dob, phone, skills, profile, isActive, countryCode, token);
+		return adduser.addStudent(request,username, psw, email, dob, phone, skills, profile, isActive, countryCode, token);
 	}
 
 	@DeleteMapping("/admin/deactivate/trainer")
@@ -964,8 +961,8 @@ public class FrontController {
 	}
 
 	@PostMapping("/approve/User/{id}")
-	public ResponseEntity<?> approveUser(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-		return listview.ApproveUser(id, token);
+	public ResponseEntity<?> approveUser(HttpServletRequest request,@PathVariable Long id, @RequestHeader("Authorization") String token) {
+		return listview.ApproveUser(request,id, token);
 	}
 
 	@GetMapping("/search/users")
@@ -1073,12 +1070,12 @@ public class FrontController {
 
 //------------------------MuserRegistrationController------------------------------
 	@PostMapping("/Student/register")
-	public ResponseEntity<?> RegisterStudent(@RequestParam(required = false) String username, @RequestParam String psw,
+	public ResponseEntity<?> RegisterStudent(HttpServletRequest request,@RequestParam(required = false) String username, @RequestParam String psw,
 			@RequestParam String email, @RequestParam(required = false) LocalDate dob, @RequestParam String role,
 			@RequestParam String phone, @RequestParam(required = false) String skills,
 			@RequestParam(required = false) MultipartFile profile, @RequestParam Boolean isActive,
 			@RequestParam(defaultValue = "+91") String countryCode) {
-		return muserreg.RegisterStudent(username, psw, email, dob, role, phone, skills, profile, isActive, countryCode);
+		return muserreg.RegisterStudent(request,username, psw, email, dob, role, phone, skills, profile, isActive, countryCode);
 	}
 
 	@GetMapping("/count/admin")
@@ -1087,21 +1084,21 @@ public class FrontController {
 	}
 
 	@PostMapping("/Trainer/register")
-	public ResponseEntity<?> RegisterTrainer(@RequestParam(required = false) String username, @RequestParam String psw,
+	public ResponseEntity<?> RegisterTrainer(HttpServletRequest request ,@RequestParam(required = false) String username, @RequestParam String psw,
 			@RequestParam String email, @RequestParam(required = false) LocalDate dob, @RequestParam String role,
 			@RequestParam String phone, @RequestParam(required = false) String skills,
 			@RequestParam(required = false) MultipartFile profile, @RequestParam Boolean isActive,
 			@RequestParam(defaultValue = "+91") String countryCode) {
-		return muserreg.RegisterTrainer(username, psw, email, dob, role, phone, skills, profile, isActive, countryCode);
+		return muserreg.RegisterTrainer(request ,username, psw, email, dob, role, phone, skills, profile, isActive, countryCode);
 	}
 
 	@PostMapping("/admin/register")
-	public ResponseEntity<?> registerAdmin(@RequestParam(required = false) String username, @RequestParam String psw,
+	public ResponseEntity<?> registerAdmin(HttpServletRequest request,@RequestParam(required = false) String username, @RequestParam String psw,
 			@RequestParam String email, @RequestParam String institutionName,
 			@RequestParam(required = false) LocalDate dob, @RequestParam String role, @RequestParam String phone,
 			@RequestParam(required = false) String skills, @RequestParam(required = false) MultipartFile profile,
 			@RequestParam Boolean isActive, @RequestParam(defaultValue = "+91") String countryCode) {
-		return muserreg.registerAdmin(username, psw, email, institutionName, dob, role, phone, skills, profile,
+		return muserreg.registerAdmin(request,username, psw, email, institutionName, dob, role, phone, skills, profile,
 				isActive, countryCode);
 	}
 
@@ -1257,11 +1254,7 @@ public class FrontController {
 	}
 
 	// -------------------EMAIL CONTROLLER--------------------------
-	@PostMapping("/sendMail")
-	public ResponseEntity<?> sendMail(@RequestHeader("Authorization") String token,
-			@RequestBody EmailRequest emailRequest) {
-		return emailcontroller.sendMail(token, emailRequest);
-	}
+	
 
 	@GetMapping("/get/mailkeys")
 	public ResponseEntity<?> getMailkeys(@RequestHeader("Authorization") String token) {

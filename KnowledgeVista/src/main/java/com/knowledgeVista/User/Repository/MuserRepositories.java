@@ -14,6 +14,7 @@ import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Migration.MuserMigrationDto;
 import com.knowledgeVista.User.Muser;
+import com.knowledgeVista.User.MuserAddInfoDto;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.MuserProfileDTO;
 import com.knowledgeVista.User.MuserRequiredDto;
@@ -71,12 +72,24 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	@Query("SELECT u.institutionName FROM Muser u WHERE u.role.roleName = :rolename")
 	String getInstitution(String rolename);
 	
+	@Query("SELECT u.email FROM Muser u WHERE u.role.roleName = :rolename")
+	String getAdminEmailByRoleName(String rolename);
+	
 	@Query("SELECT u.email FROM Muser u WHERE u.userId=?1")
    String FindEmailByuserId(Long userId);
 	
 	@Query("SELECT u.institutionName FROM Muser u WHERE u.email = ?1")
   String findinstitutionByEmail(String email);
 	
+	@Query("SELECT new com.knowledgeVista.User.MuserAddInfoDto(" +
+		       "(SELECT COUNT(u) FROM Muser u WHERE u.role.roleName = 'ADMIN'), " +
+		       "(SELECT u.institutionName FROM Muser u WHERE u.role.roleName = 'ADMIN'), " +
+		       "(SELECT u.email FROM Muser u WHERE u.role.roleName = 'ADMIN'), " +
+		       "(CASE WHEN (COUNT(e) > 0) THEN true ELSE false END) " +
+		       ") FROM Muser u " +
+		       "LEFT JOIN Muser e ON e.email = :email")
+		MuserAddInfoDto getAdminInfo(@Param("email") String email);
+
 
 
 	 @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName) " +
@@ -160,8 +173,6 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	    @Query("SELECT isActive FROM Muser u WHERE u.role.roleName = :rolename  AND u.institutionName = :institutionname")
 	    Boolean getactiveResultByInstitutionName(@Param("rolename") String roleName, @Param("institutionname") String institutionName);
 
-//	    @Query("SELECT u.email FROM Muser u WHERE u.institutionName = :institutionname AND LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%'))")
-//	    List<String> findEmailsByEmailContainingIgnoreCase(@Param("email") String email,@Param("institutionname") String institution);
 
 	    @Query("SELECT new com.knowledgeVista.Batch.SearchDto(u.userId, u.username, 'EMAIL') " +
 	    	       "FROM Muser u " +

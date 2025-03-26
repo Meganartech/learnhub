@@ -23,6 +23,7 @@ import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 import io.jsonwebtoken.io.DecodingException;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @RestController
@@ -42,7 +43,7 @@ public class AddUsers {
 
 	 private static final Logger logger = LoggerFactory.getLogger(AddUsers.class);
 	 
-	 public ResponseEntity<?> addTrainer( String username, String psw,String email,
+	 public ResponseEntity<?> addTrainer(HttpServletRequest request, String username, String psw,String email,
 	          LocalDate dob, String phone, String skills, MultipartFile profile, Boolean isActive, String countryCode,String token) {
 	      try {
 	          // Validate the token
@@ -101,7 +102,18 @@ public class AddUsers {
 					List<String> bcc = null;
 					List<String> cc = null;
 					String institutionname =adding.getInstitutionName();
+					 String domain = request.getHeader("origin"); // Extracts the domain dynamically
 
+			          // Fallback if "Origin" header is not present (e.g., direct backend requests)
+			          if (domain == null || domain.isEmpty()) {
+			              domain = request.getScheme() + "://" + request.getServerName();
+			              if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+			                  domain += ":" + request.getServerPort();
+			              }
+			          }
+
+			          // Construct the Sign-in Link
+			          String signInLink = domain + "/login";
 					String body = String.format(
 					    "<html>"
 					        + "<body>"
@@ -121,6 +133,9 @@ public class AddUsers {
 					        +"<li>And Many More....</li>"
 					        + "</ul>"
 					        + "<p>If you need any assistance, our support team is here to help.</p>"
+
+	                  + "<p>Click the link below to sign in:</p>"
+	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
 					        + "<p>We look forward to your contribution in making learning more impactful!</p>"
 					        + "<p>Best Regards,<br>LearnHub Team</p>"
 					        + "</body>"
@@ -173,7 +188,7 @@ public class AddUsers {
 	  
 //===========================================ADMIN OR TRAINER -ADDING STUDENT======================================================	  
 	
-	  public ResponseEntity<?> addStudent(String username, String psw, String email,
+	  public ResponseEntity<?> addStudent(HttpServletRequest request,String username, String psw, String email,
 	          LocalDate dob,String phone, String skills,
 	           MultipartFile profile, Boolean isActive,String countryCode, String token) {
 	      try {
@@ -251,13 +266,24 @@ public class AddUsers {
 		       	     List<String> bcc = null;
 			            List<String> cc = null;
 			            String institutionname = instituiton;
+			            String domain = request.getHeader("origin"); // Extracts the domain dynamically
 
+				          // Fallback if "Origin" header is not present (e.g., direct backend requests)
+				          if (domain == null || domain.isEmpty()) {
+				              domain = request.getScheme() + "://" + request.getServerName();
+				              if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+				                  domain += ":" + request.getServerPort();
+				              }
+				          }
+
+				          // Construct the Sign-in Link
+				          String signInLink = domain + "/login";
 			            String body = String.format(
 			                "<html>"
 			                    + "<body>"
 			                    + "<h2>Welcome to LearnHub!</h2>"
 			                    + "<p>Dear %s,</p>"
-			                    + "<p>We are excited to have you on board at %s, your gateway to knowledge and growth.</p>"
+			                    + "<p>We are excited to have you on board at LearnHub, your gateway to knowledge and growth.</p>"
 			                    + "<p>Here are your login credentials to access your courses:</p>"
 			                    + "<ul>"
 			                    + "<li><strong>Username (Email):</strong> %s</li>"
@@ -265,15 +291,16 @@ public class AddUsers {
 			                    + "</ul>"
 			                    + "<p>Start exploring your enrolled courses, engage with trainers, and enhance your learning experience.</p>"
 			                    + "<p>If you need any support, feel free to reach out to our help desk.</p>"
+
+	                  + "<p>Click the link below to sign in:</p>"
+	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
 			                    + "<p>Happy Learning!</p>"
-			                    + "<p>Best Regards,<br>%s Team</p>"
+			                    + "<p>Best Regards,<br>LearnHub Team</p>"
 			                    + "</body>"
 			                    + "</html>",
-			                username, // Student Name
-			                instituiton,
+			                username, 
 			                email, // Student Username (email)
-			                psw, // Student Password
-			                instituiton
+			                psw
 			            );
 
 			            if (institutionname != null && !institutionname.isEmpty()) {
