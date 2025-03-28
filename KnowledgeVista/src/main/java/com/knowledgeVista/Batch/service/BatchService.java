@@ -35,7 +35,6 @@ import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Batch.Repo.PendingPaymentRepo;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto.courseIdNameImg;
-import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
@@ -59,7 +58,7 @@ public class BatchService {
 	private BatchPartPayRepo partayStructureRepo;
 	@Autowired
 	private PendingPaymentRepo pendingsRepo;
-	private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+	private static final Logger logger = LoggerFactory.getLogger(BatchService.class);
 
 	public List<Map<String, Object>> searchCourses(String courseName, String token) {
 		// Extract email from the JWT token

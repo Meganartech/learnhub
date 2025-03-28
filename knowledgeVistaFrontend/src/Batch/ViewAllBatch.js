@@ -79,13 +79,12 @@ const ViewAllBatch = () => {
     <div>
       <div className="page-header"></div>
       {batch.length > 0 ? (
-        <div className="row">
+        <div className="batch-container">
           {batch
             .slice()
             .reverse()
             .map((item) => (
-              <div className="col-md-6 col-xl-3 course" key={item.id}>
-                <div className="card mb-3">
+                <div className="batch mb-3 card" key={item.id}>
                   {item.batchImage ? (
                     <img
                       style={{ cursor: "pointer" }}
@@ -128,11 +127,12 @@ const ViewAllBatch = () => {
                      }}> {item.batchTitle}</h4>
                     </div>
                   )}
-                  <div className="card-body">
+                  <div className="card-body pt-2">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <h5
                       className="courseName"
                       title={item.batchTitle}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer",width:"200px"}}
                       onClick={(e) => {
                        navigate(`/batch/viewcourse/${item.batchTitle}/${item.batchId}`)
                       }}
@@ -155,6 +155,7 @@ const ViewAllBatch = () => {
                         <i className="fas fa-trash text-danger"></i>
                       </a>
                     </div>}
+                    </div>
                     <p title={item.course.join(", ")} className="batchlist">
                       <b>Courses &nbsp;:</b> {item.course.join(", ")}
                     </p>
@@ -199,7 +200,6 @@ const ViewAllBatch = () => {
                     </div>
                   </div>
                 </div>
-              </div>
             ))}
         </div>
       ) : (

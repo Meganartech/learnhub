@@ -32,6 +32,7 @@ import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
 import com.knowledgeVista.Batch.Weightage.service.weightageService;
 import com.knowledgeVista.Batch.service.BatchService;
+import com.knowledgeVista.Batch.service.BatchService2;
 import com.knowledgeVista.Batch.service.GradeService;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto;
@@ -196,6 +197,8 @@ public class FrontController {
 
 	@Autowired
 	private BatchService batchService;
+	@Autowired
+	private BatchService2 batchService2;
 	@Autowired
 	private QuizzService quizzService;
 	
@@ -1610,10 +1613,18 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			@RequestParam(value = "size", defaultValue = "10") int size, @RequestHeader("Authorization") String token) {
 		return batchService.searchBatchUserByAdminorTrainer(username, email, phone, dob, skills, page, size, token, batchId);
 	}
-@PostMapping("/Batch/Save/PartPayDetails")
-public ResponseEntity<?>SavePartPayDetails(@RequestParam Long batchId,@RequestBody List<BatchInstallmentdetails>installmentData,@RequestHeader("Authorization") String token){
-	return batchService.SavePartPay(batchId, installmentData, token);
-}
+
+//==========================================BAtchService2-----------------------------
+	@GetMapping("/user/GetBatches/{userId}") 
+	public ResponseEntity<?> getbatchesOfUser(
+	    @PathVariable Long userId, 
+	    @RequestParam int page, 
+	    @RequestParam int size, 
+	    @RequestHeader("Authorization") String token) {
+	    return batchService2.getAssignedBatches(token, userId, page, size);
+	}
+
+
 	// -------------------Attendance Service---------------
 
 	@GetMapping("/view/getAttendancAnalysis/{userId}/{batchId}")

@@ -11194,7 +11194,10 @@ height: 80vh !important;
 .text-primary {
   color: var(--primary) !important;
 }
-
+.text-blue{
+  font-weight:bold ;
+  color: #4680FE !important;
+}
 a.text-primary:hover,
 a.text-primary:focus {
   color: #004ef9 !important;
@@ -25470,15 +25473,34 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
 .img-div{
   border-radius: 0.25rem;
 }
-.course {
+.batch-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Auto adjusts based on screen size */
+  gap: 20px; /* Adds spacing between items */
+}
+.batch-container-small {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr ;
+  justify-items: start; /* Aligns items to the start */
+  align-items: start; /* Align items at the top */
+  gap: 10px;
+}
+.batch-small{
   transition: transform 0.3s ease; /* Smooth zoom effect */
-  width:280px !important;
-  max-height: 372px; /*Extra Added*/
+  width:200px !important;
+  max-height: 340px; /*Extra Added*/
   overflow: hidden;  /*Extra Added*/
 }
-/* .course .card{
-  width:280px
-} */
+.batch{
+  transition: transform 0.3s ease; /* Smooth zoom effect */
+  width:280px !important;
+  max-height: 360px; /*Extra Added*/
+  overflow: hidden;  /*Extra Added*/ 
+
+}
+
 .headandicon{
   display: flex;
   align-items: center;
@@ -26902,7 +26924,7 @@ margin-right:2px ;
 }
 .courseBatchSplit{
   display: grid;
-  height: 55vh;
+  height: 90vh;
   grid-template-columns: 1fr 5fr;
   gap:10px;
 }
@@ -26912,11 +26934,20 @@ margin-right:2px ;
   overflow-y: auto; 
   padding: 1rem;
 }
+.borderLine,
 .courseList span{
   padding: 0.5rem;
   border-bottom: 1px solid var(--lightgrey);
 }
 .batchView{
   height: 100%;
-  overflow-y: auto;
+}
+.head{
+  display: flex;
+  justify-content: space-between;
+}
+.card-img-top{
+  margin: 3px;
+  border-radius: 5px;
+  width: auto;
 }
