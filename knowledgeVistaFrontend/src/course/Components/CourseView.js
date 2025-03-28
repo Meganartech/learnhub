@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
@@ -14,18 +14,7 @@ const CourseView = ({ filteredCourses }) => {
   const role=sessionStorage.getItem("role");
   const navigate =useNavigate();
   const Currency=sessionStorage.getItem("Currency");
-  const[openselectgateway,setopenselectgateway]=useState(false)
-  const[orderData,setorderData]=useState({
-    userId:"",
-    courseId:"",
-    amount:"" ,
-    courseAmount:"",
-    coursename:"",
-    installment:"",
-    paytype:"",
-    paytypeL:"",
-    url:""
-})
+ 
   const handleClick = async (event, id, amount, url) => {
     event.preventDefault();
     if (amount === 0) {
@@ -87,9 +76,6 @@ const CourseView = ({ filteredCourses }) => {
         <div className="outerspinner active">
           <div className="spinner"></div>
         </div>
-      )}
-      {openselectgateway && (
-        <SelectPaymentGateway orderData={orderData} setorderData={setorderData} setopenselectgateway={setopenselectgateway}/>
       )}
       <div className="page-header"></div>
     

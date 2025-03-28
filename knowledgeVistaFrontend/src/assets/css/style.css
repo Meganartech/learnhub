@@ -23084,6 +23084,7 @@ pre[class*="language-"]:before {
   background-color: #fff;
   color: #535763;
   overflow-y:auto ;
+  overflow-x: hidden;
 }
 
 .pcoded-navbar.menu-light .header-logo {

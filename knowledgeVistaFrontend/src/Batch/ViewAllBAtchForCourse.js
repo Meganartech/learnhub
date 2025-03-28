@@ -12,7 +12,6 @@ const ViewAllBAtchForCourse = () => {
   const userId = sessionStorage.getItem("userid");
     const [submitting, setsubmitting] = useState(false);
     const token = sessionStorage.getItem("token");
-    const[paytypeState,setpaytypeState]=useState(0);//0->Full //1->PART
   const MySwal = withReactContent(Swal);
   const [batch, setbatch] = useState([]);
   const Currency = sessionStorage.getItem("Currency");
@@ -30,6 +29,7 @@ const ViewAllBAtchForCourse = () => {
   })
   const FetchOrderSummary = async (batchId, userId, paytype) => {
     try {
+      let selectedPayType=0;//0->Full //1->PART
       if (paytype === "PART") {
         const result = await MySwal.fire({
           title: "Select Payment Type",
@@ -41,9 +41,9 @@ const ViewAllBAtchForCourse = () => {
         });
   
         // Determine payment type based on user selection
-        const selectedPayType = result.isDismissed ? 1 : 0;
-  
-        setpaytypeState(selectedPayType);
+         selectedPayType = result.isDismissed ? 1 : 0;//0->Full //1->PART
+      
+      }
         setsubmitting(true);
   
         // Prepare request data
@@ -65,7 +65,7 @@ const ViewAllBAtchForCourse = () => {
         setorderData(response.data);
         console.log(response.data)
         setopenselectgateway(true);
-      }
+      
     } catch (error) {
       setsubmitting(false);
       setopenselectgateway(false);

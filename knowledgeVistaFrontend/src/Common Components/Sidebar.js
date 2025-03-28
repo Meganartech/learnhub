@@ -917,33 +917,6 @@ const [joinUrl,setjoinUrl]=useState();
                   </li>
                 </ul>
               </li>
-              {/* <li className="nav-item no-hasmenu ">
-                <a
-                  href="#"
-                  data-path="/batch/viewall"
-                  onClick={(e) => handleClick(e, "/batch/viewall")}
-                  className="nav-link has-ripple"
-                >
-                  <span className="pcoded-micon">
-                    <i className="fa-solid fa-object-group"></i>
-                  </span>
-                  <span className="pcoded-mtext">Batches</span>
-                </a>
-              </li> */}
-             
-             {/* <li className="nav-item no-hasmenu ">
-                <a
-                  href="#"
-                  data-path="/MyBatches"
-                  onClick={(e) => handleClick(e, "/MyBatches")}
-                  className="nav-link has-ripple"
-                >
-                  <span className="pcoded-micon">
-                  <i className="fa-solid fa-layer-group"></i>
-                  </span>
-                  <span className="pcoded-mtext"> My Batches</span>
-                </a>
-              </li> */}
              
               <li className="nav-item no-hasmenu ">
                 <a
@@ -960,19 +933,7 @@ const [joinUrl,setjoinUrl]=useState();
               </li>
 
              
-              <li className="nav-item no-hasmenu">
-                <a
-                  href="#"
-                  data-path="/view/MyAttendance"
-                  onClick={(e) => handleClick(e, "/view/MyAttendance")}
-                  className="nav-link "
-                >
-                  <span className="pcoded-micon">
-                    <i className="fa-solid  fa-clipboard-user"></i>
-                  </span>
-                  <span className="pcoded-mtext"> Attendance</span>
-                </a>
-              </li>
+          
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
@@ -994,24 +955,11 @@ const [joinUrl,setjoinUrl]=useState();
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
-                    <i className="fa-regular fa-circle-question mr-2"></i>
-                  </span>
+                  <i className="fa-solid fa-vial-circle-check"></i></span>
                   <span className="pcoded-mtext"> Test </span>
                 </a>
               </li>
-              <li className="nav-item no-hasmenu">
-                <a
-                  href="#"
-                  data-path="/MyCertificateList"
-                  onClick={(e) => handleClick(e, "/MyCertificateList")}
-                  className="nav-link "
-                >
-                  <span className="pcoded-micon">
-                    <i className="fa-solid fa-award"></i>
-                  </span>
-                  <span className="pcoded-mtext">Certificates</span>
-                </a>
-              </li>
+            
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
@@ -1055,16 +1003,58 @@ const [joinUrl,setjoinUrl]=useState();
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
-                  data-path="/myPayments"
-                  onClick={(e) => handleClick(e, "/myPayments")}
+                  data-path="/view/MyAttendance"
+                  onClick={(e) => handleClick(e, "/view/MyAttendance")}
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
-                    <i className="fa-solid fa-credit-card"></i>
+                    <i className="fa-solid  fa-clipboard-user"></i>
                   </span>
-                  <span className="pcoded-mtext"> Payments</span>
+                  <span className="pcoded-mtext"> Attendance</span>
                 </a>
               </li>
+
+              <li className="nav-item pcoded-hasmenu">
+                  <a href="#!" className="nav-link ">
+                    <span className="pcoded-micon">
+                    <i className="fa-solid fa-credit-card"></i>
+                    </span>
+                    <span className="pcoded-mtext">payments</span>
+                  </a>
+                  <ul className="pcoded-submenu">
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/myPayments"
+                        onClick={(e) => {
+                          handleClick(e, "/myPayments");
+                        }}
+                        className="nav-link "
+                      >
+                       <span className="pcoded-micon">
+                       <i className="fa-solid fa-clock-rotate-left"></i>
+                  </span>
+                  <span className="pcoded-mtext">History</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/pendingInstallments"
+                        onClick={(e) => {
+                          handleClick(e, "/pendingInstallments");
+                        }}
+                        className="nav-link "
+                      >
+                       <span className="pcoded-micon">
+                       <i className="fa-solid fa-list"></i> </span>
+                  <span className="pcoded-mtext">Pendings</span>
+                      </a>
+                    </li>
+                  
+                  </ul>
+                </li>
+           
            
              {joinUrl && <li className="nav-item no-hasmenu">
                 <a
@@ -1078,6 +1068,20 @@ const [joinUrl,setjoinUrl]=useState();
                   <span className="pcoded-mtext">Virual ClassRoom</span>
                 </a>
               </li>}
+
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/MyCertificateList"
+                  onClick={(e) => handleClick(e, "/MyCertificateList")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-solid fa-award"></i>
+                  </span>
+                  <span className="pcoded-mtext">Certificates</span>
+                </a>
+              </li>
             </ul>
           )}
           {/* User Sidebar */}

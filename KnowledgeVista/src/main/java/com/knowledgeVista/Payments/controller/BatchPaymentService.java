@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.knowledgeVista.Batch.Batch;
@@ -25,7 +26,6 @@ import com.knowledgeVista.Payments.repos.PaymentsettingRepository;
 import com.knowledgeVista.Payments.repos.Striperepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
-import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -128,7 +128,8 @@ public class BatchPaymentService {
 			Long userId = requestData.get("userId");
 			Long paytype=requestData.get("paytype");
 			//0->Full //1->PART
-			if (batchId == null || userId == null) {
+			if (batchId == null || userId == null||paytype==null) {
+				System.out.println("batchId="+batchId +"u="+userId+"paytype="+paytype);
 			    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Some Values are missing");
 			}
 			Optional<Batch> opbatch =  batchrepo.findById(batchId);
@@ -149,10 +150,12 @@ public class BatchPaymentService {
 	                	 return ResponseEntity.badRequest().body("Seats are Filled For This Batch");
 	                 }
 	            }
-				List<Orderuser> orderuserlist = ordertablerepo.findAllByUserIDAndCourseID(userId, batchId, "paid");
+	        	List<Orderuser> orderuserlist = ordertablerepo.findAllByBatchIDAndUserID(userId, batchId, "paid");
 				 if (paytype == 0) {
+					 System.out.println("full");
 	                    return getFullBatchOrderSummary(user, batch, orderuserlist);
 	                } else {
+	                	System.out.println("part");
 	                    return getPartBatchOrderSummary(user, batch, orderuserlist);
 	                }
 			} else {
@@ -200,12 +203,14 @@ public class BatchPaymentService {
 	        try {
 	            List<BatchInstallmentdetails> installmentList = partPaystruct.findoriginalInstallmentDetailsByBatchId(batch.getId());
 	            installmentList.sort(Comparator.comparing(BatchInstallmentdetails::getInstallmentNumber));
-
+     
 	            int amountPaid = orderuserlist.stream().mapToInt(Orderuser::getAmountReceived).sum();
 	            BatchInstallmentdetails nextInstallment = null;
-
+	            System.out.println(orderuserlist);
+System.out.println(amountPaid);
 	            for (BatchInstallmentdetails installment : installmentList) {
 	                if (amountPaid < installment.getInstallmentAmount()) {
+	                	System.out.println("here"+amountPaid +"next0"+installment.getInstallmentAmount());
 	                    nextInstallment = installment;
 	                    break;
 	                }
@@ -220,7 +225,7 @@ public class BatchPaymentService {
 	            response.put("amount", nextInstallment.getInstallmentAmount());
 	            response.put("userId", user.getUserId());
 	            response.put("batchId", batch.getId());
-	            response.put("batchAmount", nextInstallment.getInstallmentAmount());
+	            response.put("batchAmount", batch.getAmount());
 	            response.put("batchName", batch.getBatchTitle());
 	            response.put("url", "/full/buyBatch/create");
 	            response.put("paytype", "PART");
@@ -258,7 +263,7 @@ public class BatchPaymentService {
 					return ResponseEntity.badRequest().body("Students only can buy the course");
 				}
 				Batch batch = batchOptional.get();
-				List<Orderuser> orderuserlist = ordertablerepo.findAllByBatchIDAndCourseID(userId, batchId, "paid");
+				List<Orderuser> orderuserlist = ordertablerepo.findAllByBatchIDAndUserID(userId, batchId, "paid");
 				
 				int amount = 0;
 				Long installMentNumber=0L;
@@ -287,8 +292,12 @@ public class BatchPaymentService {
 		                }
 		                amountPaid -= installment.getInstallmentAmount();
 		            }
-		            amt= nextInstallment.getInstallmentAmount();
-		            installMentNumber=nextInstallment.getInstallmentNumber();
+		            if (nextInstallment == null) {
+		            	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All Installments Paid");
+		            }
+		                amt = nextInstallment.getInstallmentAmount();
+		                installMentNumber = nextInstallment.getInstallmentNumber();
+		           
 				}
 				if ("RAZORPAY".equals(gateway)) {
 					return handleRazorpayCheckout(batch.getBatchTitle(),batch.getId(),user.getUsername(),user.getEmail(),amt,user.getUserId(),installMentNumber,user.getInstitutionName());

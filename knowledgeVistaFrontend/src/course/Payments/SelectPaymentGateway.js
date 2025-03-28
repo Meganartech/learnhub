@@ -222,7 +222,7 @@ const SelectPaymentGateway = ({ orderData, setorderData,setopenselectgateway }) 
                         style={{ textAlign: "right" }}
                       >
                          <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign mr-1" : "fa-solid fa-dollar-sign mr-1"}></i>
-                        {orderData?.batchAmount}
+                        {orderData?.amount}
                       </label>
                     </>
                   )}

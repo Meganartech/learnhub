@@ -488,44 +488,12 @@ public class FrontController {
 			return paymentservice.createOrderfullforBatch(requestData, gateway, token, request);
 		}
 	}
-
+@GetMapping("/get/Pendings")
+public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") String token){
+	return batchService.GetPendingPayments(token);
+}
 	// =========batch end=========
-//		        @PostMapping("/full/buyCourse/create")
-//		        public ResponseEntity<?> createOrderfull(@RequestBody Map<String, Long> requestData, @RequestParam("gateway") String gateway ,HttpServletRequest request,@RequestHeader("Authorization") String token) {
-//		        	 if (paylist != null && activeProfile.equals("demo")) {
-//
-//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-//	            	   }else {
-//		        	return payment.createOrderfull(requestData,gateway,token,request);
-//	            	   }
-//		        } 
-//		        @PostMapping("/Full/getOrderSummary")
-//		        public ResponseEntity<?> getordersummaryFull(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
-//		        	 if (paylist != null && activeProfile.equals("demo")) {
-//
-//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-//	            	   }else {
-//		        	return payment.getordersummaryFull(requestData,token);
-//	            	   }
-//		        }
-//		        @PostMapping("/Part/getOrderSummary")
-//		        public ResponseEntity<?> getOrderSummaryPart(@RequestBody Map<String, Long> requestData,@RequestHeader("Authorization") String token) {
-//		        	 if (paylist != null && activeProfile.equals("demo")) {
-//
-//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-//	            	   }else {
-//		        	return payment.getOrderSummaryPart(requestData,token);
-//	            	   }
-//		        }
-//		        @PostMapping("/part/buyCourse/create")
-//		        public ResponseEntity<?> createOrderPart(@RequestBody Map<String, Long> requestData,@RequestParam("gateway") String gateway ,@RequestHeader("Authorization") String token) {
-//		        	 if (paylist != null && activeProfile.equals("demo")) {
-//
-//		          		   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-//	            	   }else {
-//		        	return payment.createOrderPart(requestData,gateway,token);
-//	            	   }
-//		        }
+
 
 	@PostMapping("/buyCourse/payment")
 	public ResponseEntity<String> updatePaymentId(HttpServletRequest request, @RequestBody Map<String, String> requestData,

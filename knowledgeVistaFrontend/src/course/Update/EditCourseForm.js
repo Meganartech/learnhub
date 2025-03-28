@@ -408,14 +408,7 @@ const EditCourseForm = ({}) => {
                     </div>
                     </div>
                     </div>
-                    <div className="form-group row ">
-                    <label htmlFor="courseAmount"
-                   className=" col-sm-3 col-form-label">
-                     Partial Payment Settings  
-                  </label>
-                <a className="col-sm-9 col-form-label" href={`/course/update/paymentSettings/${courseEdit.courseName}/${courseEdit.courseId}`}>  Payment Settings</a>
-            
-                  </div>
+                   
                   </div>
                 <div className="cornerbtn">
                 <button

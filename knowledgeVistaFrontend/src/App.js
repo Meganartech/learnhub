@@ -115,6 +115,7 @@ import EditModuleQuestion from "./course/ModuleTest.js/EditModuleQuestion.js";
 import SheduleModuleTest from "./course/ModuleTest.js/SheduleModuleTest.js";
 import StartModuleTest from "./course/ModuleTest.js/StartModuleTest.js";
 import Partialpaymentsetting from "./course/Components/Partialpaymentsetting.js";
+import PendingInstallments from "./Student/PendingInstallments.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -400,6 +401,16 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true} onlyuser={true}>
                     <Grades />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/pendingInstallments"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <PendingInstallments />
                   </PrivateRoute>
                 </ErrorBoundary>
               }

@@ -28,14 +28,15 @@ import com.knowledgeVista.Batch.BatchInstallmentDto;
 import com.knowledgeVista.Batch.BatchInstallmentDtoWrapper;
 import com.knowledgeVista.Batch.BatchInstallmentdetails;
 import com.knowledgeVista.Batch.Batch_partPayment_Structure;
+import com.knowledgeVista.Batch.PendingPayments;
 import com.knowledgeVista.Batch.Repo.BatchInstallmentDetailsRepo;
 import com.knowledgeVista.Batch.Repo.BatchPartPayRepo;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
+import com.knowledgeVista.Batch.Repo.PendingPaymentRepo;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto.courseIdNameImg;
 import com.knowledgeVista.Course.Controller.CourseController;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
-import com.knowledgeVista.Payments.repos.OrderuserRepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -56,6 +57,8 @@ public class BatchService {
 	private BatchInstallmentDetailsRepo installmentRepo;
 	@Autowired
 	private BatchPartPayRepo partayStructureRepo;
+	@Autowired
+	private PendingPaymentRepo pendingsRepo;
 	private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
 	public List<Map<String, Object>> searchCourses(String courseName, String token) {
@@ -633,6 +636,22 @@ public class BatchService {
 			logger.error("Exception occurred while deleting batch with ID " + id, e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("Error occurred while Getting the batch.");
+		}
+	}
+	//pending payments=================================================================================================
+	public ResponseEntity<?>GetPendingPayments(String token){
+		try {
+			String role = jwtUtil.getRoleFromToken(token);
+			String email=jwtUtil.getUsernameFromToken(token);
+			if("USER".equals(role)) {
+				List<PendingPayments> payments=pendingsRepo.findPendingPaymentsByemail(email);
+				return ResponseEntity.ok(payments);
+			}
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only Stdents Can Access This Page");
+		}catch (Exception e) {
+			logger.error("Error Getting Pending Paymets"+e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			// TODO: handle exception
 		}
 	}
 }

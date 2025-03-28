@@ -16,8 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.BatchInstallmentdetails;
+import com.knowledgeVista.Batch.PendingPayments;
 import com.knowledgeVista.Batch.Repo.BatchPartPayRepo;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
+import com.knowledgeVista.Batch.Repo.PendingPaymentRepo;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Email.EmailService;
 import com.knowledgeVista.Notification.Service.NotificationService;
@@ -63,7 +65,8 @@ private BatchPartPayRepo batchStruct;
 	private BatchRepository batchrepo;
 	@Autowired
 	private EmailService emailService;
-	
+	@Autowired
+	private PendingPaymentRepo pendingsRepo;
 	private static final Logger logger = LoggerFactory.getLogger(PaymentIntegration.class);
 
 	public Paymentsettings getpaydetails(String token) {
@@ -247,6 +250,14 @@ private ResponseEntity<String> SetBatchToUser(HttpServletRequest request, Orderu
 			           .filter(course -> !user.getCourses().contains(course)) // Filter out existing courses
 			           .toList() // Collect remaining courses into a list
 			);
+		System.out.println("beforeDel");
+		Optional<PendingPayments>oppending =pendingsRepo.getPendingsByEmailAndBatchIdAndInstallmentId(user.getEmail(), batch.getId(),savedorder.getInstallmentnumber());
+		if(oppending.isPresent()) {
+			PendingPayments pendings= oppending.get();
+			System.out.println(pendings.toString());
+			pendingsRepo.delete(pendings);
+		}
+		System.out.println("AfterDel");
     sendEnrollmentMail(request,courses, batch, user);
     notifiInstallment(batch, user,courses);
 			muserRepository.save(user);
@@ -369,10 +380,22 @@ private String generateCourseString(List<CourseDetail> courses) {
 				int count = ordertablerepo.findCountByUserIDAndBatchID(user.getUserId(), batch.getId(), "paid");
 				int installmentlength = installmentslist.size();
 				if (installmentlength > count) {
+					
 					BatchInstallmentdetails installment = installmentslist.get(count);
+					
 					Long Duration = installment.getDurationInDays();
 					LocalDate startdate = LocalDate.now();
 					LocalDate datetonotify = startdate.plusDays(Duration);
+					PendingPayments pendings=new PendingPayments();
+					pendings.setEmail(user.getEmail());
+					pendings.setBatchId(batch.getId());
+					pendings.setBatchName(batch.getBatchTitle());
+					pendings.setBId(batch.getBatchId());
+					pendings.setInstallmentId(installment.getId());
+					pendings.setAmount(installment.getInstallmentAmount());
+					pendings.setInstallmentNo(installment.getInstallmentNumber());
+					pendings.setLastDate(datetonotify);
+					pendingsRepo.save(pendings);
 					String heading = " Installment Pending!";
 					String link = "/dashboard/course";
 					String notidescription = "Installment date for Courses " +generateCourseString(courses)  + " for installment "
