@@ -1,13 +1,10 @@
 package com.knowledgeVista.Course.Controller;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
@@ -31,15 +26,10 @@ import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
-import com.knowledgeVista.Payments.Course_PartPayment_Structure;
-import com.knowledgeVista.Payments.InstallmentDetails;
 import com.knowledgeVista.Payments.repos.OrderuserRepo;
-import com.knowledgeVista.Payments.repos.installmentdetilsrepo;
-import com.knowledgeVista.Payments.repos.partpayrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-
 import io.jsonwebtoken.io.DecodingException;
 
 @RestController
@@ -54,11 +44,6 @@ public class CourseController {
 	 private JwtUtil jwtUtil;
 	 @Autowired
 	 private videoLessonRepo lessonRepo;
-	 @Autowired
-	 private installmentdetilsrepo installmentrepo ;
-	 
-	 @Autowired
-	 private partpayrepo partpayrepo;
 	 
 	 @Autowired
 	private NotificationService notiservice;
@@ -130,7 +115,7 @@ public class CourseController {
 	
 
 	    public ResponseEntity<?> addCourse( MultipartFile file,  String courseName,String description,
-	    		String category,Long Duration,Long Noofseats,String batches,Long amount,String paytype,String installmentDataJson, String token) {
+	    		String category,Long Duration,Long Noofseats,String batches,Long amount, String token) {
 		     try {
 		    	
 		         if (!jwtUtil.validateToken(token)) {
@@ -157,14 +142,13 @@ public class CourseController {
 			     }else {
 		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			     }
-		 if("ADMIN".equals(role)) {
+		 if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 	        CourseDetail courseDetail = new CourseDetail();
 	        courseDetail.setCourseName(courseName);
 	        courseDetail.setCourseDescription(description);
 	        courseDetail.setCourseCategory(category);
 	        courseDetail.setAmount(amount);
 	        courseDetail.setDuration(Duration);
-	        courseDetail.setPaytype(paytype);
             courseDetail.setInstitutionName(institution);
 	        courseDetail.setNoofseats(Noofseats);
 	        courseDetail.setCourseImage(file.getBytes());
@@ -187,8 +171,6 @@ public class CourseController {
         		batchrepo.save(existing);
         	}
 	   	 }
-        	 
-	     System.out.println("batches: " + batchess);
 	        String courseUrl = "/courses/"+savedCourse.getCourseName()+"/" + savedCourse.getCourseId();
 	        savedCourse.setCourseUrl(courseUrl);
 	       CourseDetail saved= coursedetailrepository.save(savedCourse);
@@ -204,40 +186,12 @@ public class CourseController {
 	        	notiuserlist.add("USER");
 	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,institution);
 	        }
-	       if("PART".equals(paytype)) {
-	       Course_PartPayment_Structure paystructure=new Course_PartPayment_Structure();
-	        paystructure.setCourse(savedCourse);
-	        paystructure.setCreatedBy(email);
-	        paystructure.setDatecreated(LocalDate.now());
-	        Course_PartPayment_Structure savedpartpay=partpayrepo.save(paystructure);
-	        ObjectMapper mapper = new ObjectMapper();
-	    	 JsonNode rootNode = mapper.readValue(installmentDataJson, JsonNode.class);
-
-	    	 if (rootNode.isArray()) {
-	    	     for (JsonNode installmentNode : rootNode) {
-	    	         Long installmentNumber = installmentNode.path("InstallmentNumber").asLong(); // Assuming "name" is string
-	    	         Long installmentAmount = installmentNode.path("InstallmentAmount").asLong(); // Default to 0 if missing
-	    	         Long durationInDays = installmentNode.path("DurationInDays").asLong(); // Default to 0 if missing
-	    	         InstallmentDetails installment=new InstallmentDetails();
-	    	         installment.setDurationInDays(durationInDays);
-	    	         installment.setInstallmentNumber(installmentNumber);
-	    	         installment.setInstallmentAmount(installmentAmount);
-	    	         installment.setPartpay(savedpartpay);
-	    	         installmentrepo.save(installment);
-	    	          
-	    	     }
-	    	 } else {
-	    	     System.err.println("Invalid JSON format - expected an array");
-	    	 }
-	       }
 	       Map<String, Object> response = new HashMap<>();
            response.put("message", "savedSucessfully");
            response.put("courseId", courseId);
            response.put("coursename", coursename);
 	         return ResponseEntity.ok(response);
-	    
 		 }else {
-
              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	    }
 		     }catch (Exception e) {
@@ -248,92 +202,90 @@ public class CourseController {
 	
 //``````````````````````````````````````````FOR TRAINER COURSE CREATION````````````````````````````````````````
 
-	    public ResponseEntity<?> addCourseByTrainer( MultipartFile file,  String courseName, 
-	    		String description, String category,
-	    		Long Duration, Long Noofseats, Long amount, String token) 
-	    {
-		 if (!jwtUtil.validateToken(token)) {
-	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	     }
-
-	     jwtUtil.getRoleFromToken(token);
-	     String email=jwtUtil.getUsernameFromToken(token);
-	       Optional<Muser> optrainer=muserRepository.findByEmail(email);
-	       if(optrainer.isPresent()) {
-	    	   String username="";
-	    		Muser trainer =optrainer.get();
-	    		 username=trainer.getUsername();
-	    		 String institution= trainer.getInstitutionName();
-	    		 Long coursecount=coursedetailrepository.countCourseByInstitutionName(institution);
-		    	 Long MaxCount=licencerepo.FindCourseCountByinstitution(institution);
-		    	 if(coursecount+1 >MaxCount) {
-		    		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Course Limit Reached Add More Course By Upgrading Your Licence");
-		    	 }
-	    		 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-		   	    	if(!adminIsactive) {
-		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		   	    	}
-	    		 if(! "TRAINER".equals(trainer.getRole().getRoleName())) {
-	                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	    		 }
-	        CourseDetail courseDetail = new CourseDetail();
-	        courseDetail.setCourseName(courseName);
-	        courseDetail.setCourseDescription(description);
-	        courseDetail.setCourseCategory(category);
-	        courseDetail.setAmount(amount);
-	        courseDetail.setPaytype("FULL");
-	        courseDetail.setDuration(Duration);
-	        courseDetail.setPaytype("FULL");
-	        courseDetail.setInstitutionName(institution);
-	        courseDetail.setNoofseats(Noofseats);
-	        try {
-				courseDetail.setCourseImage(file.getBytes());
-			} catch (IOException e) {
-				courseDetail.setCourseImage(null);
-				e.printStackTrace();    logger.error("", e);;
-			}
-	       
-	        
-	        // Save the CourseDetail object
-	        CourseDetail savedCourse = coursedetailrepository.save(courseDetail);
-	        
-	        // Update the courseUrl based on the saved course's ID
-	        String courseUrl = "/courses/"+savedCourse.getCourseName()+"/" + savedCourse.getCourseId();
-	        savedCourse.setCourseUrl(courseUrl);
-	       
-
-	        // Save the updated CourseDetail object
-	       CourseDetail saved= coursedetailrepository.save(savedCourse);
-	       
-	       
-	       Long courseId=saved.getCourseId();
-	       String coursename =saved.getCourseName();
-	      
-	    		trainer.getAllotedCourses().add(saved);
-	    		  muserRepository.save(trainer);
-	    	
-	    	String coursenametosend =saved.getCourseName();
-		       String heading="New Course Added !";
-		       String link=courseUrl;
-		       String notidescription= "A new Course "+coursenametosend + " was added " + saved.getCourseDescription();
-		      Long NotifyId =  notiservice.createNotification("CourseAdd",username,notidescription ,email,heading,link, Optional.ofNullable(file));
-		        if(NotifyId!=null) {
-		        	List<String> notiuserlist = new ArrayList<>(); 
-		        	notiuserlist.add("ADMIN");
-		        	notiuserlist.add("USER");
-		        	notiuserlist.add("TRAINER");
-		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,institution);
-		        }
-	       Map<String, Object> response = new HashMap<>();
-        response.put("message", "savedSucessfully");
-        response.put("courseId", courseId);
-        response.put("coursename", coursename);
-	         return ResponseEntity.ok(response);
-	     }else {
-	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	     }
-	    }
-	
+//	    public ResponseEntity<?> addCourseByTrainer( MultipartFile file,  String courseName, 
+//	    		String description, String category,
+//	    		Long Duration, Long Noofseats, Long amount, String token) 
+//	    {
+//		 if (!jwtUtil.validateToken(token)) {
+//	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//	     }
+//
+//	     jwtUtil.getRoleFromToken(token);
+//	     String email=jwtUtil.getUsernameFromToken(token);
+//	       Optional<Muser> optrainer=muserRepository.findByEmail(email);
+//	       if(optrainer.isPresent()) {
+//	    	   String username="";
+//	    		Muser trainer =optrainer.get();
+//	    		 username=trainer.getUsername();
+//	    		 String institution= trainer.getInstitutionName();
+//	    		 Long coursecount=coursedetailrepository.countCourseByInstitutionName(institution);
+//		    	 Long MaxCount=licencerepo.FindCourseCountByinstitution(institution);
+//		    	 if(coursecount+1 >MaxCount) {
+//		    		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Course Limit Reached Add More Course By Upgrading Your Licence");
+//		    	 }
+//	    		 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
+//		   	    	if(!adminIsactive) {
+//		   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//		   	    	}
+//	    		 if(! "TRAINER".equals(trainer.getRole().getRoleName())) {
+//	                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//	    		 }
+//	        CourseDetail courseDetail = new CourseDetail();
+//	        courseDetail.setCourseName(courseName);
+//	        courseDetail.setCourseDescription(description);
+//	        courseDetail.setCourseCategory(category);
+//	        courseDetail.setAmount(amount);
+//	        courseDetail.setDuration(Duration);
+//	        courseDetail.setInstitutionName(institution);
+//	        courseDetail.setNoofseats(Noofseats);
+//	        try {
+//				courseDetail.setCourseImage(file.getBytes());
+//			} catch (IOException e) {
+//				courseDetail.setCourseImage(null);
+//				e.printStackTrace();    logger.error("", e);;
+//			}
+//	       
+//	        
+//	        // Save the CourseDetail object
+//	        CourseDetail savedCourse = coursedetailrepository.save(courseDetail);
+//	        
+//	        // Update the courseUrl based on the saved course's ID
+//	        String courseUrl = "/courses/"+savedCourse.getCourseName()+"/" + savedCourse.getCourseId();
+//	        savedCourse.setCourseUrl(courseUrl);
+//	       
+//
+//	        // Save the updated CourseDetail object
+//	       CourseDetail saved= coursedetailrepository.save(savedCourse);
+//	       
+//	       
+//	       Long courseId=saved.getCourseId();
+//	       String coursename =saved.getCourseName();
+//	      
+//	    		trainer.getAllotedCourses().add(saved);
+//	    		  muserRepository.save(trainer);
+//	    	
+//	    	String coursenametosend =saved.getCourseName();
+//		       String heading="New Course Added !";
+//		       String link=courseUrl;
+//		       String notidescription= "A new Course "+coursenametosend + " was added " + saved.getCourseDescription();
+//		      Long NotifyId =  notiservice.createNotification("CourseAdd",username,notidescription ,email,heading,link, Optional.ofNullable(file));
+//		        if(NotifyId!=null) {
+//		        	List<String> notiuserlist = new ArrayList<>(); 
+//		        	notiuserlist.add("ADMIN");
+//		        	notiuserlist.add("USER");
+//		        	notiuserlist.add("TRAINER");
+//		        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,institution);
+//		        }
+//	       Map<String, Object> response = new HashMap<>();
+//        response.put("message", "savedSucessfully");
+//        response.put("courseId", courseId);
+//        response.put("coursename", coursename);
+//	         return ResponseEntity.ok(response);
+//	     }else {
+//	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//	     }
+//	    }
+//	
 
 	 
 	//--------------------------working------------------------------------
@@ -526,39 +478,15 @@ public class CourseController {
 			      	    if (optionalUser.isPresent()) {
 			      	        Muser user = optionalUser.get();
 			   	     if("USER".equals(user.getRole().getRoleName())) {
-			      	        List<CourseDetail> courses = user.getCourses();
 	          if ("ADMIN".equals(role)) {
-	               List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllByInstitutionName(institution).stream()
-	                 .map(course -> {
-
-			               boolean isSelected = courses.contains(course);
-	                       Map<String, Object> courseInfo = Map.of(
-	                           "courseId", course.getCourseId(),
-	                           "courseName", course.getCourseName(),
-	                           "selected", isSelected
-	                   );
-	                   return courseInfo;
-	               })
-	               .collect(Collectors.toList());
+	               List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllCourseDetailsByInstitutionName(institution);
 	       return ResponseEntity.ok().body(courseInfoList);
 	       
 	      	    
 	       }else if("TRAINER".equals(role)){
-	    	   List<CourseDetail> Trainercourses=addinguser.getAllotedCourses();
-	    	   List<Map<String, Object>> courseInfoListforTrainerAllocation=Trainercourses.stream()
-		                 .map(course -> {
-
-				               boolean isSelected = courses.contains(course);
-		                       Map<String, Object> courseInfo = Map.of(
-		                           "courseId", course.getCourseId(),
-		                           "courseName", course.getCourseName(),
-		                           "selected", isSelected
-		                   );
-		                   return courseInfo;
-		               })
-		               .collect(Collectors.toList());
-		       return ResponseEntity.ok().body(courseInfoListforTrainerAllocation);
-	    	   
+	    	   List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllCourseDetailsByInstitutionName(institution);
+		       return ResponseEntity.ok().body(courseInfoList);
+		       
 	       }else {
 	       
 	       
@@ -606,21 +534,7 @@ public class CourseController {
 	      	    	
 	      	        Muser user = optionalUser.get();
 	      	        if("TRAINER".equals(user.getRole().getRoleName())) {
-	      	        List<CourseDetail> courses = user.getAllotedCourses();
-	        	  
-	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllByInstitutionName(institution)
-	               .stream()
-	               .map(course -> {
-
-		               boolean isSelected = courses.contains(course);
-	                   Map<String, Object> courseInfo = Map.of(
-	                           "courseId", course.getCourseId(),
-	                           "courseName", course.getCourseName(),
-	                           "selected", isSelected
-	                   );
-	                   return courseInfo;
-	               })
-	               .collect(Collectors.toList());
+	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllCourseDetailsByInstitutionName(institution);
 	       return ResponseEntity.ok().body(courseInfoList);
 	       }else {
 	    	      	    return ResponseEntity.status(HttpStatus.NO_CONTENT).body("user is not a Trainer");
@@ -697,16 +611,7 @@ public class CourseController {
 	                   user.getAllotedCourses().remove(course);
 	               }
 	               
-	               partpayrepo.findBycourse(course).ifPresent(struct -> {
-	            	   List<InstallmentDetails> installments = struct.getInstallmentDetail();
-	            	   for (InstallmentDetails installment : installments) {
-	            		   installment.setPartpay(null); // Break the relationship
-	            	        installmentrepo.save(installment); 
-	            	       installmentrepo.delete(installment);
-	            	   }
-	            	   struct.getInstallmentDetail().clear();
-	            	    partpayrepo.delete(struct);           // Deletes the parent
-	            	});
+	             
 
 	               coursedetailrepository.delete(course);
 

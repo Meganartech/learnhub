@@ -1,21 +1,91 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import baseUrl from "../../api/utils";
+import axios from "axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-const Partialpaymentsetting = ({
-  enablechecked,
-  setenablechecked,
-  handleSubmit,
-  setnextclick,
-  setDurations,
-  durations,
-  installmentData,
-  setInstallmentData,
-  courseamount,
-}) => {
+const Partialpaymentsetting = () => {
+  
+    const [installmentData, setInstallmentData] = useState([]);
+        const MySwal = withReactContent(Swal);
+    const [durations, setDurations] = useState([]);
   const [noOfInstallments, setNoOfInstallments] = useState(2);
   const [noofDuration, setnoofDuration] = useState(1);
-
+  const[batchAmount,setbatchAmount]=useState();
+   const {batchTitle,batchId}=useParams();
+    const [enablechecked, setenablechecked] = useState(false);
+    const token=sessionStorage.getItem("token")
   const navigate = useNavigate();
+  const[batch,setbatch]=useState({
+        batchName:"",
+        amount:"",
+        id:""
+      })
+    useEffect(() => {
+        const fetchpartpaydata = async () => {
+            try {
+                const response = await axios.get(`${baseUrl}/viewPaymentList/${batchId}`, {
+                    headers: {
+                        "Authorization": token
+                    }
+                });
+                const data = await response.data;
+              
+                if (response.status===200) {
+                    setbatch((prev)=>({
+                      ...prev,
+                      batchName: data?.batchTitle,
+                      amount:data?.batchAmount,
+                      batchId:data?.batchId
+                 } ))
+                 setbatchAmount(data?.batchAmount)
+                 if(data?.batchInstallments.length>0){
+                    setInstallmentData(data?.batchInstallments)
+                    setNoOfInstallments(data?.batchInstallments.length)
+                 }
+                
+                }   
+            } catch (error) {
+              if(error.response){
+                if(error.response.status===401){
+                  MySwal.fire({
+                    title: "Un Authorized",
+                    text: error.response.data ? error.response.data : "error occured",
+                    icon: "error",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      navigate(-1);
+                       }
+                  });
+                }else if(error.response.status===404){
+                  setenablechecked(false)
+                  MySwal.fire({
+                    title: "Not Found",
+                    text: error.response.data ? error.response.data : "error occured",
+                    icon: "warning",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      navigate(-1);
+                       }
+                  });
+                }
+              }else{
+                // MySwal.fire({
+                //   title: "Error!",
+                //   text: "An error occurred . Please try again later.",
+                //   icon: "error",
+                //   confirmButtonText: "OK",
+                // });
+                throw error
+              }
+            }
+        }
+    
+        fetchpartpaydata(); // Call the async function
+    
+        // Add any dependencies if needed
+    }, []);
   // Calculate initial installment data on component mount or noOfInstallments change
   useEffect(() => {
     if (noOfInstallments >= 1) {
@@ -25,7 +95,7 @@ const Partialpaymentsetting = ({
       for (let i = 0; i < noOfInstallments; i++) {
         newInstallmentData.push({
           InstallmentNumber: `${i + 1}`,
-          InstallmentAmount: courseamount / noOfInstallments,
+          InstallmentAmount: batchAmount / noOfInstallments,
           DurationInDays: i === 0 ? 0 : 15,
         });
 
@@ -40,8 +110,38 @@ const Partialpaymentsetting = ({
       setInstallmentData([]);
       setDurations([]);
     }
-  }, [noOfInstallments, courseamount]);
-
+  }, [noOfInstallments, batchAmount]);
+  const handleSubmit = async () => {
+    if (!enablechecked) {
+     navigate("/batch/viewall")
+    }
+  console.log(installmentData);
+    try {
+      const response = await axios.post(
+        `${baseUrl}/Batch/Save/PartPayDetails`, 
+        installmentData, // Send only installmentDetails as request body
+        {
+          headers: {
+            "Authorization": token
+          },
+          params: { batchId: batchId } // Send batchId as RequestParam
+        }
+      );
+  
+      if (response.status===200) {
+        MySwal.fire({
+          title: "Saved ",
+          text: "Installments Saved  sucessfully !",
+          icon: "success",
+        })
+        navigate("/batch/viewall")
+      }
+    } catch (error) {
+      console.error("Error saving installments:", error);
+      alert("Something went wrong! Please try again.");
+    }
+  };
+  
   const installmentChange = (e, index) => {
     const newInstallmentAmount = parseFloat(e.target.value);
     if (newInstallmentAmount > 0) {
@@ -50,7 +150,7 @@ const Partialpaymentsetting = ({
 
       // Recalculate remaining installments if needed
       if (index < noOfInstallments - 1) {
-        let remainingAmount = courseamount; // Start with total course amount
+        let remainingAmount = batchAmount; // Start with total course amount
         for (let i = 0; i <= index; i++) {
           // Subtract updated amounts of previous installments
           remainingAmount -= updatedInstallmentData[i].InstallmentAmount;
@@ -95,12 +195,17 @@ const Partialpaymentsetting = ({
     }
   }
   return (
-    <div className="row">
-      <div className="col-12">
+    <div>
+    <div className="page-header"></div>
+    <div className="card">
+      <div className="card-body">
+      
+          <div className="row">
+            <div className="col-12">
         <div className="navigateheaders">
           <div
             onClick={() => {
-              setnextclick(false);
+             navigate(-1)
             }}
           >
             <i className="fa-solid fa-arrow-left"></i>
@@ -114,34 +219,35 @@ const Partialpaymentsetting = ({
             <i className="fa-solid fa-xmark"></i>
           </div>
         </div>
-        <h2>Setting up a Course</h2>
+        <h4> Partial Payment Settings for {batch.batchName}</h4>
 
         <hr />
-        <h5>
+        <h6 className="checkboxes-lg">
           <input
             type="checkbox"
-            className="m-4"
+            className="mr-2"
             name="check"
-            disabled={courseamount <= 0}
+            disabled={batchAmount <= 0}
             checked={enablechecked}
             onChange={() => {
-              if(courseamount!=0){
+              if(batchAmount!=0){
               setenablechecked(!enablechecked);
               }
             }}
           />
-          <h4 htmlFor="check" style={{ display: "inline" }}>
+          <span htmlFor="check" style={{ display: "inline" }}>
             Enable Partial Payment
-          </h4>
-        </h5>
+          </span>
+          </h6>
+        
         {enablechecked ? (
           <>
   <div className="row">
     <div className="col-md-6">
       <div className="form-group row">
-        <label className="col-sm-4 col-form-label">Course Amount</label>
+        <label className="col-sm-4 col-form-label">Batch Amount</label>
         <div className="col-sm-8">
-          <input type="number" className="form-control" value={courseamount} />
+          <input type="number" className="form-control" value={batch.amount} />
         </div>
       </div>
     </div>
@@ -161,7 +267,7 @@ const Partialpaymentsetting = ({
     </div>
   </div>
 
-            <div className="row mt-3" style={{marginBottom:"10px",minHeight:"200px", maxHeight: "250px",overflow:"auto" }}>
+            <div className="row mt-3" style={{marginBottom:"10px",minHeight:"250px" }}>
               <div className="col-md-6">
                 {installmentData.map((installment, index) => (
                   <div key={index}>
@@ -218,9 +324,9 @@ const Partialpaymentsetting = ({
             <div className="row">
     <div className="col-md-6">
       <div className="form-group row">
-                <label  className="col-sm-4 col-form-label">Course Amount</label>
+                <label  className="col-sm-4 col-form-label">Batch Amount</label>
                 <div className="col-sm-8">
-                <input type="number" className="form-control" value={courseamount} />
+                <input type="number" className="form-control" value={batch.amount} />
                 </div>
                 </div>
               </div>
@@ -238,7 +344,7 @@ const Partialpaymentsetting = ({
               </div>
             </div>
             </div>
-            <div className="row mt-3" style={{marginBottom:"10px",minHeight:"200px", maxHeight: "250px",overflow:"auto" }}>
+            <div className="row mt-3" style={{marginBottom:"10px",minHeight:"250px"}}>
             <div className="col-md-6">
                 <div className="form-group row pt-2">
                   <label  className="col-sm-4 col-form-label"> Installment 1</label>
@@ -272,21 +378,22 @@ const Partialpaymentsetting = ({
           <button
             className="btn btn-secondary"
             onClick={() => {
-              setnextclick(false);
+              navigate(-1)
             }}
           >
             cancel
           </button>
-          <button
+         {enablechecked ? <button
             className="btn btn-primary"
-            onClick={(e) => {
-              handleSubmit(e);
-            }}
+          onClick={handleSubmit}
           >
             Save
-          </button>
+          </button>:<button className="btn btn-primary" onClick={()=>{navigate("/batch/viewall")}}>Skip</button>}
         </div>
       </div>
+    </div>
+    </div>
+    </div>
     </div>
   );
 };

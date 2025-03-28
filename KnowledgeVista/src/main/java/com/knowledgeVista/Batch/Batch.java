@@ -1,6 +1,7 @@
 package com.knowledgeVista.Batch;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Meeting.zoomclass.Meeting;
@@ -70,6 +71,9 @@ public class Batch {
     )
     private List<Muser> users;
     
+    @Column(name = "paytype")
+	private PaymentType paytype;
+    
     @ManyToMany(mappedBy = "batches", fetch = FetchType.LAZY)
     private List<Meeting> meetings;
     
@@ -96,4 +100,19 @@ public class Batch {
 			return 0L;
 		}
 	}
+    public void setPaytype(PaymentType paytype) {
+        this.paytype = paytype;
+    }
+    public enum PaymentType {
+        FULL, PART;
+    }
+	@Override
+	public String toString() {
+		return "Batch [id=" + id + ", batchId=" + batchId + ", batchTitle=" + batchTitle + ", startDate=" + startDate
+				+ ", endDate=" + endDate + ", BatchImage=" + Arrays.toString(BatchImage) + ", courses=" + courses
+				+ ", institutionName=" + institutionName + ", trainers=" + trainers + ", users=" + users + ", paytype="
+				+ paytype + ", meetings=" + meetings + ", BatchUrl=" + BatchUrl + ", noOfSeats=" + noOfSeats
+				+ ", amount=" + amount + "]";
+	}
+
 }

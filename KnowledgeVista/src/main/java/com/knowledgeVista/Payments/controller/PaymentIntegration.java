@@ -1,5 +1,7 @@
 package com.knowledgeVista.Payments.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.BatchInstallmentdetails;
+import com.knowledgeVista.Batch.Repo.BatchPartPayRepo;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Email.EmailService;
@@ -44,7 +48,8 @@ public class PaymentIntegration {
 	private JwtUtil jwtUtil;
 	@Autowired
 	private PaymentsettingRepository paymentsetting;
-
+@Autowired
+private BatchPartPayRepo batchStruct;
 	@Autowired
 	private OrderuserRepo ordertablerepo;
 	@Autowired
@@ -243,6 +248,7 @@ private ResponseEntity<String> SetBatchToUser(HttpServletRequest request, Orderu
 			           .toList() // Collect remaining courses into a list
 			);
     sendEnrollmentMail(request,courses, batch, user);
+    notifiInstallment(batch, user,courses);
 			muserRepository.save(user);
 		String courseUrl = batch.getBatchUrl();
 		String heading = " Payment Credited !";
@@ -296,35 +302,32 @@ public void sendEnrollmentMail(HttpServletRequest request,List<CourseDetail> cou
 
          // Construct the Sign-in Link
          String signInLink = domain + "/login";
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy"); // Example: 5-Jan-2025
+         String formattedStartDate = batch.getStartDate().format(formatter);
+         String formattedEndDate = batch.getEndDate().format(formatter);
+         StringBuilder body = new StringBuilder();
+         body.append("<html>")
+             .append("<body>")
+             .append("<h2>Welcome to LearnHub - Your Learning Journey Begins!</h2>")
+             .append("<p>Dear ").append(student.getUsername()).append(",</p>")
+             .append("<p>Congratulations! You have been successfully enrolled in <strong>Batch: ")
+             .append(batch.getBatchTitle()).append(" (").append(formattedStartDate).append(" to ").append(formattedEndDate).append(")</strong> at LearnHub.</p>")
+             .append("<p>In this batch, you will be learning the below courses:</p>")
+             .append("<ul>").append(generateCourseList(batch.getCourses())).append("</ul>")
+             .append("<p>To get started:</p>")
+             .append("<ul>")
+             .append("<li>Log in to your LearnHub account.</li>")
+             .append("<li>Access your enrolled courses in My Courses Tab.</li>")
+             .append("<li>Engage with trainers and fellow students.</li>")
+             .append("<li>Complete assignments and track your progress.</li>")
+             .append("</ul>")
+             .append("<p>If you need any assistance, our support team is here to help.</p>")
+             .append("<p>Click the link below to sign in:</p>")
+             .append("<p><a href='").append(signInLink).append("' style='font-size:16px; color:blue;'>Sign In</a></p>")
+             .append("<p>Best Regards,<br>LearnHub Team</p>")
+             .append("</body>")
+             .append("</html>");
 
-	String body = String.format(
-	    "<html>"
-	        + "<body>"
-	        + "<h2>Welcome to LearnHub - Your Learning Journey Begins!</h2>"
-	        + "<p>Dear %s,</p>"
-	        + "<p>Congratulations! You have been successfully enrolled in <strong>Batch: %s</strong> at LearnHub.</p>"
-	        + "<p>Below are your login credentials:</p>"
-	        + "<p>In this batch, you will be learning the below  courses:</p>"
-	        + "<ul>%s</ul>" // Placeholder for dynamic course list
-	        + "<p>To get started:</p>"
-	        + "<ul>"
-	        + "<li>Log in to your LearnHub account.</li>"
-	        + "<li>Access your enrolled courses in My Courses Tab.</li>"
-	        + "<li>Engage with trainers and fellow students.</li>"
-	        + "<li>Complete assignments and track your progress.</li>"
-	        + "</ul>"
-	        + "<p>If you need any assistance, our support team is here to help.</p>"
-
-
-	                  + "<p>Click the link below to sign in:</p>"
-	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
-	        + "<p>Best Regards,<br>LearnHub Team</p>"
-	        + "</body>"
-	        + "</html>",
-	    student.getUsername(),  // Student Name
-	    batch.getBatchTitle(),   // Batch Name
-	    generateCourseList(batch.getCourses()) // Converts list of courses to HTML list items
-	);
 
 	if (institutionname != null && !institutionname.isEmpty()) {
 	    try {
@@ -336,7 +339,7 @@ public void sendEnrollmentMail(HttpServletRequest request,List<CourseDetail> cou
 	            cc, 
 	            bcc, 
 	            "Welcome to LearnHub - Batch Enrollment Successful!", 
-	            body
+	            body.toString()
 	        );
 	    } catch (Exception e) {
 	        logger.error("Error sending mail: " + e.getMessage());
@@ -354,43 +357,41 @@ private String generateCourseList(List<CourseDetail> courses) {
     }
     return courseList.toString();
 }
+private String generateCourseString(List<CourseDetail> courses) {
+    String courseList = "";
+    for (CourseDetail course : courses) {
+    	courseList+=course;
+    }
+    return courseList;
+}
+	public void notifiInstallment(Batch batch,Muser user,List<CourseDetail> courses) {
+				List<BatchInstallmentdetails> installmentslist = batchStruct.findoriginalInstallmentDetailsByBatchId(batch.getId());
+				int count = ordertablerepo.findCountByUserIDAndBatchID(user.getUserId(), batch.getId(), "paid");
+				int installmentlength = installmentslist.size();
+				if (installmentlength > count) {
+					BatchInstallmentdetails installment = installmentslist.get(count);
+					Long Duration = installment.getDurationInDays();
+					LocalDate startdate = LocalDate.now();
+					LocalDate datetonotify = startdate.plusDays(Duration);
+					String heading = " Installment Pending!";
+					String link = "/dashboard/course";
+					String notidescription = "Installment date for Courses " +generateCourseString(courses)  + " for installment "
+							+ installment.getInstallmentNumber() + " was pending";
 
-//	public void notifiinstallment(Long courseId, Long userId) {
-//		Optional<CourseDetail> courseOptional = coursedetail.findById(courseId);
-//		Optional<Muser> optionalUser = muserRepository.findById(courseId);
-//
-//		if (courseOptional.isPresent() && optionalUser.isPresent()) {
-//			CourseDetail course = courseOptional.get();
-//			Optional<Course_PartPayment_Structure> opPartpay = partpayrepo.findBycourse(course);
-//			if (opPartpay.isPresent()) {
-//				Course_PartPayment_Structure partpay = opPartpay.get();
-//				List<InstallmentDetails> installmentslist = partpay.getInstallmentDetail();
-//				int count = ordertablerepo.findCountByUserIDAndCourseID(userId, courseId, "paid");
-//				int installmentlength = installmentslist.size();
-//				if (installmentlength > count) {
-//					InstallmentDetails installment = installmentslist.get(count);
-//					Long Duration = installment.getDurationInDays();
-//					LocalDate startdate = LocalDate.now();
-//					LocalDate datetonotify = startdate.plusDays(Duration);
-//					String heading = " Installment Pending!";
-//					String link = "/dashboard/course";
-//					String notidescription = "Installment date Of " + course.getCourseName() + " for installment "
-//							+ installment.getInstallmentNumber() + " was pending";
-//
-//					Long NotifyId = notiservice.createNotification("Payment", "system", notidescription, "system",
-//							heading, link);
-//					if (NotifyId != null) {
-//						List<Long> ids = new ArrayList<>();
-//						ids.add(userId);
-//						notiservice.SpecificCreateNotification(NotifyId, ids, datetonotify);
-//					}
-//				}
-//			}
-//		}
-//
-//	}
+					Long NotifyId = notiservice.createNotification("Payment", "system", notidescription, "system",
+							heading, link);
+					if (NotifyId != null) {
+						List<Long> ids = new ArrayList<>();
+						ids.add(user.getUserId());
+						notiservice.SpecificCreateNotification(NotifyId, ids, datetonotify);
+					}
+				}
+			}
+		
+
+	}
 	
 	//===============================BatchPayments=================================
 	
 	
-}
+

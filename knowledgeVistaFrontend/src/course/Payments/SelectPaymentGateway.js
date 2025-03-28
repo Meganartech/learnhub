@@ -44,7 +44,6 @@ const SelectPaymentGateway = ({ orderData, setorderData,setopenselectgateway }) 
 
   useEffect(() => {
     fetchpaymentTypedetails();
-    console.log(orderData)
   }, []);
 
   

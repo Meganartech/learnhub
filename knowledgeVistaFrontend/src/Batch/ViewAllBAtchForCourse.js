@@ -12,6 +12,7 @@ const ViewAllBAtchForCourse = () => {
   const userId = sessionStorage.getItem("userid");
     const [submitting, setsubmitting] = useState(false);
     const token = sessionStorage.getItem("token");
+    const[paytypeState,setpaytypeState]=useState(0);//0->Full //1->PART
   const MySwal = withReactContent(Swal);
   const [batch, setbatch] = useState([]);
   const Currency = sessionStorage.getItem("Currency");
@@ -27,39 +28,60 @@ const ViewAllBAtchForCourse = () => {
       paytype:"",
       url:""
   })
-  const FetchOrderSummary=async(batchId, userId) =>{
+  const FetchOrderSummary = async (batchId, userId, paytype) => {
     try {
-          setsubmitting(true);
-          const data = JSON.stringify({
-            batchId: batchId,
-            userId: userId,
-          });
-    
-          const response = await axios.post(`${baseUrl}/Batch/getOrderSummary`, data, {
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-            },
-          });
-          setsubmitting(false);
-
-setorderData(response.data)
-setopenselectgateway(true)
-        }catch(error){
-          setsubmitting(false);
-          setopenselectgateway(false);
-              if(error.response && error.response.status===400){
-             
-              MySwal.fire({
-                icon: "error",
-                title: "Error creating order:",
-                text: error.response.data ? error.response.data : "error occured",
-              });
-            }else{
-              throw error
-            }
-        }
-  }
+      if (paytype === "PART") {
+        const result = await MySwal.fire({
+          title: "Select Payment Type",
+          text: "Do you want to pay fully or in installments?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Full Pay",
+          cancelButtonText: "Part Pay",
+        });
+  
+        // Determine payment type based on user selection
+        const selectedPayType = result.isDismissed ? 1 : 0;
+  
+        setpaytypeState(selectedPayType);
+        setsubmitting(true);
+  
+        // Prepare request data
+        const data = JSON.stringify({
+          batchId: batchId,
+          userId: userId,
+          paytype: selectedPayType, // Use local variable, not state
+        });
+  
+        // Make API call
+        const response = await axios.post(`${baseUrl}/Batch/getOrderSummary`, data, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        });
+  
+        setsubmitting(false);
+        setorderData(response.data);
+        console.log(response.data)
+        setopenselectgateway(true);
+      }
+    } catch (error) {
+      setsubmitting(false);
+      setopenselectgateway(false);
+  
+      if (error.response && error.response.status === 400) {
+        MySwal.fire({
+          icon: "error",
+          title: "Error creating order:",
+          text: error.response.data ? error.response.data : "An error occurred",
+        });
+      } else {
+        throw error;
+      }
+    }
+  };
+  
   useEffect(() => {
     const fetchBatchforcourse = async () => {
       try {
@@ -240,7 +262,7 @@ setopenselectgateway(true)
                               <button
                                 className=" btn btn-sm btn-outline-primary"
                                 onClick={() =>
-                                 FetchOrderSummary(item.id,userId)
+                                 FetchOrderSummary(item.id,userId,item.paytype)
                                 }
                                 title="Enroll Now"
                               >

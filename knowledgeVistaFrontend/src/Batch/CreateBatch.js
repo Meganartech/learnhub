@@ -15,6 +15,7 @@ const CreateBatch = () => {
   const [searchQueryTrainer,setSearchQueryTrainer]=useState('')
   const[selectedTainers,setselectedTrainers]=useState([])
   const token = sessionStorage.getItem("token");
+  const role=sessionStorage.getItem("role")
   const[batch,setbatch]=useState({
     batchTitle:"",
     startDate:"",
@@ -357,7 +358,15 @@ const CreateBatch = () => {
         setSelectedCourse([]);
         setselectedTrainers([])
         setErrors({});
+        const batchId=response?.data?.batchId;
+        const amount=response?.data?.amount;
+        const batchTitle=response?.data?.batchName;
+        
+        if(role==="ADMIN"){
+          navigate(`/batch/save/partpay/${batchTitle}/${batchId}`)
+        }else{
         navigate("/batch/viewall")
+        }
       }
     } catch (error) {
       console.error("Error saving batch:", error);

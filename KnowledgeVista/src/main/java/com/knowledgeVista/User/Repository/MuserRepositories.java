@@ -134,13 +134,13 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String institutionName);
 
 
-@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(c.courseId, c.courseName, c.courseUrl, c.courseDescription, c.courseCategory, c.amount, c.courseImage, c.paytype, c.Duration, c.institutionName, c.Noofseats) " +
+@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(c.courseId, c.courseName, c.courseUrl, c.courseDescription, c.courseCategory, c.amount, c.courseImage, c.Duration, c.institutionName, c.Noofseats) " +
         "FROM Muser u " +
         "JOIN u.allotedCourses c " +
         "WHERE u.email = :email")
  List<CourseDetailDto> findAllotedCoursesByEmail(@Param("email") String email);
 
-@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(c.courseId, c.courseName, c.courseUrl, c.courseDescription, c.courseCategory, c.amount, c.courseImage, c.paytype, c.Duration, c.institutionName, c.Noofseats) " +
+@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(c.courseId, c.courseName, c.courseUrl, c.courseDescription, c.courseCategory, c.amount, c.courseImage,  c.Duration, c.institutionName, c.Noofseats) " +
         "FROM Muser u " +
         "JOIN u.courses c " +
         "WHERE u.email = :email")
@@ -149,7 +149,7 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	@Query("SELECT u FROM Muser u WHERE u.email = ?1 AND u.institutionName = ?2")
   Optional<Muser> findByEmailandInstitutionName(String email, String institutionName);
 	
-	@Query("SELECT new com.knowledgeVista.User.MuserRequiredDto(u.userId, u.username, u.email, u.profile) " +
+	@Query("SELECT new com.knowledgeVista.User.MuserRequiredDto(u.userId, u.username, u.email) " +
 	          "FROM Muser u WHERE u.userId = ?1 AND u.institutionName = ?2")
 	  Optional<MuserRequiredDto> findByuserIdandInstitutionName(Long userId, String institutionName);
 
@@ -289,7 +289,14 @@ LocalDateTime findLatestLastActiveByInstitution(@Param("institutionName") String
 	    			""")
 	    			List<SearchDto> getBatchOfUser(@Param("email") String email);
 
-
+	    	   @Query("""
+	    			    SELECT COUNT(b) > 0 
+	    			    FROM Muser u  
+	    			    JOIN u.batches b 
+	    			    WHERE u.email = :email AND b.batchId = :batchId
+	    			""")
+	    			boolean FindAllotedOrNotByUserIdAndBatchId(@Param("email") String email, @Param("batchId") String batchId); 
+	    	   
 
 }
 

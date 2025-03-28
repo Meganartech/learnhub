@@ -4,20 +4,15 @@ import withReactContent from "sweetalert2-react-content";
 import baseUrl from "../../api/utils";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Partialpaymentsetting from "./Partialpaymentsetting";
 import CreateBatchModel from "../../Batch/CreateBatchModel";
 
 const CourseCreation = () => {
   const token = sessionStorage.getItem("token");
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
-  const [installmentData, setInstallmentData] = useState([]);
-  const [durations, setDurations] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const openModal = () => setIsModalOpen(true);   // Set modal open
   const closeModal = () => setIsModalOpen(false);  // Set modal close
-
-  const [enablechecked, setenablechecked] = useState(false);
   // Initial state for form errors
     const [searchQueryBatches,setSearchQueryBatches]=useState('')
     const [Batches, setBatches] = useState({});
@@ -364,14 +359,7 @@ const CourseCreation = () => {
       formDataToSend.append("Duration", formData.Duration);
       formDataToSend.append("Noofseats", formData.Noofseats);
       formDataToSend.append("batches",JSON.stringify(selectedBatches))
-      if (enablechecked) {
-        formDataToSend.append("paytype", "PART");
-
-        const installmentDataJson = JSON.stringify(installmentData);
-        formDataToSend.append("InstallmentDetails", installmentDataJson);
-      } else {
-        formDataToSend.append("paytype", "FULL");
-      }
+     
 
       const response = await axios.post(
         `${baseUrl}/course/add`,

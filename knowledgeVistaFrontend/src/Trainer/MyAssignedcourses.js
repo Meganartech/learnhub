@@ -93,7 +93,7 @@ const MyAssignedcourses = () => {
         <div className="col-sm-12">
           <div className="createbtn">
             {(role === "ADMIN" || role === "TRAINER") && (
-              <a onClick={(e)=>{e.preventDefault();navigate("/course/Trainer/addcourse")}} href="#">
+              <a onClick={(e)=>{e.preventDefault();navigate("/course/addcourse")}} href="#">
                 <button type="button" className="btn btn-light mb-3">
                   <i className="fa-solid fa-plus"></i> Create Course
                 </button>

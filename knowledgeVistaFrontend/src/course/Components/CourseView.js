@@ -23,85 +23,9 @@ const CourseView = ({ filteredCourses }) => {
     coursename:"",
     installment:"",
     paytype:"",
+    paytypeL:"",
     url:""
 })
-  // useEffect(() => {
-  //   const pendingPayment = JSON.parse(sessionStorage.getItem("pendingPayment"));
-
-  //   if (pendingPayment) {
-  //     const { courseId, paytype } = pendingPayment;
-
-  //     // Clear pending payment data from localStorage
-  //     sessionStorage.removeItem("pendingPayment");
-  //     const userId = sessionStorage.getItem("userid");
-  //     // Resume the payment process
-  //     handlepaytype(courseId, userId, paytype);
-  //   }
-  // }, []);
-
-  // const handlepaytype = (courseId, userId, paytype) => {
-  //   let url = "";
-  //   if (paytype === "FULL") {
-  //     url = "/Full/getOrderSummary";
-  //     FetchOrderSummary(courseId, userId, url);
-  //   } else {
-  //     MySwal.fire({
-  //       icon: "question",
-  //       title: "Payment Type?",
-  //       text: "Want To Pay the Amount Partially or Fully? ",
-  //       showDenyButton: true,
-  //       showCancelButton: true,
-  //       confirmButtonColor: "#4e73df",
-  //       denyButtonColor: "#4e73df",
-  //       confirmButtonText: `Pay Fully `,
-  //       denyButtonText: `Pay in  Part`,
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         url = "/Full/getOrderSummary";
-  //         FetchOrderSummary(courseId, userId, url);
-  //       } else if (result.isDenied) {
-  //         url = "/Part/getOrderSummary";
-
-  //         FetchOrderSummary(courseId, userId, url);
-  //       }
-  //     });
-  //   }
-  // };
-//   const FetchOrderSummary=async(courseId, userId, url) =>{
-//     try {
-//           setsubmitting(true);
-//           const data = JSON.stringify({
-//             courseId: courseId,
-//             userId: userId,
-//           });
-    
-//           const response = await axios.post(`${baseUrl}${url}`, data, {
-//             headers: {
-//               Authorization: token,
-//               "Content-Type": "application/json",
-//             },
-//           });
-//           setsubmitting(false);
-
-// setorderData(response.data)
-// setopenselectgateway(true)
-//         }catch(error){
-//           setsubmitting(false);
-//           setopenselectgateway(false);
-//               if(error.response && error.response.status===400){
-             
-//               MySwal.fire({
-//                 icon: "error",
-//                 title: "Error creating order:",
-//                 text: error.response.data ? error.response.data : "error occured",
-//               });
-//             }else{
-//               throw error
-//             }
-//         }
-//   }
- 
- 
   const handleClick = async (event, id, amount, url) => {
     event.preventDefault();
     if (amount === 0) {

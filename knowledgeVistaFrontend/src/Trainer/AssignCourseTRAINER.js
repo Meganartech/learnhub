@@ -154,7 +154,7 @@ const handleAssignCourse = async () => {
     {courses.map(course => (
       <div key={course.courseId} className='checkboxes'>
         <input
-          type="checkbox"
+          type="checkbox" 
           checked={course.selected} // The checkbox state is controlled by course.selected
           onChange={() => handleToggleCourse(course.courseId)} // Toggle course selection on change
         />

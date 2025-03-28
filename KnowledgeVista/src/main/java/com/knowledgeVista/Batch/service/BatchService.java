@@ -22,7 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.Batch.PaymentType;
 import com.knowledgeVista.Batch.BatchDto;
+import com.knowledgeVista.Batch.BatchInstallmentDto;
+import com.knowledgeVista.Batch.BatchInstallmentDtoWrapper;
+import com.knowledgeVista.Batch.BatchInstallmentdetails;
+import com.knowledgeVista.Batch.Batch_partPayment_Structure;
+import com.knowledgeVista.Batch.Repo.BatchInstallmentDetailsRepo;
+import com.knowledgeVista.Batch.Repo.BatchPartPayRepo;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.CourseDetailDto.courseIdNameImg;
@@ -37,493 +44,595 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 @Service
 public class BatchService {
 
-    @Autowired
-    private CourseDetailRepository courseDetailRepository;
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
-    private MuserRepositories muserRepo;
-    @Autowired
-    private BatchRepository batchrepo;
-    @Autowired
-    private OrderuserRepo orderuserRepo;
-    @Autowired
-    private GradeService gradeService;
-    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+	@Autowired
+	private CourseDetailRepository courseDetailRepository;
+	@Autowired
+	private JwtUtil jwtUtil;
+	@Autowired
+	private MuserRepositories muserRepo;
+	@Autowired
+	private BatchRepository batchrepo;
+	@Autowired
+	private BatchInstallmentDetailsRepo installmentRepo;
+	@Autowired
+	private BatchPartPayRepo partayStructureRepo;
+	private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
-    public List<Map<String, Object>> searchCourses(String courseName, String token) {
-        // Extract email from the JWT token
-        String email = jwtUtil.getUsernameFromToken(token);
+	public List<Map<String, Object>> searchCourses(String courseName, String token) {
+		// Extract email from the JWT token
+		String email = jwtUtil.getUsernameFromToken(token);
 
-        // Retrieve the institution name associated with the email
-        String institutionName = muserRepo.findinstitutionByEmail(email);
+		// Retrieve the institution name associated with the email
+		String institutionName = muserRepo.findinstitutionByEmail(email);
 
-        // Query the course details repository
-        List<Object[]> results = courseDetailRepository.searchCourseIdAndNameByCourseNameByInstitution(courseName, institutionName);
+		// Query the course details repository
+		List<Object[]> results = courseDetailRepository.searchCourseIdAndNameByCourseNameByInstitution(courseName,
+				institutionName);
 
-        // Convert List<Object[]> to List<Map<String, Object>>
-        return results.stream()
-            .map(row -> Map.of(
-                "courseId", row[0],    // Map courseId to the first element of the row
-                "courseName", row[1],   // Map courseName to the second element of the row
-                		"amount",row[2]
-            ))
-            .collect(Collectors.toList());
-    }
-    
-    public List<Map<String, Object>> searchbatch(String batchTitle, String token) {
-        // Extract email from the JWT token
-        String email = jwtUtil.getUsernameFromToken(token);
-
-        // Retrieve the institution name associated with the email
-        String institutionName = muserRepo.findinstitutionByEmail(email);
-
-        // Query the course details repository
-        List<Object[]> results = batchrepo.searchBatchByBatchNameAndInstitution(batchTitle, institutionName);
-
-        // Convert List<Object[]> to List<Map<String, Object>>
-        return results.stream()
-            .map(row -> Map.of(
-                "id", row[0],    // Map courseId to the first element of the row
-                "batchId", row[1],   // Map courseName to the second element of the row
-                		"batchTitle",row[2]
-            ))
-            .collect(Collectors.toList());
-    }
-    
-    public List<Map<String, Object>> searchTrainers(String courseName, String token) {
-        // Extract email from the JWT token
-        String email = jwtUtil.getUsernameFromToken(token);
-
-        // Retrieve the institution name associated with the email
-        String institutionName = muserRepo.findinstitutionByEmail(email);
-
-        // Query the course details repository
-        List<Object[]> results = muserRepo.searchTrainerIddAndTrainerNameByInstitution(courseName, institutionName);
-
-        // Convert List<Object[]> to List<Map<String, Object>>
-        return results.stream()
-            .map(row -> Map.of(
-                "userId", row[0],    // Map courseId to the first element of the row
-                "username", row[1]   // Map courseName to the second element of the row
-            ))
-            .collect(Collectors.toList());
-    }
-   //==================================save Batch======================================
-   
-    public ResponseEntity<?>SaveBatch(String batchTitle,LocalDate startDate,LocalDate endDate,Long noofSeats,Long amount ,String coursesJson,String trainersJson, MultipartFile batchImage ,String token){
-    	try {
-    		if (!jwtUtil.validateToken(token)) {
-	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	         }
-
-	         String role = jwtUtil.getRoleFromToken(token);
-	         String email = jwtUtil.getUsernameFromToken(token);
-	         String institutionName=muserRepo.findinstitutionByEmail(email);
-	         if(institutionName==null) {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-	         }
-	         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-
-    		Batch batch=new Batch();
-    		batch.setBatchTitle(batchTitle);
-    		batch.setInstitutionName(institutionName);
-            batch.setStartDate( startDate);
-           batch.setEndDate( endDate);
-           batch.setNoOfSeats( noofSeats);
-           batch.setAmount(amount);
-           ObjectMapper objectMapper = new ObjectMapper();
-      	 List<Map<String, Object>> courses = objectMapper.readValue(coursesJson, List.class);
-           List<Map<String, Object>> trainers = objectMapper.readValue(trainersJson, List.class);
-             // Debugging logs
-             System.out.println("Courses: " + courses);
-             System.out.println("Trainers: " + trainers);
-             List<CourseDetail> courseDetails = new ArrayList<>(); // List to hold valid CourseDetail objects
-
-             for (Map<String, Object> course : courses) {
-            	 Long courseId = ((Number) course.get("courseId")).longValue();
-
-                 // Query the CourseDetail repository to find the course by courseId
-                 Optional<CourseDetail> optionalCourseDetail = courseDetailRepository.findById(courseId);
-
-                 // If the course is found, add it to the list
-                 if (optionalCourseDetail.isPresent()) {
-                     CourseDetail courseDetail = optionalCourseDetail.get();
-                     courseDetails.add(courseDetail);  // Add the found course to the list
-                 } else {
-                	 logger.error("Course with ID " + courseId + " not found. Skipping...");
-                	 System.out.println("Course with ID " + courseId + " not found. Skipping...");
-                 }
-             }
-               batch.setCourses(courseDetails);
-               List<Muser> trainerlist = new ArrayList<>();
-               for (Map<String, Object> trainer : trainers) {
-              	 Long userid = ((Number) trainer.get("userId")).longValue();
-
-                   // Query the CourseDetail repository to find the course by courseId
-                   Optional<Muser> opuser = muserRepo.findtrainerByid(userid);
-
-                   // If the course is found, add it to the list
-                   if (opuser.isPresent()) {
-                       Muser user = opuser.get();
-                       trainerlist.add(user);  // Add the found course to the list
-                   } else {
-                  	 logger.error("Course with ID " + userid + " not found. Skipping...");
-                  	 System.out.println("Course with ID " + userid + " not found. Skipping...");
-                   }
-               }
-               batch.setTrainers(trainerlist);
-               if (batchImage != null && !batchImage.isEmpty()) {
-                   batch.setBatchImage(batchImage.getBytes());
-               }
-
-             // Your business logic to save the batch would go here
-               batchrepo.save(batch);
-               
-
-             return ResponseEntity.ok("Batch saved successfully!");
-	         }else {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Student Cannot add Batch");
-	         }
-    	}catch (Exception e) {
-    		 logger.error("Exception occurs in save Batch", e);;
-    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-    }
- //=================================Save Batch   for CourseCreation===========================
-    public ResponseEntity<?>SaveBatchforCourseCreation(String batchTitle,LocalDate startDate,LocalDate endDate,String token){
-    	try {
-    		if (!jwtUtil.validateToken(token)) {
-	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	         }
-
-	         String role = jwtUtil.getRoleFromToken(token);
-	         String email = jwtUtil.getUsernameFromToken(token);
-	         String institutionName=muserRepo.findinstitutionByEmail(email);
-	         if(institutionName==null|| institutionName.isEmpty()) {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-	         }
-	         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-
-    		Batch batch=new Batch();
-    		batch.setBatchTitle(batchTitle);
-    		batch.setInstitutionName(institutionName);
-            batch.setStartDate( startDate);
-           batch.setEndDate( endDate);
-      
-             Batch savedBatch=batchrepo.save(batch);
-               
-
-             return ResponseEntity.ok(savedBatch);
-	         }else {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Student Cannot add Batch");
-	         }
-    	}catch (Exception e) {
-    		 logger.error("Exception occurs in save Batch", e);;
-    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-    }
-
-    
-    
-    //=============================Edit Batch==============================
-    public ResponseEntity<?> updateBatch(Long batchId ,String batchTitle,LocalDate startDate,LocalDate endDate,Long noofSeats,Long amount 
-    		,String coursesJson,String trainersJson, MultipartFile batchImage ,String token){
-    	  try {
-            // Validate the token
-            if (!jwtUtil.validateToken(token)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-
-            String role = jwtUtil.getRoleFromToken(token);
-            String email = jwtUtil.getUsernameFromToken(token);
-            String institutionName = muserRepo.findinstitutionByEmail(email);
-
-            if (institutionName == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-            }
-
-            if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
-                // Find the batch by ID
-                Optional<Batch> optionalBatch = batchrepo.findBatchByIdAndInstitutionName(batchId, institutionName);
-                if (!optionalBatch.isPresent()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Batch not found");
-                }
-
-                Batch batch = optionalBatch.get();
-                // Set institution name to ensure the batch belongs to the right institution
-                if (!batch.getInstitutionName().equals(institutionName)) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You cannot modify this batch");
-                }
-
-                // Handle courses
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<Map<String, Object>> courses = objectMapper.readValue(coursesJson, List.class);
-
-                // Convert the incoming course JSON to a list of course IDs
-                Set<Long> newCourseIds = new HashSet<>();
-                for (Map<String, Object> course : courses) {
-                    Long courseId = ((Number) course.get("courseId")).longValue();
-                    newCourseIds.add(courseId);  // Collect all the new course IDs
-                }
-
-                // Remove courses from the batch that are not in the new list of course IDs
-                batch.getCourses().removeIf(course -> !newCourseIds.contains(course.getCourseId()));  // Remove courses by ID
-
-                // Add new courses from the new list if they aren't already in the batch
-                for (Map<String, Object> course : courses) {
-                    Long courseId = ((Number) course.get("courseId")).longValue();
-                    // Check if the course is already in the batch
-                    if (!batch.getCourses().stream().anyMatch(c -> c.getCourseId().equals(courseId))) {
-                        // Fetch the course from the database and add it
-                        Optional<CourseDetail> optionalCourse = courseDetailRepository.findById(courseId);
-                        if (optionalCourse.isPresent()) {
-                            batch.getCourses().add(optionalCourse.get());
-                        } else {
-                            logger.error("Course with ID " + courseId + " not found. Skipping...");
-                        }
-                    }
-                }
-
-                // Handle trainers
-                List<Map<String, Object>> trainers = objectMapper.readValue(trainersJson, List.class);
-
-                // Convert the incoming trainer JSON to a list of trainer IDs
-                Set<Long> newTrainerIds = new HashSet<>();
-                for (Map<String, Object> trainer : trainers) {
-                    Long trainerId = ((Number) trainer.get("userId")).longValue();
-                    newTrainerIds.add(trainerId);  // Collect all the new trainer IDs
-                }
-
-                // Remove trainers from the batch that are not in the new list of trainer IDs
-                batch.getTrainers().removeIf(trainer -> !newTrainerIds.contains(trainer.getUserId()));  // Remove trainers by ID
-
-                // Add new trainers from the new list if they aren't already in the batch
-                for (Map<String, Object> trainer : trainers) {
-                    Long trainerId = ((Number) trainer.get("userId")).longValue();
-                    // Check if the trainer is already in the batch
-                    if (!batch.getTrainers().stream().anyMatch(t -> t.getUserId().equals(trainerId))) {
-                        // Fetch the trainer from the database and add it
-                        Optional<Muser> optionalTrainer = muserRepo.findById(trainerId);
-                        if (optionalTrainer.isPresent()) {
-                            batch.getTrainers().add(optionalTrainer.get());
-                        } else {
-                            logger.error("Trainer with ID " + trainerId + " not found. Skipping...");
-                        }
-                    }
-                }
-
-                // Save the updated batch
-                batch.setBatchTitle(batchTitle);
-                batch.setAmount(amount);
-                if(batchImage!=null) {
-                batch.setBatchImage(batchImage.getBytes());
-                }
-                batch.setNoOfSeats(noofSeats);
-                batch.setStartDate(startDate);
-                batch.setEndDate(endDate);
-                batchrepo.save(batch);
-                return ResponseEntity.ok("Batch updated successfully!");
-
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Student cannot edit batch");
-            }
-        } catch (Exception e) {
-            logger.error("Exception occurred while updating batch", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    //==========================Get Batch================
-    public ResponseEntity<?>GetBatch(Long id,String token){
-    	try {
-	         String email = jwtUtil.getUsernameFromToken(token);
-	         String role= jwtUtil.getRoleFromToken(token);
-	         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-	        	 
-	         String institutionName=muserRepo.findinstitutionByEmail(email);
-	         if(institutionName==null) {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-	         }
-	         
-	        Optional<BatchDto> opbatch=batchrepo.findBatchDtoByIdAndInstitutionName(id, institutionName);
-	        if(opbatch.isPresent()) {
-	        	BatchDto batch=opbatch.get();
-	        	batch.setCourses(batchrepo.findCoursesByBatchIdAndInstitutionName(id, institutionName));
-	        	batch.setTrainers(batchrepo.findTrainersByBatchIdAndInstitutionName(id, institutionName));
-	        	return ResponseEntity.ok(batch);
-	        }else {
-	        	return ResponseEntity.status(HttpStatus.NO_CONTENT).body("batch Not Found");
-	        }
-	         }else {return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Stdents Cannot Access This Page");
-	  	       
-	         } 
-    	} catch (Exception e) {
-            logger.error("Exception occurred while deleting batch with ID " + id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while Getting the batch.");
-        }
-    }
-   //===================Get ALl Batch===========================
-    public ResponseEntity<?>GetAllBatch(String token){
-    	try {
-	         String email = jwtUtil.getUsernameFromToken(token);
-	         String institutionName=muserRepo.findinstitutionByEmail(email);
-	         if(institutionName==null) {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-	         }
-	        List<Batch> batches=batchrepo.findAllBatchDtosByInstitution(institutionName);
-	        if (batches == null || batches.isEmpty()) {  // Check for null or empty list
-	        	 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	        }
-
-	        List<BatchDto> btc= batches.stream()
-	                .map(BatchDto::new)  // Convert each Batch to a DTO
-	                .collect(Collectors.toList());
-	        return ResponseEntity.ok(btc);
-	        
-	         
-    	} catch (Exception e) {
-            logger.error("Exception occurred while getting all  batch with ID " +e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while getting All the batch.");
-        }
-    }
-//=============================Get all BatchBy CourseId=================================
-    public ResponseEntity<?>GetAllBatchByCourseID(String token,Long courseid){
-    	try {
-	         String email = jwtUtil.getUsernameFromToken(token);
-	         String institutionName=muserRepo.findinstitutionByEmail(email);
-	         if(institutionName==null) {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-	         }
-	        List<Batch> batches=batchrepo.findByCoursesCourseIdAndInstitutionName(courseid,institutionName);
-	        if (batches == null || batches.isEmpty()) {  // Check for null or empty list
-	        	 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	        }
-
-	        List<BatchDto> btc= batches.stream()
-	                .map(BatchDto::new)  // Convert each Batch to a DTO
-	                .collect(Collectors.toList());
-	        return ResponseEntity.ok(btc);
-	         
-    	} catch (Exception e) {
-            logger.error("Exception occurred while getting batch with ID " +e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while Getting the batch.");
-        }
-    }
-    
-   
-
-   //==============================Delete Batch================================
-    @Transactional
-    public ResponseEntity<?> deleteBatchById(Long id, String token) {
-    	try {
-    		 String role = jwtUtil.getRoleFromToken(token);
-	         String email = jwtUtil.getUsernameFromToken(token);
-	         String institutionName=muserRepo.findinstitutionByEmail(email);
-	         if(institutionName==null) {
-	        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-	         }
-	         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-        // Check if the batch exists
-        Optional<Batch> optionalBatch = batchrepo.findBatchByIdAndInstitutionName(id,institutionName);
-        if (optionalBatch.isEmpty()) {
-            // Return 204 No Content if batch is not found
-            return ResponseEntity.noContent().build();
-        }
-            Batch batch = optionalBatch.get();
-            // Remove the mappings for courses and trainers
-            batch.getCourses().clear();
-            batch.getTrainers().clear();
-
-            // Save the batch to update the mappings in the database
-            batchrepo.save(batch);
-
-            // Now safely delete the batch
-            batchrepo.deleteById(id);
-
-            return ResponseEntity.ok("Batch deleted successfully!");
-        }else {
-        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot Delete Batch");
-        }
-        } catch (Exception e) {
-            logger.error("Exception occurred while deleting batch with ID " + id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while deleting the batch.");
-        }
-    }
-public ResponseEntity<?>getCoursesoFBatch(String batchId,String token){
-	try {
-		 String role = jwtUtil.getRoleFromToken(token);
-         String email = jwtUtil.getUsernameFromToken(token);
-         String institutionName=muserRepo.findinstitutionByEmail(email);
-         if(institutionName==null) {
-        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-         }
-         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-        	 List<courseIdNameImg> courses= batchrepo.findCoursesOfBatchByBatchId(batchId, institutionName);
-        	 return ResponseEntity.ok(courses);
-         }else {
-         	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot  access This Page");
-         }
-	}catch (Exception e) {
-		// TODO: handle exception
-		logger.error("error occured in Getting courseOF batch "+e);
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		// Convert List<Object[]> to List<Map<String, Object>>
+		return results.stream().map(row -> Map.of("courseId", row[0], // Map courseId to the first element of the row
+				"courseName", row[1], // Map courseName to the second element of the row
+				"amount", row[2])).collect(Collectors.toList());
 	}
-}
-//=================get batch Users======================
-public ResponseEntity<?>getUsersoFBatch(String batchId,String token,int pageNumber,int pageSize){
-	try {
-		 String role = jwtUtil.getRoleFromToken(token);
-         String email = jwtUtil.getUsernameFromToken(token);
-         String institutionName=muserRepo.findinstitutionByEmail(email);
-         if(institutionName==null) {
-        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
-         }
-         if("ADMIN".equals(role)||"TRAINER".equals(role)) {
-        	 Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        	 Page<MuserDto> users= batchrepo.GetMuserDetailsByBatchID(batchId,pageable);
-        	 return ResponseEntity.ok(users);
-         }else {
-         	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot Access This page");
-         }
-	}catch (Exception e) {
-		// TODO: handle exception
-		logger.error("error occured in Getting courseOF batch "+e);
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+	public List<Map<String, Object>> searchbatch(String batchTitle, String token) {
+		// Extract email from the JWT token
+		String email = jwtUtil.getUsernameFromToken(token);
+
+		// Retrieve the institution name associated with the email
+		String institutionName = muserRepo.findinstitutionByEmail(email);
+
+		// Query the course details repository
+		List<Object[]> results = batchrepo.searchBatchByBatchNameAndInstitution(batchTitle, institutionName);
+
+		// Convert List<Object[]> to List<Map<String, Object>>
+		return results.stream().map(row -> Map.of("id", row[0], // Map courseId to the first element of the row
+				"batchId", row[1], // Map courseName to the second element of the row
+				"batchTitle", row[2])).collect(Collectors.toList());
 	}
-}
-//==================================searchBatchUsers==================
-public ResponseEntity<Page<MuserDto>> searchBatchUserByAdminorTrainer( String username, String email, String phone, LocalDate dob,
-	       String skills, int page, int size,String token,String batchId
-	        ) {
-		try{
+
+	public List<Map<String, Object>> searchTrainers(String courseName, String token) {
+		// Extract email from the JWT token
+		String email = jwtUtil.getUsernameFromToken(token);
+
+		// Retrieve the institution name associated with the email
+		String institutionName = muserRepo.findinstitutionByEmail(email);
+
+		// Query the course details repository
+		List<Object[]> results = muserRepo.searchTrainerIddAndTrainerNameByInstitution(courseName, institutionName);
+
+		// Convert List<Object[]> to List<Map<String, Object>>
+		return results.stream().map(row -> Map.of("userId", row[0], // Map courseId to the first element of the row
+				"username", row[1] // Map courseName to the second element of the row
+		)).collect(Collectors.toList());
+	}
+	// ==================================save
+	// Batch======================================
+
+	public ResponseEntity<?> saveBatch(String batchTitle, LocalDate startDate, LocalDate endDate, Long noOfSeats,
+			Long amount, String coursesJson, String trainersJson, MultipartFile batchImage, String token) {
+		try {
+// Validate Token
 			if (!jwtUtil.validateToken(token)) {
-				  return ResponseEntity.ok(Page.empty());
-		    }
-			String role=jwtUtil.getRoleFromToken(token);
-			  String emailad = jwtUtil.getUsernameFromToken(token);
-		         String institutionName=muserRepo.findinstitutionByEmail(emailad);
-		         if(institutionName==null) {
-		        	 return ResponseEntity.ok(Page.empty());
-		         }
-			 
-			 if(role.equals("ADMIN")|| role.equals("TRAINER") ) {
-		    Pageable pageable = PageRequest.of(page, size);
-		Page<MuserDto> Uniquestudents=batchrepo.searchUsersByBatch(batchId, username, email, phone, dob, institutionName, "USER", skills, pageable);
-		return ResponseEntity.ok(Uniquestudents);
-			 }else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			}
 
-				  return ResponseEntity.ok(Page.empty());
-			 }
-			
-		}catch (Exception e) {
-		    e.printStackTrace();
-		    logger.error("", e);
-		    // Return an empty Page with a 200 OK status
-		    return ResponseEntity.ok(Page.empty());
+			String role = jwtUtil.getRoleFromToken(token);
+			String addingEmail = jwtUtil.getUsernameFromToken(token);
+
+			Optional<Muser> opaddingMuser = muserRepo.findByEmail(addingEmail);
+			if (opaddingMuser.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+			}
+
+			Muser addingMuser = opaddingMuser.get();
+
+// Only ADMIN and TRAINER can add a batch
+			if (!"ADMIN".equals(role) && !"TRAINER".equals(role)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Student Cannot add Batch");
+			}
+
+// Initialize batch
+			Batch batch = new Batch();
+			batch.setBatchTitle(batchTitle);
+			batch.setInstitutionName(addingMuser.getInstitutionName());
+			batch.setStartDate(startDate);
+			batch.setEndDate(endDate);
+			batch.setNoOfSeats(noOfSeats);
+			batch.setAmount(amount);
+			batch.setPaytype(PaymentType.FULL);
+
+// Parse JSON data
+			ObjectMapper objectMapper = new ObjectMapper();
+			List<Map<String, Object>> courseList = objectMapper.readValue(coursesJson, List.class);
+			List<Map<String, Object>> trainerListJson = objectMapper.readValue(trainersJson, List.class);
+
+// Fetch and set courses
+			List<CourseDetail> courseDetails = new ArrayList<>();
+			for (Map<String, Object> courseMap : courseList) {
+				Long courseId = ((Number) courseMap.get("courseId")).longValue();
+				courseDetailRepository.findById(courseId).ifPresentOrElse(courseDetails::add,
+						() -> logger.warn("Course with ID {} not found. Skipping...", courseId));
+			}
+			batch.setCourses(courseDetails);
+
+// Fetch and set trainers
+			Set<Long> trainerIds = new HashSet<>();
+			List<Muser> trainerList = new ArrayList<>();
+
+// Include current user if they are a trainer
+			if ("TRAINER".equals(role)) {
+				trainerIds.add(addingMuser.getUserId());
+			}
+
+// Collect trainer IDs from JSON
+			for (Map<String, Object> trainerMap : trainerListJson) {
+				trainerIds.add(((Number) trainerMap.get("userId")).longValue());
+			}
+
+// Fetch trainers and update their allotted courses
+			for (Long trainerId : trainerIds) {
+				muserRepo.findtrainerByid(trainerId).ifPresentOrElse(user -> {
+					if (user.getAllotedCourses() == null) {
+						user.setAllotedCourses(new ArrayList<>());
+					}
+
+					boolean addedNewCourse = false;
+					for (CourseDetail course : courseDetails) {
+						if (!user.getAllotedCourses().contains(course)) {
+							user.getAllotedCourses().add(course);
+							addedNewCourse = true;
+						}
+					}
+
+					if (addedNewCourse) {
+						muserRepo.save(user);
+					}
+
+					trainerList.add(user);
+				}, () -> logger.warn("Trainer with ID {} not found. Skipping...", trainerId));
+			}
+
+			batch.setTrainers(trainerList);
+
+// Save batch image
+			if (batchImage != null && !batchImage.isEmpty()) {
+				batch.setBatchImage(batchImage.getBytes());
+			}
+
+// Save batch to database
+			batch = batchrepo.save(batch);
+
+// Prepare response
+			Map<String, Object> response = new HashMap<>();
+			response.put("batchName", batch.getBatchTitle());
+			response.put("amount", batch.getAmount());
+			response.put("batchId", batch.getId());
+
+			return ResponseEntity.ok(response);
+
+		} catch (Exception e) {
+			logger.error("Exception occurred in SaveBatch", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
+	// =================================Save Batch for
+	// CourseCreation===========================
+	public ResponseEntity<?> SaveBatchforCourseCreation(String batchTitle, LocalDate startDate, LocalDate endDate,
+			String token) {
+		try {
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			}
 
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			String institutionName = muserRepo.findinstitutionByEmail(email);
+			if (institutionName == null || institutionName.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+			}
+			if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 
+				Batch batch = new Batch();
+				batch.setBatchTitle(batchTitle);
+				batch.setInstitutionName(institutionName);
+				batch.setStartDate(startDate);
+				batch.setEndDate(endDate);
+
+				Batch savedBatch = batchrepo.save(batch);
+
+				return ResponseEntity.ok(savedBatch);
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Student Cannot add Batch");
+			}
+		} catch (Exception e) {
+			logger.error("Exception occurs in save Batch", e);
+			;
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	// =============================Edit Batch==============================
+	public ResponseEntity<?> updateBatch(Long batchId, String batchTitle, LocalDate startDate, LocalDate endDate,
+			Long noofSeats, Long amount, String coursesJson, String trainersJson, MultipartFile batchImage,
+			String token) {
+		try {
+// Validate the token
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			}
+
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			Optional<Muser>opmuser=muserRepo.findByEmail(email);
+			if(opmuser.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+			}
+			Muser addinguser=opmuser.get();
+			String institutionName = addinguser.getInstitutionName();
+			if (!"ADMIN".equals(role) && !"TRAINER".equals(role)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Student cannot edit batch");
+			}
+
+// Find the batch by ID
+			Optional<Batch> optionalBatch = batchrepo.findBatchByIdAndInstitutionName(batchId, institutionName);
+			if (optionalBatch.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch not found");
+			}
+
+			Batch batch = optionalBatch.get();
+			if (!batch.getInstitutionName().equals(institutionName)||("TRAINER".equals(role) && !addinguser.getBatches().contains(batch))) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You cannot modify this batch");
+			}
+
+// Parse JSON data
+			ObjectMapper objectMapper = new ObjectMapper();
+			List<Map<String, Object>> courseList = objectMapper.readValue(coursesJson, List.class);
+			List<Map<String, Object>> trainerListJson = objectMapper.readValue(trainersJson, List.class);
+
+// Fetch and update courses
+			Set<Long> newCourseIds = new HashSet<>();
+			List<CourseDetail> updatedCourseDetails = new ArrayList<>();
+
+			for (Map<String, Object> courseMap : courseList) {
+				Long courseId = ((Number) courseMap.get("courseId")).longValue();
+				newCourseIds.add(courseId);
+				courseDetailRepository.findById(courseId).ifPresentOrElse(updatedCourseDetails::add,
+						() -> logger.warn("Course with ID {} not found. Skipping...", courseId));
+			}
+
+			batch.getCourses().clear();
+			batch.getCourses().addAll(updatedCourseDetails);
+
+// Fetch and update trainers
+			Set<Long> newTrainerIds = new HashSet<>();
+			List<Muser> updatedTrainers = new ArrayList<>();
+
+			for (Map<String, Object> trainerMap : trainerListJson) {
+				Long trainerId = ((Number) trainerMap.get("userId")).longValue();
+				newTrainerIds.add(trainerId);
+			}
+
+			for (Long trainerId : newTrainerIds) {
+				muserRepo.findById(trainerId).ifPresentOrElse(trainer -> {
+					if (trainer.getAllotedCourses() == null) {
+						trainer.setAllotedCourses(new ArrayList<>());
+					}
+
+					boolean addedNewCourse = false;
+					for (CourseDetail course : updatedCourseDetails) {
+						if (!trainer.getAllotedCourses().contains(course)) {
+							trainer.getAllotedCourses().add(course);
+							addedNewCourse = true;
+						}
+					}
+
+					if (addedNewCourse) {
+						muserRepo.save(trainer);
+					}
+
+					updatedTrainers.add(trainer);
+				}, () -> logger.warn("Trainer with ID {} not found. Skipping...", trainerId));
+			}
+
+			batch.getTrainers().clear();
+			batch.getTrainers().addAll(updatedTrainers);
+
+// Update batch details
+			batch.setBatchTitle(batchTitle);
+			batch.setAmount(amount);
+			batch.setNoOfSeats(noofSeats);
+			batch.setStartDate(startDate);
+			batch.setEndDate(endDate);
+
+			if (batchImage != null && !batchImage.isEmpty()) {
+				batch.setBatchImage(batchImage.getBytes());
+			}
+
+// Save updated batch
+			batchrepo.save(batch);
+
+			return ResponseEntity.ok("Batch updated successfully!");
+
+		} catch (Exception e) {
+			logger.error("Exception occurred while updating batch", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	// ==========================Get Batch================
+	public ResponseEntity<?> GetBatch(Long id, String token) {
+		try {
+			String email = jwtUtil.getUsernameFromToken(token);
+			String role = jwtUtil.getRoleFromToken(token);
+			if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+
+				String institutionName = muserRepo.findinstitutionByEmail(email);
+				if (institutionName == null) {
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+							.body("Unauthorized User Institution Not Found");
+				}
+
+				Optional<BatchDto> opbatch = batchrepo.findBatchDtoByIdAndInstitutionName(id, institutionName);
+				if (opbatch.isPresent()) {
+					BatchDto batch = opbatch.get();
+					batch.setCourses(batchrepo.findCoursesByBatchIdAndInstitutionName(id, institutionName));
+					batch.setTrainers(batchrepo.findTrainersByBatchIdAndInstitutionName(id, institutionName));
+					return ResponseEntity.ok(batch);
+				} else {
+					return ResponseEntity.status(HttpStatus.NO_CONTENT).body("batch Not Found");
+				}
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Stdents Cannot Access This Page");
+
+			}
+		} catch (Exception e) {
+			logger.error("Exception occurred while deleting batch with ID " + id, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error occurred while Getting the batch.");
+		}
+	}
+
+	// ===================Get ALl Batch===========================
+	public ResponseEntity<?> GetAllBatch(String token) {
+		try {
+			String email = jwtUtil.getUsernameFromToken(token);
+			Optional<Muser> opuser = muserRepo.findByEmail(email);
+			if (opuser.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+			}
+			Muser user = opuser.get();
+			if ("ADMIN".equals(user.getRole().getRoleName())) {
+				List<Batch> batches = batchrepo.findAllBatchDtosByInstitution(user.getInstitutionName());
+				if (batches == null || batches.isEmpty()) { // Check for null or empty list
+					return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+				}
+
+				List<BatchDto> btc = batches.stream().map(BatchDto::new) // Convert each Batch to a DTO
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(btc);
+			} else if ("TRAINER".equals(user.getRole().getRoleName())) {
+				List<Batch> batches = user.getBatches();
+				List<BatchDto> btc = batches.stream().map(BatchDto::new) // Convert each Batch to a DTO
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(btc);
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students cannot Access This Page");
+			}
+
+		} catch (Exception e) {
+			logger.error("Exception occurred while getting all  batch with ID " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error occurred while getting All the batch.");
+		}
+	}
+
+//=============================Get all BatchBy CourseId=================================
+	public ResponseEntity<?> GetAllBatchByCourseID(String token, Long courseid) {
+		try {
+			String email = jwtUtil.getUsernameFromToken(token);
+			String institutionName = muserRepo.findinstitutionByEmail(email);
+			if (institutionName == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+			}
+			List<Batch> batches = batchrepo.findByCoursesCourseIdAndInstitutionName(courseid, institutionName);
+			if (batches == null || batches.isEmpty()) { // Check for null or empty list
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+			}
+
+			List<BatchDto> btc = batches.stream().map(BatchDto::new) // Convert each Batch to a DTO
+					.collect(Collectors.toList());
+			return ResponseEntity.ok(btc);
+
+		} catch (Exception e) {
+			logger.error("Exception occurred while getting batch with ID " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error occurred while Getting the batch.");
+		}
+	}
+
+	// ==============================Delete Batch================================
+	@Transactional
+	public ResponseEntity<?> deleteBatchById(Long id, String token) {
+		try {
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			String institutionName = muserRepo.findinstitutionByEmail(email);
+			if (institutionName == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+			}
+			if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+				// Check if the batch exists
+				Optional<Batch> optionalBatch = batchrepo.findBatchByIdAndInstitutionName(id, institutionName);
+				if (optionalBatch.isEmpty()) {
+					// Return 204 No Content if batch is not found
+					return ResponseEntity.noContent().build();
+				}
+				Batch batch = optionalBatch.get();
+				// Remove the mappings for courses and trainers
+				batch.getCourses().clear();
+				batch.getTrainers().clear();
+
+				// Save the batch to update the mappings in the database
+				batchrepo.save(batch);
+
+				// Now safely delete the batch
+				batchrepo.deleteById(id);
+
+				return ResponseEntity.ok("Batch deleted successfully!");
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot Delete Batch");
+			}
+		} catch (Exception e) {
+			logger.error("Exception occurred while deleting batch with ID " + id, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error occurred while deleting the batch.");
+		}
+	}
+
+	public ResponseEntity<?> getCoursesoFBatch(String batchId, String token) {
+		try {
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			String institutionName = muserRepo.findinstitutionByEmail(email);
+			if (institutionName == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+			}
+			if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+				List<courseIdNameImg> courses = batchrepo.findCoursesOfBatchByBatchId(batchId, institutionName);
+				return ResponseEntity.ok(courses);
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot  access This Page");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error("error occured in Getting courseOF batch " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+//=================get batch Users======================
+	public ResponseEntity<?> getUsersoFBatch(String batchId, String token, int pageNumber, int pageSize) {
+		try {
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			String institutionName = muserRepo.findinstitutionByEmail(email);
+			if (institutionName == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+			}
+			if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+				Pageable pageable = PageRequest.of(pageNumber, pageSize);
+				Page<MuserDto> users = batchrepo.GetMuserDetailsByBatchID(batchId, pageable);
+				return ResponseEntity.ok(users);
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Students Cannot Access This page");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error("error occured in Getting courseOF batch " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+//==================================searchBatchUsers==================
+	public ResponseEntity<Page<MuserDto>> searchBatchUserByAdminorTrainer(String username, String email, String phone,
+			LocalDate dob, String skills, int page, int size, String token, String batchId) {
+		try {
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.ok(Page.empty());
+			}
+			String role = jwtUtil.getRoleFromToken(token);
+			String emailad = jwtUtil.getUsernameFromToken(token);
+			String institutionName = muserRepo.findinstitutionByEmail(emailad);
+			if (institutionName == null) {
+				return ResponseEntity.ok(Page.empty());
+			}
+
+			if (role.equals("ADMIN") || role.equals("TRAINER")) {
+				Pageable pageable = PageRequest.of(page, size);
+				Page<MuserDto> Uniquestudents = batchrepo.searchUsersByBatch(batchId, username, email, phone, dob,
+						institutionName, "USER", skills, pageable);
+				return ResponseEntity.ok(Uniquestudents);
+			} else {
+
+				return ResponseEntity.ok(Page.empty());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("", e);
+			// Return an empty Page with a 200 OK status
+			return ResponseEntity.ok(Page.empty());
+		}
+	}
+//======================================PARTPAY batch====================================
+
+	public ResponseEntity<?> SavePartPay(Long batchId, List<BatchInstallmentdetails> installmentDetails, String token) {
+		try {
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Token");
+			}
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			if ("ADMIN".equals(role)) {
+				Optional<Batch> opbatch = batchrepo.findById(batchId);
+				if (opbatch.isEmpty()) {
+					return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch Not Found");
+				}
+
+				Batch batch = opbatch.get();
+				batch.setPaytype(PaymentType.PART);
+				Batch_partPayment_Structure paystructure = new Batch_partPayment_Structure();
+				paystructure.setApprovedBy(email);
+				paystructure.setCreatedBy(email);
+				paystructure.setDatecreated(LocalDate.now());
+				paystructure.setBatch(batch);
+				paystructure = partayStructureRepo.save(paystructure);
+				batchrepo.save(batch);
+				for (BatchInstallmentdetails installment : installmentDetails) {
+					BatchInstallmentdetails install = new BatchInstallmentdetails();
+					install.setDurationInDays(installment.getDurationInDays());
+					install.setInstallmentAmount(installment.getInstallmentAmount());
+					install.setInstallmentNumber(installment.getInstallmentNumber());
+					install.setPartpay(paystructure);
+					installmentRepo.save(install);
+				}
+				return ResponseEntity.ok("Installment Settings Saved SuccessFully");
+			}
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only Admins Can Access This Page");
+		} catch (Exception e) {
+			logger.error("Error At Save PartPay", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+	public ResponseEntity<?> GetPartPayDetails(Long id, String token) {
+		try {
+			String role = jwtUtil.getRoleFromToken(token);
+			if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
+				Optional<Batch> opbatch = batchrepo.findById(id);
+				if (opbatch.isPresent()) {
+					Batch batch = opbatch.get();
+					List<BatchInstallmentDto> response = partayStructureRepo.findInstallmentDetailsByBatchId(id);
+					BatchInstallmentDtoWrapper wrapper = new BatchInstallmentDtoWrapper();
+					wrapper.setBatchAmount(batch.getAmount());
+					wrapper.setBatchId(batch.getId());
+					wrapper.setBatchTitle(batch.getBatchTitle());
+					wrapper.setBatchInstallments(response);
+					return ResponseEntity.ok(wrapper);
+				} else {
+					return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No batch Found");
+				}
+
+			} else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Stdents Cannot Access This Page");
+
+			}
+		} catch (Exception e) {
+			logger.error("Exception occurred while deleting batch with ID " + id, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error occurred while Getting the batch.");
+		}
+	}
 }

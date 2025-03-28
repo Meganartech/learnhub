@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.Attendance.AttendanceService;
+import com.knowledgeVista.Batch.BatchInstallmentdetails;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
@@ -226,23 +227,12 @@ public class FrontController {
 			@RequestParam("courseName") String courseName, @RequestParam("courseDescription") String description,
 			@RequestParam("courseCategory") String category, @RequestParam("Duration") Long Duration,
 			@RequestParam("Noofseats") Long Noofseats, @RequestParam("batches") String batches,
-			@RequestParam("courseAmount") Long amount, @RequestParam("paytype") String paytype,
-			@RequestParam(value = "InstallmentDetails", required = false) String installmentDataJson,
+			@RequestParam("courseAmount") Long amount,
 			@RequestHeader("Authorization") String token) {
-		return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, batches, amount,
-				paytype, installmentDataJson, token);
+		return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, batches, amount, token);
 	}
 
-	@PostMapping("/course/create/trainer")
-	public ResponseEntity<?> addCourseByTrainer(@RequestParam("courseImage") MultipartFile file,
-			@RequestParam("courseName") String courseName, @RequestParam("courseDescription") String description,
-			@RequestParam("courseCategory") String category, @RequestParam("Duration") Long Duration,
-			@RequestParam("Noofseats") Long Noofseats, @RequestParam("courseAmount") Long amount,
-			@RequestHeader("Authorization") String token) {
-
-		return courseController.addCourseByTrainer(file, courseName, description, category, Duration, Noofseats, amount,
-				token);
-	}
+	
 
 	@Transactional
 	@PatchMapping("/course/edit/{courseId}")
@@ -584,21 +574,26 @@ public class FrontController {
 		}
 	}
 
-	@GetMapping("/viewPaymentList/{courseId}")
-	public ResponseEntity<?> ViewPaymentdetails(@RequestHeader("Authorization") String token,
-			@PathVariable Long courseId) {
-		if (paylist != null && activeProfile.equals("demo")) {
-
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-
-		} else {
-			if (paylist != null) {
-				return paylist.ViewPaymentdetails(token, courseId);
-			}
-			return null;
-		}
+//	@GetMapping("/viewPaymentList/{courseId}")
+//	public ResponseEntity<?> ViewPaymentdetails(@RequestHeader("Authorization") String token,
+//			@PathVariable Long courseId) {
+//		if (paylist != null && activeProfile.equals("demo")) {
+//
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+//
+//		} else {
+//			if (paylist != null) {
+//				return paylist.ViewPaymentdetails(token, courseId);
+//			}
+//			return null;
+//		}
+//	}
+	
+	@GetMapping("/viewPaymentList/{batchId}")
+	public ResponseEntity<?> GetPartPayDetails(@RequestHeader("Authorization") String token,
+			@PathVariable Long batchId) {
+		return batchService.GetPartPayDetails(batchId, token);
 	}
-
 	@GetMapping("/viewAllTransactionHistory")
 	public ResponseEntity<?> viewTransactionHistory(@RequestHeader("Authorization") String token) {
 		if (paylist != null && activeProfile.equals("demo")) {
@@ -1572,12 +1567,12 @@ public class FrontController {
 			@RequestHeader("Authorization") String token) {
 
 		// Your validation logic and service call here
-		return batchService.SaveBatch(batchTitle, startDate, endDate, noOfSeats, amount, courses, trainers, batchImage,
+		return batchService.saveBatch(batchTitle, startDate, endDate, noOfSeats, amount, courses, trainers, batchImage,
 				token);
 	}
 
 	@PatchMapping(value = "/batch/Edit/{batchId}")
-	public ResponseEntity<?> EditBatc(@PathVariable("batchId") Long batchId,
+	public ResponseEntity<?> EditBatch(@PathVariable("batchId") Long batchId,
 			@RequestParam("batchTitle") String batchTitle, @RequestParam("startDate") LocalDate startDate,
 			@RequestParam("endDate") LocalDate endDate, @RequestParam("noOfSeats") Long noOfSeats,
 			@RequestParam("amount") Long amount, @RequestParam("courses") String courses, // Assuming it's a JSON string
@@ -1647,7 +1642,10 @@ public class FrontController {
 			@RequestParam(value = "size", defaultValue = "10") int size, @RequestHeader("Authorization") String token) {
 		return batchService.searchBatchUserByAdminorTrainer(username, email, phone, dob, skills, page, size, token, batchId);
 	}
-
+@PostMapping("/Batch/Save/PartPayDetails")
+public ResponseEntity<?>SavePartPayDetails(@RequestParam Long batchId,@RequestBody List<BatchInstallmentdetails>installmentData,@RequestHeader("Authorization") String token){
+	return batchService.SavePartPay(batchId, installmentData, token);
+}
 	// -------------------Attendance Service---------------
 
 	@GetMapping("/view/getAttendancAnalysis/{userId}/{batchId}")

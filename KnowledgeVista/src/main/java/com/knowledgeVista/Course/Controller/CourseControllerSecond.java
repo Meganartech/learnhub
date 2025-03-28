@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.knowledgeVista.Course.CourseDetail;
-import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.License.licenseRepository;
 import com.knowledgeVista.Payments.Orderuser;
@@ -24,8 +22,7 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 @RestController
 public class CourseControllerSecond {
-	@Autowired
-	private CourseDetailRepository coursedetailrepository;
+	
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	@Autowired

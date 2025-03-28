@@ -50,9 +50,6 @@ public class CourseDetail {
 	@ManyToMany(mappedBy = "courses")
 	private List<Muser> users;
 
-	@Column(name = "paytype")
-	private String paytype;
-
 	@Column(name = "Duration")
 	private Long Duration;
 
@@ -83,7 +80,7 @@ public class CourseDetail {
 	}
 
 	public CourseDetail(Long courseId, String courseName, String courseUrl, String courseDescription,
-			String courseCategory, Long amount, byte[] courseImage, String paytype, Long Duration,
+			String courseCategory, Long amount, byte[] courseImage,  Long Duration,
 			String institutionName, Long Noofseats) {
 		this.courseId = courseId;
 		this.courseName = courseName;
@@ -92,7 +89,6 @@ public class CourseDetail {
 		this.courseCategory = courseCategory;
 		this.amount = amount;
 		this.courseImage = courseImage;
-		this.paytype = paytype;
 		this.Duration = Duration;
 		this.institutionName = institutionName;
 		this.Noofseats = Noofseats;

@@ -18,7 +18,7 @@ const CreateModuleTest = () => {
     const [savedQuestions, setSavedQuestions] = useState([]);
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
     const [mnoofattempt, setmnoofattempt] = useState(1);
-    const [mpassPercentage, setmpassPercentage] = useState(0);
+    const [mpassPercentage, setmpassPercentage] = useState(100);
     const [showCriteria, setShowCriteria] = useState(false);
     const token=sessionStorage.getItem("token")
     const[Lessons,setLessons]=useState([])

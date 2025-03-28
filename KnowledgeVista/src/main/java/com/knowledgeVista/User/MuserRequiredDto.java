@@ -32,11 +32,10 @@ public class MuserRequiredDto {
 	        this.countryCode = countryCode;
 	    }
 
-		public MuserRequiredDto(Long userId, String username, String email, byte[] profile) {
+		public MuserRequiredDto(Long userId, String username, String email) {
 			super();
 			this.userId = userId;
 			this.username = username;
 			this.email = email;
-			this.profile = profile;
 		}
 }

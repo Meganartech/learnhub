@@ -16,6 +16,7 @@ const EditBatch = () => {
    const [searchQueryTrainer,setSearchQueryTrainer]=useState('')
    const[selectedTainers,setselectedTrainers]=useState([])
    const token = sessionStorage.getItem("token");
+   const role=sessionStorage.getItem("role")
    const[batch,setbatch]=useState({
     id:"",
     batchId:"",
@@ -382,10 +383,35 @@ useEffect(()=>{
          setselectedTrainers([])
          setErrors({});
          navigate("/batch/viewall")
+       }else if(response.status===204){
+        setbatch({
+          batchTitle: "",
+          startDate: "",
+          endDate: "",
+          courses: [],
+          trainers: [],
+          noOfSeats: "",
+          amount: "",
+        });
+        navigate("/notFound");
        }
       }
      } catch (error) {
+      if(error?.response?.status===401){
+        navigate("/unAuthorized")
+      } if(error?.response?.status===403){
+        MySwal.fire({
+          icon: "warning",
+          title: "FORBITTEN",
+          text: "You Cannot Edit This Batch"
+        }).then((result) => {
+          navigate(-1);
+        }
+        );
+      
+      }else{
        console.error("Error Updating batch:", error);
+      }
      }
    };
  
@@ -641,6 +667,29 @@ useEffect(()=>{
                     />
                     <div className="invalid-feedback">{errors.amount}</div>
                   </div>
+
+                  {role === "ADMIN" && batch?.paytype && (
+  <div className="form-group row">
+    <div className="col-sm-3 col-form-label">Partial Pay</div>
+    <div className="col-sm-9 mt-2">
+      <a
+        href="#"
+        onClick={(event) => {
+          event.preventDefault(); // Prevent default anchor behavior
+
+          const baseUrl = batch.paytype === "FULL" 
+            ? `/batch/save/partpay/${batch.batchTitle}/${batch.id}`
+            : `/batch/update/partpay/${batch.batchTitle}/${batch.id}`;
+
+          navigate(baseUrl);
+        }}
+      >
+        Installment Settings
+      </a>
+    </div>
+  </div>
+)}
+
                 </div>
               </div>
               <div className="cornerbtn">

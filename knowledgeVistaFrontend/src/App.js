@@ -33,7 +33,6 @@ import StudentProfile from "./Student/StudentProfile.js";
 import MyAssignedcourses from "./Trainer/MyAssignedcourses.js";
 import EditLesson from "./course/Update/EditLesson.js";
 import AssignCourseTRAINER from "./Trainer/AssignCourseTRAINER.js";
-import CreateCourseTrainer from "./Trainer/CreateCourseTrainer.js";
 import EditStudent from "./Student/EditStudent.js";
 import EditTrainer from "./Trainer/EditTrainer.js";
 import ProfileView from "./Common Components/ProfileView.js";
@@ -115,6 +114,7 @@ import AddMoreMQuestion from "./course/ModuleTest.js/AddMoreMQuestion.js";
 import EditModuleQuestion from "./course/ModuleTest.js/EditModuleQuestion.js";
 import SheduleModuleTest from "./course/ModuleTest.js/SheduleModuleTest.js";
 import StartModuleTest from "./course/ModuleTest.js/StartModuleTest.js";
+import Partialpaymentsetting from "./course/Components/Partialpaymentsetting.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -357,20 +357,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
-            <Route
-              path="/course/Trainer/addcourse"
-              element={
-                <ErrorBoundary>
-                  <PrivateRoute
-                    authenticationRequired={true}
-                    authorizationRequired={true}
-                    onlytrainer={true}
-                  >
-                    <CreateCourseTrainer />
-                  </PrivateRoute>
-                </ErrorBoundary>
-              }
-            />
+           
             <Route
               path="/addTrainer"
               element={
@@ -925,19 +912,7 @@ function App() {
               }
             />
 
-            <Route
-              path="/course/update/paymentSettings/:courseName/:courseId"
-              element={
-                <ErrorBoundary>
-                  <PrivateRoute
-                    authenticationRequired={true}
-                    authorizationRequired={true}
-                  >
-                    <UpdatePartialPaymentSettings />
-                  </PrivateRoute>
-                </ErrorBoundary>
-              }
-            />
+            
             <Route
               path="/licenceDetails"
               element={
@@ -1129,6 +1104,29 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authorizationRequired={true} onlyadmin={true}>
                     <SettingsComponent />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/batch/save/partpay/:batchTitle/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authorizationRequired={true} onlyadmin={true}>
+                    <Partialpaymentsetting />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/batch/update/partpay/:batchTitle/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <UpdatePartialPaymentSettings />
                   </PrivateRoute>
                 </ErrorBoundary>
               }

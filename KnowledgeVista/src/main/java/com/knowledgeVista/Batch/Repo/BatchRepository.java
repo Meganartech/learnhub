@@ -3,20 +3,17 @@ package com.knowledgeVista.Batch.Repo;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.BatchDto;
 import com.knowledgeVista.Batch.CourseDto;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.TrainerDto;
-import com.knowledgeVista.Course.CourseDetailDto;
 import com.knowledgeVista.Course.CourseDetailDto.courseIdNameImg;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
@@ -35,19 +32,20 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 		       "LEFT JOIN b.courses c " +
 		       "WHERE b.batchId = :id AND b.institutionName = :institutionName")
 		List<courseIdNameImg> findCoursesOfBatchByBatchId(@Param("id") String id, @Param("institutionName") String institutionName);
+		
 		@Query("SELECT b FROM Batch b JOIN b.courses c WHERE c.courseId = :courseId AND b.institutionName = :institutionName")
 		List<Batch> findByCoursesCourseIdAndInstitutionName(@Param("courseId") Long courseId, @Param("institutionName") String institutionName);
 		
 	@Query("SELECT new com.knowledgeVista.Batch.BatchDto( " +
-		       "b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount, " +
+		       "b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount," +
 		       "COALESCE(CAST(STRING_AGG(c.courseName, ',') AS string), ''), " +
 		       "COALESCE(CAST(STRING_AGG(t.username, ',') AS string), ''), " +
-		       "b.BatchImage) " +
+		       "b.BatchImage,b.paytype) " +
 		       "FROM Batch b " +
 		       "LEFT JOIN b.courses c " +
 		       "LEFT JOIN b.trainers t " +
 		       "WHERE b.id = :id AND b.institutionName = :institutionName " +
-		       "GROUP BY b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount")
+		       "GROUP BY b.id, b.batchId, b.batchTitle, b.startDate, b.endDate, b.institutionName, b.noOfSeats, b.amount,b.paytype")
 		Optional<BatchDto> findBatchDtoByIdAndInstitutionName(@Param("id") Long id, @Param("institutionName") String institutionName);
 
 

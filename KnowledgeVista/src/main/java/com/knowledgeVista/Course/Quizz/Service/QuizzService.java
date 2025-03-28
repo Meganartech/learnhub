@@ -375,7 +375,7 @@ public ResponseEntity<?>getQuizzSheduleDetails(Long courseId, String batchId,Str
 				  if("ADMIN".equals(role)) {
 					  isalloted=true;
 				  }else if("TRAINER".equals(role)){
-					   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
+					   isalloted=muserRepository.FindAllotedOrNotByUserIdAndBatchId(email, batchId);
 				  }
 				  if(isalloted) {
 					  List<ShedueleListDto> shedule= quizzRepo.getQuizzShedulesByCourseIdAndBatchId(courseId, batchId);
@@ -412,7 +412,7 @@ public ResponseEntity<?>SaveORUpdateSheduleQuizz(Long quizzId, String batchId,Lo
 				  if("ADMIN".equals(role)) {
 					  isalloted=true;
 				  }else if("TRAINER".equals(role)){
-					   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
+					   isalloted=muserRepository.FindAllotedOrNotByUserIdAndBatchId(email, batchId);
 				  }
 				  if(isalloted) {
 					  Optional<QuizzSchedule> opQuizzschedule= quizzSheuleRepo.findByQuizzIdAndBatchId(quizzId, batchId);

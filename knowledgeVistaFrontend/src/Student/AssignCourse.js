@@ -2,16 +2,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from "sweetalert2";
-import undraw_profile from "../images/profile.png"
 import withReactContent from "sweetalert2-react-content";
 import baseUrl from '../api/utils';
 import axios from 'axios';
-import errorimg from "../images/errorimg.png"
 import { GlobalStateContext } from '../Context/GlobalStateProvider';
 const AssignCourse = () => {
  const { displayname } = useContext(GlobalStateContext);
-  const { userId } = useParams();
-  const [img, setImg] = useState();
+  const { userId } = useParams()
   const [userData, setUserData] = useState({});
   const [courses, setCourses] = useState([]);
   const MySwal = withReactContent(Swal);
@@ -26,10 +23,7 @@ const AssignCourse = () => {
               }
             });
             const userData =  response.data;
-           
-            if(userData.profile!==null){
-            setImg(`data:image/jpeg;base64,${userData.profile}`);
-          }
+          
             setUserData(userData);
 
             const response1 = await axios.get(`${baseUrl}/course/assignList?email=${userData.email}`, {
@@ -151,55 +145,23 @@ const handleAssignCourse = async () => {
       <div></div>
       <div onClick={()=>{navigate(-1)}}><i className="fa-solid fa-xmark"></i></div>
       </div>
-          <h3>Assign Course </h3>
-          <div className='mainform'>
-            <div className='profile-picture'>
-              <div className='image-group'>
-                <img id="preview" src={img ? img :undraw_profile}  onError={(e) => {
-                        e.target.src = errorimg; // Use the imported error image
-                      }} 
-                      alt='profile' />
-              </div>
-              <div className=" p-2 rounded" style={{width:"100%", backgroundColor: "#F2E1F5" }}>
-                <div className='form-group row'>
-                  <label htmlFor='Name'
-                  className="col-sm-4 col-form-label"> <b>Name:</b></label>
-                  <div className="col-sm-8">
-                  <label className="col-form-label">
-                    {userData.username}</label>
-                    </div>
-                </div>
-                <div className='form-group row'>
-                  <label htmlFor='Name'
-                  className="col-sm-4 col-form-label"><b> Email:</b></label>
-                  <div className="col-sm-8">
-                  <label className="col-form-label">
-                    {userData.email}</label>
-                    </div>
-                </div>
-              </div>
-            </div>
-  {courses.length <= 0 ? (
-  <div className='formgroup rounded p-5 ' style={{ backgroundColor: '#F2E1F5' }}>
-  <h1 className='text-center' style={{margin:"auto"}}>No courses found  to assign</h1>
-  </div>
-) : (
-  <div className='formgroup rounded p-5 assignlist' >
-    {courses.map(course => (
-      <div key={course.courseId} className='checkboxes' >
-        <input type="checkbox" checked={course.selected} onChange={() => handleToggleCourse(course.courseId)} />
-        <label>
-          {course.courseName}
-        </label>
-      </div>
-    ))}
-  </div>
-)}
+         <div className='tableheader '><h4>Assign batch</h4> <div className='selectandadd'> <p><b className='text-primary'>Name : </b>{userData?.username}</p><p><b className='text-primary'>Email : </b>{userData?.email}</p></div></div>
+         <div className='courseBatchSplit '>
+          <div className='courseList card'>
+            {courses.map((item)=>(
+              <span key={item?.courseId}   className='checkboxes'> <input  type="checkbox"/> <label title={item?.courseName}>{item?.courseName}</label></span>
+            ))}
+             
+          </div>
+          
 
+          <div className='batchView '>
 
           </div>
-          <div className='btngrp'>
-            <button className='btn btn-primary' onClick={handleAssignCourse} >Save</button>
+         </div>
+          <div className='cornerbtn'>
+          <button className='btn btn-secondary' onClick={()=>{navigate(-1)}} >Cancel</button>
+            <button className='btn btn-primary' onClick={handleAssignCourse} >Assign</button>
           </div>
         </div>
       </div>

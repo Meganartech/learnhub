@@ -1,10 +1,10 @@
 package com.knowledgeVista.Payments.controller;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,19 +13,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.BatchInstallmentdetails;
+import com.knowledgeVista.Batch.Repo.BatchPartPayRepo;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
-import com.knowledgeVista.Course.CourseDetail;
-import com.knowledgeVista.Course.Repository.CourseDetailRepository;
-import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.Payments.Orderuser;
 import com.knowledgeVista.Payments.Paymentsettings;
 import com.knowledgeVista.Payments.Stripesettings;
 import com.knowledgeVista.Payments.repos.OrderuserRepo;
 import com.knowledgeVista.Payments.repos.PaymentsettingRepository;
 import com.knowledgeVista.Payments.repos.Striperepo;
-import com.knowledgeVista.Payments.repos.partpayrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -44,29 +41,18 @@ public class BatchPaymentService {
 	private String currency;
 
 	@Autowired
-	private partpayrepo partpayrepo;
-	@Autowired
-	private JwtUtil jwtUtil;
-	@Autowired
 	private PaymentsettingRepository paymentsetting;
-
-	@Autowired
-	private CourseDetailRepository coursedetail;
 	@Autowired
 	private OrderuserRepo ordertablerepo;
 	@Autowired
 	private MuserRepositories muserRepository;
-
-	@Autowired
-	private NotificationService notiservice;
 	@Autowired
 	private Striperepo stripereop;
 	
 	@Autowired
 	private PaymentIntegration2 payint2;
 	@Autowired
-	private PaymentIntegration payint1;
-	
+	private BatchPartPayRepo partPaystruct;
 	@Autowired
 	private BatchRepository batchrepo;
 	
@@ -140,6 +126,8 @@ public class BatchPaymentService {
 		try {
 			Long batchId = requestData.get("batchId");
 			Long userId = requestData.get("userId");
+			Long paytype=requestData.get("paytype");
+			//0->Full //1->PART
 			if (batchId == null || userId == null) {
 			    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Some Values are missing");
 			}
@@ -162,27 +150,11 @@ public class BatchPaymentService {
 	                 }
 	            }
 				List<Orderuser> orderuserlist = ordertablerepo.findAllByUserIDAndCourseID(userId, batchId, "paid");
-				int amount = 0;
-				Long amt = batch.getAmount();
-				for (Orderuser order : orderuserlist) {
-
-					amount = amount + order.getAmountReceived();
-				}
-				if (amount == batch.getAmount()) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Amount already paid");
-				} else {
-					amt = batch.getAmount() - amount;
-				}
-				 Map<String, Object> response = new HashMap<>();
-		            response.put("amount", amt);
-		            response.put("userId", user.getUserId());
-					response.put("batchId", batch.getId());
-		            response.put("batchAmount", batch.getAmount());
-		            response.put("batchName", batch.getBatchTitle());
-					response.put("url","/full/buyBatch/create");
-		            response.put("paytype", "Full");
-		            response.put("installment", 1);
-				return ResponseEntity.ok(response);
+				 if (paytype == 0) {
+	                    return getFullBatchOrderSummary(user, batch, orderuserlist);
+	                } else {
+	                    return getPartBatchOrderSummary(user, batch, orderuserlist);
+	                }
 			} else {
 				// Return an error response if the course is not found
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot find Batch");
@@ -196,15 +168,84 @@ public class BatchPaymentService {
 		}
 
 	}
+	 private ResponseEntity<?> getFullBatchOrderSummary(Muser user, Batch batch, List<Orderuser> orderuserlist) {
+	        int amountPaid = 0;
+	        Long totalAmount = batch.getAmount();
 
-	
+	        for (Orderuser order : orderuserlist) {
+	            amountPaid += order.getAmountReceived();
+	        }
+
+	        if (amountPaid == totalAmount) {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Amount already paid");
+	        } else {
+	            totalAmount -= amountPaid;
+	        }
+
+	        Map<String, Object> response = new HashMap<>();
+	        response.put("amount", totalAmount);
+	        response.put("userId", user.getUserId());
+	        response.put("batchId", batch.getId());
+	        response.put("batchAmount", batch.getAmount());
+	        response.put("batchName", batch.getBatchTitle());
+	        response.put("url", "/full/buyBatch/create");
+	        response.put("paytype", "Full");
+            response.put("paytypeL", 0);//0->Full //1->PART
+	        response.put("installment", 1);
+
+	        return ResponseEntity.ok(response);
+	    }
+
+	    private ResponseEntity<?> getPartBatchOrderSummary(Muser user, Batch batch, List<Orderuser> orderuserlist) {
+	        try {
+	            List<BatchInstallmentdetails> installmentList = partPaystruct.findoriginalInstallmentDetailsByBatchId(batch.getId());
+	            installmentList.sort(Comparator.comparing(BatchInstallmentdetails::getInstallmentNumber));
+
+	            int amountPaid = orderuserlist.stream().mapToInt(Orderuser::getAmountReceived).sum();
+	            BatchInstallmentdetails nextInstallment = null;
+
+	            for (BatchInstallmentdetails installment : installmentList) {
+	                if (amountPaid < installment.getInstallmentAmount()) {
+	                    nextInstallment = installment;
+	                    break;
+	                }
+	                amountPaid -= installment.getInstallmentAmount();
+	            }
+
+	            if (nextInstallment == null) {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All installments are paid");
+	            }
+
+	            Map<String, Object> response = new HashMap<>();
+	            response.put("amount", nextInstallment.getInstallmentAmount());
+	            response.put("userId", user.getUserId());
+	            response.put("batchId", batch.getId());
+	            response.put("batchAmount", nextInstallment.getInstallmentAmount());
+	            response.put("batchName", batch.getBatchTitle());
+	            response.put("url", "/full/buyBatch/create");
+	            response.put("paytype", "PART");
+	            response.put("paytypeL", 1);//0->Full //1->PART
+	            response.put("installment", nextInstallment.getInstallmentNumber());
+
+	            return ResponseEntity.ok(response);
+
+	        } catch (Exception e) {
+	            logger.error("Error at Creating Part Payment Summary", e);
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body("Error creating installment summary: " + e.getMessage());
+	        }
+	    }
+	   
+
+	   
 	
 	public ResponseEntity<?> createOrderfullforBatch(Map<String, Long> requestData, String gateway, String token,
 			HttpServletRequest request) {
 		try {
 			Long batchId = requestData.get("batchId");
 			Long userId = requestData.get("userId");
-			if (batchId == null || userId == null) {
+			Long partpay=requestData.get("paytypeL");
+			if (batchId == null || userId == null || partpay==null) {
 			    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Some Values are missing");
 			}
 			Optional<Batch> batchOptional = batchrepo.findById(batchId);
@@ -218,28 +259,46 @@ public class BatchPaymentService {
 				}
 				Batch batch = batchOptional.get();
 				List<Orderuser> orderuserlist = ordertablerepo.findAllByBatchIDAndCourseID(userId, batchId, "paid");
+				
 				int amount = 0;
+				Long installMentNumber=0L;
 				Long amt = batch.getAmount();
-				for (Orderuser order : orderuserlist) {
+				if(partpay== 0) {
+					for (Orderuser order : orderuserlist) {
+	
+						amount = amount + order.getAmountReceived();
+					}
+					if (amount == batch.getAmount()) {
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Amount already paid");
+					} else {
+						amt = batch.getAmount() - amount;
+					}
+				}else {
+					List<BatchInstallmentdetails> installmentList = partPaystruct.findoriginalInstallmentDetailsByBatchId(batch.getId());
+		            installmentList.sort(Comparator.comparing(BatchInstallmentdetails::getInstallmentNumber));
 
-					amount = amount + order.getAmountReceived();
-				}
-				if (amount == batch.getAmount()) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Amount already paid");
-				} else {
-					amt = batch.getAmount() - amount;
+		            int amountPaid = orderuserlist.stream().mapToInt(Orderuser::getAmountReceived).sum();
+		            BatchInstallmentdetails nextInstallment = null;
+
+		            for (BatchInstallmentdetails installment : installmentList) {
+		                if (amountPaid < installment.getInstallmentAmount()) {
+		                    nextInstallment = installment;
+		                    break;
+		                }
+		                amountPaid -= installment.getInstallmentAmount();
+		            }
+		            amt= nextInstallment.getInstallmentAmount();
+		            installMentNumber=nextInstallment.getInstallmentNumber();
 				}
 				if ("RAZORPAY".equals(gateway)) {
-					return handleRazorpayCheckout(batch.getBatchTitle(),batch.getId(),user.getUsername(),user.getEmail(),amt,user.getUserId(),0L,user.getInstitutionName());
+					return handleRazorpayCheckout(batch.getBatchTitle(),batch.getId(),user.getUsername(),user.getEmail(),amt,user.getUserId(),installMentNumber,user.getInstitutionName());
 					
 				}
-				else if ("STRIPE".equals(gateway)) {
-					
-					
-					return handleStripeCheckout(user.getUsername(),user.getEmail(),user.getUserId(),batch.getBatchTitle(),batch.getId(),user.getInstitutionName(),amt,request);
+				else if ("STRIPE".equals(gateway)) {				
+					return handleStripeCheckout(user.getUsername(),user.getEmail(),user.getUserId(),batch.getBatchTitle(),batch.getId(),installMentNumber,user.getInstitutionName(),amt,request);
 				}
 				else if("PAYPAL".equals(gateway)){
-					return payint2.handlePaypalCheckout(user.getUsername(),user.getEmail(),user.getUserId(),batch.getBatchTitle(),batch.getId(),user.getInstitutionName(),amt,request);
+					return payint2.handlePaypalCheckout(user.getUsername(),user.getEmail(),user.getUserId(),batch.getBatchTitle(),batch.getId(),installMentNumber,user.getInstitutionName(),amt,request);
 				}
 				else {
 				
@@ -258,7 +317,7 @@ public class BatchPaymentService {
 					.body("Error creating order: " + e.getMessage());
 		}
 	}
-	private ResponseEntity<?> handleStripeCheckout( String userName,String email,Long userid ,String BatchName,Long batchId,String institutionName, Long amt,HttpServletRequest request) {
+	private ResponseEntity<?> handleStripeCheckout( String userName,String email,Long userid ,String BatchName,Long batchId,Long installmentNumber,String institutionName, Long amt,HttpServletRequest request) {
 		try {
 			Optional<Stripesettings> opdataList = stripereop.findByinstitutionName(institutionName);
 			if (opdataList.isPresent()) {
@@ -293,7 +352,7 @@ public class BatchPaymentService {
 				Session session = Session.create(params);
 				if (session.getId() != null) {
 				 saveOrderDetails(userName, email, amt, session.getId(), "CREATED",
-							institutionName, userid,  0L,"STRIPE",BatchName,batchId);
+							institutionName, userid, installmentNumber,"STRIPE",BatchName,batchId);
 					Map<String, String> response = new HashMap<>();
 					response.put("sessionId", session.getId());
 					return ResponseEntity.ok(response);

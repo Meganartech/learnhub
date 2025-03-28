@@ -158,7 +158,6 @@ public class Listview {
         	 MuserRequiredDto user=opuser.get();
             return ResponseEntity.ok(user);
          }else {
-        	 System.out.println("usernot");
         	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
          }
       	   }else {

@@ -2,7 +2,6 @@ package com.knowledgeVista.Payments.controller;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -21,20 +20,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
-import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Notification.Service.NotificationService;
-import com.knowledgeVista.Payments.Course_PartPayment_Structure;
-import com.knowledgeVista.Payments.InstallmentDetails;
 import com.knowledgeVista.Payments.Orderuser;
 import com.knowledgeVista.Payments.Paypalsettings;
 import com.knowledgeVista.Payments.repos.OrderuserRepo;
-import com.knowledgeVista.Payments.repos.partpayrepo;
 import com.knowledgeVista.Payments.repos.paypalrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -53,8 +46,7 @@ public class PaymentIntegration2 {
 	private String currency;
 	@Autowired
 	private paypalrepo paypalrepo;
-	@Autowired
-	private partpayrepo partpayrepo;
+
 	  @Value("${paypal.mode}")
 	    private String paypalMode;
 	  @Autowired
@@ -64,8 +56,6 @@ public class PaymentIntegration2 {
 		@Autowired
 		private NotificationService notiservice;
 		
-		@Autowired
-		private CourseDetailRepository coursedetail;
 		@Autowired
 		private BatchRepository batchrepo;
 		@Autowired
@@ -126,42 +116,8 @@ public class PaymentIntegration2 {
 		return ordertablerepo.save(orderTable);
 	}
 
-	public void notifiinstallment(Long courseId, Long userId) {
-		Optional<CourseDetail> courseOptional = coursedetail.findById(courseId);
-		Optional<Muser> optionalUser = muserRepository.findById(courseId);
 
-		if (courseOptional.isPresent() && optionalUser.isPresent()) {
-			CourseDetail course = courseOptional.get();
-			Optional<Course_PartPayment_Structure> opPartpay = partpayrepo.findBycourse(course);
-			if (opPartpay.isPresent()) {
-				Course_PartPayment_Structure partpay = opPartpay.get();
-				List<InstallmentDetails> installmentslist = partpay.getInstallmentDetail();
-				int count = ordertablerepo.findCountByUserIDAndCourseID(userId, courseId, "paid");
-				int installmentlength = installmentslist.size();
-				if (installmentlength > count) {
-					InstallmentDetails installment = installmentslist.get(count);
-					Long Duration = installment.getDurationInDays();
-					LocalDate startdate = LocalDate.now();
-					LocalDate datetonotify = startdate.plusDays(Duration);
-					String heading = " Installment Pending!";
-					String link = "/dashboard/course";
-					String notidescription = "Installment date Of " + course.getCourseName() + " for installment "
-							+ installment.getInstallmentNumber() + " was pending";
-
-					Long NotifyId = notiservice.createNotification("Payment", "system", notidescription, "system",
-							heading, link);
-					if (NotifyId != null) {
-						List<Long> ids = new ArrayList<>();
-						ids.add(userId);
-						notiservice.SpecificCreateNotification(NotifyId, ids, datetonotify);
-					}
-				}
-			}
-		}
-
-	}
-
-	public ResponseEntity<?> handlePaypalCheckout(String userName,String email,Long userid ,String BatchName,Long batchId,String institutionName, Long amt,HttpServletRequest httpRequest) {
+	public ResponseEntity<?> handlePaypalCheckout(String userName,String email,Long userid ,String BatchName,Long batchId,Long installMentNumber,String institutionName, Long amt,HttpServletRequest httpRequest) {
 	    try {
 	        // Fetch PayPal settings for the institution
 	        Optional<Paypalsettings> opdataList = paypalrepo.FindByInstitutionName(institutionName);
@@ -231,7 +187,7 @@ public class PaymentIntegration2 {
 	            if (response.statusCode() == 201) {
 	                Order order = response.result();
 	                saveOrderDetails(userName, email, amt,order.id(), "CREATED",
-							institutionName, userid,  0L,"PAYPAL",BatchName,batchId);
+							institutionName, userid, installMentNumber,"PAYPAL",BatchName,batchId);
 	                Map<String, String> approvalLink = new HashMap<>();
 	                for (LinkDescription link : order.links()) {
 	                    if ("approve".equals(link.rel())) {
