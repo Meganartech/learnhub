@@ -454,7 +454,7 @@ public class CourseController {
 
 	 //-------------------------Under check------------------------------------
 
-	   public ResponseEntity<?> getAllCourseInfo(  String token, String email) {
+	   public ResponseEntity<?> getAllCourseInfo(  String token) {
 		   try {
 	          if (!jwtUtil.validateToken(token)) {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -474,28 +474,17 @@ public class CourseController {
 			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			   	    	}
 			   	   //user is present or not
-			   	   Optional<Muser> optionalUser = muserRepository.findByEmail(email);
-			      	    if (optionalUser.isPresent()) {
-			      	        Muser user = optionalUser.get();
-			   	     if("USER".equals(user.getRole().getRoleName())) {
-	          if ("ADMIN".equals(role)) {
+			   	 
+	          if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 	               List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllCourseDetailsByInstitutionName(institution);
 	       return ResponseEntity.ok().body(courseInfoList);
 	       
 	      	    
-	       }else if("TRAINER".equals(role)){
-	    	   List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllCourseDetailsByInstitutionName(institution);
-		       return ResponseEntity.ok().body(courseInfoList);
-		       
-	       }else {
-	       
+	          }else {
 	       
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("addding is not Admin or Trainer");}
 	    	   
-	       } return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("email is not of user");
-	   }else {
-	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user is not present");
-		     }
+			    
 	       }else {
 	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ADDING USER NOT PRESENT");
 	       }
@@ -508,50 +497,7 @@ public class CourseController {
 	   
 	    
 
-	   public ResponseEntity<?> getAllAllotelistInfo( String token,String email) {
-		   try {
-	          if (!jwtUtil.validateToken(token)) {
-	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	          }
-
-	          String role = jwtUtil.getRoleFromToken(token);
-	          String adding=jwtUtil.getUsernameFromToken(token);
-		         String institution="";
-			     Optional<Muser> opaddinguser =muserRepository.findByEmail(adding);
-			     if(opaddinguser.isPresent()) {
-			    	 Muser addinguser=opaddinguser.get();
-			    	 institution=addinguser.getInstitutionName();
-			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-			   	    	if(!adminIsactive) {
-			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			   	    	}
-			     }else {
-		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			     }
-	          if ("ADMIN".equals(role)) {
-	        	  Optional<Muser> optionalUser = muserRepository.findByEmail(email);
-	      	    if (optionalUser.isPresent()) {
-	      	    	
-	      	        Muser user = optionalUser.get();
-	      	        if("TRAINER".equals(user.getRole().getRoleName())) {
-	       List<Map<String, Object>> courseInfoList = coursedetailrepository.findAllCourseDetailsByInstitutionName(institution);
-	       return ResponseEntity.ok().body(courseInfoList);
-	       }else {
-	    	      	    return ResponseEntity.status(HttpStatus.NO_CONTENT).body("user is not a Trainer");
-	      	        	
-	      	        }
-	      	    } return ResponseEntity.status(HttpStatus.NO_CONTENT).body("user is not found");
-	      	       
-	       }else {
-	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	    	   
-	       }
-		   }catch(Exception e) {
-			   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		   }
-	   }
-
-
+	  
 	   //---------------------WORKING--------------
 	 
 	   

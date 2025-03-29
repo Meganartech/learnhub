@@ -255,7 +255,7 @@ const ViewCourseOfBatch = () => {
         </div>
       ) : (
         <div>
-          <h1 className="text-light">No Course Found</h1>
+          <h6 className="text-muted">No Course Found</h6>
         </div>
       )}
       </div>)}

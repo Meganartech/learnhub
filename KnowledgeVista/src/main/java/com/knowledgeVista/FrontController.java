@@ -31,6 +31,7 @@ import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
 import com.knowledgeVista.Batch.Weightage.service.weightageService;
+import com.knowledgeVista.Batch.service.AssignBatch;
 import com.knowledgeVista.Batch.service.BatchService;
 import com.knowledgeVista.Batch.service.BatchService2;
 import com.knowledgeVista.Batch.service.GradeService;
@@ -189,6 +190,8 @@ public class FrontController {
 	private EventController eventController;
 	@Autowired 
 	private GradeService gradeService;
+	@Autowired
+	private AssignBatch assignBatch;
 
 	private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
 
@@ -274,17 +277,12 @@ public class FrontController {
 		}
 	}
 
-	@GetMapping("/course/assignList")
-	public ResponseEntity<?> getAllCourseInfo(@RequestHeader("Authorization") String token,
-			@RequestParam("email") String email) {
-		return courseController.getAllCourseInfo(token, email);
+	@GetMapping("/course/getList")
+	public ResponseEntity<?> getAllCourseInfo(@RequestHeader("Authorization") String token) {
+		return courseController.getAllCourseInfo(token);
 	}
 
-	@GetMapping("/course/allotList")
-	public ResponseEntity<?> getAllAllotelistInfo(@RequestHeader("Authorization") String token,
-			@RequestParam("email") String email) {
-		return courseController.getAllAllotelistInfo(token, email);
-	}
+	
 
 	@DeleteMapping("/course/{courseId}")
 	public ResponseEntity<String> deleteCourse(@PathVariable Long courseId,
@@ -1621,7 +1619,37 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	    @RequestParam int page, 
 	    @RequestParam int size, 
 	    @RequestHeader("Authorization") String token) {
-	    return batchService2.getAssignedBatches(token, userId, page, size);
+		
+	    return batchService2.getEnrolledBatches(token, userId, page, size);
+	}
+	@GetMapping("/user/getOtherbatches/{userId}") 
+	public ResponseEntity<?> getOtherBatches(
+	    @PathVariable Long userId, 
+	    @RequestParam int page, 
+	    @RequestParam int size, 
+	    @RequestHeader("Authorization") String token) {
+		System.out.println(size);
+	    return batchService2.getOtherBatches(token, userId, page, size);
+	}
+
+	
+	@GetMapping("/Trainer/GetBatches/{userId}") 
+	public ResponseEntity<?> getbatchesOfTrainer(
+	    @PathVariable Long userId, 
+	    @RequestParam int page, 
+	    @RequestParam int size, 
+	    @RequestHeader("Authorization") String token) {
+		
+	    return batchService2.getbatchesForTrainer(token, userId, page, size);
+	}
+	@GetMapping("/Trainer/getOtherbatches/{userId}") 
+	public ResponseEntity<?> getOtherBatchesForTrainer(
+	    @PathVariable Long userId, 
+	    @RequestParam int page, 
+	    @RequestParam int size, 
+	    @RequestHeader("Authorization") String token) {
+		System.out.println(size);
+	    return batchService2.getOtherBatchesForTrainer(token, userId, page, size);
 	}
 
 
@@ -1849,4 +1877,18 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 		public ResponseEntity<?>SaveModuleTestAnswer(@RequestParam Long mtestId, @RequestBody   List<AnswerDto> answers,@RequestHeader("Authorization") String token){
 			return ModuleTestService.saveModuleTestAnswers(token, mtestId, answers);
 		}
+	 
+	 
+	 
+	 //====================================Assign Batch===============================================================
+	 @PostMapping("/AssignCourse/Batch")
+		public ResponseEntity<?> assignBatchToUser(HttpServletRequest request ,@RequestParam Long userId,@RequestParam Long batchId, @RequestHeader("Authorization") String token) {
+			return assignBatch.assignCoursesToUser(request, userId, batchId, token);
+		}
+	 
+	 @PostMapping("/Trainer/AssignCourse/Batch")
+		public ResponseEntity<?> assignBatchToTrainer(HttpServletRequest request ,@RequestParam Long userId,@RequestParam Long batchId, @RequestHeader("Authorization") String token) {
+			return assignBatch.assignBatchesToTrainer(request, userId, batchId, token);
+		}
+
 	}

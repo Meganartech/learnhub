@@ -450,7 +450,7 @@ const AddStudent = () => {
                     <div className="form-group row" ref={nameRef}>
                       <label htmlFor="Name" className="col-sm-3 col-form-label">
                         {" "}
-                        Name <span className="text-danger">*</span>
+                        Name 
                       </label>
                       <div className="col-sm-9">
                         {" "}

@@ -235,8 +235,8 @@ private ResponseEntity<String> SetBatchToUser(HttpServletRequest request, Orderu
 			ids.add(trainer.getUserId());
 		}
 
-		if (!user.getBatches().contains(batch)) {
-			user.getBatches().add(batch);
+		if (!user.getEnrolledbatch().contains(batch)) {
+			user.getEnrolledbatch().add(batch);
 			muserRepository.save(user);
 		}
 		if (!batch.getUsers().contains(user)) {
@@ -250,14 +250,11 @@ private ResponseEntity<String> SetBatchToUser(HttpServletRequest request, Orderu
 			           .filter(course -> !user.getCourses().contains(course)) // Filter out existing courses
 			           .toList() // Collect remaining courses into a list
 			);
-		System.out.println("beforeDel");
 		Optional<PendingPayments>oppending =pendingsRepo.getPendingsByEmailAndBatchIdAndInstallmentId(user.getEmail(), batch.getId(),savedorder.getInstallmentnumber());
 		if(oppending.isPresent()) {
 			PendingPayments pendings= oppending.get();
-			System.out.println(pendings.toString());
 			pendingsRepo.delete(pendings);
 		}
-		System.out.println("AfterDel");
     sendEnrollmentMail(request,courses, batch, user);
     notifiInstallment(batch, user,courses);
 			muserRepository.save(user);
