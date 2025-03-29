@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.Attendance.AttendanceService;
-import com.knowledgeVista.Batch.BatchInstallmentdetails;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
@@ -73,7 +72,6 @@ import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.Controller.SettingsController;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Controller.AddUsers;
-import com.knowledgeVista.User.Controller.AssignCourse;
 import com.knowledgeVista.User.Controller.AuthenticationController;
 import com.knowledgeVista.User.Controller.Edituser;
 import com.knowledgeVista.User.Controller.GoogleAuthController;
@@ -137,9 +135,6 @@ public class FrontController {
 	private EnablePaymentsController enablectrl;
 	@Autowired
 	private AddUsers adduser;
-
-	@Autowired
-	private AssignCourse assign;
 
 	@Autowired
 	private AuthenticationController authcontrol;
@@ -543,20 +538,7 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 		}
 	}
 
-//	@GetMapping("/viewPaymentList/{courseId}")
-//	public ResponseEntity<?> ViewPaymentdetails(@RequestHeader("Authorization") String token,
-//			@PathVariable Long courseId) {
-//		if (paylist != null && activeProfile.equals("demo")) {
-//
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
-//
-//		} else {
-//			if (paylist != null) {
-//				return paylist.ViewPaymentdetails(token, courseId);
-//			}
-//			return null;
-//		}
-//	}
+	
 	
 	@GetMapping("/viewPaymentList/{batchId}")
 	public ResponseEntity<?> GetPartPayDetails(@RequestHeader("Authorization") String token,
@@ -788,30 +770,7 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 		return adduser.activateStudent(email, token);
 	}
 
-	// ----------------------Assign course---------------------
-	@PostMapping("/AssignCourse/{userId}/courses")
-	public ResponseEntity<String> assignCoursesToUser(@PathVariable Long userId,
-			@RequestBody Map<String, List<Long>> data, @RequestHeader("Authorization") String token) {
-		return assign.assignCoursesToUser(userId, data, token);
-	}
-
-	@PostMapping("/AssignCourse/trainer/{userId}/courses")
-	public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long userId,
-			@RequestBody Map<String, List<Long>> data, @RequestHeader("Authorization") String token) {
-		return assign.assignCoursesToTrainer(userId, data, token);
-	}
-
-	@GetMapping("/AssignCourse/student/courselist")
-	public ResponseEntity<List<CourseDetailDto>> getCoursesForUser(@RequestHeader("Authorization") String token) {
-		return assign.getCoursesForUser(token);
-	}
-
-	@GetMapping("/AssignCourse/Trainer/courselist")
-	public ResponseEntity<List<CourseDetailDto>> getCoursesForTrainer(@RequestHeader("Authorization") String token) {
-		return assign.getCoursesForTrainer(token);
-	}
-
-	// --------------------------Authentication Controller------------------
+		// --------------------------Authentication Controller------------------
 
 	@PostMapping("/refreshtoken")
 	public ResponseEntity<?> Refresh(@RequestHeader("Authorization") String token) {
@@ -1418,7 +1377,7 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			return ResponseEntity.ok("No error occurred on try");
 		} catch (Exception e) {
 //   		            // Log the exception
-//   		            logger.error("", e);
+   		            logger.error("", e);
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("" + e);
 //   		        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ER)
@@ -1648,7 +1607,6 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	    @RequestParam int page, 
 	    @RequestParam int size, 
 	    @RequestHeader("Authorization") String token) {
-		System.out.println(size);
 	    return batchService2.getOtherBatchesForTrainer(token, userId, page, size);
 	}
 
