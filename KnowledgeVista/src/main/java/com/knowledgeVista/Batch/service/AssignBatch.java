@@ -95,7 +95,7 @@ public class AssignBatch {
 					           .toList() // Collect remaining courses into a list
 					);
 					muserRepository.save(user);
-			         String message = "Courses assigned to user successfully.";
+			         String message = "Batch assigned to user successfully.";
 			         List<Long>trainerList=new ArrayList<Long>();
 			         for(Muser tr:batch.getTrainers()) {
 			        	 trainerList.add(tr.getUserId());
@@ -295,7 +295,7 @@ public class AssignBatch {
 						           .toList() // Collect remaining courses into a list
 						);
 						muserRepository.save(user);
-				         String message = "Courses assigned to Trainer successfully.";
+				         String message = "Batch assigned to Trainer successfully.";
 				        
 	                     createAndSendNotification(user, batch,null, adminUser.getUsername(), institution,true);
 	                     sendEnrollmentMail(request, courses, batch, user,"TRAINER");

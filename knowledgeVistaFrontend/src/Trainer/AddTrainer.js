@@ -143,7 +143,7 @@ const AddTrainer = () => {
 
     switch (name) {
       case "username":
-        error = value.length < 1 ? "Please enter a" : "";
+        error = value.length < 1 ? "Please enter a valid user Name" : "";
         break;
       // case 'skills':
       //   error = value.length < 1 ? 'Please enter a skill' : '';
