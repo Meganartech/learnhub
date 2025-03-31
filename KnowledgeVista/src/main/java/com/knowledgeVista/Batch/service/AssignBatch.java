@@ -289,7 +289,7 @@ public class AssignBatch {
 						batch.getTrainers().add(user);
 						batchRepo.save(batch);
 					}
-					user.getCourses().addAll(
+					user.getAllotedCourses().addAll(
 						    courses.stream()
 						           .filter(course -> !user.getAllotedCourses().contains(course)) // Filter out existing courses
 						           .toList() // Collect remaining courses into a list

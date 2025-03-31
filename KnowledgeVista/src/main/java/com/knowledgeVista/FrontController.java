@@ -72,6 +72,7 @@ import com.knowledgeVista.Settings.Feedback;
 import com.knowledgeVista.Settings.Controller.SettingsController;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.Controller.AddUsers;
+import com.knowledgeVista.User.Controller.AssignCourse;
 import com.knowledgeVista.User.Controller.AuthenticationController;
 import com.knowledgeVista.User.Controller.Edituser;
 import com.knowledgeVista.User.Controller.GoogleAuthController;
@@ -135,6 +136,8 @@ public class FrontController {
 	private EnablePaymentsController enablectrl;
 	@Autowired
 	private AddUsers adduser;
+	@Autowired
+	private AssignCourse assign;
 
 	@Autowired
 	private AuthenticationController authcontrol;
@@ -1849,4 +1852,13 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			return assignBatch.assignBatchesToTrainer(request, userId, batchId, token);
 		}
 
+	 //================AssignCourse=======================
+		@GetMapping("/AssignCourse/student/courselist")
+		public ResponseEntity<List<CourseDetailDto>> getCoursesForUser(@RequestHeader("Authorization") String token) {
+			return assign.getCoursesForUser(token);
+		}
+		@GetMapping("/AssignCourse/Trainer/courselist")
+		public ResponseEntity<List<CourseDetailDto>> getCoursesForTrainer(@RequestHeader("Authorization") String token) {
+			return assign.getCoursesForTrainer(token);
+		}
 	}
