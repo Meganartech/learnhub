@@ -25476,7 +25476,7 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
 .batch-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Auto adjusts based on screen size */
+  grid-template-columns: repeat(4, minmax(280px, 1fr)); /* Auto adjusts based on screen size */
   gap: 20px; /* Adds spacing between items */
 }
 .batch-container-small {
