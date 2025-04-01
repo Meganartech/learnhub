@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.BatchDto;
+import com.knowledgeVista.Batch.BatchImageDTO;
 import com.knowledgeVista.Batch.CourseDto;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.TrainerDto;
@@ -319,8 +320,9 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 	       nativeQuery = true)
 	long countBatchesNotEnrolledByUserId(@Param("userId") Long userId);
 
-
-
+		   @Query("SELECT new com.knowledgeVista.Batch.BatchImageDTO(b.id,b.BatchImage) FROM Batch b WHERE b.id IN :ids")
+			List<BatchImageDTO> findBatchImagesByIds(@Param("ids") List<Long> ids);
+ 
 
 
 

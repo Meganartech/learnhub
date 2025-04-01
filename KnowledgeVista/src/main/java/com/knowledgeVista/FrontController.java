@@ -540,9 +540,6 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			return null;
 		}
 	}
-
-	
-	
 	@GetMapping("/viewPaymentList/{batchId}")
 	public ResponseEntity<?> GetPartPayDetails(@RequestHeader("Authorization") String token,
 			@PathVariable Long batchId) {
@@ -1573,7 +1570,14 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			@RequestParam(value = "size", defaultValue = "10") int size, @RequestHeader("Authorization") String token) {
 		return batchService.searchBatchUserByAdminorTrainer(username, email, phone, dob, skills, page, size, token, batchId);
 	}
-
+	 @GetMapping("/Batch/getImages")
+	    public ResponseEntity<?> getBatchImagesById(
+	        @RequestParam List<Long> batchIds, 
+	        @RequestHeader("Authorization") String token) {
+	        
+	        // Pass both token and batchIds to the service layer
+	        return batchService.GetbatchImagesForMyPayments(token, batchIds);
+	    }
 //==========================================BAtchService2-----------------------------
 	@GetMapping("/user/GetBatches/{userId}") 
 	public ResponseEntity<?> getbatchesOfUser(

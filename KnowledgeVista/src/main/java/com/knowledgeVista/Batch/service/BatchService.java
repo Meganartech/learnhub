@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Batch.PaymentType;
 import com.knowledgeVista.Batch.BatchDto;
+import com.knowledgeVista.Batch.BatchImageDTO;
 import com.knowledgeVista.Batch.BatchInstallmentDto;
 import com.knowledgeVista.Batch.BatchInstallmentDtoWrapper;
 import com.knowledgeVista.Batch.BatchInstallmentdetails;
@@ -653,4 +654,20 @@ public class BatchService {
 			// TODO: handle exception
 		}
 	}
+	//==========================fetchimages of given batchIDs for fluter payment transaction============
+	public ResponseEntity<?>GetbatchImagesForMyPayments(String token,List<Long> batchIds){
+		try {
+			String role = jwtUtil.getRoleFromToken(token);
+			if("USER".equals(role)) {
+				List<BatchImageDTO> paymentImages=batchrepo.findBatchImagesByIds(batchIds);
+				return ResponseEntity.ok(paymentImages);
+			}
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only Stdents Can Access This Page");
+		}catch (Exception e) {
+			logger.error("Error Getting Images of  Paymets"+e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			// TODO: handle exception
+		}
+	}
+	
 }
