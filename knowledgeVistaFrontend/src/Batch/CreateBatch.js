@@ -155,8 +155,7 @@ const CreateBatch = () => {
           (courseprev) => courseprev.courseId !== course.courseId
         );
         setbatch((prevBatch) => {
-          console.log("Before subtraction:", prevBatch.amount, "Course Amount:", course ,Number(prevBatch.amount) - Number(course.amount));
-          
+         
           return {
             ...prevBatch,
             courses: updatedCourses,
