@@ -5,7 +5,6 @@ import baseUrl from "../../api/utils";
 import errorimg from "../../images/errorimg.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import SelectPaymentGateway from "../Payments/SelectPaymentGateway";
 const CourseView = ({ filteredCourses }) => {
   const MySwal = withReactContent(Swal);
   const userId = sessionStorage.getItem("userid");

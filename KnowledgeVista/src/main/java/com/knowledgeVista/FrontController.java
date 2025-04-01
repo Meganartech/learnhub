@@ -506,13 +506,13 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	}
 
 	@PostMapping("/buyCourse/updatePaypalPaymentId")
-	public ResponseEntity<String> updatePayPalPayment(@RequestBody Map<String, String> requestData,
+	public ResponseEntity<String> updatePayPalPayment(HttpServletRequest request ,@RequestBody Map<String, String> requestData,
 			@RequestHeader("Authorization") String token) {
 		if (paylist != null && activeProfile.equals("demo")) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 		} else {
-			return payment2.updatePayPalPayment(requestData, token);
+			return payment2.updatePayPalPayment(request, requestData, token);
 		}
 	}
 
