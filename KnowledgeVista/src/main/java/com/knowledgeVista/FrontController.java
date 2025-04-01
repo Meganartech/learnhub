@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.Attendance.AttendanceService;
+import com.knowledgeVista.Batch.BatchInstallmentdetails;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
@@ -1577,6 +1578,16 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	        
 	        // Pass both token and batchIds to the service layer
 	        return batchService.GetbatchImagesForMyPayments(token, batchIds);
+	    }
+	 
+	 @PostMapping("/Batch/Save/PartPayDetails")
+	    public ResponseEntity<?> savePartPayment(
+	            @RequestParam Long batchId, 
+	            @RequestBody List<BatchInstallmentdetails> installmentDetails,
+	            @RequestHeader("Authorization") String token) {
+	        
+	        // Call the service layer to handle saving the part payment
+	        return batchService.SavePartPay(batchId, installmentDetails, token);
 	    }
 //==========================================BAtchService2-----------------------------
 	@GetMapping("/user/GetBatches/{userId}") 
