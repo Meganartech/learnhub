@@ -59,11 +59,6 @@ const CourseView = ({ filteredCourses }) => {
             text: "This Course was not  Assigned to You  ",
           });
         } else {
-          // MySwal.fire({
-          //   icon: "error",
-          //   title: "Not Found",
-          //   text: error,
-          // });
           throw error
         }
       }
