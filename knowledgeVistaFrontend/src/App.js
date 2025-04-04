@@ -116,6 +116,7 @@ import SheduleModuleTest from "./course/ModuleTest.js/SheduleModuleTest.js";
 import StartModuleTest from "./course/ModuleTest.js/StartModuleTest.js";
 import Partialpaymentsetting from "./course/Components/Partialpaymentsetting.js";
 import PendingInstallments from "./Student/PendingInstallments.js";
+import CreateAssignment from "./Assignment/CreateAssignment.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -1218,6 +1219,20 @@ function App() {
                 <ErrorBoundary>
                   <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
                     <EditBatch />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+
+            <Route
+              path="/Assignment/create/:courseName/:courseId?"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <CreateAssignment />
                   </PrivateRoute>
                 </ErrorBoundary>
               }

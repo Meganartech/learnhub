@@ -99,6 +99,9 @@ public interface MuserRepositories extends JpaRepository<Muser,Long> {
 	 
 	 @Query("SELECT b FROM Muser u JOIN u.enrolledbatch b WHERE u.email = ?1 AND b.id = ?2")
 	 Optional<Batch> getBatchByEmailandBatchId(String email, Long batchId);
+	 
+	 @Query("SELECT b FROM Muser u JOIN u.batches b WHERE u.email = ?1 AND b.id = ?2")
+	 Optional<Batch> getTrainerBatchByEmailandBatchId(String email, Long batchId);
 
 	
 	  @Query("SELECT new com.knowledgeVista.User.MuserDto(u.userId, u.username, u.email, u.phone, u.isActive, u.dob, u.skills, u.institutionName) " +

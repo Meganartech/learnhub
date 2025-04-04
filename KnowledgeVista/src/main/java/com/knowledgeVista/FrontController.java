@@ -28,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.knowledgeVista.Attendance.AttendanceService;
 import com.knowledgeVista.Batch.BatchInstallmentdetails;
 import com.knowledgeVista.Batch.SearchDto;
+import com.knowledgeVista.Batch.Assignment.Assignment;
+import com.knowledgeVista.Batch.Assignment.Service.AssignmentService;
 import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
 import com.knowledgeVista.Batch.Weightage.service.weightageService;
@@ -209,6 +211,9 @@ public class FrontController {
 
 	@Autowired
 	private ModuleTestService ModuleTestService;
+	
+	@Autowired
+	private AssignmentService assignmentService;
 	
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
@@ -1876,4 +1881,13 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 		public ResponseEntity<List<CourseDetailDto>> getCoursesForTrainer(@RequestHeader("Authorization") String token) {
 			return assign.getCoursesForTrainer(token);
 		}
-	}
+	
+//=====================Assignment Service ===========================
+@PostMapping("/Assignment/save")
+public ResponseEntity<?> saveAssignment(@RequestHeader("Authorization") String token, 
+                                        @RequestBody Assignment assignment, 
+                                        @RequestParam Long courseId) {
+	return assignmentService.saveAssignment(token, assignment, courseId);
+}
+
+}

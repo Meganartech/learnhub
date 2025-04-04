@@ -3,8 +3,10 @@ package com.knowledgeVista.Course;
 import java.util.List;
 
 import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.Assignment.Assignment;
 import com.knowledgeVista.User.Muser;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +36,8 @@ public class CourseDetail {
 	private String courseDescription;
 	@Column(name = "courseCategory")
 	private String courseCategory;
+	@OneToMany(mappedBy = "courseDetail", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Assignment> assignments;
 
 //	    @Column(name="licenceType")
 //	    private String licenceType;

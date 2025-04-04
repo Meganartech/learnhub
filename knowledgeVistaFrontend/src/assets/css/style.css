@@ -26861,7 +26861,7 @@ span {
 
 .course-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, minmax(280px, 1fr));
   margin: 0 auto;
   gap: 20px;
   place-items: center;
@@ -26968,4 +26968,9 @@ margin-right:2px ;
   margin: 3px;
   border-radius: 5px;
   width: auto;
+}
+.vh-50-overflow{
+  height: 50vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }

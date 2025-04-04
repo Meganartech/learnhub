@@ -2,21 +2,17 @@ package com.knowledgeVista.Attendance;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException.Unauthorized;
-
 import com.knowledgeVista.Attendance.Repo.AttendanceRepo;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
