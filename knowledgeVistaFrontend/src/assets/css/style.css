@@ -26620,6 +26620,7 @@ span {
 .headingandbutton{
   display: grid;
   grid-template-columns: 9fr 1fr;
+  margin-bottom: 0.9rem;
 }
 .samerow{
   display: flex;
@@ -26951,6 +26952,26 @@ margin-right:2px ;
   padding: 0.9rem;
   
 }
+.assignment-text-icons {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  padding: 0.5rem 1rem; 
+}
+.assignment-title {
+  font-size: 1.125rem; /* same as text-lg */
+  font-weight: 600;    /* same as font-semibold */
+  margin-bottom: 0.25rem; /* same as mb-1 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.Assigmnent-Description{
+  height:100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .borderLine,
 .courseList span{
   padding: 0.5rem;

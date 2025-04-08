@@ -1,15 +1,16 @@
 package com.knowledgeVista;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.knowledgeVista.Attendance.AttendanceService;
 import com.knowledgeVista.Batch.BatchInstallmentdetails;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Assignment.Assignment;
+import com.knowledgeVista.Batch.Assignment.AssignmentQuestion;
 import com.knowledgeVista.Batch.Assignment.Service.AssignmentService;
 import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
@@ -86,6 +89,7 @@ import com.knowledgeVista.User.LabellingItems.controller.FooterDetailsController
 import com.knowledgeVista.User.LabellingItems.controller.LadellingitemController;
 import com.knowledgeVista.User.Usersettings.RoleDisplayController;
 import com.knowledgeVista.User.Usersettings.Role_display_name;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
@@ -186,10 +190,10 @@ public class FrontController {
 
 	@Autowired
 	private AttendanceService attendanceService;
-	
+
 	@Autowired
 	private EventController eventController;
-	@Autowired 
+	@Autowired
 	private GradeService gradeService;
 	@Autowired
 	private AssignBatch assignBatch;
@@ -205,16 +209,16 @@ public class FrontController {
 	private BatchService2 batchService2;
 	@Autowired
 	private QuizzService quizzService;
-	
+
 	@Autowired
 	private weightageService weightageService;
 
 	@Autowired
 	private ModuleTestService ModuleTestService;
-	
+
 	@Autowired
 	private AssignmentService assignmentService;
-	
+
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
 	public Map<String, String> getActiveEnvironment() {
@@ -237,12 +241,10 @@ public class FrontController {
 			@RequestParam("courseName") String courseName, @RequestParam("courseDescription") String description,
 			@RequestParam("courseCategory") String category, @RequestParam("Duration") Long Duration,
 			@RequestParam("Noofseats") Long Noofseats, @RequestParam("batches") String batches,
-			@RequestParam("courseAmount") Long amount,
-			@RequestHeader("Authorization") String token) {
-		return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, batches, amount, token);
+			@RequestParam("courseAmount") Long amount, @RequestHeader("Authorization") String token) {
+		return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, batches, amount,
+				token);
 	}
-
-	
 
 	@Transactional
 	@PatchMapping("/course/edit/{courseId}")
@@ -285,8 +287,6 @@ public class FrontController {
 	public ResponseEntity<?> getAllCourseInfo(@RequestHeader("Authorization") String token) {
 		return courseController.getAllCourseInfo(token);
 	}
-
-	
 
 	@DeleteMapping("/course/{courseId}")
 	public ResponseEntity<String> deleteCourse(@PathVariable Long courseId,
@@ -452,24 +452,18 @@ public class FrontController {
 	}
 
 	@GetMapping("/get/TestHistory/{batchId}")
-	public ResponseEntity<?> getTestHistory(
-			@PathVariable Long batchId,
-	    @RequestHeader("Authorization") String token,
-	    @RequestParam(defaultValue = "0") int page,
-	    @RequestParam(defaultValue = "10") int size
-	) {
-	    return testcontroller.getTestHistory(token,batchId, page, size);
+	public ResponseEntity<?> getTestHistory(@PathVariable Long batchId, @RequestHeader("Authorization") String token,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		return testcontroller.getTestHistory(token, batchId, page, size);
 	}
+
 	@GetMapping("/get/TestHistoryForUser/{email}/{batchId}")
-	public ResponseEntity<?> getTestHistoryforUser(
-			@PathVariable Long batchId,
-			@PathVariable String email,
-	    @RequestHeader("Authorization") String token,
-	    @RequestParam(defaultValue = "0") int page,
-	    @RequestParam(defaultValue = "10") int size
-	) {
-	    return testcontroller.getTestHistoryforUser(token, batchId, email, page, size);
+	public ResponseEntity<?> getTestHistoryforUser(@PathVariable Long batchId, @PathVariable String email,
+			@RequestHeader("Authorization") String token, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		return testcontroller.getTestHistoryforUser(token, batchId, email, page, size);
 	}
+
 //----------------------PaymentIntegration----------------------	
 	@PostMapping("/Batch/getOrderSummary")
 	public ResponseEntity<?> getBatchOrderSummary(@RequestBody Map<String, Long> requestData,
@@ -493,27 +487,27 @@ public class FrontController {
 			return paymentservice.createOrderfullforBatch(requestData, gateway, token, request);
 		}
 	}
-@GetMapping("/get/Pendings")
-public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") String token){
-	return batchService.GetPendingPayments(token);
-}
+
+	@GetMapping("/get/Pendings")
+	public ResponseEntity<?> getpendingPayments(@RequestHeader("Authorization") String token) {
+		return batchService.GetPendingPayments(token);
+	}
 	// =========batch end=========
 
-
 	@PostMapping("/buyCourse/payment")
-	public ResponseEntity<String> updatePaymentId(HttpServletRequest request, @RequestBody Map<String, String> requestData,
-			@RequestHeader("Authorization") String token) {
+	public ResponseEntity<String> updatePaymentId(HttpServletRequest request,
+			@RequestBody Map<String, String> requestData, @RequestHeader("Authorization") String token) {
 		if (paylist != null && activeProfile.equals("demo")) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 		} else {
-			return payment.updatePaymentId(request,requestData, token);
+			return payment.updatePaymentId(request, requestData, token);
 		}
 	}
 
 	@PostMapping("/buyCourse/updatePaypalPaymentId")
-	public ResponseEntity<String> updatePayPalPayment(HttpServletRequest request ,@RequestBody Map<String, String> requestData,
-			@RequestHeader("Authorization") String token) {
+	public ResponseEntity<String> updatePayPalPayment(HttpServletRequest request,
+			@RequestBody Map<String, String> requestData, @RequestHeader("Authorization") String token) {
 		if (paylist != null && activeProfile.equals("demo")) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
@@ -523,13 +517,13 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	}
 
 	@PostMapping("/buyCourse/updateStripepaymentid")
-	public ResponseEntity<String> updateStripepaymentid(HttpServletRequest request ,@RequestBody Map<String, String> requestData,
-			@RequestHeader("Authorization") String token) {
+	public ResponseEntity<String> updateStripepaymentid(HttpServletRequest request,
+			@RequestBody Map<String, String> requestData, @RequestHeader("Authorization") String token) {
 		if (paylist != null && activeProfile.equals("demo")) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 		} else {
-			return payment.updateStripepaymentid( request ,requestData, token);
+			return payment.updateStripepaymentid(request, requestData, token);
 		}
 	}
 
@@ -546,11 +540,13 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			return null;
 		}
 	}
+
 	@GetMapping("/viewPaymentList/{batchId}")
 	public ResponseEntity<?> GetPartPayDetails(@RequestHeader("Authorization") String token,
 			@PathVariable Long batchId) {
 		return batchService.GetPartPayDetails(batchId, token);
 	}
+
 	@GetMapping("/viewAllTransactionHistory")
 	public ResponseEntity<?> viewTransactionHistory(@RequestHeader("Authorization") String token) {
 		if (paylist != null && activeProfile.equals("demo")) {
@@ -735,21 +731,23 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 
 //--------------------AddUser---------------------------
 	@PostMapping("/admin/addTrainer")
-	public ResponseEntity<?> addTrainer(HttpServletRequest request,@RequestParam(required = false) String username, @RequestParam String psw,
-			@RequestParam String email, @RequestParam(required = false) LocalDate dob, @RequestParam String phone,
-			@RequestParam(required = false) String skills, @RequestParam(required = false) MultipartFile profile,
-			@RequestParam Boolean isActive, @RequestParam(defaultValue = "+91") String countryCode,
-			@RequestHeader("Authorization") String token) {
-		return adduser.addTrainer(request,username, psw, email, dob, phone, skills, profile, isActive, countryCode, token);
+	public ResponseEntity<?> addTrainer(HttpServletRequest request, @RequestParam(required = false) String username,
+			@RequestParam String psw, @RequestParam String email, @RequestParam(required = false) LocalDate dob,
+			@RequestParam String phone, @RequestParam(required = false) String skills,
+			@RequestParam(required = false) MultipartFile profile, @RequestParam Boolean isActive,
+			@RequestParam(defaultValue = "+91") String countryCode, @RequestHeader("Authorization") String token) {
+		return adduser.addTrainer(request, username, psw, email, dob, phone, skills, profile, isActive, countryCode,
+				token);
 	}
 
 	@PostMapping("/admin/addStudent")
-	public ResponseEntity<?> addStudent(HttpServletRequest request,@RequestParam(required = false) String username, @RequestParam String psw,
-			@RequestParam String email, @RequestParam(required = false) LocalDate dob, @RequestParam String phone,
-			@RequestParam(required = false) String skills, @RequestParam(required = false) MultipartFile profile,
-			@RequestParam Boolean isActive, @RequestParam(defaultValue = "+91") String countryCode,
-			@RequestHeader("Authorization") String token) {
-		return adduser.addStudent(request,username, psw, email, dob, phone, skills, profile, isActive, countryCode, token);
+	public ResponseEntity<?> addStudent(HttpServletRequest request, @RequestParam(required = false) String username,
+			@RequestParam String psw, @RequestParam String email, @RequestParam(required = false) LocalDate dob,
+			@RequestParam String phone, @RequestParam(required = false) String skills,
+			@RequestParam(required = false) MultipartFile profile, @RequestParam Boolean isActive,
+			@RequestParam(defaultValue = "+91") String countryCode, @RequestHeader("Authorization") String token) {
+		return adduser.addStudent(request, username, psw, email, dob, phone, skills, profile, isActive, countryCode,
+				token);
 	}
 
 	@DeleteMapping("/admin/deactivate/trainer")
@@ -776,7 +774,7 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 		return adduser.activateStudent(email, token);
 	}
 
-		// --------------------------Authentication Controller------------------
+	// --------------------------Authentication Controller------------------
 
 	@PostMapping("/refreshtoken")
 	public ResponseEntity<?> Refresh(@RequestHeader("Authorization") String token) {
@@ -851,10 +849,10 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	// ----------------------------ListView------------------------
 
 	@GetMapping("/view/batch/{email}")
-	public List<SearchDto> getBatchOfUser(
-			@PathVariable String email ,@RequestHeader("Authorization") String token) {
+	public List<SearchDto> getBatchOfUser(@PathVariable String email, @RequestHeader("Authorization") String token) {
 		return listview.getBatchesOfUser(token, email);
 	}
+
 	@GetMapping("/view/users")
 	public ResponseEntity<?> getUsersByRoleName(@RequestHeader("Authorization") String token,
 			@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
@@ -890,8 +888,9 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	}
 
 	@PostMapping("/approve/User/{id}")
-	public ResponseEntity<?> approveUser(HttpServletRequest request,@PathVariable Long id, @RequestHeader("Authorization") String token) {
-		return listview.ApproveUser(request,id, token);
+	public ResponseEntity<?> approveUser(HttpServletRequest request, @PathVariable Long id,
+			@RequestHeader("Authorization") String token) {
+		return listview.ApproveUser(request, id, token);
 	}
 
 	@GetMapping("/search/users")
@@ -999,12 +998,13 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 
 //------------------------MuserRegistrationController------------------------------
 	@PostMapping("/Student/register")
-	public ResponseEntity<?> RegisterStudent(HttpServletRequest request,@RequestParam(required = false) String username, @RequestParam String psw,
-			@RequestParam String email, @RequestParam(required = false) LocalDate dob, @RequestParam String role,
-			@RequestParam String phone, @RequestParam(required = false) String skills,
-			@RequestParam(required = false) MultipartFile profile, @RequestParam Boolean isActive,
-			@RequestParam(defaultValue = "+91") String countryCode) {
-		return muserreg.RegisterStudent(request,username, psw, email, dob, role, phone, skills, profile, isActive, countryCode);
+	public ResponseEntity<?> RegisterStudent(HttpServletRequest request,
+			@RequestParam(required = false) String username, @RequestParam String psw, @RequestParam String email,
+			@RequestParam(required = false) LocalDate dob, @RequestParam String role, @RequestParam String phone,
+			@RequestParam(required = false) String skills, @RequestParam(required = false) MultipartFile profile,
+			@RequestParam Boolean isActive, @RequestParam(defaultValue = "+91") String countryCode) {
+		return muserreg.RegisterStudent(request, username, psw, email, dob, role, phone, skills, profile, isActive,
+				countryCode);
 	}
 
 	@GetMapping("/count/admin")
@@ -1013,21 +1013,22 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	}
 
 	@PostMapping("/Trainer/register")
-	public ResponseEntity<?> RegisterTrainer(HttpServletRequest request ,@RequestParam(required = false) String username, @RequestParam String psw,
-			@RequestParam String email, @RequestParam(required = false) LocalDate dob, @RequestParam String role,
-			@RequestParam String phone, @RequestParam(required = false) String skills,
-			@RequestParam(required = false) MultipartFile profile, @RequestParam Boolean isActive,
-			@RequestParam(defaultValue = "+91") String countryCode) {
-		return muserreg.RegisterTrainer(request ,username, psw, email, dob, role, phone, skills, profile, isActive, countryCode);
-	}
-
-	@PostMapping("/admin/register")
-	public ResponseEntity<?> registerAdmin(HttpServletRequest request,@RequestParam(required = false) String username, @RequestParam String psw,
-			@RequestParam String email, @RequestParam String institutionName,
+	public ResponseEntity<?> RegisterTrainer(HttpServletRequest request,
+			@RequestParam(required = false) String username, @RequestParam String psw, @RequestParam String email,
 			@RequestParam(required = false) LocalDate dob, @RequestParam String role, @RequestParam String phone,
 			@RequestParam(required = false) String skills, @RequestParam(required = false) MultipartFile profile,
 			@RequestParam Boolean isActive, @RequestParam(defaultValue = "+91") String countryCode) {
-		return muserreg.registerAdmin(request,username, psw, email, institutionName, dob, role, phone, skills, profile,
+		return muserreg.RegisterTrainer(request, username, psw, email, dob, role, phone, skills, profile, isActive,
+				countryCode);
+	}
+
+	@PostMapping("/admin/register")
+	public ResponseEntity<?> registerAdmin(HttpServletRequest request, @RequestParam(required = false) String username,
+			@RequestParam String psw, @RequestParam String email, @RequestParam String institutionName,
+			@RequestParam(required = false) LocalDate dob, @RequestParam String role, @RequestParam String phone,
+			@RequestParam(required = false) String skills, @RequestParam(required = false) MultipartFile profile,
+			@RequestParam Boolean isActive, @RequestParam(defaultValue = "+91") String countryCode) {
+		return muserreg.registerAdmin(request, username, psw, email, institutionName, dob, role, phone, skills, profile,
 				isActive, countryCode);
 	}
 
@@ -1148,8 +1149,9 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			@RequestHeader("Authorization") String token) {
 		return zoomMeetingService.getMeetDetailsForEdit(token, meetingId);
 	}
+
 	@GetMapping("/api/zoom/getVirtualMeet")
-	public ResponseEntity<?>getvirtualMeet(@RequestHeader("Authorization") String token){
+	public ResponseEntity<?> getvirtualMeet(@RequestHeader("Authorization") String token) {
 		return zoomMeetingService.getVirtualClass(token);
 	}
 
@@ -1183,7 +1185,6 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	}
 
 	// -------------------EMAIL CONTROLLER--------------------------
-	
 
 	@GetMapping("/get/mailkeys")
 	public ResponseEntity<?> getMailkeys(@RequestHeader("Authorization") String token) {
@@ -1383,7 +1384,7 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			return ResponseEntity.ok("No error occurred on try");
 		} catch (Exception e) {
 //   		            // Log the exception
-   		            logger.error("", e);
+			logger.error("", e);
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("" + e);
 //   		        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ER)
@@ -1545,8 +1546,6 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 		return batchService.GetAllBatchByCourseID(token, courseid);
 	}
 
-	
-
 	@GetMapping("/Batch/getCourses/{batchId}")
 	public ResponseEntity<?> getCourseOfBatch(@PathVariable String batchId,
 			@RequestHeader("Authorization") String token) {
@@ -1557,13 +1556,13 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 	public ResponseEntity<?> DeleteBatch(@PathVariable Long batchid, @RequestHeader("Authorization") String token) {
 		return batchService.deleteBatchById(batchid, token);
 	}
-	
+
 	@GetMapping("/Batch/getStudents")
-	public ResponseEntity<?> getStudentsOfBatch(@RequestParam String id,@RequestParam int pageNumber,@RequestParam int pageSize, @RequestHeader("Authorization") String token) {
+	public ResponseEntity<?> getStudentsOfBatch(@RequestParam String id, @RequestParam int pageNumber,
+			@RequestParam int pageSize, @RequestHeader("Authorization") String token) {
 		return batchService.getUsersoFBatch(id, token, pageNumber, pageSize);
 	}
-	
-	
+
 	@GetMapping("/Batch/search/User")
 	public ResponseEntity<Page<MuserDto>> searchBatchUserByadminOrTrainer(
 			@RequestParam(value = "batchId", required = true) String batchId,
@@ -1574,81 +1573,73 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			@RequestParam(value = "skills", required = false) String skills,
 			@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "size", defaultValue = "10") int size, @RequestHeader("Authorization") String token) {
-		return batchService.searchBatchUserByAdminorTrainer(username, email, phone, dob, skills, page, size, token, batchId);
+		return batchService.searchBatchUserByAdminorTrainer(username, email, phone, dob, skills, page, size, token,
+				batchId);
 	}
-	 @GetMapping("/Batch/getImages")
-	    public ResponseEntity<?> getBatchImagesById(
-	        @RequestParam List<Long> batchIds, 
-	        @RequestHeader("Authorization") String token) {
-	        
-	        // Pass both token and batchIds to the service layer
-	        return batchService.GetbatchImagesForMyPayments(token, batchIds);
-	    }
-	 
-	 @PostMapping("/Batch/Save/PartPayDetails")
-	    public ResponseEntity<?> savePartPayment(
-	            @RequestParam Long batchId, 
-	            @RequestBody List<BatchInstallmentdetails> installmentDetails,
-	            @RequestHeader("Authorization") String token) {
-	        
-	        // Call the service layer to handle saving the part payment
-	        return batchService.SavePartPay(batchId, installmentDetails, token);
-	    }
+
+	@GetMapping("/Batch/getImages")
+	public ResponseEntity<?> getBatchImagesById(@RequestParam List<Long> batchIds,
+			@RequestHeader("Authorization") String token) {
+
+		// Pass both token and batchIds to the service layer
+		return batchService.GetbatchImagesForMyPayments(token, batchIds);
+	}
+
+	@PostMapping("/Batch/Save/PartPayDetails")
+	public ResponseEntity<?> savePartPayment(@RequestParam Long batchId,
+			@RequestBody List<BatchInstallmentdetails> installmentDetails,
+			@RequestHeader("Authorization") String token) {
+
+		// Call the service layer to handle saving the part payment
+		return batchService.SavePartPay(batchId, installmentDetails, token);
+	}
+
 //==========================================BAtchService2-----------------------------
-	@GetMapping("/user/GetBatches/{userId}") 
-	public ResponseEntity<?> getbatchesOfUser(
-	    @PathVariable Long userId, 
-	    @RequestParam int page, 
-	    @RequestParam int size, 
-	    @RequestHeader("Authorization") String token) {
-		
-	    return batchService2.getEnrolledBatches(token, userId, page, size);
+	@GetMapping("/user/GetBatches/{userId}")
+	public ResponseEntity<?> getbatchesOfUser(@PathVariable Long userId, @RequestParam int page, @RequestParam int size,
+			@RequestHeader("Authorization") String token) {
+
+		return batchService2.getEnrolledBatches(token, userId, page, size);
 	}
-	@GetMapping("/user/getOtherbatches/{userId}") 
-	public ResponseEntity<?> getOtherBatches(
-	    @PathVariable Long userId, 
-	    @RequestParam int page, 
-	    @RequestParam int size, 
-	    @RequestHeader("Authorization") String token) {
+
+	@GetMapping("/user/getOtherbatches/{userId}")
+	public ResponseEntity<?> getOtherBatches(@PathVariable Long userId, @RequestParam int page, @RequestParam int size,
+			@RequestHeader("Authorization") String token) {
 		System.out.println(size);
-	    return batchService2.getOtherBatches(token, userId, page, size);
+		return batchService2.getOtherBatches(token, userId, page, size);
 	}
 
-	
-	@GetMapping("/Trainer/GetBatches/{userId}") 
-	public ResponseEntity<?> getbatchesOfTrainer(
-	    @PathVariable Long userId, 
-	    @RequestParam int page, 
-	    @RequestParam int size, 
-	    @RequestHeader("Authorization") String token) {
-		
-	    return batchService2.getbatchesForTrainer(token, userId, page, size);
-	}
-	@GetMapping("/Trainer/getOtherbatches/{userId}") 
-	public ResponseEntity<?> getOtherBatchesForTrainer(
-	    @PathVariable Long userId, 
-	    @RequestParam int page, 
-	    @RequestParam int size, 
-	    @RequestHeader("Authorization") String token) {
-	    return batchService2.getOtherBatchesForTrainer(token, userId, page, size);
+	@GetMapping("/Trainer/GetBatches/{userId}")
+	public ResponseEntity<?> getbatchesOfTrainer(@PathVariable Long userId, @RequestParam int page,
+			@RequestParam int size, @RequestHeader("Authorization") String token) {
+
+		return batchService2.getbatchesForTrainer(token, userId, page, size);
 	}
 
+	@GetMapping("/Trainer/getOtherbatches/{userId}")
+	public ResponseEntity<?> getOtherBatchesForTrainer(@PathVariable Long userId, @RequestParam int page,
+			@RequestParam int size, @RequestHeader("Authorization") String token) {
+		return batchService2.getOtherBatchesForTrainer(token, userId, page, size);
+	}
 
 	// -------------------Attendance Service---------------
 
 	@GetMapping("/view/getAttendancAnalysis/{userId}/{batchId}")
-	public ResponseEntity<?> GetAttendanceAnalysis(@PathVariable Long userId,@PathVariable Long batchId,@RequestHeader("Authorization") String token) {
-		return attendanceService.GetAttendanceAnalysis(token, userId,batchId);
+	public ResponseEntity<?> GetAttendanceAnalysis(@PathVariable Long userId, @PathVariable Long batchId,
+			@RequestHeader("Authorization") String token) {
+		return attendanceService.GetAttendanceAnalysis(token, userId, batchId);
 	}
+
 	@GetMapping("/view/StudentAttendance/{userId}/{batchId}")
-	public ResponseEntity<?> getAttendanceForuser(@PathVariable Long userId,@PathVariable Long batchId,
+	public ResponseEntity<?> getAttendanceForuser(@PathVariable Long userId, @PathVariable Long batchId,
 			@RequestHeader("Authorization") String token, Pageable pageable) {
-		return attendanceService.getAttendance(token, userId,batchId, pageable);
+		return attendanceService.getAttendance(token, userId, batchId, pageable);
 	}
 
 	@GetMapping("/view/MyAttendance/{batchId}")
-	public ResponseEntity<?> GetMyAttendance(@PathVariable Long batchId,@RequestHeader("Authorization") String token, Pageable pageable) {
-		return attendanceService.getMyAttendance(token,batchId, pageable);
+	public ResponseEntity<?> GetMyAttendance(@PathVariable Long batchId, @RequestHeader("Authorization") String token,
+			Pageable pageable) {
+		return attendanceService.getMyAttendance(token, batchId, pageable);
 	}
 
 	@PostMapping("/update/attendance")
@@ -1685,14 +1676,15 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 			@RequestHeader("Authorization") String token) {
 		return quizzService.UpdateQuizzQuestion(questionId, question, token);
 	}
-	
+
 	@PatchMapping("/Quizz/updateDuration/{quizzId}/{durationInMinutes}")
 	public ResponseEntity<?> updateDurationInMinutes(@PathVariable Long quizzId, @PathVariable int durationInMinutes,
 			@RequestHeader("Authorization") String token) {
 		return quizzService.UpdateQuizzDuration(quizzId, durationInMinutes, token);
 	}
+
 	@PatchMapping("/Quizz/updatename/{quizzId}/{quizzname}")
-	public ResponseEntity<?> updateQuizzname(@PathVariable Long quizzId, @PathVariable String quizzname ,
+	public ResponseEntity<?> updateQuizzname(@PathVariable Long quizzId, @PathVariable String quizzname,
 			@RequestHeader("Authorization") String token) {
 		return quizzService.UpdateQuizzName(quizzId, quizzname, token);
 	}
@@ -1711,183 +1703,238 @@ public ResponseEntity<?>getpendingPayments(@RequestHeader("Authorization") Strin
 
 	@PostMapping("/Quizz/Shedule/{courseId}/{batchId}")
 	public ResponseEntity<?> SaveORUpdateSheduleQuizz(@RequestParam Long quizzId, @RequestParam String batchId,
-			@RequestParam LocalDate quizDate, 
-			@RequestHeader("Authorization") String token) {
+			@RequestParam LocalDate quizDate, @RequestHeader("Authorization") String token) {
 		return quizzService.SaveORUpdateSheduleQuizz(quizzId, batchId, quizDate, token);
 	}
-	
+
 	@GetMapping("/Quizz/Start")
-	public ResponseEntity<?>StartQuizz(@RequestParam Long quizzId, @RequestParam Long batchId,@RequestHeader("Authorization") String token){
+	public ResponseEntity<?> StartQuizz(@RequestParam Long quizzId, @RequestParam Long batchId,
+			@RequestHeader("Authorization") String token) {
 		return quizzService.startQuizz(token, quizzId, batchId);
 	}
+
 	@PostMapping("/Quizz/submit")
-	public ResponseEntity<?>SaveQuizz(@RequestParam Long quizzId, @RequestBody   List<AnswerDto> answers,@RequestHeader("Authorization") String token){
+	public ResponseEntity<?> SaveQuizz(@RequestParam Long quizzId, @RequestBody List<AnswerDto> answers,
+			@RequestHeader("Authorization") String token) {
 		return quizzService.saveQuizzAnswers(token, quizzId, answers);
 	}
+
 	@GetMapping("/get/QuizzHistory/{batchId}")
-	public ResponseEntity<?> getQuizzHistory(
-		@PathVariable Long batchId,
-	    @RequestHeader("Authorization") String token,
-	    @RequestParam(defaultValue = "0") int page,
-	    @RequestParam(defaultValue = "10") int size
-	) {
-	    return quizzService.getQuizzHistory(token,batchId, page, size); 
-	}
-	@GetMapping("/get/QuizzHistoryForuser/{email}/{batchId}")
-	public ResponseEntity<?> getQuizzHistory(
-		@PathVariable Long batchId,
-		@PathVariable String email,
-	    @RequestHeader("Authorization") String token,
-	    @RequestParam(defaultValue = "0") int page,
-	    @RequestParam(defaultValue = "10") int size
-	) {
-	    return quizzService.getQuizzHistoryforUserByAdmin(token, batchId, email, page, size);
-	}
-	@GetMapping("/get/QuizzAnalysis/{batchId}/{email}")
-	public ResponseEntity<?> getQuizzAnalysis(
-		@PathVariable Long batchId,
-		@PathVariable String email,
-	    @RequestHeader("Authorization") String token
-	) {
-	    return quizzService.getQuizzAnalysis(token, batchId, email);
+	public ResponseEntity<?> getQuizzHistory(@PathVariable Long batchId, @RequestHeader("Authorization") String token,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		return quizzService.getQuizzHistory(token, batchId, page, size);
 	}
 
-	//======================Event Controller================
-	@GetMapping("/Events/Get")
-	public ResponseEntity<?>getEvents(@RequestParam int pageNumber,@RequestParam int pageSize, @RequestHeader("Authorization") String token){
-		return eventController.getEvents(token,pageNumber,pageSize);
+	@GetMapping("/get/QuizzHistoryForuser/{email}/{batchId}")
+	public ResponseEntity<?> getQuizzHistory(@PathVariable Long batchId, @PathVariable String email,
+			@RequestHeader("Authorization") String token, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		return quizzService.getQuizzHistoryforUserByAdmin(token, batchId, email, page, size);
 	}
-	//=============================Weightage Service=========================
+
+	@GetMapping("/get/QuizzAnalysis/{batchId}/{email}")
+	public ResponseEntity<?> getQuizzAnalysis(@PathVariable Long batchId, @PathVariable String email,
+			@RequestHeader("Authorization") String token) {
+		return quizzService.getQuizzAnalysis(token, batchId, email);
+	}
+
+	// ======================Event Controller================
+	@GetMapping("/Events/Get")
+	public ResponseEntity<?> getEvents(@RequestParam int pageNumber, @RequestParam int pageSize,
+			@RequestHeader("Authorization") String token) {
+		return eventController.getEvents(token, pageNumber, pageSize);
+	}
+
+	// =============================Weightage Service=========================
 	@PostMapping("/save/Weightage")
-	public ResponseEntity<?>saveOrUpdateWeightage(@RequestBody Weightage weightage, @RequestHeader("Authorization") String token){
+	public ResponseEntity<?> saveOrUpdateWeightage(@RequestBody Weightage weightage,
+			@RequestHeader("Authorization") String token) {
 		return weightageService.saveOrUpdateWeightageDetails(weightage, token);
 	}
-	
+
 	@GetMapping("/get/Weightage")
-	public ResponseEntity<?>GetWeightage( @RequestHeader("Authorization") String token){
+	public ResponseEntity<?> GetWeightage(@RequestHeader("Authorization") String token) {
 		return weightageService.GetWeightageDetails(token);
 	}
-	//========================Grade Service====================
+
+	// ========================Grade Service====================
 	@GetMapping("/get/Grade")
-	public ResponseEntity<?>getGradeScore( @RequestHeader("Authorization") String token){
+	public ResponseEntity<?> getGradeScore(@RequestHeader("Authorization") String token) {
 		return gradeService.getGrades(token);
 	}
+
 	@GetMapping("/Batch/getcounts")
 	public ResponseEntity<?> getbatchAnalysis(@RequestParam Long id, @RequestHeader("Authorization") String token) {
 		return gradeService.getBatchAnalysis(id, token);
 	}
-	
+
 	@GetMapping("/get/TestGradeAnalysis/{email}/{batchId}")
-	public ResponseEntity<?>getGradeTestAnalysis( @RequestHeader("Authorization") String token,@PathVariable Long batchId,@PathVariable String email){
+	public ResponseEntity<?> getGradeTestAnalysis(@RequestHeader("Authorization") String token,
+			@PathVariable Long batchId, @PathVariable String email) {
 		return gradeService.getTestAndGradeAnalysis(token, email, batchId);
 	}
-	
+
 	@GetMapping("/get/getGradeForUser/{email}/{batchId}")
-	public ResponseEntity<?>getGradesofStudent( @RequestHeader("Authorization") String token,@PathVariable Long batchId,@PathVariable String email){
+	public ResponseEntity<?> getGradesofStudent(@RequestHeader("Authorization") String token,
+			@PathVariable Long batchId, @PathVariable String email) {
 		return gradeService.getGradesofStudent(token, email, batchId);
 	}
-	//======================================ModuleTest =============================================
+
+	// ======================================ModuleTest
+	// =============================================
 	@GetMapping("/search/lesson/{courseId}")
-	public ResponseEntity<?>searchLessonByTitle(@PathVariable Long courseId,@RequestParam("query") String query,@RequestHeader("Authorization") String token){
-		return ModuleTestService.searchLessons(token, query,courseId);
+	public ResponseEntity<?> searchLessonByTitle(@PathVariable Long courseId, @RequestParam("query") String query,
+			@RequestHeader("Authorization") String token) {
+		return ModuleTestService.searchLessons(token, query, courseId);
 	}
+
 	@GetMapping("/get/moduleTest/{mtestId}")
-	public ResponseEntity<?>getModuleTestById(@PathVariable Long mtestId,@RequestHeader("Authorization") String token){
+	public ResponseEntity<?> getModuleTestById(@PathVariable Long mtestId,
+			@RequestHeader("Authorization") String token) {
 		return ModuleTestService.getModuleTestById(mtestId, token);
 	}
+
 	@GetMapping("/course/moduleTest/{courseId}")
-	public ResponseEntity<?>getModuleTestforCourse(@PathVariable Long courseId,@RequestHeader("Authorization") String token){
+	public ResponseEntity<?> getModuleTestforCourse(@PathVariable Long courseId,
+			@RequestHeader("Authorization") String token) {
 		return ModuleTestService.getModuleTestListByCourseId(courseId, token);
 	}
-	 @PostMapping("/ModuleTest/save")
-	 public ResponseEntity<?> saveModuleTest(
-		        @RequestBody SaveModuleTestRequest request,  // Use a DTO for structured request
-		        @RequestHeader("Authorization") String token) {
 
-		    return ModuleTestService.SaveModuleTest(token, request.getLessonIds(), request.getModuleTest(), request.getCourseId());
-		}
-	 
-	 @PostMapping("/Moduletest/addMoreQuestion/{mtestId}")
-		public ResponseEntity<?> AddmoreModuleQuestion(@PathVariable Long mtestId, @RequestParam String questionText,
-				@RequestParam String option1, @RequestParam String option2, @RequestParam String option3,
-				@RequestParam String option4, @RequestParam String answer, @RequestHeader("Authorization") String token) {
-			return ModuleTestService.addMoreModuleQuestion(mtestId, questionText, option1, option2, option3, option4, answer, token);
-		}
-	 @DeleteMapping("/ModuleTest/questions")
-		public ResponseEntity<?> deleteModuleQuestion(@RequestParam List<Long> questionIds, @RequestParam Long testId,
-				@RequestHeader("Authorization") String token) {
-			return ModuleTestService.deleteModuleQuestion(questionIds, token, testId);
-		}
-	 @PatchMapping("/ModuleTest/update/{testId}")
-		public ResponseEntity<?> editModuleTest(@PathVariable Long testId,
-				@RequestParam(value = "mtestName", required = false) String testName,
-				@RequestParam(value = "mnoOfAttempt", required = false) Long noOfAttempt,
-				@RequestParam(value = "mpassPercentage", required = false) Double passPercentage,
-				@RequestHeader("Authorization") String token) {
-			return ModuleTestService.editModuleTest(testId, testName, noOfAttempt, passPercentage, token);
-		}
-	 @GetMapping("/ModuleTest/getQuestion/{questionId}")
-		public ResponseEntity<?> getModuleQuestion(@PathVariable Long questionId, @RequestHeader("Authorization") String token) {
-			return ModuleTestService.getModuleQuestion(questionId, token);
-		}
-	 @PatchMapping("/ModuleTest/edit/{questionId}")
-		public ResponseEntity<?> updateModuleQuestion(@PathVariable Long questionId, @RequestParam String questionText,
-				@RequestParam String option1, @RequestParam String option2, @RequestParam String option3,
-				@RequestParam String option4, @RequestParam String answer, @RequestHeader("Authorization") String token) {
-			return ModuleTestService.updateModuleQuestion(questionId, questionText, option1, option2, option3, option4, answer, token);
-		}
-	 
-	 @PostMapping("/ModuleTest/Shedule")
-		public ResponseEntity<?> SaveORUpdateSheduleModuleTest(@RequestParam Long mtestId, @RequestParam String batchId,
-				@RequestParam LocalDate testdate, 
-				@RequestHeader("Authorization") String token) {
-			return ModuleTestService.SaveORUpdateSheduleModuleTest(mtestId, batchId, testdate, token);
-		}
-	 
-	 
-	 @GetMapping("/ModuleTest/GetSheduleDetails/{courseId}/{batchId}")
-		public ResponseEntity<?> getSheduleModuleTest(@PathVariable Long courseId, @PathVariable String batchId,
-				@RequestHeader("Authorization") String token) {
-			return ModuleTestService.getModuleTestSheduleDetails(courseId, batchId, token);
-		}
-	 @GetMapping("/ModuleTest/Start")
-		public ResponseEntity<?>StartModuleTest(@RequestParam Long mtestId, @RequestParam Long batchId,@RequestHeader("Authorization") String token){
-			return ModuleTestService.startModuleTest(token, mtestId, batchId);
-		}
-	 @PostMapping("/ModuleTest/submit")
-		public ResponseEntity<?>SaveModuleTestAnswer(@RequestParam Long mtestId, @RequestBody   List<AnswerDto> answers,@RequestHeader("Authorization") String token){
-			return ModuleTestService.saveModuleTestAnswers(token, mtestId, answers);
-		}
-	 
-	 
-	 
-	 //====================================Assign Batch===============================================================
-	 @PostMapping("/AssignCourse/Batch")
-		public ResponseEntity<?> assignBatchToUser(HttpServletRequest request ,@RequestParam Long userId,@RequestParam Long batchId, @RequestHeader("Authorization") String token) {
-			return assignBatch.assignCoursesToUser(request, userId, batchId, token);
-		}
-	 
-	 @PostMapping("/Trainer/AssignCourse/Batch")
-		public ResponseEntity<?> assignBatchToTrainer(HttpServletRequest request ,@RequestParam Long userId,@RequestParam Long batchId, @RequestHeader("Authorization") String token) {
-			return assignBatch.assignBatchesToTrainer(request, userId, batchId, token);
-		}
+	@PostMapping("/ModuleTest/save")
+	public ResponseEntity<?> saveModuleTest(@RequestBody SaveModuleTestRequest request, // Use a DTO for structured
+																						// request
+			@RequestHeader("Authorization") String token) {
 
-	 //================AssignCourse=======================
-		@GetMapping("/AssignCourse/student/courselist")
-		public ResponseEntity<List<CourseDetailDto>> getCoursesForUser(@RequestHeader("Authorization") String token) {
-			return assign.getCoursesForUser(token);
-		}
-		@GetMapping("/AssignCourse/Trainer/courselist")
-		public ResponseEntity<List<CourseDetailDto>> getCoursesForTrainer(@RequestHeader("Authorization") String token) {
-			return assign.getCoursesForTrainer(token);
-		}
-	
+		return ModuleTestService.SaveModuleTest(token, request.getLessonIds(), request.getModuleTest(),
+				request.getCourseId());
+	}
+
+	@PostMapping("/Moduletest/addMoreQuestion/{mtestId}")
+	public ResponseEntity<?> AddmoreModuleQuestion(@PathVariable Long mtestId, @RequestParam String questionText,
+			@RequestParam String option1, @RequestParam String option2, @RequestParam String option3,
+			@RequestParam String option4, @RequestParam String answer, @RequestHeader("Authorization") String token) {
+		return ModuleTestService.addMoreModuleQuestion(mtestId, questionText, option1, option2, option3, option4,
+				answer, token);
+	}
+
+	@DeleteMapping("/ModuleTest/questions")
+	public ResponseEntity<?> deleteModuleQuestion(@RequestParam List<Long> questionIds, @RequestParam Long testId,
+			@RequestHeader("Authorization") String token) {
+		return ModuleTestService.deleteModuleQuestion(questionIds, token, testId);
+	}
+
+	@PatchMapping("/ModuleTest/update/{testId}")
+	public ResponseEntity<?> editModuleTest(@PathVariable Long testId,
+			@RequestParam(value = "mtestName", required = false) String testName,
+			@RequestParam(value = "mnoOfAttempt", required = false) Long noOfAttempt,
+			@RequestParam(value = "mpassPercentage", required = false) Double passPercentage,
+			@RequestHeader("Authorization") String token) {
+		return ModuleTestService.editModuleTest(testId, testName, noOfAttempt, passPercentage, token);
+	}
+
+	@GetMapping("/ModuleTest/getQuestion/{questionId}")
+	public ResponseEntity<?> getModuleQuestion(@PathVariable Long questionId,
+			@RequestHeader("Authorization") String token) {
+		return ModuleTestService.getModuleQuestion(questionId, token);
+	}
+
+	@PatchMapping("/ModuleTest/edit/{questionId}")
+	public ResponseEntity<?> updateModuleQuestion(@PathVariable Long questionId, @RequestParam String questionText,
+			@RequestParam String option1, @RequestParam String option2, @RequestParam String option3,
+			@RequestParam String option4, @RequestParam String answer, @RequestHeader("Authorization") String token) {
+		return ModuleTestService.updateModuleQuestion(questionId, questionText, option1, option2, option3, option4,
+				answer, token);
+	}
+
+	@PostMapping("/ModuleTest/Shedule")
+	public ResponseEntity<?> SaveORUpdateSheduleModuleTest(@RequestParam Long mtestId, @RequestParam String batchId,
+			@RequestParam LocalDate testdate, @RequestHeader("Authorization") String token) {
+		return ModuleTestService.SaveORUpdateSheduleModuleTest(mtestId, batchId, testdate, token);
+	}
+
+	@GetMapping("/ModuleTest/GetSheduleDetails/{courseId}/{batchId}")
+	public ResponseEntity<?> getSheduleModuleTest(@PathVariable Long courseId, @PathVariable String batchId,
+			@RequestHeader("Authorization") String token) {
+		return ModuleTestService.getModuleTestSheduleDetails(courseId, batchId, token);
+	}
+
+	@GetMapping("/ModuleTest/Start")
+	public ResponseEntity<?> StartModuleTest(@RequestParam Long mtestId, @RequestParam Long batchId,
+			@RequestHeader("Authorization") String token) {
+		return ModuleTestService.startModuleTest(token, mtestId, batchId);
+	}
+
+	@PostMapping("/ModuleTest/submit")
+	public ResponseEntity<?> SaveModuleTestAnswer(@RequestParam Long mtestId, @RequestBody List<AnswerDto> answers,
+			@RequestHeader("Authorization") String token) {
+		return ModuleTestService.saveModuleTestAnswers(token, mtestId, answers);
+	}
+
+	// ====================================Assign
+	// Batch===============================================================
+	@PostMapping("/AssignCourse/Batch")
+	public ResponseEntity<?> assignBatchToUser(HttpServletRequest request, @RequestParam Long userId,
+			@RequestParam Long batchId, @RequestHeader("Authorization") String token) {
+		return assignBatch.assignCoursesToUser(request, userId, batchId, token);
+	}
+
+	@PostMapping("/Trainer/AssignCourse/Batch")
+	public ResponseEntity<?> assignBatchToTrainer(HttpServletRequest request, @RequestParam Long userId,
+			@RequestParam Long batchId, @RequestHeader("Authorization") String token) {
+		return assignBatch.assignBatchesToTrainer(request, userId, batchId, token);
+	}
+
+	// ================AssignCourse=======================
+	@GetMapping("/AssignCourse/student/courselist")
+	public ResponseEntity<List<CourseDetailDto>> getCoursesForUser(@RequestHeader("Authorization") String token) {
+		return assign.getCoursesForUser(token);
+	}
+
+	@GetMapping("/AssignCourse/Trainer/courselist")
+	public ResponseEntity<List<CourseDetailDto>> getCoursesForTrainer(@RequestHeader("Authorization") String token) {
+		return assign.getCoursesForTrainer(token);
+	}
+
 //=====================Assignment Service ===========================
-@PostMapping("/Assignment/save")
-public ResponseEntity<?> saveAssignment(@RequestHeader("Authorization") String token, 
-                                        @RequestBody Assignment assignment, 
-                                        @RequestParam Long courseId) {
-	return assignmentService.saveAssignment(token, assignment, courseId);
-}
+	@PostMapping("/Assignment/save")
+	public ResponseEntity<?> saveAssignment(@RequestHeader("Authorization") String token,
+			@RequestBody Assignment assignment, @RequestParam Long courseId) {
+		return assignmentService.saveAssignment(token, assignment, courseId);
+	}
 
+	@GetMapping("/Assignment/getAll")
+	public ResponseEntity<?> getAllAssignmentsByCourseId(@RequestHeader("Authorization") String token,
+			@RequestParam Long courseId) {
+		return assignmentService.GetAllAssignmentByCourse(token, courseId);
+	}
+
+	@DeleteMapping("/Assignment/Delete")
+	public ResponseEntity<?> DeleteAssignment(@RequestHeader("Authorization") String token,
+			@RequestParam Long assignmentId) {
+		return assignmentService.DeleteAssignment(token, assignmentId);
+	}
+
+	@DeleteMapping("/Assignment/Delete/Question")
+	public ResponseEntity<?> DeleteAssignmentQuestion(@RequestHeader("Authorization") String token,
+			@RequestParam Long questionId) {
+		return assignmentService.DeleteAssignmentQuestionById(token, questionId);
+	}
+
+	@GetMapping("/Assignment/get")
+	public ResponseEntity<?> getAssignmentById(@RequestHeader("Authorization") String token,
+			@RequestParam Long assignmentId) {
+		return assignmentService.GetAssignmentByAssignmentId(token, assignmentId);
+	}
+
+	@PatchMapping("/Assignment/Edit")
+	public ResponseEntity<?> EditAssignment(@RequestHeader("Authorization") String token,
+			@RequestBody Assignment assignment, @RequestParam Long AssignmentId) {
+		return assignmentService.updateAssignment(token, assignment, AssignmentId);
+	}
+
+	@PatchMapping("/Assignment/EditQuestion")
+	public ResponseEntity<?> saveAssignment(@RequestHeader("Authorization") String token,
+			@RequestBody List<AssignmentQuestion> assignmentQuestions, @RequestParam Long AssignmentId) {
+		return assignmentService.updateAssignmentQuestion(token, assignmentQuestions, AssignmentId);
+	}
 }

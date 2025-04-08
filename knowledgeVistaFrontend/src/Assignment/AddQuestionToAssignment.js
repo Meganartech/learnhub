@@ -74,9 +74,12 @@ const AddQuestionToAssignment = ({ AssignmentQuestion, setAssignmentQuestion, se
                                         {errors[index] && <small className="text-danger">{errors[index]}</small>}
                                     </div>
                                     <div className="col-auto">
+                                    {question.questionText.trim() !== "" && (
+
                                         <button className="hidebtn text-danger" onClick={() => handleDelete(index)}>
                                             <i className="fa-solid fa-trash"></i>
                                         </button>
+                                    )}
                                     </div>
                                 </div>
                             ))}

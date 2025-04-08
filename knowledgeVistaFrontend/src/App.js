@@ -117,6 +117,8 @@ import StartModuleTest from "./course/ModuleTest.js/StartModuleTest.js";
 import Partialpaymentsetting from "./course/Components/Partialpaymentsetting.js";
 import PendingInstallments from "./Student/PendingInstallments.js";
 import CreateAssignment from "./Assignment/CreateAssignment.js";
+import GetAssignments from "./Assignment/GetAssignments.js";
+import EditAssignment from "./Assignment/EditAssignment.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -1233,6 +1235,32 @@ function App() {
                     authorizationRequired={true}
                   >
                     <CreateAssignment />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/Assignment/getAll/:courseName/:courseId?"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <GetAssignments />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+             <Route
+              path="/Assignment/get/:courseName/:courseId/:assignmentId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <EditAssignment />
                   </PrivateRoute>
                 </ErrorBoundary>
               }

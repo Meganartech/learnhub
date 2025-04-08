@@ -2,8 +2,6 @@ package com.knowledgeVista.Batch.Assignment;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import com.knowledgeVista.Course.CourseDetail;
 

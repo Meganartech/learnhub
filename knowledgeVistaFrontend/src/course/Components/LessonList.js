@@ -168,11 +168,7 @@ const LessonList = () => {
 
               <div className="twodiv">
                 <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "9fr 1fr",
-                    marginBottom: "10px",
-                  }}
+                  className="headingandbutton"
                 >
                   <h4>Lessons of {courseName}</h4>
                   <Link

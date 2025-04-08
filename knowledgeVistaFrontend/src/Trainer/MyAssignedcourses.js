@@ -168,6 +168,13 @@ const MyAssignedcourses = () => {
                             >
                               Module Test
                             </Link>
+                            <div className="dropdown-divider"></div>
+                                                        <Link
+                                                          to={`/Assignment/getAll/${item.courseName}/${item.courseId}`}
+                                                          className="dropdown-item"
+                                                        >
+                                                          Assignment
+                                                        </Link>
                             </div>
                           </div>
                           <div>
