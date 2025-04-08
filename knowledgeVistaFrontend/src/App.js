@@ -119,6 +119,7 @@ import PendingInstallments from "./Student/PendingInstallments.js";
 import CreateAssignment from "./Assignment/CreateAssignment.js";
 import GetAssignments from "./Assignment/GetAssignments.js";
 import EditAssignment from "./Assignment/EditAssignment.js";
+import SheduleAssignment from "./Assignment/SheduleAssignment.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -1265,7 +1266,16 @@ function App() {
                 </ErrorBoundary>
               }
             />
-
+ <Route
+              path="/sheduleAssignment/:batchTitle/:batchId/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
+                    <SheduleAssignment/>
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
             {/* SysAdminRoutes */}
             <Route
               path="/viewAll/Admins"

@@ -1937,4 +1937,16 @@ public class FrontController {
 			@RequestBody List<AssignmentQuestion> assignmentQuestions, @RequestParam Long AssignmentId) {
 		return assignmentService.updateAssignmentQuestion(token, assignmentQuestions, AssignmentId);
 	}
+
+	@GetMapping("/Assignment/getSheduleDetail/{courseId}/{batchId}")
+	public ResponseEntity<?> getAssignmentShedule(@PathVariable Long courseId, @PathVariable String batchId,
+			@RequestHeader("Authorization") String token) {
+		return assignmentService.getAssignmentSheduleDetails(courseId, batchId, token);
+	}
+
+	@PostMapping("/Assignment/Shedule")
+	public ResponseEntity<?> SaveORUpdateSheduleAssignment(@RequestParam Long AssignmentId, @RequestParam Long batchId,
+			@RequestParam LocalDate AssignmentDate, @RequestHeader("Authorization") String token) {
+		return assignmentService.SaveORUpdateSheduleAssignment(AssignmentId, batchId, AssignmentDate, token);
+	}
 }

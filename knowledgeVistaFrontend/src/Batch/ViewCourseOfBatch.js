@@ -118,7 +118,7 @@ const ViewCourseOfBatch = () => {
 
           </div>
           <img src={revenueChart} className="revenueimg" alt="revenur chart"/>
-          <h4 className="mt-1 text-right"><i className="fa-solid fa-indian-rupee-sign p-1"></i>{counts.REVENUE}</h4>
+          <h4 className="mt-1 text-right"><i className="fa-solid fa-indian-rupee-sign p-1"></i>{counts.REVENUE?counts.REVENUE:0}</h4>
         
         </div>
       </div>
@@ -247,6 +247,13 @@ const ViewCourseOfBatch = () => {
                     onClick={()=>{navigate(`/sheduleModuleTest/${batchTitle}/${batchid}/${item.courseName}/${item.courseId}`)}}
                     >
                     <label>  Schedule Module Test</label>
+                    </a>
+                    <a
+                      title="Schedule Assignment"
+                      className="btn btn-sm btn-outline-success w-100 mt-2"
+                    onClick={()=>{navigate(`/sheduleAssignment/${batchTitle}/${batchid}/${item.courseName}/${item.courseId}`)}}
+                    >
+                    <label>  Schedule Assignment</label>
                     </a>
                   </div>
                 </div>

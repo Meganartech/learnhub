@@ -26956,7 +26956,7 @@ margin-right:2px ;
   display: flex;
   justify-content: space-between; 
   align-items: center; 
-  padding: 0.5rem 1rem; 
+  padding: 0.5rem 0.5rem; 
 }
 .assignment-title {
   font-size: 1.125rem; /* same as text-lg */
@@ -26966,11 +26966,13 @@ margin-right:2px ;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.Assigmnent-Description{
-  height:100px;
+.Assigmnent-Description {
+  max-height: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
+  position: relative;
 }
+
 
 .borderLine,
 .courseList span{

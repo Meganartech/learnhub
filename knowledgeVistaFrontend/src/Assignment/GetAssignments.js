@@ -12,6 +12,11 @@ const GetAssignments = () => {
     const token=sessionStorage.getItem("token");
       const MySwal = withReactContent(Swal);
     const [assignments, setAssignments] = useState([]);
+    const [expandedId, setExpandedId] = useState(null); // holds the currently expanded assignment's ID
+
+    const toggleDescription = (id) => {
+      setExpandedId((prevId) => (prevId === id ? null : id)); // toggle logic
+    };
     const getAssignments=async()=>{
         try{
        const response=await axios.get(`${baseUrl}/Assignment/getAll?courseId=${courseId}`,{
@@ -119,41 +124,72 @@ const GetAssignments = () => {
                 <button className='btn btn-primary' onClick={()=>{   navigate(`/Assignment/create/${courseName}/${courseId}`)}}>Add More</button></div>
 
                 {assignments.map((assignment) => (
-  <div key={assignment.id} className="bg-white p-6 border mb-4 rounded-md shadow-sm p-2">
-    {/* Assignment Title */}
-    <h2 className="assignment-title">
-      📘 <span>{assignment.title}</span>
-    </h2>
+        <div key={assignment.id} className="bg-white p-6 border mb-4 rounded-md shadow-sm p-2">
+          {/* Title */}
+          <h2 className="assignment-title">📘 <span>{assignment.title}</span></h2>
 
-    {/* Description */}
-    <div className="pl-2 Assigmnent-Description">
-    <small >
-      {assignment.description}
-    </small>
-    </div>
+          {/* Expandable Description */}
+          <div className="pl-2 Assigmnent-Description position-relative">
+  <small
+    style={{
+      display: "-webkit-box",
+      WebkitLineClamp: expandedId === assignment.id ? "unset" : "1",
+      WebkitBoxOrient: "vertical",
+      overflow: "hidden",
+      transition: "all 0.3s ease",
+      paddingRight: "25px", // to prevent text from going under the icon
+      marginBottom:"5px"
+    }}
+  >
+    {assignment.description}
+  </small>
 
-    {/* Marks Info and Icons */}
-    <div className="assignment-text-icons">
-      <div>
-        <div>
-          <span className="font-semibold">Total Marks:</span> {assignment.totalMarks}
+  <span
+  
+    onClick={() => toggleDescription(assignment.id)}
+    style={{
+      position: "absolute",
+      top: "0",
+      right: "0",
+      cursor: "pointer",
+      color: "blue",
+      padding: "5px"
+    }}
+  >
+    {expandedId === assignment.id ? (
+      <i className="fa-solid fa-angle-up text-primary"></i>
+    ) : (
+      <i className="fa-solid fa-angle-down text-primary pb-3"></i>
+    )}
+  </span>
+</div>
+
+
+          {/* Marks Info & Buttons */}
+          <div className="assignment-text-icons d-flex justify-between items-center">
+            <div>
+              <div><span className="font-semibold">Total Marks:</span> {assignment.totalMarks}</div>
+              <div><span className="font-semibold">Passing:</span> {assignment.passingMarks}</div>
+            </div>
+            <div>
+              <button
+                className="hidebtn"
+                title="Edit"
+                onClick={() => navigate(`/Assignment/get/${courseName}/${courseId}/${assignment.id}`)}
+              >
+                <i className="fas fa-edit"></i>
+              </button>
+              <button
+                className="hidebtn text-danger"
+                onClick={() => handleDelete(assignment.id)}
+                title="Delete"
+              >
+                <i className="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
         </div>
-        <div>
-          <span className="font-semibold">Passing:</span> {assignment.passingMarks}
-        </div>
-      </div>
-
-      <div>
-        <button className="hidebtn" title="Edit" onClick={()=>{navigate(`/Assignment/get/${courseName}/${courseId}/${assignment.id}`)}}>
-          <i className="fas fa-edit"></i>
-        </button>
-        <button className="hidebtn text-danger"  onClick={() => handleDelete(assignment.id)} title="Delete">
-          <i className="fas fa-trash-alt" ></i>
-        </button>
-      </div>
-    </div>
-  </div>
-))}
+      ))}
 
 
 

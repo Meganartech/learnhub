@@ -1,5 +1,6 @@
 package com.knowledgeVista.Batch.Assignment.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,10 +12,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Assignment.Assignment;
 import com.knowledgeVista.Batch.Assignment.AssignmentQuestion;
+import com.knowledgeVista.Batch.Assignment.AssignmentSchedule;
 import com.knowledgeVista.Batch.Assignment.Repo.AssignmentQuesstionRepo;
 import com.knowledgeVista.Batch.Assignment.Repo.AssignmentRepo;
+import com.knowledgeVista.Batch.Assignment.Repo.AssignmentSheduleRepo;
+import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.User.Muser;
@@ -32,7 +37,11 @@ public class AssignmentService {
 	@Autowired
 	private MuserRepositories muserRepo;
 	@Autowired
+	private BatchRepository batchRepo;
+	@Autowired
 	private JwtUtil jwtUtil;
+	@Autowired
+	private AssignmentSheduleRepo sheduleRepo;
 	private static final Logger logger = LoggerFactory.getLogger(AssignmentService.class);
 
 	public ResponseEntity<?> saveAssignment(String token, Assignment assignment, Long courseId) {
@@ -158,7 +167,7 @@ public class AssignmentService {
 		} catch (Exception e) {
 			logger.error("Error Saving Assignment", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Error Occurred in Saving Assignment: " + e.getMessage());
+					.body("Error Occurred in Deleting Assignment: ");
 		}
 	}
 
@@ -309,7 +318,7 @@ public class AssignmentService {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Acces this Page");
 			}
 		} catch (Exception e) {
-			logger.error("Error Saving Assignment", e);
+			logger.error("Error Deleting Assignment", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("Error Occurred in Saving Assignment: " + e.getMessage());
 		}
@@ -361,6 +370,105 @@ public class AssignmentService {
 			logger.error("Error Saving Assignment", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("Error Occurred in Saving Assignment: " + e.getMessage());
+		}
+	}
+
+	public ResponseEntity<?> getAssignmentSheduleDetails(Long courseId, String batchId, String token) {
+		try {
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			boolean isalloted = false;
+
+			if ("ADMIN".equals(role)) {
+				isalloted = true;
+			} else if ("TRAINER".equals(role)) {
+				isalloted = muserRepo.FindAllotedOrNotByUserIdAndBatchId(email, batchId);
+			}
+			if (isalloted) {
+				Long batchDbId = Long.parseLong(batchId.replace("batch_", ""));
+				List<Map<String, Object>> shedule = assignmentRepo.getAssignmentSchedulesByCourseIdAndBatchId(courseId,
+						batchDbId);
+				return ResponseEntity.ok(shedule);
+			}
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Acces this Page");
+		} catch (Exception e) {
+			logger.error("error at GetSheduleQuizz" + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+		}
+	}
+
+	public ResponseEntity<?> SaveORUpdateSheduleAssignment(Long AssignmentId, Long batchId, LocalDate AssignmentDate,
+			String token) {
+		try {
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+			}
+			String email = jwtUtil.getUsernameFromToken(token);
+			Optional<Muser> optionalUser = muserRepo.findByEmail(email);
+			if (optionalUser.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+			}
+			Muser addingUser = optionalUser.get();
+			String role = addingUser.getRole().getRoleName();
+			if (!role.equals("ADMIN") && !role.equals("TRAINER")) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Save Assignment");
+			}
+			Optional<Batch> opbatch = batchRepo.findById(batchId);
+			if (opbatch.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch Not Found");
+			}
+			Batch batch = opbatch.get();
+			Optional<Assignment> opassignment = assignmentRepo.findById(AssignmentId);
+			if (opassignment.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Assignment Not Found");
+			}
+			Assignment assignment = opassignment.get();
+			CourseDetail Course = assignment.getCourseDetail();
+			if ("ADMIN".equals(role)) {
+				Optional<AssignmentSchedule> opshedule = sheduleRepo.findByAssignmentIdAndBatchId(batchId,
+						AssignmentId);
+				if (opshedule.isPresent()) {
+					AssignmentSchedule shedule = opshedule.get();
+					shedule.setAssignmentDate(AssignmentDate);
+					sheduleRepo.save(shedule);
+					return ResponseEntity.ok("Updated");
+				} else {
+					AssignmentSchedule shedule = new AssignmentSchedule();
+					shedule.setAssignment(assignment);
+					shedule.setBatch(batch);
+					shedule.setAssignmentDate(AssignmentDate);
+					sheduleRepo.save(shedule);
+					return ResponseEntity.ok("Saved");
+				}
+
+			} else if ("TRAINER".equals(role)) {
+				if (Course.getTrainer().contains(addingUser)) {
+					Optional<AssignmentSchedule> opshedule = sheduleRepo.findByAssignmentIdAndBatchId(batchId,
+							AssignmentId);
+					if (opshedule.isPresent()) {
+						AssignmentSchedule shedule = opshedule.get();
+						shedule.setAssignmentDate(AssignmentDate);
+						sheduleRepo.save(shedule);
+						return ResponseEntity.ok("Updated");
+					} else {
+						AssignmentSchedule shedule = new AssignmentSchedule();
+						shedule.setAssignment(assignment);
+						shedule.setBatch(batch);
+						shedule.setAssignmentDate(AssignmentDate);
+						sheduleRepo.save(shedule);
+						return ResponseEntity.ok("Saved");
+					}
+				} else {
+					return ResponseEntity.status(HttpStatus.FORBIDDEN).body("This Course Was Not Assigned To You");
+				}
+			} else {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Acces this Page");
+			}
+		} catch (Exception e) {
+			logger.error("error at GetSheduleQuizz" + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
 		}
 	}
 
