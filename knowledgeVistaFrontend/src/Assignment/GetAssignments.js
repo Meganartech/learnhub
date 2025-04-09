@@ -31,7 +31,21 @@ const GetAssignments = () => {
         }
        }
         }catch(err){
-            console.log(err)
+          if(err?.response?.status===401){
+            navigate("/unauthorized")
+        }else if (err?.response?.status===403){
+          MySwal.fire({
+              title: " Forbitten!",
+              text: err?.response?.data,
+              icon: "warning",
+              confirmButtonText: "OK",
+            }).then((result) => {
+                navigate(-1);
+            });
+      }else{
+      console.log(err)
+      throw err 
+      }
         }
     }
     useEffect(()=>{

@@ -86,12 +86,6 @@ const ViewQuizz = () => {
       } else if (error.response && error.response.status === 404) {
         setNotFound(true);
       } else {
-        // MySwal.fire({
-        //   title: "Error",
-        //   text: error.response,
-        //   icon: "error",
-        //   confirmButtonText: "OK"
-        // });
         throw error;
       }
     }

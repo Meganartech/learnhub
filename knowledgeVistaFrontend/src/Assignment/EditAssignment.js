@@ -41,9 +41,32 @@ const EditAssignment = () => {
       if (response.status === 200) {
         setAssignment(response?.data);
         setAssignmentQuestion(response?.data?.questions);
+      }else if(response.status === 204){
+        MySwal.fire({
+          title: " Not Found!",
+          text:"Assignment Not Found",
+          icon: "warning",
+          confirmButtonText: "OK",
+        }).then((result) => {
+            navigate(-1);
+        });
       }
     } catch (err) {
-      console.log(err);
+      if(err?.response?.status===401){
+        navigate("/unauthorized")
+    }else if (err?.response?.status===403){
+        MySwal.fire({
+            title: " Forbitten!",
+            text: err?.response?.data,
+            icon: "warning",
+            confirmButtonText: "OK",
+          }).then((result) => {
+              navigate(-1);
+          });
+    }else{
+    console.log(err)
+    throw err
+    }
     }
   };
   useEffect(() => {
@@ -193,6 +216,14 @@ const EditAssignment = () => {
       const cleanedQuestions = AssignmentQuestion.filter(
         (q) => q.questionText.trim() !== ""
       );
+      if (cleanedQuestions.length === 0) {
+        MySwal.fire({
+          icon: "error",
+          title: "Validation Error",
+          text: "Please add at least one valid question before submitting.",
+        });
+        return; // Stop further execution
+      }
       const response = await axios.patch(
         `${baseUrl}/Assignment/EditQuestion?AssignmentId=${assignmentId}`,
         cleanedQuestions,
@@ -290,9 +321,7 @@ const EditAssignment = () => {
                     style={{ width: "150px" }}
                     onClick={() => setShowAddQuestion(true)}
                   >
-                    {AssignmentQuestion.length > 0
-                      ? "Edit Questions"
-                      : "Add Questions"}
+                    Edit Questions
                   </button>
                 </div>
 

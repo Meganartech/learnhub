@@ -950,6 +950,19 @@ const [joinUrl,setjoinUrl]=useState();
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
+                  data-path="/view/MyAssignments"
+                  onClick={(e) => handleClick(e, "/view/MyAssignments")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fas fa-file-alt"></i> 
+                  </span>
+                  <span className="pcoded-mtext"> Assignments </span>
+                </a>
+              </li>
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
                   data-path="/view/MyTestScore"
                   onClick={(e) => handleClick(e, "/view/MyTestScore")}
                   className="nav-link "

@@ -33,6 +33,7 @@ import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Assignment.Assignment;
 import com.knowledgeVista.Batch.Assignment.AssignmentQuestion;
 import com.knowledgeVista.Batch.Assignment.Service.AssignmentService;
+import com.knowledgeVista.Batch.Assignment.Service.AssignmentService2;
 import com.knowledgeVista.Batch.Event.EventController;
 import com.knowledgeVista.Batch.Weightage.Weightage;
 import com.knowledgeVista.Batch.Weightage.service.weightageService;
@@ -218,6 +219,9 @@ public class FrontController {
 
 	@Autowired
 	private AssignmentService assignmentService;
+
+	@Autowired
+	private AssignmentService2 assignmentService2;
 
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
@@ -1948,5 +1952,25 @@ public class FrontController {
 	public ResponseEntity<?> SaveORUpdateSheduleAssignment(@RequestParam Long AssignmentId, @RequestParam Long batchId,
 			@RequestParam LocalDate AssignmentDate, @RequestHeader("Authorization") String token) {
 		return assignmentService.SaveORUpdateSheduleAssignment(AssignmentId, batchId, AssignmentDate, token);
+	}
+
+	// ============================Attendance Service 2=========================
+	@GetMapping("/Assignments/get")
+	public ResponseEntity<?> getAssignmentsByBatchId(@RequestParam Long batchId,
+			@RequestHeader("Authorization") String token) {
+		return assignmentService2.getAssignmentsBybatchId(token, batchId);
+	}
+
+	@GetMapping("/Assignment/getSubmission")
+	public ResponseEntity<?> GetAssignmentByAssignmentIdForSubmission(@RequestHeader("Authorization") String token,
+			@RequestParam Long assignmentId, @RequestParam Long batchId) {
+		return assignmentService2.GetAssignmentByAssignmentIdForSubmission(token, assignmentId, batchId);
+	}
+
+	@PostMapping("/Assignment/Submit")
+	public ResponseEntity<?> SubmitAssignment(@RequestHeader("Authorization") String token,
+			@RequestParam("assignmentId") Long assignmentId, @RequestParam("scheduleId") Long scheduleId,
+			@RequestParam("batchId") Long batchId, @RequestBody Map<Long, String> answers) {
+		return assignmentService2.SubmitAssignment(token, assignmentId, scheduleId, batchId, answers);
 	}
 }

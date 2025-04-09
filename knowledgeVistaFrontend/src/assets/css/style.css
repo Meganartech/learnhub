@@ -25548,6 +25548,13 @@ div.dtk-focus-alt table.dataTable tbody th.focus {
   height: 175px; /*Extra Added*/
   background: linear-gradient(140deg, #0B5796 0%, #001678 50%, #2AA4E6 100%);
  }
+ .course{
+  width: 300px !important;
+ }
+ .course .card{
+  border-radius: 7px;
+  border: 1px solid var(--lightgrey);
+ }
 .mtest:hover,
 .course:hover {
   transform: scale(1.05); /* Slight zoom on hover */
@@ -26548,13 +26555,6 @@ span {
 }
 
 .courseName{
-  /* font-weight: 1000;
-  color:var(--primary) ;
-  overflow-wrap: normal;
-  text-overflow: ellipsis; 
-  display: inline-block;
-  max-width: 100%; 
-  overflow: hidden;  */
   font-weight: 1000;
   color: var(--primary);
   text-overflow: ellipsis;
@@ -26746,26 +26746,6 @@ span {
  
 }
 
-/* .scroll-div{
-  overflow-y: auto;
-}
-.scroll-div::-webkit-scrollbar {
-  width: 6px; 
-}
-
-.scroll-div::-webkit-scrollbar-thumb {
-  background-color: #999;
-  border-radius: 6px; 
-}
-
-.scroll-div::-webkit-scrollbar-thumb:hover {
-  background-color: #888;
-}
-
-.scroll-div::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
-  border-radius: 10px; 
-} */
 .cornerbtns {
     display: flex;
     justify-content: space-between;  /* Pushes elements to extreme left & right */

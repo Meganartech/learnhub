@@ -75,11 +75,34 @@ const AddQuestionToEditAssignment = ({ AssignmentQuestion, setAssignmentQuestion
                 title: "Deleted!",
                 text: "Question has been deleted.",
               });
-            }
-            getAssignment();
+              getAssignment();
+            }else if (response?.status === 204) {
+                MySwal.fire({
+                  title: "Not Found!",
+                  text: "Assignment Not Found",
+                  icon: "warning",
+                  confirmButtonText: "OK",
+                }).then((result) => {
+                    navigate(-1);
+                });
+              }
+          
             } catch (error) {
+                if(error?.response?.status===401){
+                    navigate("/unauthorized")
+                }else if (error?.response?.status===403){
+                    MySwal.fire({
+                        title: " Forbitten!",
+                        text: error?.response?.data,
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                      }).then((result) => {
+                          navigate(-1);
+                      });
+                }else{
               console.error("Delete error:", error);
-              MySwal.fire("Error", error.response?.data || "Something went wrong.", "error");
+              throw error;
+                }
             }
           }
         });
@@ -124,11 +147,17 @@ const AddQuestionToEditAssignment = ({ AssignmentQuestion, setAssignmentQuestion
 
 
 
-                                         <button className="hidebtn text-danger"  onClick={() =>
-                    question.id ? handleDeleteApi(question.id) : handleDelete(index)
-                }>
-                                             <i className="fa-solid fa-trash"></i>
-                                         </button>
+                                     <button
+  className={`hidebtn text-danger ${AssignmentQuestion.length === 1 ? "disabled" : ""}`}
+  onClick={() =>
+    question.id ? handleDeleteApi(question.id) : handleDelete(index)
+  }
+  disabled={AssignmentQuestion.length === 1}
+  title={AssignmentQuestion.length === 1 ? "At least one question is required" : ""}
+>
+  <i className="fa-solid fa-trash"></i>
+</button>
+
                                      </div>
                                  </div>
                              ))}

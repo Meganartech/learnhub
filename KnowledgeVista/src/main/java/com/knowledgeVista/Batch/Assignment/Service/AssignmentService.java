@@ -84,18 +84,11 @@ public class AssignmentService {
 
 	private ResponseEntity<?> saveAssignmentService(Assignment assignment, CourseDetail course) {
 		try {
-			// Set the course
 			assignment.setCourseDetail(course);
-
-			// Ensure each question references this assignment
 			if (assignment.getQuestions() != null) {
 				assignment.getQuestions().forEach(question -> question.setAssignment(assignment));
 			}
-
-			// Save the assignment (which will cascade save questions if properly
-			// configured)
 			assignmentRepo.save(assignment);
-
 			return ResponseEntity.ok("Assignment Saved Successfully");
 		} catch (Exception e) {
 			logger.error("Error at SaveAssignment Service", e);
@@ -184,7 +177,7 @@ public class AssignmentService {
 			Muser addingUser = optionalUser.get();
 			String role = addingUser.getRole().getRoleName();
 			if (!role.equals("ADMIN") && !role.equals("TRAINER")) {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Save Assignment");
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Edit Assignment");
 			}
 			Optional<Assignment> opassignment = assignmentRepo.findById(AssignmentId);
 			if (opassignment.isEmpty()) {
@@ -194,6 +187,7 @@ public class AssignmentService {
 			CourseDetail Course = assignment.getCourseDetail();
 			if ("ADMIN".equals(role)) {
 				assignment.setCourseDetail(null);
+				assignment.setSchedules(null);
 				if (assignment.getQuestions() != null) {
 					assignment.getQuestions().forEach(q -> q.setAssignment(null));
 				}
@@ -201,6 +195,7 @@ public class AssignmentService {
 			} else if ("TRAINER".equals(role)) {
 				if (Course.getTrainer().contains(addingUser)) {
 					assignment.setCourseDetail(null);
+					assignment.setSchedules(null);
 					if (assignment.getQuestions() != null) {
 						assignment.getQuestions().forEach(q -> q.setAssignment(null));
 					}

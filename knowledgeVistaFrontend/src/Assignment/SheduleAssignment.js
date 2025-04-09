@@ -90,11 +90,24 @@ const SheduleAssignment = () => {
         });
         fetchSheduleAssignmentDetails();
       } else if (response.status === 204) {
-        MySwal.fire({ title: "Not Found!", text: "Error occurred", icon: "warning" });
+        MySwal.fire({ title: "Not Found!", text: "Error occurred Batch or Assignment Not Found", icon: "warning" });
       }
     } catch (error) {
-      if (error.response?.status === 401) navigate("/unauthorized");
-    }
+      if (error.response?.status === 401){ navigate("/unauthorized");
+    }else if (error?.response?.status===403){
+      MySwal.fire({
+          title: " Forbitten!",
+          text: error?.response?.data,
+          icon: "warning",
+          confirmButtonText: "OK",
+        }).then((result) => {
+            navigate(-1);
+        });
+  }else{
+  console.log(error)
+  throw error
+  }
+}
   };
 
  

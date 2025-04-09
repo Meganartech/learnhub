@@ -108,7 +108,8 @@ const CreateAssignment = () => {
     Assignment.title.trim() === "" ||
     Assignment.description.trim() === "" ||
     Assignment.totalMarks <= 0 ||
-    Assignment.passingMarks <= 0;
+    Assignment.passingMarks <= 0 ||
+    AssignmentQuestion.length<=0;
     const handleSubmit = async () => {
       if (isFormInvalid) {
           MySwal.fire({
@@ -123,7 +124,14 @@ const CreateAssignment = () => {
           ...Assignment,
           questions: AssignmentQuestion.filter(q => q.questionText.trim() !== ""),
       };
-  
+      if (assignmenttosend.questions.length === 0) {
+        MySwal.fire({
+          icon: "error",
+          title: "Validation Error",
+          text: "Please add at least one valid question before submitting.",
+      });
+        return;
+      }
       try {
           const response = await axios.post(`${baseUrl}/Assignment/save?courseId=${courseId}`, assignmenttosend,{
               headers: {

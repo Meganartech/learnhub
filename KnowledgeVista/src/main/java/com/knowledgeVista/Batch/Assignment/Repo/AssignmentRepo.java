@@ -34,4 +34,10 @@ public interface AssignmentRepo extends JpaRepository<Assignment, Long> {
 	List<Map<String, Object>> getAssignmentSchedulesByCourseIdAndBatchId(@Param("courseId") Long courseId,
 			@Param("batchId") Long batchId);
 
+	@Query(value = "SELECT " + "a.id AS assignmentId, " + "a.title AS assignmentTitle, "
+			+ "s.assignment_date AS assignmentDate, " + "s.schedule_id AS scheduleId " + "FROM assignment a "
+			+ "INNER JOIN assignment_schedule s ON s.assignment_id = a.id "
+			+ "WHERE s.batch_id = :batchId", nativeQuery = true)
+	List<Map<String, Object>> getAssignmentSchedulesByBatchId(@Param("batchId") Long batchId);
+
 }
