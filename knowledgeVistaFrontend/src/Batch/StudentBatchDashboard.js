@@ -8,6 +8,7 @@ import attendance from"../icons/Attendance.svg"
 import quizz from"../icons/Quizz.svg"
 import test from"../icons/test.svg"
 import grade from"../icons/grade.svg"
+import assignmentIcon from "../icons/assignment.svg"
 import { GlobalStateContext } from "../Context/GlobalStateProvider";
 import BarChartComponent from '../AuthenticationPages/BarChartComponent'
 const BatchDashboard = () => {
@@ -18,12 +19,10 @@ const BatchDashboard = () => {
   const { displayname } = useContext(GlobalStateContext);
   const location = useLocation();
   const [scores,setscores]=useState([])
-  const numericBatchId = batchId.split("_")[1];
   const[testGrade,setTestGrade]=useState();
   const [initialUserData, setInitialUserData] = useState(location.state?.user || null);
     const [img, setimg] = useState();
     const [userData, setUserData] = useState({
-  
        username:"",
        email:"",
        phone:"",
@@ -105,11 +104,10 @@ const BatchDashboard = () => {
         const fetchAttendanceAnalysis = async () => {
           try {
             setLoading(true)
-            const numericBatchId = batchId.split("_")[1];
            
           // Retrieve token from sessionStorage
             const response = await axios.get(
-              `${baseUrl}/view/getAttendancAnalysis/${userId}/${numericBatchId}`,
+              `${baseUrl}/view/getAttendancAnalysis/${userId}/${batchId}`,
               {
                 headers: { Authorization: token }, // Passing token in headers
               }
@@ -130,9 +128,8 @@ const BatchDashboard = () => {
         const fetchQuizzAnalysis = async () => {
             try {
               setLoading(true)
-            const numericBatchId = batchId.split("_")[1];
               const response = await axios.get(
-                `${baseUrl}/get/QuizzAnalysis/${numericBatchId}/${studentemail}`,
+                `${baseUrl}/get/QuizzAnalysis/${batchId}/${studentemail}`,
                 {
                   headers: { Authorization: token }, // Passing token in headers
                 }
@@ -153,11 +150,10 @@ const BatchDashboard = () => {
           const fetchGradeTestAnalysis = async () => {
             try {
               setLoading(true)
-              const numericBatchId = batchId.split("_")[1];
              
             // Retrieve token from sessionStorage
               const response = await axios.get(
-                `${baseUrl}/get/TestGradeAnalysis/${studentemail}/${numericBatchId}`,
+                `${baseUrl}/get/TestGradeAnalysis/${studentemail}/${batchId}`,
                 {
                   headers: { Authorization: token }, // Passing token in headers
                 }
@@ -175,10 +171,58 @@ const BatchDashboard = () => {
           fetchGradeTestAnalysis()
       }, [studentemail,userId, batchId]); // Fetch data when userId or batchId changes
     
-   
   return (
     <div>
-    <div className="page-header"></div>
+    <div className="page-header">
+    <div className="page-block">
+          <div className="row align-items-center">
+            <div className="col-md-12">
+              <div className="page-header-title">
+                <h5 className="m-b-10">Profile</h5>
+              </div>
+              <ul className="breadcrumb">
+                <li className="breadcrumb-item">
+                  <a
+                    href="#"
+                    onClick={()=>{navigate("/batch/viewall")}}
+                    title="dashboard"
+                  >
+                     <i className="fa-solid fa-object-group"></i>
+                  </a>
+                </li>
+                <li className="breadcrumb-item">
+                  <a
+                    href="#"
+                    onClick={() => {
+                      navigate(`/batch/viewcourse/${batchTitle}/${batchId}`);
+                    }}
+                  >
+                    {batchTitle}
+                  </a>
+                </li>
+                <li className="breadcrumb-item">
+                  <a href="#"
+                    onClick={() => {
+                      navigate(`/batch/ViewStudents/${batchTitle}/${batchId}`);
+                    }}>
+                   {displayname && displayname.student_name
+                      ? displayname.student_name
+                      : "Student"}
+                    Details
+                  </a>
+                </li>
+                <li className="breadcrumb-item">
+                  <a href="#"
+                   >
+                 {userData.username}
+                  </a>
+                </li>
+              
+              </ul>
+            </div>
+          </div>
+        </div>
+    </div>
     <div className="card">
       <div className="card-body">
       <div className="row">
@@ -194,7 +238,7 @@ const BatchDashboard = () => {
       <div className='row' style={{ display: 'flex', alignItems: 'stretch'}}>
   <div className="col-sm-6">
     <div className="card support-bar overflow-hidden pointer h-90"
-     onClick={() => { navigate(`/view/Attendance/${numericBatchId}`, { state: { user: userData } }) }}>
+     onClick={() => { navigate(`/view/Attendance/${batchId}`, { state: { user: userData } }) }}>
       <div className="card-body pb-0">
         <div className="d-flex justify-content-between align-items-center">
           <h2 className="m-0">Attendance</h2>
@@ -225,7 +269,7 @@ const BatchDashboard = () => {
   </div>
   <div className="col-sm-6">
     <div className="card support-bar overflow-hidden h-90"
-    onClick={()=>{navigate(`/Quizz/gethistory/${studentemail}/${batchTitle}/${numericBatchId}`)}}>
+    onClick={()=>{navigate(`/Quizz/gethistory/${studentemail}/${batchTitle}/${batchId}`)}}>
       <div className="card-body pb-0">
         <div className="d-flex justify-content-between align-items-center">
           <h2 className="m-0">Quizz</h2>
@@ -252,7 +296,7 @@ const BatchDashboard = () => {
  </div>
  <div className="col-lg-5 col-md-12">
  <div className='row'>
- <div className="col-sm-6 pointer"  onClick={()=>{navigate(`/view/TestScore/${studentemail}/${batchTitle}/${numericBatchId}`)}}>
+ <div className="col-sm-6 pointer"  onClick={()=>{navigate(`/view/TestScore/${studentemail}/${batchTitle}/${batchId}`)}}>
                         <div className="card">
                             <div className="card-body">
                                 <div className="row align-items-center">
@@ -275,7 +319,7 @@ const BatchDashboard = () => {
                             </div>
                         </div>
                     </div>
-  <div className="col-sm-6 pointer" onClick={()=>{navigate(`/view/Grades/${studentemail}/${batchTitle}/${numericBatchId}`)}}>
+  <div className="col-sm-6 pointer" onClick={()=>{navigate(`/view/Grades/${studentemail}/${batchTitle}/${batchId}`)}}>
                         <div className="card">
                             <div className="card-body">
                                 <div className="row align-items-center">
@@ -298,7 +342,32 @@ const BatchDashboard = () => {
                             </div>
                         </div>
                     </div>
+                    </div>
+                    <div className='row'>
+                    <div className="col-sm-6 pointer" onClick={()=>{navigate(`/view/Assignments/${batchTitle}/${batchId}/${userId}`)}}>
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="row align-items-center">
+                                    <div className="col-8">
+                                        <h4 className="text-c-Darkblue">{testGrade?.assignment}%</h4>
+                                        <h6 className="text-muted m-b-0">{testGrade?.assignment}</h6>
+                                    </div>
+                                    <div className="col-4 text-right">
+                                        <img src={assignmentIcon} alt="Assignment Icon" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="card-footer bg-c-Darkblue">
+                                <div className="row align-items-center">
+                                    <div className="col-9">
+                                        <p className="text-white m-b-0"> Assignment </p>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
                     </div></div>
+                    </div>
                    
 </div>
 

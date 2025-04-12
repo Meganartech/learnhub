@@ -211,7 +211,7 @@ const AddStudent = () => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
+      reader.onload = () => resolve(reader.Assignment);
       reader.onerror = (error) => reject(error);
     });
   };
@@ -350,8 +350,8 @@ const AddStudent = () => {
           } Added successfully!`,
           icon: "success",
           confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
+        }).then((Assignment) => {
+          if (Assignment.isConfirmed) {
             navigate("/view/Students");
           }
         });

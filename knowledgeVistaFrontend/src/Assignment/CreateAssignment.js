@@ -18,23 +18,18 @@ const CreateAssignment = () => {
   const [Assignment, setAssignment] = useState({
     title: "",
     description: "",
-    totalMarks: 10,
-    passingMarks: 10,
+    totalMarks: 10
   });
 
   const [errors, setErrors] = useState({
     title: "",
     description: "",
-    totalMarks: "",
-    passingMarks: "",
+    totalMarks: ""
   });
 
   const validate = (name, value, formData = {}) => {
     let newErrors = { ...errors };
   
-    // Convert to number only when validating numeric fields
-    const totalMarks = Number(formData.totalMarks);
-    const passingMarks = Number(formData.passingMarks);
     const numericValue = Number(value);
   
     if (name === "title") {
@@ -60,25 +55,10 @@ const CreateAssignment = () => {
     if (name === "totalMarks") {
       if (numericValue <= 0) {
         newErrors.totalMarks = "Total marks must be greater than 0";
-      } else if (passingMarks > numericValue) {
+      }  else {
         newErrors.totalMarks = "";
-        newErrors.passingMarks = "Passing marks cannot be greater than total marks";
-      } else {
-        newErrors.totalMarks = "";
-        newErrors.passingMarks = "";
       }
     }
-  
-    if (name === "passingMarks") {
-      if (numericValue <= 0) {
-        newErrors.passingMarks = "Passing marks must be greater than 0";
-      } else if (numericValue > totalMarks) {
-        newErrors.passingMarks = "Passing marks cannot be greater than total marks";
-      } else {
-        newErrors.passingMarks = "";
-      }
-    }
-  
     setErrors(newErrors);
   };
   
@@ -104,11 +84,9 @@ const CreateAssignment = () => {
     errors.title ||
     errors.description ||
     errors.totalMarks ||
-    errors.passingMarks ||
     Assignment.title.trim() === "" ||
     Assignment.description.trim() === "" ||
     Assignment.totalMarks <= 0 ||
-    Assignment.passingMarks <= 0 ||
     AssignmentQuestion.length<=0;
     const handleSubmit = async () => {
       if (isFormInvalid) {
@@ -147,8 +125,7 @@ const CreateAssignment = () => {
               }).then(() => {
                 setAssignment({title: "",
                   description: "",
-                  totalMarks: 10,
-                  passingMarks: 10,})
+                  totalMarks: 10})
                   setAssignmentQuestion(Array(5).fill({ questionText: "" }))
                 navigate(`/Assignment/getAll/${courseName}/${courseId}`)});
           }else if(response?.status===204){
@@ -258,7 +235,7 @@ const CreateAssignment = () => {
                     <div className="col-sm-6">
                       <textarea
                         id="description"
-                        rows={3}
+                        rows={8}
                         name="description"
                         value={Assignment.description}
                         maxLength="1000"
@@ -297,28 +274,6 @@ const CreateAssignment = () => {
                     </div>
                   </div>
 
-                  <div className="form-group row">
-                    <label
-                      htmlFor="passingMarks"
-                      className="col-sm-3 col-form-label"
-                    >
-                      Passing Marks <span className="text-danger">*</span>
-                    </label>
-                    <div className="col-sm-6">
-                      <input
-                        type="number"
-                        id="passingMarks"
-                        name="passingMarks"
-                        value={Assignment.passingMarks}
-                        className={`form-control ${
-                          errors.passingMarks && "is-invalid"
-                        }`}
-                        placeholder="Passing Marks"
-                        onChange={handleAssignmentChange}
-                      />
-                      <div className="invalid-feedback">{errors.passingMarks}</div>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="cornerbtn">

@@ -39,7 +39,6 @@ const UserGrades = () => {
           setgrades(response?.data?.grades?.gradeDto);
           
           setWeights(response?.data?.weight);
-          console.log(response.data);
         } catch (err) {
           console.log(err);
         }

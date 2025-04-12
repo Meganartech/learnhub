@@ -13,8 +13,8 @@ import com.knowledgeVista.Batch.Assignment.Submission;
 
 @Repository
 public interface SubmissionRepo extends JpaRepository<Submission, Long> {
-	@Query("SELECT s FROM Submission s WHERE s.assignment.id = :assignmentId AND s.batch.id=:batchId AND s.user.userId = :userId AND s.isGraded = false")
-	Optional<Submission> findByBatchIdAndAssignmentIdAndUserIdAndIsGradedFalse(@Param("assignmentId") Long assignmentId,
+	@Query("SELECT s FROM Submission s WHERE s.assignment.id = :assignmentId AND s.batch.id=:batchId AND s.user.userId = :userId ")
+	Optional<Submission> findByBatchIdAndAssignmentIdAndUserId(@Param("assignmentId") Long assignmentId,
 			@Param("userId") Long userId, @Param("batchId") Long batchId);
 
 	@Query(value = "SELECT s.id AS submissionId, s.submitted_at AS submittedAt, s.submission_status AS submissionStatus, "

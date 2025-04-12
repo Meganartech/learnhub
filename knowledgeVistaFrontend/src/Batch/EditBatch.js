@@ -252,17 +252,19 @@ useEffect(()=>{
    
      // Check for errors based on the name of the field being updated
      switch (name) {
-       case "batchTitle":
-         if (!value.trim()) {
-           errorObj.batchTitle = "Batch title cannot be empty!";
-         } else {
-           errorObj.batchTitle = "";
-           setbatch((prev) => ({
-             ...prev,
-             [name]: value,
-           }));
-         }
-         break;
+      case "batchTitle":
+        if (!value.trim()) {
+          errorObj.batchTitle = "Batch title cannot be empty!";
+        } else if (/[\/\\]/.test(value)) {
+          errorObj.batchTitle = "Batch title cannot contain '/' or '\\'";
+        } else {
+          errorObj.batchTitle = "";
+          setbatch((prev) => ({
+            ...prev,
+            [name]: value,
+          }));
+        }
+        break;
    
        case "startDate":
          if (value && batch.endDate && new Date(value) > new Date(batch.endDate)) {

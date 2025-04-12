@@ -134,8 +134,8 @@ if(response?.status===200){
                       </th>
                       <th scope="col">Title</th>
                       <th scope="col">Submission Date </th>
+                      <th scope='col'>Status</th>
                       <th scope="col">Action</th>
-                      
                     </tr>
                   </thead>
                   <tbody>
@@ -145,11 +145,29 @@ if(response?.status===200){
       <td>{item.assignmenttitle}</td>
       <td>{item.assignmentdate}</td>
       <td>
+  <span
+    className={
+      item?.submissionstatus === "SUBMITTED"
+        ? "submitted"
+        : item?.submissionstatus === "NOT_SUBMITTED"
+        ? "NotSubmitted"
+        : item?.submissionstatus === "LATE_SUBMISSION"
+        ? "LateSubmitted"
+        : ""
+    }
+  >
+    <i className="fa-solid fa-circle pr-2"></i>
+    {item?.submissionstatus?.replace("_", " ") || "Not Submitted"}
+  </span>
+</td>
+      <td>
         <button className="btn btn-primary btn-sm"
         onClick={()=>{
             navigate(`/submitAssignment/${item.scheduleid}/${batchId}/${item.assignmentid}`)
-        }}>View & Submit</button>
+        }}>View / Submit</button>
       </td>
+   
+
     </tr>
   ))}
 </tbody>

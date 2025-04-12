@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Batch.PaymentType;
@@ -268,11 +270,11 @@ public class BatchService {
 
 			String role = jwtUtil.getRoleFromToken(token);
 			String email = jwtUtil.getUsernameFromToken(token);
-			Optional<Muser>opmuser=muserRepo.findByEmail(email);
-			if(opmuser.isEmpty()) {
+			Optional<Muser> opmuser = muserRepo.findByEmail(email);
+			if (opmuser.isEmpty()) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
 			}
-			Muser addinguser=opmuser.get();
+			Muser addinguser = opmuser.get();
 			String institutionName = addinguser.getInstitutionName();
 			if (!"ADMIN".equals(role) && !"TRAINER".equals(role)) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Student cannot edit batch");
@@ -285,7 +287,8 @@ public class BatchService {
 			}
 
 			Batch batch = optionalBatch.get();
-			if (!batch.getInstitutionName().equals(institutionName)||("TRAINER".equals(role) && !addinguser.getBatches().contains(batch))) {
+			if (!batch.getInstitutionName().equals(institutionName)
+					|| ("TRAINER".equals(role) && !addinguser.getBatches().contains(batch))) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You cannot modify this batch");
 			}
 
@@ -494,7 +497,7 @@ public class BatchService {
 		}
 	}
 
-	public ResponseEntity<?> getCoursesoFBatch(String batchId, String token) {
+	public ResponseEntity<?> getCoursesoFBatch(Long batchId, String token) {
 		try {
 			String role = jwtUtil.getRoleFromToken(token);
 			String email = jwtUtil.getUsernameFromToken(token);
@@ -516,7 +519,7 @@ public class BatchService {
 	}
 
 //=================get batch Users======================
-	public ResponseEntity<?> getUsersoFBatch(String batchId, String token, int pageNumber, int pageSize) {
+	public ResponseEntity<?> getUsersoFBatch(Long batchId, String token, int pageNumber, int pageSize) {
 		try {
 			String role = jwtUtil.getRoleFromToken(token);
 			String email = jwtUtil.getUsernameFromToken(token);
@@ -540,7 +543,7 @@ public class BatchService {
 
 //==================================searchBatchUsers==================
 	public ResponseEntity<Page<MuserDto>> searchBatchUserByAdminorTrainer(String username, String email, String phone,
-			LocalDate dob, String skills, int page, int size, String token, String batchId) {
+			LocalDate dob, String skills, int page, int size, String token, Long batchId) {
 		try {
 			if (!jwtUtil.validateToken(token)) {
 				return ResponseEntity.ok(Page.empty());
@@ -638,36 +641,40 @@ public class BatchService {
 					.body("Error occurred while Getting the batch.");
 		}
 	}
-	//pending payments=================================================================================================
-	public ResponseEntity<?>GetPendingPayments(String token){
+
+	// pending
+	// payments=================================================================================================
+	public ResponseEntity<?> GetPendingPayments(String token) {
 		try {
 			String role = jwtUtil.getRoleFromToken(token);
-			String email=jwtUtil.getUsernameFromToken(token);
-			if("USER".equals(role)) {
-				List<PendingPayments> payments=pendingsRepo.findPendingPaymentsByemail(email);
+			String email = jwtUtil.getUsernameFromToken(token);
+			if ("USER".equals(role)) {
+				List<PendingPayments> payments = pendingsRepo.findPendingPaymentsByemail(email);
 				return ResponseEntity.ok(payments);
 			}
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only Stdents Can Access This Page");
-		}catch (Exception e) {
-			logger.error("Error Getting Pending Paymets"+e);
+		} catch (Exception e) {
+			logger.error("Error Getting Pending Paymets" + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 			// TODO: handle exception
 		}
 	}
-	//==========================fetchimages of given batchIDs for fluter payment transaction============
-	public ResponseEntity<?>GetbatchImagesForMyPayments(String token,List<Long> batchIds){
+
+	// ==========================fetchimages of given batchIDs for fluter payment
+	// transaction============
+	public ResponseEntity<?> GetbatchImagesForMyPayments(String token, List<Long> batchIds) {
 		try {
 			String role = jwtUtil.getRoleFromToken(token);
-			if("USER".equals(role)) {
-				List<BatchImageDTO> paymentImages=batchrepo.findBatchImagesByIds(batchIds);
+			if ("USER".equals(role)) {
+				List<BatchImageDTO> paymentImages = batchrepo.findBatchImagesByIds(batchIds);
 				return ResponseEntity.ok(paymentImages);
 			}
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only Stdents Can Access This Page");
-		}catch (Exception e) {
-			logger.error("Error Getting Images of  Paymets"+e);
+		} catch (Exception e) {
+			logger.error("Error Getting Images of  Paymets" + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 			// TODO: handle exception
 		}
 	}
-	
+
 }

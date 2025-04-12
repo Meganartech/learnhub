@@ -95,7 +95,7 @@ const ViewAllBatch = () => {
                         e.target.src = errorimg; // Use the imported error image
                       }}
                       onClick={(e) => {
-                        navigate(`/batch/viewcourse/${item.batchTitle}/${item.batchId}`)
+                        navigate(`/batch/viewcourse/${item.batchTitle}/${item.id}`)
                        }}
                       alt="Batch"
                     />
@@ -104,7 +104,7 @@ const ViewAllBatch = () => {
                       className="img-fluid card-img-top "
                       title={item.batchTitle}
                       onClick={(e) => {
-                        navigate(`/batch/viewcourse/${item.batchTitle}/${item.batchId}`)
+                        navigate(`/batch/viewcourse/${item.batchTitle}/${item.id}`)
                        }}
                       style={{
                         backgroundImage: `url(${altBatchImage})`, // Set the background image as altBatchImage
@@ -134,7 +134,7 @@ const ViewAllBatch = () => {
                       title={item.batchTitle}
                       style={{ cursor: "pointer",width:"200px"}}
                       onClick={(e) => {
-                       navigate(`/batch/viewcourse/${item.batchTitle}/${item.batchId}`)
+                       navigate(`/batch/viewcourse/${item.batchTitle}/${item.id}`)
                       }}
                     >
                       {item.batchTitle}

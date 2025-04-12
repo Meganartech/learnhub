@@ -122,6 +122,8 @@ import EditAssignment from "./Assignment/EditAssignment.js";
 import SheduleAssignment from "./Assignment/SheduleAssignment.js";
 import ViewMyAssignment from "./Assignment/ViewMyAssignment.js";
 import SubmitAssignment from "./Assignment/SubmitAssignment.js";
+import BatchAssignments from "./Assignment/BatchAssignments.js";
+import ValidateAssignment from "./Assignment/ValidateAssignment.js";
 function App() {
   useEffect(() => {
     pcoded();
@@ -430,6 +432,19 @@ function App() {
                     authorizationRequired={true}
                   >
                     <UserGrades />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+  <Route
+              path="/view/Assignments/:batchTitle/:batchId/:userId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <BatchAssignments />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
@@ -1272,7 +1287,7 @@ function App() {
             />
 
             <Route
-              path="/Assignment/create/:courseName/:courseId?"
+              path="/Assignment/create/:courseName/:courseId"
               element={
                 <ErrorBoundary>
                   <PrivateRoute
@@ -1280,6 +1295,19 @@ function App() {
                     authorizationRequired={true}
                   >
                     <CreateAssignment />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+              <Route
+              path="/Assignment/Validate/:batchId/:userId/:assignmentId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <ValidateAssignment />
                   </PrivateRoute>
                 </ErrorBoundary>
               }

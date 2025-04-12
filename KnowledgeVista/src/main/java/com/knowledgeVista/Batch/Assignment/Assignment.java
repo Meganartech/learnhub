@@ -33,7 +33,6 @@ public class Assignment {
 	@Column(length = 1000)
 	private String description;
 	private Integer totalMarks;
-	private Integer passingMarks;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "course_id", nullable = false)
 	private CourseDetail courseDetail;
@@ -46,7 +45,6 @@ public class Assignment {
 	@Override
 	public String toString() {
 		return "Assignment [id=" + id + ", title=" + title + ", description=" + description + ", totalMarks="
-				+ totalMarks + ", passingMarks=" + passingMarks + ", courseDetail=" + courseDetail + ", questions="
-				+ questions + "]";
+				+ totalMarks + ", courseDetail=" + courseDetail + ", questions=" + questions + "]";
 	}
 }

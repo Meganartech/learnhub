@@ -1551,7 +1551,7 @@ public class FrontController {
 	}
 
 	@GetMapping("/Batch/getCourses/{batchId}")
-	public ResponseEntity<?> getCourseOfBatch(@PathVariable String batchId,
+	public ResponseEntity<?> getCourseOfBatch(@PathVariable Long batchId,
 			@RequestHeader("Authorization") String token) {
 		return batchService.getCoursesoFBatch(batchId, token);
 	}
@@ -1562,14 +1562,14 @@ public class FrontController {
 	}
 
 	@GetMapping("/Batch/getStudents")
-	public ResponseEntity<?> getStudentsOfBatch(@RequestParam String id, @RequestParam int pageNumber,
+	public ResponseEntity<?> getStudentsOfBatch(@RequestParam Long id, @RequestParam int pageNumber,
 			@RequestParam int pageSize, @RequestHeader("Authorization") String token) {
 		return batchService.getUsersoFBatch(id, token, pageNumber, pageSize);
 	}
 
 	@GetMapping("/Batch/search/User")
 	public ResponseEntity<Page<MuserDto>> searchBatchUserByadminOrTrainer(
-			@RequestParam(value = "batchId", required = true) String batchId,
+			@RequestParam(value = "batchId", required = true) Long batchId,
 			@RequestParam(value = "username", required = false) String username,
 			@RequestParam(value = "email", required = false) String email,
 			@RequestParam(value = "phone", required = false) String phone,
@@ -1700,13 +1700,13 @@ public class FrontController {
 	}
 
 	@GetMapping("/Quizz/getSheduledQuizz/{courseId}/{batchId}")
-	public ResponseEntity<?> getSheduleQuizz(@PathVariable Long courseId, @PathVariable String batchId,
+	public ResponseEntity<?> getSheduleQuizz(@PathVariable Long courseId, @PathVariable Long batchId,
 			@RequestHeader("Authorization") String token) {
 		return quizzService.getQuizzSheduleDetails(courseId, batchId, token);
 	}
 
 	@PostMapping("/Quizz/Shedule/{courseId}/{batchId}")
-	public ResponseEntity<?> SaveORUpdateSheduleQuizz(@RequestParam Long quizzId, @RequestParam String batchId,
+	public ResponseEntity<?> SaveORUpdateSheduleQuizz(@RequestParam Long quizzId, @RequestParam Long batchId,
 			@RequestParam LocalDate quizDate, @RequestHeader("Authorization") String token) {
 		return quizzService.SaveORUpdateSheduleQuizz(quizzId, batchId, quizDate, token);
 	}
@@ -1943,7 +1943,7 @@ public class FrontController {
 	}
 
 	@GetMapping("/Assignment/getSheduleDetail/{courseId}/{batchId}")
-	public ResponseEntity<?> getAssignmentShedule(@PathVariable Long courseId, @PathVariable String batchId,
+	public ResponseEntity<?> getAssignmentShedule(@PathVariable Long courseId, @PathVariable Long batchId,
 			@RequestHeader("Authorization") String token) {
 		return assignmentService.getAssignmentSheduleDetails(courseId, batchId, token);
 	}
@@ -1973,4 +1973,24 @@ public class FrontController {
 			@RequestParam("batchId") Long batchId, @RequestBody Map<Long, String> answers) {
 		return assignmentService2.SubmitAssignment(token, assignmentId, scheduleId, batchId, answers);
 	}
+
+	@GetMapping("/Assignments/getByStudent")
+	public ResponseEntity<?> getAssignmentsBybatchIdForValidation(@RequestParam Long batchId, @RequestParam Long userId,
+			@RequestHeader("Authorization") String token) {
+		return assignmentService2.getAssignmentsBybatchIdForValidation(token, batchId, userId);
+	}
+
+	@GetMapping("/Assignments/getAssignment")
+	public ResponseEntity<?> getAssignmentForValidation(@RequestParam Long batchId, @RequestParam Long userId,
+			@RequestParam Long assignmentId, @RequestHeader("Authorization") String token) {
+		return assignmentService2.getAssignmentForValidation(token, assignmentId, batchId, userId);
+	}
+
+	@PostMapping("/Assignments/Validate")
+	public ResponseEntity<?> ValidateAssignment(@RequestParam Long batchId, @RequestParam Long userId,
+			@RequestParam String feedback, @RequestParam Integer marks, @RequestParam Long assignmentId,
+			@RequestHeader("Authorization") String token) {
+		return assignmentService2.ValidateAssignment(token, assignmentId, batchId, userId, feedback, marks);
+	}
+
 }

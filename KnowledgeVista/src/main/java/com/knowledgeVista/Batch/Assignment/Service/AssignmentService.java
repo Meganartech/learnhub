@@ -241,9 +241,6 @@ public class AssignmentService {
 				if (updated.getTitle() != null) {
 					assignment.setTitle(updated.getTitle());
 				}
-				if (updated.getPassingMarks() != null) {
-					assignment.setPassingMarks(updated.getPassingMarks());
-				}
 				if (updated.getTotalMarks() != null) {
 					assignment.setTotalMarks(updated.getTotalMarks());
 				}
@@ -256,9 +253,6 @@ public class AssignmentService {
 					}
 					if (updated.getTitle() != null) {
 						assignment.setTitle(updated.getTitle());
-					}
-					if (updated.getPassingMarks() != null) {
-						assignment.setPassingMarks(updated.getPassingMarks());
 					}
 					if (updated.getTotalMarks() != null) {
 						assignment.setTotalMarks(updated.getTotalMarks());
@@ -368,7 +362,7 @@ public class AssignmentService {
 		}
 	}
 
-	public ResponseEntity<?> getAssignmentSheduleDetails(Long courseId, String batchId, String token) {
+	public ResponseEntity<?> getAssignmentSheduleDetails(Long courseId, Long batchId, String token) {
 		try {
 			String role = jwtUtil.getRoleFromToken(token);
 			String email = jwtUtil.getUsernameFromToken(token);
@@ -380,9 +374,8 @@ public class AssignmentService {
 				isalloted = muserRepo.FindAllotedOrNotByUserIdAndBatchId(email, batchId);
 			}
 			if (isalloted) {
-				Long batchDbId = Long.parseLong(batchId.replace("batch_", ""));
 				List<Map<String, Object>> shedule = assignmentRepo.getAssignmentSchedulesByCourseIdAndBatchId(courseId,
-						batchDbId);
+						batchId);
 				return ResponseEntity.ok(shedule);
 			}
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Acces this Page");

@@ -64,7 +64,8 @@ public class AssignmentService2 {
 				}
 				Batch batch = opbatch.get();
 				if (user.getEnrolledbatch().contains(batch)) {
-					List<Map<String, Object>> assignments = assignmentRepo.getAssignmentSchedulesByBatchId(batchId);
+					List<Map<String, Object>> assignments = assignmentRepo
+							.getAssignmentSchedulesByBatchIdAndUserId(batchId, user.getUserId());
 					return ResponseEntity.ok(assignments);
 				} else {
 					return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -118,8 +119,8 @@ public class AssignmentService2 {
 			}
 
 			// Fetch existing submission if present
-			Optional<Submission> existingSubmission = submissionRepo
-					.findByBatchIdAndAssignmentIdAndUserIdAndIsGradedFalse(assignmentId, user.getUserId(), batchId);
+			Optional<Submission> existingSubmission = submissionRepo.findByBatchIdAndAssignmentIdAndUserId(assignmentId,
+					user.getUserId(), batchId);
 
 			Map<String, Object> responseMap = new HashMap<>();
 			responseMap.put("assignment", assignment);
@@ -186,8 +187,8 @@ public class AssignmentService2 {
 			}
 
 // Step 6: Check for existing submission
-			Optional<Submission> existingSubmission = submissionRepo
-					.findByBatchIdAndAssignmentIdAndUserIdAndIsGradedFalse(assignmentId, user.getUserId(), batchId);
+			Optional<Submission> existingSubmission = submissionRepo.findByBatchIdAndAssignmentIdAndUserId(assignmentId,
+					user.getUserId(), batchId);
 
 			if (existingSubmission.isPresent()) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -231,4 +232,171 @@ public class AssignmentService2 {
 					.body("An error occurred while submitting the assignment");
 		}
 	}
+
+	public ResponseEntity<?> getAssignmentsBybatchIdForValidation(String token, Long batchId, Long userId) {
+		try {
+			// 1. Extract email and fetch Adding user (request initiator)
+			String addingEmail = jwtUtil.getUsernameFromToken(token);
+			Muser addingUser = muserRepo.findByEmail(addingEmail).orElse(null);
+			if (addingUser == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+			}
+			String role = addingUser.getRole().getRoleName();
+			if (!role.equals("ADMIN") && !role.equals("TRAINER")) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Save Assignment");
+			}
+			// 2. Fetch Student
+			Muser student = muserRepo.findById(userId).orElse(null);
+			if (student == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Student Not Found");
+			}
+
+			// 3. Fetch Batch
+			Batch batch = batchRepo.findById(batchId).orElse(null);
+			if (batch == null) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch Not Found");
+			}
+
+			// 4. Check if Adding user has access to the batch
+			if ("TRAINER".equals(addingUser.getRole().getRoleName())) {
+				if (!addingUser.getBatches().stream().anyMatch(b -> b.getId().equals(batchId))) {
+					return ResponseEntity.status(HttpStatus.FORBIDDEN)
+							.body("Access denied: You are not allotted to access this batch.");
+				}
+			}
+
+			// 5. Check if Student is enrolled in the batch
+			if (!student.getEnrolledbatch().stream().anyMatch(b -> b.getId().equals(batchId))) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN)
+						.body("Access denied: Student " + student.getUsername() + " is not enrolled in this batch.");
+			}
+
+			// 6. Fetch assignments in a single query
+			List<Map<String, Object>> assignments = assignmentRepo.getAssignmentSchedulesByBatchIdAndUserId(batchId,
+					userId);
+
+			// 7. Build response
+			Map<String, Object> response = Map.of("userName", student.getUsername(), "email", student.getEmail(),
+					"userId", student.getUserId(), "assignments", assignments, "batchName", batch.getBatchTitle(),
+					"batchId", batch.getId());
+
+			return ResponseEntity.ok(response);
+
+		} catch (Exception e) {
+			logger.error("Error occurred while fetching assignments: {}", e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+		}
+	}
+
+	public ResponseEntity<?> getAssignmentForValidation(String token, Long assignmentId, Long batchId, Long userId) {
+		try {
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+			}
+
+			String email = jwtUtil.getUsernameFromToken(token);
+			Optional<Muser> optionalUser = muserRepo.findByEmail(email);
+			if (optionalUser.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+			}
+
+			Muser addinguser = optionalUser.get();
+			String role = addinguser.getRole().getRoleName();
+			if (!role.equals("ADMIN") && !role.equals("TRAINER")) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Save Assignment");
+			}
+			Optional<Assignment> optionalAssignment = assignmentRepo.findById(assignmentId);
+			Optional<Batch> optionalBatch = batchRepo.findById(batchId);
+
+			if (optionalAssignment.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Invalid assignment ID");
+			}
+
+			if (optionalBatch.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch Not Found");
+			}
+
+			Assignment assignment = optionalAssignment.get();
+			Batch batch = optionalBatch.get();
+			if ("ADMIN".equals(role) || ("TRAINER".equals(role) && addinguser.getBatches().contains(batch))) {
+				assignment.setCourseDetail(null);
+				assignment.setSchedules(null);
+				if (assignment.getQuestions() != null) {
+					assignment.getQuestions().forEach(q -> q.setAssignment(null));
+				}
+
+				// Fetch existing submission if present
+				Optional<Submission> existingSubmission = submissionRepo
+						.findByBatchIdAndAssignmentIdAndUserId(assignmentId, userId, batchId);
+
+				Map<String, Object> responseMap = new HashMap<>();
+				responseMap.put("assignment", assignment);
+				if (existingSubmission.isPresent()) {
+					Submission submission = existingSubmission.get();
+					submission.setBatch(null);
+					submission.setAssignment(null);
+					submission.setUser(null);
+					responseMap.put("existingSubmission", submission);
+				} else {
+					responseMap.put("existingSubmission", null);
+				}
+				return ResponseEntity.ok(responseMap);
+
+			} else {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you cannot access this page");
+			}
+		} catch (Exception e) {
+			logger.error("Error Validating Assignment: " + e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("An error occurred while gettting the assignment for validation");
+		}
+	}
+
+	public ResponseEntity<?> ValidateAssignment(String token, Long assignmentId, Long batchId, Long userId,
+			String feedback, Integer Marks) {
+		try {
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+			}
+			String email = jwtUtil.getUsernameFromToken(token);
+			Optional<Muser> optionalUser = muserRepo.findByEmail(email);
+			if (optionalUser.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+			}
+			Muser addinguser = optionalUser.get();
+			String role = addinguser.getRole().getRoleName();
+			if (!role.equals("ADMIN") && !role.equals("TRAINER")) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Validate Assignment");
+			}
+			Optional<Batch> optionalBatch = batchRepo.findById(batchId);
+			if (optionalBatch.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch Not Found");
+			}
+			Batch batch = optionalBatch.get();
+			if ("ADMIN".equals(role) || ("TRAINER".equals(role) && addinguser.getBatches().contains(batch))) {
+				// Fetch existing submission if present
+				Optional<Submission> existingSubmission = submissionRepo
+						.findByBatchIdAndAssignmentIdAndUserId(assignmentId, userId, batchId);
+				System.out.println("Ass=" + assignmentId + "batch=" + batchId + "user=" + userId);
+				if (existingSubmission.isPresent()) {
+					Submission submission = existingSubmission.get();
+					submission.setFeedback(feedback);
+					submission.setGraded(true);
+					submission.setTotalMarksObtained(Marks);
+					submissionRepo.save(submission);
+					return ResponseEntity.ok("Assignment Validated");
+				} else {
+					return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Submission Not Found");
+				}
+
+			} else {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you cannot access this page");
+			}
+		} catch (Exception e) {
+			logger.error("Error Validating Assignment: " + e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("An error occurred while valiidating Assignment");
+		}
+	}
+
 }

@@ -159,18 +159,19 @@ const StudentsBatch = () => {
           <div className="row align-items-center">
             <div className="col-md-12">
               <div className="page-header-title">
-                <h5 className="m-b-10">Settings </h5>
+                <h5 className="m-b-10"> {displayname && displayname.student_name
+                      ? displayname.student_name
+                      : "Student"}
+                    Details</h5>
               </div>
               <ul className="breadcrumb">
-                <li className="breadcrumb-item">
+              <li className="breadcrumb-item">
                   <a
                     href="#"
-                    onClick={() => {
-                      navigate("/admin/dashboard");
-                    }}
+                    onClick={()=>{navigate("/batch/viewall")}}
                     title="dashboard"
                   >
-                    <i className="feather icon-home"></i>
+                     <i className="fa-solid fa-object-group"></i>
                   </a>
                 </li>
                 <li className="breadcrumb-item">

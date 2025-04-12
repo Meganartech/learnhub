@@ -17,7 +17,6 @@ const ViewCourseOfBatch = () => {
   const token = sessionStorage.getItem("token");
   const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
-  const numericBatchId = batchid.split("_")[1];
   const { displayname } = useContext(GlobalStateContext);
   const[counts,setcounts]=useState({
   PASS:"",
@@ -36,7 +35,7 @@ const ViewCourseOfBatch = () => {
         `${baseUrl}/Batch/getcounts`,
         {
           params:{
-            id:numericBatchId
+            id:batchid
           },
           headers: {
             Authorization: token,

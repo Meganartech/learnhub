@@ -18,15 +18,13 @@ const EditAssignment = () => {
   const [Assignment, setAssignment] = useState({
     title: "",
     description: "",
-    totalMarks: 10,
-    passingMarks: 10,
+    totalMarks: 10
   });
 
   const [errors, setErrors] = useState({
     title: "",
     description: "",
-    totalMarks: "",
-    passingMarks: "",
+    totalMarks: ""
   });
   const getAssignment = async () => {
     try {
@@ -75,9 +73,6 @@ const EditAssignment = () => {
   const validate = (name, value, formData = {}) => {
     let newErrors = { ...errors };
 
-    // Convert to number only when validating numeric fields
-    const totalMarks = Number(formData.totalMarks);
-    const passingMarks = Number(formData.passingMarks);
     const numericValue = Number(value);
 
     if (name === "title") {
@@ -103,27 +98,10 @@ const EditAssignment = () => {
     if (name === "totalMarks") {
       if (numericValue <= 0) {
         newErrors.totalMarks = "Total marks must be greater than 0";
-      } else if (passingMarks > numericValue) {
-        newErrors.totalMarks = "";
-        newErrors.passingMarks =
-          "Passing marks cannot be greater than total marks";
       } else {
         newErrors.totalMarks = "";
-        newErrors.passingMarks = "";
       }
     }
-
-    if (name === "passingMarks") {
-      if (numericValue <= 0) {
-        newErrors.passingMarks = "Passing marks must be greater than 0";
-      } else if (numericValue > totalMarks) {
-        newErrors.passingMarks =
-          "Passing marks cannot be greater than total marks";
-      } else {
-        newErrors.passingMarks = "";
-      }
-    }
-
     setErrors(newErrors);
   };
 
@@ -147,11 +125,9 @@ const EditAssignment = () => {
     errors.title ||
     errors.description ||
     errors.totalMarks ||
-    errors.passingMarks ||
     Assignment.title.trim() === "" ||
     Assignment.description.trim() === "" ||
-    Assignment.totalMarks <= 0 ||
-    Assignment.passingMarks <= 0;
+    Assignment.totalMarks <= 0 ;
   const handleSubmit = async () => {
     if (isFormInvalid) {
       MySwal.fire({
@@ -358,7 +334,7 @@ const EditAssignment = () => {
                     <div className="col-sm-6">
                       <textarea
                         id="description"
-                        rows={3}
+                        rows={8}
                         name="description"
                         value={Assignment.description}
                         maxLength="1000"
@@ -396,31 +372,6 @@ const EditAssignment = () => {
                       />
                       <div className="invalid-feedback">
                         {errors.totalMarks}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="form-group row">
-                    <label
-                      htmlFor="passingMarks"
-                      className="col-sm-3 col-form-label"
-                    >
-                      Passing Marks <span className="text-danger">*</span>
-                    </label>
-                    <div className="col-sm-6">
-                      <input
-                        type="number"
-                        id="passingMarks"
-                        name="passingMarks"
-                        value={Assignment.passingMarks}
-                        className={`form-control ${
-                          errors.passingMarks && "is-invalid"
-                        }`}
-                        placeholder="Passing Marks"
-                        onChange={handleAssignmentChange}
-                      />
-                      <div className="invalid-feedback">
-                        {errors.passingMarks}
                       </div>
                     </div>
                   </div>

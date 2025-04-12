@@ -75,9 +75,9 @@ public interface quizzRepo extends JpaRepository<Quizz, Long> {
 	@Query("SELECT new com.knowledgeVista.Course.Quizz.ShedueleListDto(q.quizzId, q.quizzName, l.lessonId, l.Lessontitle, s.QuizzDate) "
 			+ "FROM Quizz q " + "JOIN q.lessons l " + "JOIN l.courseDetail c " + "JOIN c.batches b "
 			+ "LEFT JOIN q.schedules s " + // Left join to include NULL if no schedule exists
-			"ON s.batch.batchId = :batchId " + // Ensure schedule belongs to the batch
-			"WHERE c.courseId = :courseId " + "AND b.batchId = :batchId")
+			"ON s.batch.id = :batchId " + // Ensure schedule belongs to the batch
+			"WHERE c.courseId = :courseId " + "AND b.id = :batchId")
 	List<ShedueleListDto> getQuizzShedulesByCourseIdAndBatchId(@Param("courseId") Long courseId,
-			@Param("batchId") String batchId);
+			@Param("batchId") Long batchId);
 
 }

@@ -183,7 +183,6 @@ const GetAssignments = () => {
           <div className="assignment-text-icons d-flex justify-between items-center">
             <div>
               <div><span className="font-semibold">Total Marks:</span> {assignment.totalMarks}</div>
-              <div><span className="font-semibold">Passing:</span> {assignment.passingMarks}</div>
             </div>
             <div>
               <button
