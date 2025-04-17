@@ -8,7 +8,7 @@ const Layout = ({ searchQuery, handleSearchChange, setSearchQuery,filter,handleF
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
   return (
-    <>
+    <div >
       <ErrorBoundary >  
     <Sidebar
     filter={filter}
@@ -29,7 +29,7 @@ const Layout = ({ searchQuery, handleSearchChange, setSearchQuery,filter,handleF
 </ErrorBoundary>
     </div>
     </div>
-  </>
+  </div>
   );
 };
 

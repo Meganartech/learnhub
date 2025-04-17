@@ -79,13 +79,12 @@ const ViewAllBatch = () => {
     <div>
       <div className="page-header"></div>
       {batch.length > 0 ? (
-        <div className="row">
+        <div className="batch-container">
           {batch
             .slice()
             .reverse()
             .map((item) => (
-              <div className="col-md-6 col-xl-3 course" key={item.id}>
-                <div className="card mb-3">
+                <div className="batch mb-3 card" key={item.id}>
                   {item.batchImage ? (
                     <img
                       style={{ cursor: "pointer" }}
@@ -95,12 +94,18 @@ const ViewAllBatch = () => {
                       onError={(e) => {
                         e.target.src = errorimg; // Use the imported error image
                       }}
+                      onClick={(e) => {
+                        navigate(`/batch/viewcourse/${item.batchTitle}/${item.id}`)
+                       }}
                       alt="Batch"
                     />
                   ) : (
                     <div
                       className="img-fluid card-img-top "
                       title={item.batchTitle}
+                      onClick={(e) => {
+                        navigate(`/batch/viewcourse/${item.batchTitle}/${item.id}`)
+                       }}
                       style={{
                         backgroundImage: `url(${altBatchImage})`, // Set the background image as altBatchImage
                         backgroundSize: "cover", // Ensure the image covers the div
@@ -122,19 +127,15 @@ const ViewAllBatch = () => {
                      }}> {item.batchTitle}</h4>
                     </div>
                   )}
-                  <div className="card-body">
+                  <div className="card-body pt-2">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <h5
                       className="courseName"
                       title={item.batchTitle}
-                      style={{ cursor: "pointer" }}
-                      // onClick={(e) => {
-                      //   handleClick(
-                      //     e,
-                      //     item.courseId,
-                      //     item.amount,
-                      //     item.courseUrl
-                      //   );
-                      // }}
+                      style={{ cursor: "pointer",width:"200px"}}
+                      onClick={(e) => {
+                       navigate(`/batch/viewcourse/${item.batchTitle}/${item.id}`)
+                      }}
                     >
                       {item.batchTitle}
                     </h5>
@@ -154,11 +155,12 @@ const ViewAllBatch = () => {
                         <i className="fas fa-trash text-danger"></i>
                       </a>
                     </div>}
-                    <p title={item.courseNames} className="batchlist">
-                      <b>Courses &nbsp;:</b> {item.courseNames}
+                    </div>
+                    <p title={item.course.join(", ")} className="batchlist">
+                      <b>Courses &nbsp;:</b> {item.course.join(", ")}
                     </p>
-                    <p title={item.trainerNames} className="batchlist">
-                      <b>Trainers &nbsp;:</b> {item.trainerNames}
+                    <p title={item.trainer.join(", ")} className="batchlist">
+                      <b>Trainers &nbsp;:</b> {item.trainer.join(", ")}
                     </p>
                     <p title={item.duration} className="batchlist">
                       <b>Duration :</b> {item.duration}
@@ -198,12 +200,11 @@ const ViewAllBatch = () => {
                     </div>
                   </div>
                 </div>
-              </div>
             ))}
         </div>
       ) : (
         <div>
-          <h1 className="text-light ">No Batch Found </h1>
+          <h1 className="text-primary ">No Batch Found </h1>
         </div>
       )}
     </div>

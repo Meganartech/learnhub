@@ -14,13 +14,16 @@ const MyPayments = () => {
        orderId:"",
        userId:"",
        courseId:"",
+       batchId:"",
+       batchName:"",
        courseName:"",
 	    paymentId:"",
 	    installmentnumber:"",
         status:"",
         amountReceived:"",
          amountNeedTopay:"",
-	    date:""
+	    date:"",   
+      paymentType:""
     }]);
 
     const filterData = () => {
@@ -115,9 +118,10 @@ const MyPayments = () => {
         <table className="table table-hover table-bordered table-sm">
           <thead className='thead-dark'>
             <tr>
-              <th scope="col">Course Name</th>
+            <th scope="col">Batch Name</th>
               <th scope="col">Installment Number</th>
               <th scope="col">Payment Id</th>
+              <th scope='col'>Gateway</th>
               <th scope="col">Order Id</th>
               <th scope="col">Amount Paid</th>
               <th scope="col"> Date </th>
@@ -127,9 +131,10 @@ const MyPayments = () => {
           <tbody>
           {filterData().map((payment) => (
              <tr key={payment.id}>
-                <td className='py-2'>{payment.courseName}</td>
+                <td className='py-2'>{payment.batchName}</td>
                 <td  className='py-2'> {payment.installmentnumber}</td>
                 <td className='py-2'>{payment.paymentId}</td>
+                <td  className='py-2'> {payment.paymentType}</td>
                 <td className='py-2'>{payment.orderId}</td>
                 <td className='py-2'>{payment.amountReceived}</td>
                 <td className='py-2'>{payment.date}</td>

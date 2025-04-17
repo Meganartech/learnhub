@@ -3,15 +3,15 @@ package com.knowledgeVista.Meeting;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowledgeVista.Email.EmailService;
@@ -20,13 +20,18 @@ import com.knowledgeVista.Meeting.zoomclass.repo.InviteeRepo;
 import com.knowledgeVista.Meeting.zoomclass.repo.Meetrepo;
 import com.knowledgeVista.Meeting.zoomclass.repo.OccurancesRepo;
 import com.knowledgeVista.Meeting.zoomclass.repo.Recurrenceclassrepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.VirtualmeetmapRepo;
 import com.knowledgeVista.Meeting.zoomclass.repo.ZoomsettingRepo;
 import com.knowledgeVista.Meeting.zoomclass.Occurrences;
 import com.knowledgeVista.Meeting.zoomclass.Recurrenceclass;
+import com.knowledgeVista.Meeting.zoomclass.VirtualmeetingMap;
 import com.knowledgeVista.Meeting.zoomclass.ZoomMeetingInvitee;
 import com.knowledgeVista.Meeting.zoomclass.ZoomSettings;
+import com.knowledgeVista.Notification.Repositories.NotificationDetailsRepo;
+import com.knowledgeVista.Notification.Repositories.NotificationUserRepo;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Repository.MuserRepositories;
+import com.knowledgeVista.zoomJar.ZoomMethods;
 
 
 
@@ -41,6 +46,8 @@ private InviteeRepo inviteRepo;
 @Autowired
 private NotificationService notiservice;
 @Autowired
+private NotificationDetailsRepo notidetail;
+@Autowired
 private OccurancesRepo occurancesRepo;
 @Autowired 
 private Recurrenceclassrepo reccrepo;
@@ -48,6 +55,14 @@ private Recurrenceclassrepo reccrepo;
 private EmailService emailservice;
 @Autowired
 private MuserRepositories muserrepo;
+@Autowired
+private VirtualmeetmapRepo virtualMapRepo;
+@Autowired
+private  ZoomTokenService zoomTokenService;
+@Autowired
+private ZoomMethods zoomMethod;
+@Autowired
+private NotificationUserRepo notiuser;
 
 private static final Logger logger = LoggerFactory.getLogger(SaveMeetDataService.class);
 
@@ -231,7 +246,7 @@ public ResponseEntity<?> PatchsaveData(String email, String jsonString, Meeting 
 
 	            if (institutionname != null && !institutionname.isEmpty()) {
 	                try {
-	                    emailservice.sendHtmlEmail(institutionname, new ArrayList<>(existingEmails), cc, bcc, meeting.getTopic(), body);
+	                    emailservice.sendHtmlEmailAsync(institutionname, new ArrayList<>(existingEmails), cc, bcc, meeting.getTopic(), body);
 	                } catch (Exception e) {
 	                    logger.error("errorSending Mail" + e);
 	                }
@@ -328,7 +343,10 @@ public ResponseEntity<?> saveMeetData(String jsonString, String email,Meeting me
             meeting.setSettings(settings);
         }
 
-         meetrepo.save(meeting);
+         Meeting saved= meetrepo.save(meeting);
+         if(saved.getType().equals(3)) {
+        	 SaveVirtualMeeting(email, meeting);
+         }
        return ResponseEntity.ok("saved Successfully");
         
         }
@@ -437,40 +455,83 @@ private List<ZoomMeetingInvitee> extractInvitees(JsonNode settingsNode, String e
                 meeting.getJoinUrl()
         );
         meeting.setNotificationId(notificationId);
-        if (notificationId != null) {
-            notiservice.SpecificCreateNotificationusingEmail(notificationId, notificationEmails);
-        }
-        
-       // mail sending.. 
-        List<String>bcc=null;
-        List<String>cc=null;
-        String institutionname=muserrepo.findinstitutionByEmail(email);
-        String body = String.format(
-        	    "Meeting Created: %s<br>" +
-        	    "Password: %s<br>" +
-        	    "Time: %s<br>" +
-        	    "TimeZone: %s<br>" +
-        	    "Join URL: <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
-        	    meeting.getTopic(),
-        	    meeting.getPassword(),
-        	    meeting.getStartTime(),
-        	    meeting.getTimezone(),
-        	    meeting.getJoinUrl(),
-        	    meeting.getJoinUrl()
-        	);
-
-        if(institutionname !=null && !institutionname.isEmpty()) {
-        	try {
-            emailservice.sendHtmlEmail(institutionname, notificationEmails, cc,bcc ,meeting.getTopic() , body);
-        	}catch(Exception e){
-        		logger.error("errorSending Mail"+e);
-        	}
-        	
-        }
-    }
+        notifiemails(email,notificationId,notificationEmails,meeting);
+           }
 
     return invitees;
 }
+private void notifiemails(String email, Long notificationId,List<String> notificationEmails,Meeting meeting ) {
+	 if (notificationId != null) {
+         notiservice.SpecificCreateNotificationusingEmail(notificationId, notificationEmails);
+     }
+     
+    // mail sending.. 
+     List<String>bcc=null;
+     List<String>cc=null;
+     String institutionname=muserrepo.findinstitutionByEmail(email);
+     String body = String.format(
+     	    "Meeting Created: %s<br>" +
+     	    "Password: %s<br>" +
+     	    "Time: %s<br>" +
+     	    "TimeZone: %s<br>" +
+     	    "Join URL: <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
+     	    meeting.getTopic(),
+     	    meeting.getPassword(),
+     	    meeting.getStartTime(),
+     	    meeting.getTimezone(),
+     	    meeting.getJoinUrl(),
+     	    meeting.getJoinUrl()
+     	);
 
+     if(institutionname !=null && !institutionname.isEmpty()) {
+     	try {
+         emailservice.sendHtmlEmailAsync(institutionname, notificationEmails, cc, bcc, institutionname, body);
+     	}catch(Exception e){
+     		logger.error("errorSending Mail"+e);
+     	}
+     	
+     }
 
+}
+@Transactional
+private void DeleteMeet(Meeting meeting,String instituionName){
+	try { // Delete the Zoom meeting using the Zoom API
+	            String accessToken = zoomTokenService.getAccessToken(instituionName);      
+           boolean res=zoomMethod.deleteMeeting(meeting.getMeetingId(), accessToken);
+	            if (res) {
+	                // Meeting deleted successfully
+	            	Long notificationId=meeting.getNotificationId();
+	            	notiuser.deleteByNotificationId(notificationId);
+	            	notidetail.deleteByNotifyId(notificationId);
+	                meetrepo.delete(meeting); // Delete from your database
+	                System.out.println("deleted");
+	            }
+	}catch(Exception e) {
+		e.printStackTrace();    logger.error("", e);
+	}
+}
+
+private void SaveVirtualMeeting(String email,Meeting meet) {
+	try {
+		String institutionName=muserrepo.findinstitutionByEmail(email);
+	 Optional<VirtualmeetingMap> opmap=virtualMapRepo.findByinstitutionName(institutionName);
+	 if(opmap.isPresent()) {
+		 VirtualmeetingMap map=opmap.get();
+		Meeting oldmeet=map.getMeeting();
+		 map.setMeeting(meet);
+		 virtualMapRepo.save(map);
+		 DeleteMeet(oldmeet, institutionName);
+		 System.out.println("savingOld");
+	 }else {
+		 VirtualmeetingMap newmap= new VirtualmeetingMap();
+		 newmap.setInstitutionName(institutionName);
+		 newmap.setMeeting(meet);
+		 virtualMapRepo.save(newmap);
+		 System.out.println("savingNew");
+	 }
+	}catch (Exception e) {
+		// TODO: handle exception
+		logger.error("error saving virtualMap"+e);
+	}
+}
 }

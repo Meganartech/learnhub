@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.knowledgeVista.Email.EmailService;
 import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserRoles;
@@ -22,6 +23,7 @@ import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 
 import io.jsonwebtoken.io.DecodingException;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @RestController
@@ -35,11 +37,13 @@ public class AddUsers {
 	
 	 @Autowired
 	private NotificationService notiservice;
+	 @Autowired
+	 private EmailService emailService;
 	 
 
 	 private static final Logger logger = LoggerFactory.getLogger(AddUsers.class);
 	 
-	 public ResponseEntity<?> addTrainer( String username, String psw,String email,
+	 public ResponseEntity<?> addTrainer(HttpServletRequest request, String username, String psw,String email,
 	          LocalDate dob, String phone, String skills, MultipartFile profile, Boolean isActive, String countryCode,String token) {
 	      try {
 	          // Validate the token
@@ -93,16 +97,77 @@ public class AddUsers {
 	                      logger.error("", e);
 	                  }
 	                  }
-	                muserrepositories.save(trainer);
 	                  
+	                muserrepositories.save(trainer);
+					List<String> bcc = null;
+					List<String> cc = null;
+					String institutionname =adding.getInstitutionName();
+					 String domain = request.getHeader("origin"); // Extracts the domain dynamically
 
+			          // Fallback if "Origin" header is not present (e.g., direct backend requests)
+			          if (domain == null || domain.isEmpty()) {
+			              domain = request.getScheme() + "://" + request.getServerName();
+			              if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+			                  domain += ":" + request.getServerPort();
+			              }
+			          }
+
+			          // Construct the Sign-in Link
+			          String signInLink = domain + "/login";
+					String body = String.format(
+					    "<html>"
+					        + "<body>"
+					        + "<h2>Welcome to LearnHub Trainer Portal!</h2>"
+					        + "<p>Dear %s,</p>"
+					        + "<p>We are thrilled to have you as a trainer at LearnHub. Your expertise will help shape the learning journey of many students.</p>"
+					        + "<p>Here are your login credentials:</p>"
+					        + "<ul>"
+					        + "<li><strong>Username (Email):</strong> %s</li>"
+					        + "<li><strong>Password:</strong> %s</li>"
+					        + "</ul>"
+					        + "<p>As a trainer, you can:</p>"
+					        + "<ul>"
+					        + "<li>Create and manage courses.</li>"
+					        + "<li>Interact with students and address their queries.</li>"
+					        + "<li>Track student progress and provide valuable feedback.</li>"
+					        +"<li>And Many More....</li>"
+					        + "</ul>"
+					        + "<p>If you need any assistance, our support team is here to help.</p>"
+
+	                  + "<p>Click the link below to sign in:</p>"
+	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
+					        + "<p>We look forward to your contribution in making learning more impactful!</p>"
+					        + "<p>Best Regards,<br>LearnHub Team</p>"
+					        + "</body>"
+					        + "</html>",
+					        trainer.getUsername(), // Trainer Name
+					        trainer.getEmail(), // Trainer Username (email)
+					        trainer.getPsw() // Trainer Password
+					);
+
+					if (institutionname != null && !institutionname.isEmpty()) {
+					    try {
+					        List<String> emailList = new ArrayList<>();
+					        emailList.add(trainer.getEmail());
+					        emailService.sendHtmlEmailAsync(
+					            institutionname, 
+					            emailList,
+					            cc, 
+					            bcc, 
+					            "Welcome to LearnHub - Trainer Access Granted!", 
+					            body
+					        );
+					    } catch (Exception e) {
+					        logger.error("Error sending mail: " + e.getMessage());
+					    }
+					}
 
 	                  return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	                  }else {
 
 	    	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	                  }
-	              }
+	                  }
 	          } else {
 	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	          }
@@ -123,7 +188,7 @@ public class AddUsers {
 	  
 //===========================================ADMIN OR TRAINER -ADDING STUDENT======================================================	  
 	
-	  public ResponseEntity<?> addStudent(String username, String psw, String email,
+	  public ResponseEntity<?> addStudent(HttpServletRequest request,String username, String psw, String email,
 	          LocalDate dob,String phone, String skills,
 	           MultipartFile profile, Boolean isActive,String countryCode, String token) {
 	      try {
@@ -198,7 +263,63 @@ public class AddUsers {
 		       	        	notiuserlist.add("ADMIN");
 		       	        	notiservice.CommoncreateNotificationUser(NotifyId,notiuserlist,instituiton);
 		       	        }
-	                 
+		       	     List<String> bcc = null;
+			            List<String> cc = null;
+			            String institutionname = instituiton;
+			            String domain = request.getHeader("origin"); // Extracts the domain dynamically
+
+				          // Fallback if "Origin" header is not present (e.g., direct backend requests)
+				          if (domain == null || domain.isEmpty()) {
+				              domain = request.getScheme() + "://" + request.getServerName();
+				              if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+				                  domain += ":" + request.getServerPort();
+				              }
+				          }
+
+				          // Construct the Sign-in Link
+				          String signInLink = domain + "/login";
+			            String body = String.format(
+			                "<html>"
+			                    + "<body>"
+			                    + "<h2>Welcome to LearnHub!</h2>"
+			                    + "<p>Dear %s,</p>"
+			                    + "<p>We are excited to have you on board at LearnHub, your gateway to knowledge and growth.</p>"
+			                    + "<p>Here are your login credentials to access your courses:</p>"
+			                    + "<ul>"
+			                    + "<li><strong>Username (Email):</strong> %s</li>"
+			                    + "<li><strong>Password:</strong> %s</li>"
+			                    + "</ul>"
+			                    + "<p>Start exploring your enrolled courses, engage with trainers, and enhance your learning experience.</p>"
+			                    + "<p>If you need any support, feel free to reach out to our help desk.</p>"
+
+	                  + "<p>Click the link below to sign in:</p>"
+	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
+			                    + "<p>Happy Learning!</p>"
+			                    + "<p>Best Regards,<br>LearnHub Team</p>"
+			                    + "</body>"
+			                    + "</html>",
+			                username, 
+			                email, // Student Username (email)
+			                psw
+			            );
+
+			            if (institutionname != null && !institutionname.isEmpty()) {
+			                try {
+			                    List<String> emailList = new ArrayList<>();
+			                    emailList.add(email);
+			                    emailService.sendHtmlEmailAsync(
+			                        institutionname, 
+			                        emailList,
+			                        cc, 
+			                        bcc, 
+			                        "Welcome to LearnHub - Start Your Learning Journey!", 
+			                        body
+			                    );
+			                } catch (Exception e) {
+			                    logger.error("Error sending mail: " + e.getMessage());
+			                }
+			            }
+
 	                  return ResponseEntity.ok().body("{\"message\": \"saved Successfully\"}");
 	              }
 	          } else {

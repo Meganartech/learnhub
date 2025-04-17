@@ -404,7 +404,7 @@ const ViewVideo = () => {
           </div>
         ) : (
           <div>
-            <div style={{ display: "grid", gridTemplateColumns: "9fr 1fr" }}>
+            <div className="headingandbutton">
               <h1 style={{ textAlign: "center" }}>{courseName}</h1>
              {role==="USER" && <Link
                 to={`/test/start/${courseName}/${courseId}`}

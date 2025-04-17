@@ -79,7 +79,6 @@ const AddMoreQuestion = () => {
     const handleQuestionTextChange = (e) => {
         
         const { value } = e.target;
-        console.log("LENGTH",value.length)
         setQuestionData(prevData => ({
             ...prevData,
             questionText: value

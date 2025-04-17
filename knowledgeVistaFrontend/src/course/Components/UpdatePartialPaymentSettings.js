@@ -6,8 +6,13 @@ import axios from 'axios';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const UpdatePartialPaymentSettings = () => {
-    const {courseName,courseId}=useParams();
+    const {batchTitle,batchId}=useParams();
     const MySwal = withReactContent(Swal);
+    const[batch,setbatch]=useState({
+      batchName:"",
+      amount:"",
+      id:""
+    })
   const token=sessionStorage.getItem("token")
    const [enablechecked,setenablechecked]=useState();
    const [installmentData, setInstallmentData] = useState([]);
@@ -34,7 +39,7 @@ const navigate=useNavigate();
   useEffect(() => {
       const fetchpartpaydata = async () => {
           try {
-              const response = await axios.get(`${baseUrl}/viewPaymentList/${courseId}`, {
+              const response = await axios.get(`${baseUrl}/viewPaymentList/${batchId}`, {
                   headers: {
                       "Authorization": token
                   }
@@ -43,8 +48,14 @@ const navigate=useNavigate();
             
               if (response.status===200) {
                   setenablechecked(true);
-                  setInstallmentData(data)
-                  setNoOfInstallments(installmentData.length)
+                  setbatch((prev)=>({
+                    ...prev,
+                    batchName: data?.batchTitle,
+                    amount:data?.batchAmount,
+                    batchId:data?.batchId
+               } ))
+                  setInstallmentData(data?.batchInstallments)
+                  setNoOfInstallments(data?.batchInstallments.length)
               }   
           } catch (error) {
             if(error.response){
@@ -104,29 +115,52 @@ const navigate=useNavigate();
   <div className="page-header"></div>
   <div className="card">
     <div className='card-header'>
+    <div className="navigateheaders">
+          <div
+            onClick={() => {
+             navigate(-1)
+            }}
+          >
+            <i className="fa-solid fa-arrow-left"></i>
+          </div>
+          <div></div>
+          <div
+            onClick={() => {
+              navigate("/dashboard/course");
+            }}
+          >
+            <i className="fa-solid fa-xmark"></i>
+          </div>
+        </div>
        <h4>
-          <span>Partial Payment Settings for {courseName}</span>
+          <span>Partial Payment Settings for {batch.batchName}</span>
         </h4>
         </div>
         <div className="card-body">
     <div className="row">
       <div className="col-12">
-        <h5>
-          <input type="checkbox" readOnly className="m-4" name='check' checked={enablechecked} />
-          <h4 htmlFor='check' style={{ display: "inline" }}>
+      <h6 className="checkboxes-lg">
+          <input
+            type="checkbox"
+            className="mr-2"
+            name="check"
+            checked={enablechecked}
+          />
+          <span htmlFor="check" style={{ display: "inline" }}>
             Enable Partial Payment
-          </h4>
-        </h5>
+          </span>
+          </h6>
         {enablechecked && <>
           <div className="row">
           <div className="col-md-6">
           <div className='form-group row'>
-            <label className="col-sm-4 col-form-label">Course Amount</label>
+            <label className="col-sm-4 col-form-label">Batch Amount</label>
             <div className="col-sm-8">
-            <input type='number'  className="form-control" />
+            <input type='number'  className="form-control" value={batch.amount} readOnly />
             </div>
           </div>
-         
+          </div>
+          <div className="col-md-6">
           <div className='form-group row'>
             <label className="col-sm-4 col-form-label"> No of Installments </label>
             <div className="col-sm-8">
@@ -182,11 +216,7 @@ const navigate=useNavigate();
             
         </div></>
 }
-        <div className='atbtndiv'>
-          {/* <button className='btn btn-secondary' >cancel</button>
-          <div></div>
-          <button className="btn btn-primary" >Save</button> */}
-        </div>
+       
         </div>
         </div>
         </div>

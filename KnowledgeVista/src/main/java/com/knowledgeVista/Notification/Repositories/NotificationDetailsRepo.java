@@ -12,10 +12,13 @@ import org.springframework.stereotype.Repository;
 import com.knowledgeVista.Notification.NotificationDetails;
 import com.knowledgeVista.Notification.dtos.NotificationDetailsDTO;
 
+import jakarta.transaction.Transactional;
+
 @Repository
 public interface NotificationDetailsRepo extends JpaRepository<NotificationDetails, Long> {
 
 	@Modifying
+	 @Transactional
     @Query("DELETE FROM NotificationDetails nu WHERE nu.notifyId = :notificationId")
     void deleteByNotifyId(@Param("notificationId") Long notificationId);
 	

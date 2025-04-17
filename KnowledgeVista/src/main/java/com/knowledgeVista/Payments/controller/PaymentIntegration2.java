@@ -3,6 +3,7 @@ package com.knowledgeVista.Payments.controller;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -21,20 +22,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
 import com.knowledgeVista.Batch.Batch;
+import com.knowledgeVista.Batch.BatchInstallmentdetails;
+import com.knowledgeVista.Batch.PendingPayments;
+import com.knowledgeVista.Batch.Repo.BatchPartPayRepo;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
+import com.knowledgeVista.Batch.Repo.PendingPaymentRepo;
 import com.knowledgeVista.Course.CourseDetail;
-import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Email.EmailService;
 import com.knowledgeVista.Notification.Service.NotificationService;
-import com.knowledgeVista.Payments.Course_PartPayment_Structure;
-import com.knowledgeVista.Payments.InstallmentDetails;
 import com.knowledgeVista.Payments.Orderuser;
 import com.knowledgeVista.Payments.Paypalsettings;
 import com.knowledgeVista.Payments.repos.OrderuserRepo;
-import com.knowledgeVista.Payments.repos.partpayrepo;
 import com.knowledgeVista.Payments.repos.paypalrepo;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
@@ -53,8 +53,7 @@ public class PaymentIntegration2 {
 	private String currency;
 	@Autowired
 	private paypalrepo paypalrepo;
-	@Autowired
-	private partpayrepo partpayrepo;
+
 	  @Value("${paypal.mode}")
 	    private String paypalMode;
 	  @Autowired
@@ -65,11 +64,15 @@ public class PaymentIntegration2 {
 		private NotificationService notiservice;
 		
 		@Autowired
-		private CourseDetailRepository coursedetail;
-		@Autowired
 		private BatchRepository batchrepo;
 		@Autowired
+		private EmailService emailService;
+		@Autowired
 		private JwtUtil jwtUtil;
+		@Autowired
+		private PendingPaymentRepo pendingsRepo;
+		@Autowired
+		private BatchPartPayRepo batchStruct;
 
 	    private static final String API_URL = "https://v6.exchangerate-api.com/v6/7bd3206191151fb9958f2ae9/pair/INR/USD/1";
 
@@ -126,42 +129,8 @@ public class PaymentIntegration2 {
 		return ordertablerepo.save(orderTable);
 	}
 
-	public void notifiinstallment(Long courseId, Long userId) {
-		Optional<CourseDetail> courseOptional = coursedetail.findById(courseId);
-		Optional<Muser> optionalUser = muserRepository.findById(courseId);
 
-		if (courseOptional.isPresent() && optionalUser.isPresent()) {
-			CourseDetail course = courseOptional.get();
-			Optional<Course_PartPayment_Structure> opPartpay = partpayrepo.findBycourse(course);
-			if (opPartpay.isPresent()) {
-				Course_PartPayment_Structure partpay = opPartpay.get();
-				List<InstallmentDetails> installmentslist = partpay.getInstallmentDetail();
-				int count = ordertablerepo.findCountByUserIDAndCourseID(userId, courseId, "paid");
-				int installmentlength = installmentslist.size();
-				if (installmentlength > count) {
-					InstallmentDetails installment = installmentslist.get(count);
-					Long Duration = installment.getDurationInDays();
-					LocalDate startdate = LocalDate.now();
-					LocalDate datetonotify = startdate.plusDays(Duration);
-					String heading = " Installment Pending!";
-					String link = "/dashboard/course";
-					String notidescription = "Installment date Of " + course.getCourseName() + " for installment "
-							+ installment.getInstallmentNumber() + " was pending";
-
-					Long NotifyId = notiservice.createNotification("Payment", "system", notidescription, "system",
-							heading, link);
-					if (NotifyId != null) {
-						List<Long> ids = new ArrayList<>();
-						ids.add(userId);
-						notiservice.SpecificCreateNotification(NotifyId, ids, datetonotify);
-					}
-				}
-			}
-		}
-
-	}
-
-	public ResponseEntity<?> handlePaypalCheckout(String userName,String email,Long userid ,String BatchName,Long batchId,String institutionName, Long amt,HttpServletRequest httpRequest) {
+	public ResponseEntity<?> handlePaypalCheckout(String userName,String email,Long userid ,String BatchName,Long batchId,Long installMentNumber,String institutionName, Long amt,HttpServletRequest httpRequest) {
 	    try {
 	        // Fetch PayPal settings for the institution
 	        Optional<Paypalsettings> opdataList = paypalrepo.FindByInstitutionName(institutionName);
@@ -231,7 +200,7 @@ public class PaymentIntegration2 {
 	            if (response.statusCode() == 201) {
 	                Order order = response.result();
 	                saveOrderDetails(userName, email, amt,order.id(), "CREATED",
-							institutionName, userid,  0L,"PAYPAL",BatchName,batchId);
+							institutionName, userid, installMentNumber,"PAYPAL",BatchName,batchId);
 	                Map<String, String> approvalLink = new HashMap<>();
 	                for (LinkDescription link : order.links()) {
 	                    if ("approve".equals(link.rel())) {
@@ -261,7 +230,7 @@ public class PaymentIntegration2 {
 	    }
 	}
 	
-	private ResponseEntity<String> SetBatchToUser(Orderuser savedorder){
+	private ResponseEntity<String> SetBatchToUser(HttpServletRequest request, Orderuser savedorder){
 		Optional<Muser> optionalUser = muserRepository.findById(savedorder.getUserId());
 		if(savedorder.getBatchId()==null) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("batchId Not Found");
@@ -274,31 +243,39 @@ public class PaymentIntegration2 {
 			Muser user = optionalUser.get();
 			String institution = user.getInstitutionName();
 			Batch batch = opbatch.get();
+			
 			// for notification
 			List<Muser> trainers = batch.getTrainers();
 			List<Long> ids = new ArrayList<>();
-			List<CourseDetail> courses=batch.getCourses();
-           
+			List<CourseDetail>courses= batch.getCourses();
+
 			for (Muser trainer : trainers) {
 				ids.add(trainer.getUserId());
-			}			
-			
-			if (!user.getBatches().contains(batch)) {
-				user.getBatches().add(batch);
+			}
+
+			if (!user.getEnrolledbatch().contains(batch)) {
+				user.getEnrolledbatch().add(batch);
 				muserRepository.save(user);
 			}
 			if (!batch.getUsers().contains(user)) {
 				batch.getUsers().add(user);
 				batchrepo.save(batch);
 			}
+
+
 			user.getCourses().addAll(
 				    courses.stream()
 				           .filter(course -> !user.getCourses().contains(course)) // Filter out existing courses
 				           .toList() // Collect remaining courses into a list
 				);
-
-				muserRepository.save(user); // Save user after updating courses
-
+			Optional<PendingPayments>oppending =pendingsRepo.getPendingsByEmailAndBatchIdAndInstallmentId(user.getEmail(), batch.getId(),savedorder.getInstallmentnumber());
+			if(oppending.isPresent()) {
+				PendingPayments pendings= oppending.get();
+				pendingsRepo.delete(pendings);
+			}
+	    sendEnrollmentMail(request,courses, batch, user);
+	    notifiInstallment(batch, user,courses);
+				muserRepository.save(user);
 			String courseUrl = batch.getBatchUrl();
 			String heading = " Payment Credited !";
 			String link = "/payment/transactionHitory";
@@ -335,7 +312,124 @@ public class PaymentIntegration2 {
 		
 	}
 
-	public ResponseEntity<String> updatePayPalPayment(Map<String, String> requestData, String token) {
+	public void sendEnrollmentMail(HttpServletRequest request,List<CourseDetail> courses,Batch batch,Muser student) {
+		List<String> bcc = null;
+		List<String> cc = null;
+		String institutionname = student.getInstitutionName();
+	       String domain = request.getHeader("origin"); // Extracts the domain dynamically
+
+	         // Fallback if "Origin" header is not present (e.g., direct backend requests)
+	         if (domain == null || domain.isEmpty()) {
+	             domain = request.getScheme() + "://" + request.getServerName();
+	             if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+	                 domain += ":" + request.getServerPort();
+	             }
+	         }
+
+	         // Construct the Sign-in Link
+	         String signInLink = domain + "/login";
+	         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy"); // Example: 5-Jan-2025
+	         String formattedStartDate = batch.getStartDate().format(formatter);
+	         String formattedEndDate = batch.getEndDate().format(formatter);
+	         StringBuilder body = new StringBuilder();
+	         body.append("<html>")
+	             .append("<body>")
+	             .append("<h2>Welcome to LearnHub - Your Learning Journey Begins!</h2>")
+	             .append("<p>Dear ").append(student.getUsername()).append(",</p>")
+	             .append("<p>Congratulations! You have been successfully enrolled in <strong>Batch: ")
+	             .append(batch.getBatchTitle()).append(" (").append(formattedStartDate).append(" to ").append(formattedEndDate).append(")</strong> at LearnHub.</p>")
+	             .append("<p>In this batch, you will be learning the below courses:</p>")
+	             .append("<ul>").append(generateCourseList(batch.getCourses())).append("</ul>")
+	             .append("<p>To get started:</p>")
+	             .append("<ul>")
+	             .append("<li>Log in to your LearnHub account.</li>")
+	             .append("<li>Access your enrolled courses in My Courses Tab.</li>")
+	             .append("<li>Engage with trainers and fellow students.</li>")
+	             .append("<li>Complete assignments and track your progress.</li>")
+	             .append("</ul>")
+	             .append("<p>If you need any assistance, our support team is here to help.</p>")
+	             .append("<p>Click the link below to sign in:</p>")
+	             .append("<p><a href='").append(signInLink).append("' style='font-size:16px; color:blue;'>Sign In</a></p>")
+	             .append("<p>Best Regards,<br>LearnHub Team</p>")
+	             .append("</body>")
+	             .append("</html>");
+
+
+		if (institutionname != null && !institutionname.isEmpty()) {
+		    try {
+		        List<String> emailList = new ArrayList<>();
+		        emailList.add(student.getEmail());
+		        emailService.sendHtmlEmailAsync(
+		            institutionname, 
+		            emailList,
+		            cc, 
+		            bcc, 
+		            "Welcome to LearnHub - Batch Enrollment Successful!", 
+		            body.toString()
+		        );
+		    } catch (Exception e) {
+		        logger.error("Error sending mail: " + e.getMessage());
+		    }
+		}
+
+		// Helper method to format courses as an HTML list
+		
+
+	}
+	private String generateCourseList(List<CourseDetail> courses) {
+	    StringBuilder courseList = new StringBuilder();
+	    for (CourseDetail course : courses) {
+	        courseList.append("<li>").append(course.getCourseName()).append("</li>");
+	    }
+	    return courseList.toString();
+	}
+	private String generateCourseString(List<CourseDetail> courses) {
+	    String courseList = "";
+	    for (CourseDetail course : courses) {
+	    	courseList+=course;
+	    }
+	    return courseList;
+	}
+		public void notifiInstallment(Batch batch,Muser user,List<CourseDetail> courses) {
+					List<BatchInstallmentdetails> installmentslist = batchStruct.findoriginalInstallmentDetailsByBatchId(batch.getId());
+					int count = ordertablerepo.findCountByUserIDAndBatchID(user.getUserId(), batch.getId(), "paid");
+					int installmentlength = installmentslist.size();
+					if (installmentlength > count) {
+						
+						BatchInstallmentdetails installment = installmentslist.get(count);
+						
+						Long Duration = installment.getDurationInDays();
+						LocalDate startdate = LocalDate.now();
+						LocalDate datetonotify = startdate.plusDays(Duration);
+						PendingPayments pendings=new PendingPayments();
+						pendings.setEmail(user.getEmail());
+						pendings.setBatchId(batch.getId());
+						pendings.setBatchName(batch.getBatchTitle());
+						pendings.setBId(batch.getBatchId());
+						pendings.setInstallmentId(installment.getId());
+						pendings.setAmount(installment.getInstallmentAmount());
+						pendings.setInstallmentNo(installment.getInstallmentNumber());
+						pendings.setLastDate(datetonotify);
+						pendingsRepo.save(pendings);
+						String heading = " Installment Pending!";
+						String link = "/dashboard/course";
+						String notidescription = "Installment date for Courses " +generateCourseString(courses)  + " for installment "
+								+ installment.getInstallmentNumber() + " was pending";
+
+						Long NotifyId = notiservice.createNotification("Payment", "system", notidescription, "system",
+								heading, link);
+						if (NotifyId != null) {
+							List<Long> ids = new ArrayList<>();
+							ids.add(user.getUserId());
+							notiservice.SpecificCreateNotification(NotifyId, ids, datetonotify);
+						}
+					}
+				}
+			
+
+		
+
+	public ResponseEntity<String> updatePayPalPayment(HttpServletRequest servletrequest ,Map<String, String> requestData, String token) {
 	    try {
 	        String orderId = requestData.get("orderId");
 	        String payerId = requestData.get("PayerID");
@@ -381,7 +475,7 @@ public class PaymentIntegration2 {
 	                orderUser.setDate(new Date()); // Current date for simplicity
 
 	                Orderuser savedOrder = ordertablerepo.save(orderUser);
-	                return this.SetBatchToUser(savedOrder);
+	                return this.SetBatchToUser(servletrequest,savedOrder);
 
 	               	            } else {
 	                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("PayPal payment details not found");

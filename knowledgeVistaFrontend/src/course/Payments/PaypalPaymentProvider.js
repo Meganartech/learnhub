@@ -13,6 +13,7 @@ const PaypalPaymentProvider = (orderData,setopenselectgateway) => {
           const data = JSON.stringify({
             batchId: orderData?.batchId,
             userId: orderData?.userId,
+            paytypeL:orderData?.paytypeL
             });
          const url = "/full/buyBatch/create";
           const response = await axios.post(`${baseUrl}${url}?gateway=PAYPAL`, data, {

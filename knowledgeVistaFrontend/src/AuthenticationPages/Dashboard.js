@@ -653,8 +653,10 @@ const Dashboard = () => {
                                 <p className="mb-3 mt-3">Number of Video Space Graph</p>
                             </div>
                             
-                            <div className="radial-bar" > 
+                            <div className="radial-bar2" > 
+                                <div className="innerradial-bar">
                             <RadialProgressBar percentage={usedPercentage} total={storagedetail.total}/></div>
+                            </div>
                             <div className="card-footer bg-success text-white">
                                 <div className="row text-center">
                                     <div className="col">

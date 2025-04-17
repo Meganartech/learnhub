@@ -15,6 +15,7 @@ const CreateBatch = () => {
   const [searchQueryTrainer,setSearchQueryTrainer]=useState('')
   const[selectedTainers,setselectedTrainers]=useState([])
   const token = sessionStorage.getItem("token");
+  const role=sessionStorage.getItem("role")
   const[batch,setbatch]=useState({
     batchTitle:"",
     startDate:"",
@@ -22,7 +23,7 @@ const CreateBatch = () => {
     courses:selectedCourse,
     trainers:selectedTainers,
     noOfSeats:"",
-    amount:"",
+    amount:0,
     BatchImage:null,
     base64Image:null
   })
@@ -105,13 +106,13 @@ const CreateBatch = () => {
         updatedCourses= prevSelected
       } else {
         // Add the course if not selected
-        updatedCourses= [...prevSelected, { courseId: course.courseId, courseName: course.courseName }];
+        updatedCourses= [...prevSelected, { courseId: course.courseId, courseName: course.courseName ,amount:course.amount}];
       }
  
     setbatch((prevBatch) => ({
       ...prevBatch,
       courses:updatedCourses,
-      amount: prevBatch.amount +  course.amount, // Update batch amount
+      amount: Number(prevBatch.amount) + Number(course.amount), // Update batch amount
     }));
     return updatedCourses;
   })
@@ -145,19 +146,29 @@ const CreateBatch = () => {
    
     setSelectedCourse((prevSelected) => {
       // Check if course is already selected
-      const exists = prevSelected.find((courseprev) => courseprev.courseId === course.courseId);
-       let updatedCourses
+      const exists = prevSelected.find(
+        (courseprev) => courseprev.courseId === course.courseId
+      );
+    
       if (exists) {
-       
-        updatedCourses= prevSelected.filter((courseprev) => courseprev.courseId !== course.courseId);
-        setbatch((prevBatch) => ({
-          ...prevBatch,
-          courses:updatedCourses,
-          amount: prevBatch.amount -  course.amount, // Update batch amount
-        }));
-      } 
-      return updatedCourses
+        const updatedCourses = prevSelected.filter(
+          (courseprev) => courseprev.courseId !== course.courseId
+        );
+        setbatch((prevBatch) => {
+         
+          return {
+            ...prevBatch,
+            courses: updatedCourses,
+            amount: Number(prevBatch.amount) - Number(course.amount), // Ensure proper subtraction
+          };
+        });
+    
+        return updatedCourses; // Return updated courses list
+      }
+    
+      return prevSelected; // If not found, return original list
     });
+    
     
   };
   const handletrainerRemove = (trainer) => {
@@ -219,6 +230,8 @@ const CreateBatch = () => {
       case "batchTitle":
         if (!value.trim()) {
           errorObj.batchTitle = "Batch title cannot be empty!";
+        } else if (/[\/\\]/.test(value)) {
+          errorObj.batchTitle = "Batch title cannot contain '/' or '\\'";
         } else {
           errorObj.batchTitle = "";
           setbatch((prev) => ({
@@ -227,6 +240,7 @@ const CreateBatch = () => {
           }));
         }
         break;
+      
   
       case "startDate":
         if (value && batch.endDate && new Date(value) > new Date(batch.endDate)) {
@@ -341,12 +355,20 @@ const CreateBatch = () => {
           courses: [],
           trainers: [],
           noOfSeats: "",
-          amount: "",
+          amount: 0,
         });
         setSelectedCourse([]);
         setselectedTrainers([])
         setErrors({});
+        const batchId=response?.data?.batchId;
+        const amount=response?.data?.amount;
+        const batchTitle=response?.data?.batchName;
+        
+        if(role==="ADMIN"){
+          navigate(`/batch/save/partpay/${batchTitle}/${batchId}`)
+        }else{
         navigate("/batch/viewall")
+        }
       }
     } catch (error) {
       console.error("Error saving batch:", error);
@@ -594,7 +616,7 @@ const CreateBatch = () => {
                     htmlFor="courseAmount"
                     className="col-sm-3 col-form-label"
                   >
-                    Course Amount <span className="text-danger">*</span>
+                    Batch Amount <span className="text-danger">*</span>
                   </label>
                   <div className="col-sm-9">
                     <input

@@ -313,7 +313,12 @@ const TrainerRegistration = () => {
             email: "This email is already registered.",
           }));
         } else{
-          throw error
+          MySwal.fire({
+          title: "Error!",
+          text: data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
         }
       } else {
         // MySwal.fire({

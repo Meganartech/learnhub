@@ -2,6 +2,7 @@ package com.knowledgeVista.User.Controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,12 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.stereotype.Service;
 import com.knowledgeVista.Batch.SearchDto;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
-import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Email.EmailService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.MuserDto;
 import com.knowledgeVista.User.MuserRequiredDto;
@@ -28,13 +27,13 @@ import com.knowledgeVista.User.Approvals.MuserApprovals;
 import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
-@CrossOrigin
-@RestController
+
+import jakarta.servlet.http.HttpServletRequest;
+
+@Service
 public class Listview {
 	@Autowired
 	private MuserRepositories muserrepositories;
-	@Autowired
-	private CourseDetailRepository courseRepo;
 	 @Autowired
 	 private JwtUtil jwtUtil;
 	 @Autowired 
@@ -45,6 +44,8 @@ public class Listview {
 	private MuserApprovalPageable approvalpage;
 	@Autowired
 	private BatchRepository batchrepo;
+	@Autowired
+	private EmailService emailservice;
 
 	 private static final Logger logger = LoggerFactory.getLogger(Listview.class);
 
@@ -157,7 +158,6 @@ public class Listview {
         	 MuserRequiredDto user=opuser.get();
             return ResponseEntity.ok(user);
          }else {
-        	 System.out.println("usernot");
         	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
          }
       	   }else {
@@ -257,9 +257,7 @@ public ResponseEntity< List<?>> SearchEmail(String token,String Query){
    	  if (institutionname != null && !institutionname.isEmpty()) {
    	   
    	    	List<SearchDto> list1= muserrepositories.findEmailsAsSearchDto(Query, institutionname);
-   	    	List<SearchDto>list2= courseRepo.findCoursesAsSearchDto(Query, institutionname);
    	    	List<SearchDto> list3 = batchrepo.findbatchAsSearchDto(Query, institutionname);
-   	    	list1.addAll(list2);
    	    	list1.addAll(list3);
    	    	return ResponseEntity.ok(list1);
    	     }else {
@@ -439,7 +437,7 @@ public ResponseEntity<?>RejectUser(Long id,String token){
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 }
-public ResponseEntity<?>ApproveUser(Long id,String token){
+public ResponseEntity<?>ApproveUser(HttpServletRequest request,Long id,String token){
 	try{
 		if (!jwtUtil.validateToken(token)) {
 			  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -468,6 +466,67 @@ public ResponseEntity<?>ApproveUser(Long id,String token){
 				muser.setSkills(approval.getSkills());
 				muser.setCountryCode(approval.getCountryCode());
 				muserrepositories.save(muser);
+				List<String> bcc = null;
+				List<String> cc = null;
+				String institutionname = approval.getInstitutionName();
+				 String domain = request.getHeader("origin"); // Extracts the domain dynamically
+
+		          // Fallback if "Origin" header is not present (e.g., direct backend requests)
+		          if (domain == null || domain.isEmpty()) {
+		              domain = request.getScheme() + "://" + request.getServerName();
+		              if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+		                  domain += ":" + request.getServerPort();
+		              }
+		          }
+
+		          // Construct the Sign-in Link
+		          String signInLink = domain + "/login";
+				String body = String.format(
+				    "<html>"
+				        + "<body>"
+				        + "<h2>Welcome to LearnHub Trainer Portal!</h2>"
+				        + "<p>Dear %s,</p>"
+				        + "<p>We are thrilled to have you as a trainer at LearnHub. Your expertise will help shape the learning journey of many students.</p>"
+				        + "<p>Here are your login credentials:</p>"
+				        + "<ul>"
+				        + "<li><strong>Username (Email):</strong> %s</li>"
+				        + "<li><strong>Password:</strong> %s</li>"
+				        + "</ul>"
+				        + "<p>As a trainer, you can:</p>"
+				        + "<ul>"
+				        + "<li>Create and manage courses.</li>"
+				        + "<li>Interact with students and address their queries.</li>"
+				        + "<li>Track student progress and provide valuable feedback.</li>"
+				        + "</ul>"
+				        + "<p>If you need any assistance, our support team is here to help.</p>"
+				        + "<p>We look forward to your contribution in making learning more impactful!</p>"
+	                  + "<p>Click the link below to sign in:</p>"
+	                  + "<p><a href='" + signInLink + "' style='font-size:16px; color:blue;'>Sign In</a></p>"
+				        + "<p>Best Regards,<br>LearnHub Team</p>"
+				        + "</body>"
+				        + "</html>",
+				        approval.getUsername(), // Trainer Name
+				    approval.getEmail(), // Trainer Username (email)
+				    approval.getPsw() // Trainer Password
+				);
+
+				if (institutionname != null && !institutionname.isEmpty()) {
+				    try {
+				        List<String> emailList = new ArrayList<>();
+				        emailList.add(approval.getEmail());
+				        emailservice.sendHtmlEmailAsync(
+				            institutionname, 
+				            emailList,
+				            cc, 
+				            bcc, 
+				            "Welcome to LearnHub - Trainer Access Granted!", 
+				            body
+				        );
+				    } catch (Exception e) {
+				        logger.error("Error sending mail: " + e.getMessage());
+				    }
+				}
+
 				MuserApproval.deleteById(id);
 				return ResponseEntity.ok("user Approved Successfully");
 			}else {
@@ -587,5 +646,21 @@ public ResponseEntity<Page<MuserDto>> searchStudentsOfTrainer( String username, 
 		}
 	}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+public List<SearchDto> getBatchesOfUser(String token, String email) {
+    try {
+        // Validate token
+        if (!jwtUtil.validateToken(token)) {
+            return Collections.emptyList(); // Return an empty list if token is invalid
+        }
+
+        // Fetch batches for the user
+        return muserrepositories.getBatchOfUser(email);
+        
+    } catch (Exception e) {
+        e.printStackTrace(); // Log the exception
+        return Collections.emptyList(); // Return an empty list in case of an error
+    }
+}
 
 }

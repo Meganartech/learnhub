@@ -41,12 +41,13 @@ const ViewTrainers = () => {
             'Authorization':token
         },
           params: {
-            username,
-            email,
-            phone,
-            dob,
+           
+            username: encodeURIComponent(username),
+        email: encodeURIComponent(email),
+        phone: encodeURIComponent(phone),
+        dob: encodeURIComponent(dob),
+        skills: encodeURIComponent(skills),
             institutionName,
-            skills,
             page:currentPage,
             size:10
           }

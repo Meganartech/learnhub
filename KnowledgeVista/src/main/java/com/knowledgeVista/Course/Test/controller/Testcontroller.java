@@ -1,5 +1,6 @@
 package com.knowledgeVista.Course.Test.controller;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,15 +11,22 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Course.Quizz.DTO.QuizzHistoryDto;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Test.CourseTest;
 import com.knowledgeVista.Course.Test.Question;
+import com.knowledgeVista.Course.Test.TestHistoryDto;
+import com.knowledgeVista.Course.Test.Repository.MtestAnswerRepo;
 import com.knowledgeVista.Course.Test.Repository.MusertestactivityRepo;
 import com.knowledgeVista.Course.Test.Repository.QuestionRepository;
 import com.knowledgeVista.Course.Test.Repository.TestRepository;
@@ -35,7 +43,8 @@ public class Testcontroller {
 	    private CourseDetailRepository courseDetailRepo;
 		@Autowired
 		private MusertestactivityRepo muserActivityRepo;
-		
+		@Autowired
+		private TestHistoryService testHistoryService;
 		@Autowired
 		private MuserRepositories muserRepo;
 	    @Autowired
@@ -277,8 +286,12 @@ public class Testcontroller {
 
 	                        if (opTest.isPresent()) {
 	                            CourseTest test = opTest.get();
-	                            long attemptCount = muserActivityRepo.countByUser(user);
+	                            
+	                            long attemptCount = muserActivityRepo.countByUserAndTestId(user.getUserId(),test.getTestId());
 	                            // Check if user exceeds allowed attempts
+	                            System.out.println(user.getUserId());
+	                            System.out.println(attemptCount); 
+	                            System.out.println(test.getNoofattempt()); 
 	                            if (attemptCount >= test.getNoofattempt()) {
 	                                return ResponseEntity.badRequest().body("Attempt Limit Exceeded");
 	                                
@@ -345,72 +358,7 @@ public class Testcontroller {
 	    
 //-----------------------------WORKING--------------------------------------------------	    
 
-	    public ResponseEntity<?> deleteCourseTest( Long testId,  String token) {
-	        try {
-	            if (!jwtUtil.validateToken(token)) {
-	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                        .body("{\"error\": \"Invalid Token\"}");
-	            }
-
-	            // Retrieve role and email from token
-	            String role = jwtUtil.getRoleFromToken(token);
-	            String email = jwtUtil.getUsernameFromToken(token);
-	            String institution="";
-			     Optional<Muser> opuser =muserRepository.findByEmail(email);
-			     if(opuser.isPresent()) {
-			    	 Muser user=opuser.get();
-			    	 institution=user.getInstitutionName();
-			    	 boolean adminIsactive=muserRepository.getactiveResultByInstitutionName("ADMIN", institution);
-			   	    	if(!adminIsactive) {
-			   	    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			   	    	}
-			     }else {
-			    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			     }
-	            if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
-
-	                // Find the CourseTest by its ID
-	                Optional<CourseTest> courseTestOptional = testRepository.findById(testId);
-	                if (!courseTestOptional.isPresent()) {
-	                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CourseTest with ID " + testId + " not found");
-	                }
-	                
-	                CourseTest courseTest = courseTestOptional.get();
-	                Long courseid = courseTest.getCourseDetail().getCourseId();
-                   Optional<CourseDetail> opcourseDetail=courseDetailRepo.findByCourseIdAndInstitutionName(courseid, institution);
-	               if(opcourseDetail.isPresent()) {
-                   if ("TRAINER".equals(role)) {
-	                    Optional<Muser> trainerOptional = muserRepo.findByEmail(email);
-	                    if (!trainerOptional.isPresent()) {
-	                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Trainer with email " + email + " not found");
-	                    }
-	                    
-	                    Muser trainer = trainerOptional.get();
-	                    CourseDetail courseDetail=opcourseDetail.get();
-	                    if (!trainer.getAllotedCourses().contains(courseDetail)) {
-	                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	                    }
-	                }
-
-	                // If CourseTest exists, delete it along with its associated questions
-                   muserActivityRepo.deleteByCourseTest(courseTest);
-	                questionRepository.deleteByTest(courseTest);
-	                testRepository.delete(courseTest);
-	                return ResponseEntity.ok().body("CourseTest with ID " + testId + " and its associated questions deleted successfully");
-	               }else {
-	            	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Trainer with email " + email + " not found");
-	               }
-	               } else {
-	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	            }
-	        } catch (Exception e) {
-	            // Log the exception (you can replace this with a logging framework like Log4j)
-	            e.printStackTrace();    logger.error("", e);;
-	            // Return an internal server error response
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"An unexpected error occurred\"}");
-	        }
-	    }	    
-//``````````````````````Edit Test Details````````````````````````````````````
+	   //``````````````````````Edit Test Details````````````````````````````````````
 
 public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttempt, Double passPercentage, String token) {
     try {
@@ -497,7 +445,72 @@ public ResponseEntity<?> editTest( Long testId, String testName, Long noOfAttemp
 	            array[i] = temp;
 	        }
 	    }
+//==============================Test History===============================
+	    public ResponseEntity<?> getTestHistory(String token,Long batchId, int page, int size) {
+	    	try {
+	    		if (!jwtUtil.validateToken(token)) {
+	                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	             }
 
-	    
+	             String role = jwtUtil.getRoleFromToken(token);
+	             String email = jwtUtil.getUsernameFromToken(token);
+	             String institutionName=muserRepository.findinstitutionByEmail(email);
+	             if(institutionName==null) {
+	            	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
+	             }
+	             if(!"USER".equals(role)) {
+	            	 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("only Studennts Can Access This Page");
+	             }
+	             List<Long> testIds=muserRepository.findTestIdsByUserEmail(email,batchId);
+	             List<Long>mtestIds=muserRepository.findMTestIdsByUserEmail(email, batchId);
+	             System.out.println(testIds);
+	             System.out.println(mtestIds);
+	             Pageable pageable = PageRequest.of(page, size, Sort.by("testDate").descending());
+	             Page<TestHistoryDto> history = testHistoryService.getTestHistory(email, testIds, mtestIds, pageable);
+	             int count=testIds.size()+mtestIds.size();
+	             Double percentage = muserActivityRepo.getPercentageForUser(email, testIds, mtestIds,count);
+	             DecimalFormat df = new DecimalFormat("#.##");
+	             String formattedPercentage = df.format(percentage);
+	             // Create response map
+	             Map<String, Object> response = new HashMap<>();
+	             response.put("test", history); // Extracting content from Page
+	             response.put("percentage", formattedPercentage);
+	             return ResponseEntity.ok(response);
+	    	}catch (Exception e) {
+	    		// TODO: handle exception
+	    		logger.error("error At getQuizzHistory"+e);
+	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	}
 	    
 	}
+	    public ResponseEntity<?> getTestHistoryforUser(String token,Long batchId,String email, int page, int size) {
+	    	try {
+	    		if (!jwtUtil.validateToken(token)) {
+	                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	             }
+	             String role = jwtUtil.getRoleFromToken(token);            
+	             if("ADMIN".equals(role)||"TRAINER".equals(role)) {       
+
+		             List<Long> testIds=muserRepository.findTestIdsByUserEmail(email,batchId);
+		             List<Long>mtestIds=muserRepository.findMTestIdsByUserEmail(email, batchId);
+		             Pageable pageable = PageRequest.of(page, size, Sort.by("testDate").descending());
+		             Page<TestHistoryDto> history = testHistoryService.getTestHistory(email, testIds, mtestIds, pageable);
+		             int count=testIds.size()+mtestIds.size();
+		             Double percentage = muserActivityRepo.getPercentageForUser(email, testIds, mtestIds,count);
+		             DecimalFormat df = new DecimalFormat("#.##");
+		             String formattedPercentage = df.format(percentage);
+		             // Create response map
+		             Map<String, Object> response = new HashMap<>();
+		             response.put("test", history); // Extracting content from Page
+		             response.put("percentage", formattedPercentage);
+		             return ResponseEntity.ok(response);
+	             }
+	             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User cannot access This Page");
+	    	}catch (Exception e) {
+	    		logger.error("error At getQuizzHistory"+e);
+	    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    	}
+	    
+	}
+
+}
