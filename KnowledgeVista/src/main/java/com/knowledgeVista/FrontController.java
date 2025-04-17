@@ -144,6 +144,7 @@ public class FrontController {
 	private EnablePaymentsController enablectrl;
 	@Autowired
 	private AddUsers adduser;
+
 	@Autowired
 	private AssignCourse assign;
 
@@ -206,6 +207,7 @@ public class FrontController {
 
 	@Autowired
 	private BatchService batchService;
+
 	@Autowired
 	private BatchService2 batchService2;
 	@Autowired
@@ -222,6 +224,7 @@ public class FrontController {
 
 	@Autowired
 	private AssignmentService2 assignmentService2;
+
 
 //-------------------ACTIVE PROFILE------------------
 	@GetMapping("/Active/Environment")
@@ -240,15 +243,46 @@ public class FrontController {
 
 	}
 
-	@PostMapping("/course/add")
-	public ResponseEntity<?> addCourse(@RequestParam("courseImage") MultipartFile file,
-			@RequestParam("courseName") String courseName, @RequestParam("courseDescription") String description,
-			@RequestParam("courseCategory") String category, @RequestParam("Duration") Long Duration,
-			@RequestParam("Noofseats") Long Noofseats, @RequestParam("batches") String batches,
-			@RequestParam("courseAmount") Long amount, @RequestHeader("Authorization") String token) {
-		return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, batches, amount,
-				token);
+	@GetMapping("/sysadmin/dashboard")
+	public ResponseEntity<?> sysAdminDashboard(@RequestHeader("Authorization") String token) {
+		return courseController.sysAdminDashboard(token);
+
 	}
+
+	@GetMapping("/sysadmin/dashboard/{institutationName}")
+	public ResponseEntity<?> sysAdminDashboardByInstitytaion(@PathVariable String institutationName,@RequestHeader("Authorization") String token) {
+		return courseController.sysAdminDashboardByInstitytaion(token,institutationName);
+
+	}
+
+
+// 	@PostMapping("/course/add")
+// 	public ResponseEntity<?> addCourse(@RequestParam("courseImage") MultipartFile file,
+// 			@RequestParam("courseName") String courseName, @RequestParam("courseDescription") String description,
+// 			@RequestParam("courseCategory") String category, @RequestParam("Duration") Long Duration,
+// 			@RequestParam("Noofseats") Long Noofseats, @RequestParam("batches") String batches,
+// <<<<<<< akshaya
+// 			@RequestParam("courseAmount") Long amount, @RequestHeader("Authorization") String token) {
+// 		return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, batches, amount,
+// =======
+// 			@RequestParam("courseAmount") Long amount, @RequestParam("paytype") String paytype,
+// 			@RequestParam(value = "InstallmentDetails", required = false) String installmentDataJson,
+// 			@RequestHeader("Authorization") String token) {
+// 		return courseController.addCourse(file, courseName, description, category, Duration, Noofseats, batches, amount,
+// 				paytype, installmentDataJson, token);
+// 	}
+// >>>>>>> master
+// 	@PostMapping("/course/create/trainer")
+// 	public ResponseEntity<?> addCourseByTrainer(@RequestParam("courseImage") MultipartFile file,
+// 			@RequestParam("courseName") String courseName, @RequestParam("courseDescription") String description,
+// 			@RequestParam("courseCategory") String category, @RequestParam("Duration") Long Duration,
+// 			@RequestParam("Noofseats") Long Noofseats, @RequestParam("courseAmount") Long amount,
+// 			@RequestHeader("Authorization") String token) {
+
+// 		return courseController.addCourseByTrainer(file, courseName, description, category, Duration, Noofseats, amount,
+
+// 				token);
+// 	}
 
 	@Transactional
 	@PatchMapping("/course/edit/{courseId}")
@@ -290,6 +324,18 @@ public class FrontController {
 	@GetMapping("/course/getList")
 	public ResponseEntity<?> getAllCourseInfo(@RequestHeader("Authorization") String token) {
 		return courseController.getAllCourseInfo(token);
+
+	@GetMapping("/course/assignList")
+	public ResponseEntity<?> getAllCourseInfo(@RequestHeader("Authorization") String token,
+			@RequestParam("email") String email) {
+		return courseController.getAllCourseInfo(token, email);
+	}
+
+	@GetMapping("/course/allotList")
+	public ResponseEntity<?> getAllAllotelistInfo(@RequestHeader("Authorization") String token,
+			@RequestParam("email") String email) {
+		return courseController.getAllAllotelistInfo(token, email);
+
 	}
 
 	@DeleteMapping("/course/{courseId}")
@@ -411,6 +457,13 @@ public class FrontController {
 	public ResponseEntity<?> deleteQuestion(@RequestParam List<Long> questionIds, @RequestParam Long testId,
 			@RequestHeader("Authorization") String token) {
 		return Question.deleteQuestion(questionIds, token, testId);
+  }
+    
+	@DeleteMapping("/test/questions/{questionId}")
+	public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId,
+			@RequestHeader("Authorization") String token) {
+		return Question.deleteQuestion(questionId, token);
+
 	}
 
 	@PatchMapping("/test/edit/{questionId}")
@@ -446,6 +499,12 @@ public class FrontController {
 		return testcontroller.getTestByCourseId(courseId, token);
 	}
 
+
+	@DeleteMapping("/test/{testId}")
+	public ResponseEntity<?> deleteCourseTest(@PathVariable Long testId, @RequestHeader("Authorization") String token) {
+		return testcontroller.deleteCourseTest(testId, token);
+	}
+
 	@PatchMapping("/test/update/{testId}")
 	public ResponseEntity<?> editTest(@PathVariable Long testId,
 			@RequestParam(value = "testName", required = false) String testName,
@@ -454,6 +513,7 @@ public class FrontController {
 			@RequestHeader("Authorization") String token) {
 		return testcontroller.editTest(testId, testName, noOfAttempt, passPercentage, token);
 	}
+
 
 	@GetMapping("/get/TestHistory/{batchId}")
 	public ResponseEntity<?> getTestHistory(@PathVariable Long batchId, @RequestHeader("Authorization") String token,
@@ -492,6 +552,7 @@ public class FrontController {
 		}
 	}
 
+
 	@GetMapping("/get/Pendings")
 	public ResponseEntity<?> getpendingPayments(@RequestHeader("Authorization") String token) {
 		return batchService.GetPendingPayments(token);
@@ -501,17 +562,22 @@ public class FrontController {
 	@PostMapping("/buyCourse/payment")
 	public ResponseEntity<String> updatePaymentId(HttpServletRequest request,
 			@RequestBody Map<String, String> requestData, @RequestHeader("Authorization") String token) {
+
+  
 		if (paylist != null && activeProfile.equals("demo")) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 		} else {
 			return payment.updatePaymentId(request, requestData, token);
+
 		}
 	}
 
 	@PostMapping("/buyCourse/updatePaypalPaymentId")
+
 	public ResponseEntity<String> updatePayPalPayment(HttpServletRequest request,
 			@RequestBody Map<String, String> requestData, @RequestHeader("Authorization") String token) {
+
 		if (paylist != null && activeProfile.equals("demo")) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
@@ -521,13 +587,16 @@ public class FrontController {
 	}
 
 	@PostMapping("/buyCourse/updateStripepaymentid")
+
 	public ResponseEntity<String> updateStripepaymentid(HttpServletRequest request,
 			@RequestBody Map<String, String> requestData, @RequestHeader("Authorization") String token) {
+
 		if (paylist != null && activeProfile.equals("demo")) {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
 		} else {
 			return payment.updateStripepaymentid(request, requestData, token);
+
 		}
 	}
 
@@ -545,10 +614,26 @@ public class FrontController {
 		}
 	}
 
+
 	@GetMapping("/viewPaymentList/{batchId}")
 	public ResponseEntity<?> GetPartPayDetails(@RequestHeader("Authorization") String token,
 			@PathVariable Long batchId) {
 		return batchService.GetPartPayDetails(batchId, token);
+
+	@GetMapping("/viewPaymentList/{courseId}")
+	public ResponseEntity<?> ViewPaymentdetails(@RequestHeader("Authorization") String token,
+			@PathVariable Long courseId) {
+		if (paylist != null && activeProfile.equals("demo")) {
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment functionality disabled");
+
+		} else {
+			if (paylist != null) {
+				return paylist.ViewPaymentdetails(token, courseId);
+			}
+			return null;
+		}
+
 	}
 
 	@GetMapping("/viewAllTransactionHistory")
@@ -752,6 +837,7 @@ public class FrontController {
 			@RequestParam(defaultValue = "+91") String countryCode, @RequestHeader("Authorization") String token) {
 		return adduser.addStudent(request, username, psw, email, dob, phone, skills, profile, isActive, countryCode,
 				token);
+
 	}
 
 	@DeleteMapping("/admin/deactivate/trainer")
@@ -776,6 +862,30 @@ public class FrontController {
 	public ResponseEntity<?> activateStudent(@RequestParam("email") String email,
 			@RequestHeader("Authorization") String token) {
 		return adduser.activateStudent(email, token);
+	}
+
+
+	// ----------------------Assign course---------------------
+	@PostMapping("/AssignCourse/{userId}/courses")
+	public ResponseEntity<String> assignCoursesToUser(@PathVariable Long userId,
+			@RequestBody Map<String, List<Long>> data, @RequestHeader("Authorization") String token) {
+		return assign.assignCoursesToUser(userId, data, token);
+	}
+
+	@PostMapping("/AssignCourse/trainer/{userId}/courses")
+	public ResponseEntity<String> assignCoursesToTrainer(@PathVariable Long userId,
+			@RequestBody Map<String, List<Long>> data, @RequestHeader("Authorization") String token) {
+		return assign.assignCoursesToTrainer(userId, data, token);
+	}
+
+	@GetMapping("/AssignCourse/student/courselist")
+	public ResponseEntity<List<CourseDetailDto>> getCoursesForUser(@RequestHeader("Authorization") String token) {
+		return assign.getCoursesForUser(token);
+	}
+
+	@GetMapping("/AssignCourse/Trainer/courselist")
+	public ResponseEntity<List<CourseDetailDto>> getCoursesForTrainer(@RequestHeader("Authorization") String token) {
+		return assign.getCoursesForTrainer(token);
 	}
 
 	// --------------------------Authentication Controller------------------
@@ -822,6 +932,8 @@ public class FrontController {
 		return edit.updateStudent(originalEmail, username, newEmail, dob, phone, skills, profile, isActive, countryCode,
 				token);
 	}
+    
+
 
 	@PatchMapping("/Edit/Trainer/{email}")
 	public ResponseEntity<?> updateTrainer(@PathVariable("email") String originalEmail,
@@ -1434,6 +1546,7 @@ public class FrontController {
 	}
 //==============================Footer=======================================
 
+
 	@PostMapping("/save/FooterDetails")
 	public ResponseEntity<?> SaveFooterDetails(@RequestHeader("Authorization") String token,
 			@RequestBody FooterDetails footerdetails) {
@@ -1506,7 +1619,8 @@ public class FrontController {
 			@RequestHeader("Authorization") String token) {
 
 		// Your validation logic and service call here
-		return batchService.saveBatch(batchTitle, startDate, endDate, noOfSeats, amount, courses, trainers, batchImage,
+
+		return batchService.SaveBatch(batchTitle, startDate, endDate, noOfSeats, amount, courses, trainers, batchImage,
 				token);
 	}
 
@@ -1550,16 +1664,23 @@ public class FrontController {
 		return batchService.GetAllBatchByCourseID(token, courseid);
 	}
 
+
 	@GetMapping("/Batch/getCourses/{batchId}")
 	public ResponseEntity<?> getCourseOfBatch(@PathVariable Long batchId,
 			@RequestHeader("Authorization") String token) {
 		return batchService.getCoursesoFBatch(batchId, token);
+
+	@GetMapping("/Batch/getEnrolledBatch")
+	public ResponseEntity<?> getAllBatchforuser(@RequestHeader("Authorization") String token) {
+		return batchService.GetAllBatchByuser(token);
+
 	}
 
 	@DeleteMapping("/batch/delete/{batchid}")
 	public ResponseEntity<?> DeleteBatch(@PathVariable Long batchid, @RequestHeader("Authorization") String token) {
 		return batchService.deleteBatchById(batchid, token);
 	}
+
 
 	@GetMapping("/Batch/getStudents")
 	public ResponseEntity<?> getStudentsOfBatch(@RequestParam Long id, @RequestParam int pageNumber,
@@ -1644,13 +1765,25 @@ public class FrontController {
 	public ResponseEntity<?> GetMyAttendance(@PathVariable Long batchId, @RequestHeader("Authorization") String token,
 			Pageable pageable) {
 		return attendanceService.getMyAttendance(token, batchId, pageable);
+
+	// -------------------Attendance Service---------------
+
+	@GetMapping("/view/StudentAttendance/{userId}")
+	public ResponseEntity<?> getAttendanceForuser(@PathVariable Long userId,
+			@RequestHeader("Authorization") String token, Pageable pageable) {
+		return attendanceService.getAttendance(token, userId, pageable);
+	}
+
+	@GetMapping("/view/MyAttendance")
+	public ResponseEntity<?> GetMyAttendance(@RequestHeader("Authorization") String token, Pageable pageable) {
+		return attendanceService.getMyAttendance(token, pageable);
+
 	}
 
 	@PostMapping("/update/attendance")
 	public ResponseEntity<?> UpdateAttendance(@RequestHeader("Authorization") String token, Long Id, String status) {
 		return attendanceService.updateAttendance(token, Id, status);
 	}
-
 	// =====================Quizz====================
 	@PostMapping("/Quizz/Save/{lessonId}")
 	public ResponseEntity<?> SaveQuizz(@RequestBody Quizz quizz, @PathVariable Long lessonId,
@@ -1992,5 +2125,6 @@ public class FrontController {
 			@RequestHeader("Authorization") String token) {
 		return assignmentService2.ValidateAssignment(token, assignmentId, batchId, userId, feedback, marks);
 	}
+
 
 }

@@ -24,6 +24,7 @@ import com.knowledgeVista.User.UserStats;
 public interface MuserRepositories extends JpaRepository<Muser, Long> {
 
 	@Query("SELECT u FROM Muser u WHERE u.email = ?1")
+
 	Optional<Muser> findByEmail(String email);
 
 	@Query("SELECT b.id FROM Muser u JOIN u.enrolledbatch b WHERE u.email = ?1")
@@ -62,6 +63,7 @@ public interface MuserRepositories extends JpaRepository<Muser, Long> {
 			    AND b.id=:batchId
 			""")
 	List<Long> findMTestIdsByUserEmail(@Param("email") String email, @Param("batchId") Long batchId);
+
 
 	@Query("SELECT u.userId FROM Muser u WHERE u.email = ?1")
 	Long findidByEmail(String email);
@@ -137,7 +139,9 @@ public interface MuserRepositories extends JpaRepository<Muser, Long> {
 	Optional<Muser> findByInstitutionName(String institutionName);
 
 	@Query("SELECT u from Muser u WHERE u.institutionName = ?1")
+
 	List<Muser> findByInstitutionNameall(String institutionName);
+
 
 	@Query("SELECT u FROM Muser u WHERE u.role.roleName = :rolename AND u.institutionName = :institutionname")
 	List<Muser> findByRoleNameAndInstitutionName(@Param("rolename") String roleName,

@@ -589,6 +589,19 @@ const [joinUrl,setjoinUrl]=useState();
           {userRole === "SYSADMIN" && (
             <ul className="nav pcoded-inner-navbar ">
               <li className="nav-item no-hasmenu pt-2">
+                  <a
+                    href="#"
+                    onClick={(e) => handleClick(e, "/admin/dashboard")}
+                    className="nav-link has-ripple"
+                  >
+                    <span className="pcoded-micon">
+                      <i className="feather icon-home"></i>
+                    </span>
+                    <span className="pcoded-mtext">Dashboard</span>
+                  </a>
+                </li>
+                
+              <li className="nav-item no-hasmenu pt-2">
                 <a
                   href="#"
                   data-path="/viewAll/Admins"
@@ -680,6 +693,20 @@ const [joinUrl,setjoinUrl]=useState();
                     <i className="feather icon-sidebar"></i>
                   </span>
                   <span className="pcoded-mtext">Licence</span>
+                </a>
+              </li>
+
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/getlicence "
+                  onClick={(e) => handleClick(e, "/getlicence")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                    <i className="feather icon-file-plus"></i>
+                  </span>
+                  <span className="pcoded-mtext">Licence Creation</span>
                 </a>
               </li>
             </ul>
