@@ -298,7 +298,7 @@ public class AffilationController {
 			sender.send(mimeMessage);
 		} catch (MessagingException e) {
 			// Handle the exception
-			e.printStackTrace();    logger.error("", e);;
+			e.printStackTrace();    logger.error("", e);
 			
 			// You can log the error or rethrow it as a runtime exception, depending on your
 			// needs
