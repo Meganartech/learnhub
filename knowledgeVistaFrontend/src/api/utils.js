@@ -17,6 +17,7 @@ import axios from "axios";
 // export default baseUrl;
 
 const baseUrl = 'http://localhost:8080';
+window.baseUrl = baseUrl; 
 export default baseUrl;
 
 

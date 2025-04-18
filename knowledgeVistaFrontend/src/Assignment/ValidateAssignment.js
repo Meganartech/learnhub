@@ -119,7 +119,7 @@ const ValidateAssignment = () => {
           if (response.status === 200) {
             MySwal.fire({
               title: "Success!",
-              text: "Assignment submitted successfully.",
+              text: "Assignment Validated successfully.",
               icon: "success",
               confirmButtonText: "OK",
             });

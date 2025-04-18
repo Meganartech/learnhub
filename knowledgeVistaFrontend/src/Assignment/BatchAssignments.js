@@ -160,7 +160,7 @@ useEffect(()=>{
       assignment?.submissionstatus === "SUBMITTED"
         ? "submitted"
         : assignment?.submissionstatus === "NOT_SUBMITTED"
-        ? "NotSubmitted"
+        ? "NotSubmitted":assignment?.submissionstatus==="VALIDATED"?"submitted"
         : assignment?.submissionstatus === "LATE_SUBMISSION"
         ? "LateSubmitted"
         : ""

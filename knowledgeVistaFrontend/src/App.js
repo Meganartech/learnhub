@@ -124,8 +124,6 @@ import ViewMyAssignment from "./Assignment/ViewMyAssignment.js";
 import SubmitAssignment from "./Assignment/SubmitAssignment.js";
 import BatchAssignments from "./Assignment/BatchAssignments.js";
 import ValidateAssignment from "./Assignment/ValidateAssignment.js";
-import Attendance from "./Student/Attendance.js";
-import MyAttendance from "./Student/MyAttendance.js";
 import LicenceFileCreation from "./AuthenticationPages/LicenceFileCreation.js";
 
 function App() {

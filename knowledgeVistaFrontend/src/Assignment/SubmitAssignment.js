@@ -201,7 +201,7 @@ const token=sessionStorage.getItem('token')
       existingSubmission.submissionStatus === "SUBMITTED"
         ? "text-success"
         : existingSubmission?.submissionStatus === "NOT_SUBMITTED"
-        ? "text-danger"
+        ? "text-danger":existingSubmission?.submissionStatus==="VALIDATED"? "text-success"
         : existingSubmission?.submissionStatus === "LATE_SUBMISSION"
         ? "text-warning"
         : ""
