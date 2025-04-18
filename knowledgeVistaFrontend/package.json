@@ -37,9 +37,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "cross-env PORT=5203 react-scripts start",
+    "start": "cross-env PORT=4003 react-scripts start",
     "build": "react-scripts build",
-    "serve": "serve -s build -l 5203"
+    "serve": "serve -s build -l 4003"
      },
   "eslintConfig": {
     "extends": [
