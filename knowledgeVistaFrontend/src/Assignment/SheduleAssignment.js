@@ -69,14 +69,13 @@ const SheduleAssignment = () => {
   // API call function
    const saveOrUpdateSchedule = async (Assignment) => {
     try {
-      let batchNum = batchId.split("_")[1];
       const response = await axios.post(
         `${baseUrl}/Assignment/Shedule`,
         null,
         {
           params: {
             AssignmentId: Assignment.assignmentid,
-            batchId:batchNum,
+            batchId,
             AssignmentDate: Assignment.assignmentdate,
           },
           headers: { Authorization: token },
