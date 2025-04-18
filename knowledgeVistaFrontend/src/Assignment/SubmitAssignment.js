@@ -37,7 +37,7 @@ const token=sessionStorage.getItem('token')
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
-          navigate("/user/assignments"); // or wherever you want to redirect
+          navigate("/view/MyAssignments"); // or wherever you want to redirect
         });
       }
     } catch (err) {
