@@ -33,6 +33,7 @@ const StripePaymentProvider = (orderData,setopenselectgateway) => {
         const data = {
           batchId: orderData?.batchId,
           userId: orderData?.userId,
+          paytypeL:orderData?.paytypeL
         };
   
         // Create the order

@@ -12,7 +12,7 @@ const Sidebar = ({ filter, handleFilterChange }) => {
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const { displayname, Activeprofile } = useContext(GlobalStateContext);
-
+const [joinUrl,setjoinUrl]=useState();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,7 +38,29 @@ const Sidebar = ({ filter, handleFilterChange }) => {
         console.error("Error fetching data:", error);
       }
     };
+    const fetchVirtualMeet =async ()=>{
+      try {
+        if (userRole !== "SYSADMIN" && token) {
+          const response = await axios.get(`${baseUrl}/api/zoom/getVirtualMeet`, {
+            headers: {
+              Authorization: token,
+            },
+          });
+          if(response.status===200){
+          if (
+            typeof response.data === "string" &&
+            response.data.startsWith("http")
+          ) {
+            setjoinUrl(response.data)
+          }
+        }
+        }
+      } catch (error) {
+        console.error("Error fetching virual class:", error);
+      }
+    }
     fetchData();
+    fetchVirtualMeet();
   }, []);
   function updateActiveMenu(routePath) {
     $(".pcoded-navbar .active").not(".pcoded-trigger").removeClass("active");
@@ -61,12 +83,7 @@ const Sidebar = ({ filter, handleFilterChange }) => {
     });
   }
 
-  // const handleClick = (e, link) => {
-  //   e.preventDefault();
-  //   setActiveLink(link);
-  //   updateActiveMenu(link);
-  //   navigate(link);
-  // };
+  
   const handleClick = (e,link) => {
     e.preventDefault();
     if (userRole === "ADMIN" || userRole === "TRAINER") {
@@ -374,6 +391,17 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     <li>
                       <a
                         href="#"
+                        data-path="/settings/Weightage"
+                        onClick={(e) => {
+                          handleClick(e, "/settings/Weightage");
+                        }}
+                      >
+                        <i className="fa-solid fa-sliders mr-2"></i>Grade Weightage
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
                         data-path="/certificate"
                         onClick={(e) => {
                           handleClick(e, "/certificate");
@@ -475,6 +503,18 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     </li>
                   </ul>
                 </li>
+                {joinUrl && <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  onClick={(e) =>{window.open(joinUrl, "_blank");}}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-display text-primary mr-2"></i>
+                  </span>
+                  <span className="pcoded-mtext">Virual ClassRoom</span>
+                </a>
+              </li>}
                 <li className="nav-item pcoded-hasmenu">
                   <a href="#!" className="nav-link ">
                     <span className="pcoded-micon">
@@ -540,6 +580,7 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                     <span className="pcoded-mtext">About us</span>
                   </a>
                 </li>
+
               </ul>
             </>
           )}
@@ -719,6 +760,43 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   </li>
                 </ul>
               </li>
+              <li className="nav-item pcoded-hasmenu">
+                  <a href="#!" className="nav-link">
+                    <span className="pcoded-micon">
+                      <i className="fa-solid fa-object-group"></i>
+                    </span>
+                    <span className="pcoded-mtext">Batch</span>
+                  </a>
+                  <ul className="pcoded-submenu">
+                  
+
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/batch/addNew"
+                        onClick={(e) => {
+                          handleClick(e, "/batch/addNew");
+                        }}
+                      >
+                        <i className="fa-solid fa-square-plus pr-2"></i>
+                        Create batch
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/batch/viewall"
+                        onClick={(e) => {
+                          handleClick(e, "/batch/viewall");
+                        }}
+                      >
+                        <i className="fa-regular fa-eye pr-2"></i>
+                        View batch
+                      </a>
+                    </li>
+                
+                  </ul>
+                </li>
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
@@ -803,6 +881,18 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   </span>
                 </a>
               </li>
+              {joinUrl && <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  onClick={(e) =>{window.open(joinUrl, "_blank");}}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-display text-primary mr-2"></i>
+                  </span>
+                  <span className="pcoded-mtext">Virual ClassRoom</span>
+                </a>
+              </li>}
             </ul>
           )}
           {/* Trainer Sidebar */}
@@ -854,33 +944,6 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   </li>
                 </ul>
               </li>
-              {/* <li className="nav-item no-hasmenu ">
-                <a
-                  href="#"
-                  data-path="/batch/viewall"
-                  onClick={(e) => handleClick(e, "/batch/viewall")}
-                  className="nav-link has-ripple"
-                >
-                  <span className="pcoded-micon">
-                    <i className="fa-solid fa-object-group"></i>
-                  </span>
-                  <span className="pcoded-mtext">Batches</span>
-                </a>
-              </li> */}
-             
-             {/* <li className="nav-item no-hasmenu ">
-                <a
-                  href="#"
-                  data-path="/MyBatches"
-                  onClick={(e) => handleClick(e, "/MyBatches")}
-                  className="nav-link has-ripple"
-                >
-                  <span className="pcoded-micon">
-                  <i className="fa-solid fa-layer-group"></i>
-                  </span>
-                  <span className="pcoded-mtext"> My Batches</span>
-                </a>
-              </li> */}
              
               <li className="nav-item no-hasmenu ">
                 <a
@@ -896,17 +959,85 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                 </a>
               </li>
 
+             
+          
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
-                  data-path="/MyCertificateList"
-                  onClick={(e) => handleClick(e, "/MyCertificateList")}
+                  data-path="/view/MyQuizzScore"
+                  onClick={(e) => handleClick(e, "/view/MyQuizzScore")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-regular fa-circle-question mr-2"></i>
+                  </span>
+                  <span className="pcoded-mtext"> Quizz </span>
+                </a>
+              </li>
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/view/MyAssignments"
+                  onClick={(e) => handleClick(e, "/view/MyAssignments")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fas fa-file-alt"></i> 
+                  </span>
+                  <span className="pcoded-mtext"> Assignments </span>
+                </a>
+              </li>
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/view/MyTestScore"
+                  onClick={(e) => handleClick(e, "/view/MyTestScore")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-vial-circle-check"></i></span>
+                  <span className="pcoded-mtext"> Test </span>
+                </a>
+              </li>
+            
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/user/meeting/calender"
+                  onClick={(e) => handleClick(e, "/user/meeting/calender")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                    <i className="fa-solid fa-video"></i>
+                  </span>
+                  <span className="pcoded-mtext"> Meetings</span>
+                </a>
+              </li>
+
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/user/ProgramCalender"
+                  onClick={(e) => handleClick(e, "/user/ProgramCalender")}
+                  className="nav-link "
+                >
+                  <span className="pcoded-micon">
+                  <i className="fa-solid fa-calendar-plus"></i>
+                  </span>
+                  <span className="pcoded-mtext">Program Calender</span>
+                </a>
+              </li>
+              <li className="nav-item no-hasmenu">
+                <a
+                  href="#"
+                  data-path="/myGrades"
+                  onClick={(e) => handleClick(e, "/myGrades")}
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
                     <i className="fa-solid fa-award"></i>
                   </span>
-                  <span className="pcoded-mtext">Certificates</span>
+                  <span className="pcoded-mtext">Grades</span>
                 </a>
               </li>
               <li className="nav-item no-hasmenu">
@@ -919,34 +1050,76 @@ const Sidebar = ({ filter, handleFilterChange }) => {
                   <span className="pcoded-micon">
                     <i className="fa-solid  fa-clipboard-user"></i>
                   </span>
-                  <span className="pcoded-mtext">My Attendance</span>
+                  <span className="pcoded-mtext"> Attendance</span>
                 </a>
               </li>
-              <li className="nav-item no-hasmenu">
+
+              <li className="nav-item pcoded-hasmenu">
+                  <a href="#!" className="nav-link ">
+                    <span className="pcoded-micon">
+                    <i className="fa-solid fa-credit-card"></i>
+                    </span>
+                    <span className="pcoded-mtext">payments</span>
+                  </a>
+                  <ul className="pcoded-submenu">
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/myPayments"
+                        onClick={(e) => {
+                          handleClick(e, "/myPayments");
+                        }}
+                        className="nav-link "
+                      >
+                       <span className="pcoded-micon">
+                       <i className="fa-solid fa-clock-rotate-left"></i>
+                  </span>
+                  <span className="pcoded-mtext">History</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-path="/pendingInstallments"
+                        onClick={(e) => {
+                          handleClick(e, "/pendingInstallments");
+                        }}
+                        className="nav-link "
+                      >
+                       <span className="pcoded-micon">
+                       <i className="fa-solid fa-list"></i> </span>
+                  <span className="pcoded-mtext">Pendings</span>
+                      </a>
+                    </li>
+                  
+                  </ul>
+                </li>
+           
+           
+             {joinUrl && <li className="nav-item no-hasmenu">
                 <a
                   href="#"
-                  data-path="/user/meeting/calender"
-                  onClick={(e) => handleClick(e, "/user/meeting/calender")}
+                  onClick={(e) =>{window.open(joinUrl, "_blank");}}
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
-                    <i className="fa-solid fa-video"></i>
+                  <i className="fa-solid fa-display text-primary mr-2"></i>
                   </span>
-                  <span className="pcoded-mtext">My Meetings</span>
+                  <span className="pcoded-mtext">Virual ClassRoom</span>
                 </a>
-              </li>
+              </li>}
 
               <li className="nav-item no-hasmenu">
                 <a
                   href="#"
-                  data-path="/myPayments"
-                  onClick={(e) => handleClick(e, "/myPayments")}
+                  data-path="/MyCertificateList"
+                  onClick={(e) => handleClick(e, "/MyCertificateList")}
                   className="nav-link "
                 >
                   <span className="pcoded-micon">
-                    <i className="fa-solid fa-credit-card"></i>
+                    <i className="fa-solid fa-award"></i>
                   </span>
-                  <span className="pcoded-mtext">My Payments</span>
+                  <span className="pcoded-mtext">Certificates</span>
                 </a>
               </li>
             </ul>

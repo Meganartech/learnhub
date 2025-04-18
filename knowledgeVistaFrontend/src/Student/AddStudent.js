@@ -211,7 +211,7 @@ const AddStudent = () => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
+      reader.onload = () => resolve(reader.Assignment);
       reader.onerror = (error) => reject(error);
     });
   };
@@ -350,8 +350,8 @@ const AddStudent = () => {
           } Added successfully!`,
           icon: "success",
           confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
+        }).then((Assignment) => {
+          if (Assignment.isConfirmed) {
             navigate("/view/Students");
           }
         });
@@ -450,7 +450,7 @@ const AddStudent = () => {
                     <div className="form-group row" ref={nameRef}>
                       <label htmlFor="Name" className="col-sm-3 col-form-label">
                         {" "}
-                        Name <span className="text-danger">*</span>
+                        Name 
                       </label>
                       <div className="col-sm-9">
                         {" "}

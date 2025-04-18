@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -19,8 +18,6 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 @CrossOrigin
 public class EmailController {
 	  @Autowired
-	    private EmailService emailService;
-	  @Autowired
 	  private MailkeysRepo mailkeyrepo;
 	  @Autowired
 		private MuserRepositories muserRepository;
@@ -28,73 +25,9 @@ public class EmailController {
 		 private JwtUtil jwtUtil;
 	  	 private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
 
-		 
 
-		//  @GetMapping("/logs")
-        //  private ResponseEntity<?> sendlogfile() {
-        //      try {
-        //   	   List<String> to = Arrays.asList("akshayalatha786@gmail.com");
-     	//         List<String> cc = new ArrayList<>(); // No CC
-     	//         List<String> bcc = new ArrayList<>(); // No BCC
-     	//         String subject = "Log";
-     	//         String body = "Please find the attached log file.";
-   	        
-     	//         return emailService.sendHtmlEmail("Aks", to, cc, bcc, subject, body);
-   	          
-        //      } catch (Exception e) {
-        //     	 e.printStackTrace();    logger.error("", e);;
-        //          return null;
-        //      }
-        //  }
-//	  	 public ResponseEntity<?> sendEmail( String email, Meeting Meet) {
-//		      try {
-//		    	 
-//			         String institutionName = muserRepository.findinstitutionByEmail(email);
-//			         if(institutionName==null || institutionName.isEmpty()) {
-//			        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("InstitutionName Not Found");
-//			         }
-//			        	 return emailService.sendHtmlEmail(institutionName,
-//			   	              Meet.getSettings().getMeetingInvitees();
-//			   	              emailRequest.getSubject(),
-//			   	              emailRequest.getBody()
-//			   	          );
-//			         }
-//			        
-//		          
-//		      } catch (Exception e) {
-//		          e.printStackTrace();    logger.error("", e);;
-//		          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//		      }
-//		  }
 
-	  public ResponseEntity<?> sendMail( String token, EmailRequest emailRequest) {
-	      try {
-	    	  if (!jwtUtil.validateToken(token)) {
-		             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		         }
-		         String email = jwtUtil.getUsernameFromToken(token);
-		         Optional<Muser> optionalUser = muserRepository.findByEmail(email);
-		         if(optionalUser.isPresent()) {
-		        	 Muser user=optionalUser.get();
-		        	 String institutionName=user.getInstitutionName();
-		        	 return emailService.sendHtmlEmail(institutionName,
-		   	              emailRequest.getTo(),
-		   	              emailRequest.getCc(),
-		   	              emailRequest.getBcc(),
-		   	              emailRequest.getSubject(),
-		   	              emailRequest.getBody()
-		   	          );
-		         }else {
-		        	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
-		         }
-		        
-	          
-	      } catch (Exception e) {
-	          e.printStackTrace();    logger.error("", e);;
-	          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	      }
-	  }
-	  
+	 
 	  public ResponseEntity<?>getMailkeys( String token){
 		   try {
 	    	   if (!jwtUtil.validateToken(token)) {

@@ -93,7 +93,7 @@ const MyAssignedcourses = () => {
         <div className="col-sm-12">
           <div className="createbtn">
             {(role === "ADMIN" || role === "TRAINER") && (
-              <a onClick={(e)=>{e.preventDefault();navigate("/course/Trainer/addcourse")}} href="#">
+              <a onClick={(e)=>{e.preventDefault();navigate("/course/addcourse")}} href="#">
                 <button type="button" className="btn btn-light mb-3">
                   <i className="fa-solid fa-plus"></i> Create Course
                 </button>
@@ -109,7 +109,7 @@ const MyAssignedcourses = () => {
           ) : (
             <div className="row">
               {Array.isArray(courses) &&  courses?.map((item) => (
-                <div className="col-md-6 col-xl-3 course" key={item.courseId}>
+                <div className=" course" key={item.courseId}>
                   <div className="card mb-3">
                     <img
                       src={`data:image/jpeg;base64,${item.courseImage}`}
@@ -161,6 +161,20 @@ const MyAssignedcourses = () => {
                               >
                                 Test
                               </Link>
+                              <div className="dropdown-divider"></div>
+                            <Link
+                              to={`/course/moduleTest/${item.courseName}/${item.courseId}`}
+                              className="dropdown-item"
+                            >
+                              Module Test
+                            </Link>
+                            <div className="dropdown-divider"></div>
+                                                        <Link
+                                                          to={`/Assignment/getAll/${item.courseName}/${item.courseId}`}
+                                                          className="dropdown-item"
+                                                        >
+                                                          Assignment
+                                                        </Link>
                             </div>
                           </div>
                           <div>

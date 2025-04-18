@@ -33,7 +33,6 @@ import StudentProfile from "./Student/StudentProfile.js";
 import MyAssignedcourses from "./Trainer/MyAssignedcourses.js";
 import EditLesson from "./course/Update/EditLesson.js";
 import AssignCourseTRAINER from "./Trainer/AssignCourseTRAINER.js";
-import CreateCourseTrainer from "./Trainer/CreateCourseTrainer.js";
 import EditStudent from "./Student/EditStudent.js";
 import EditTrainer from "./Trainer/EditTrainer.js";
 import ProfileView from "./Common Components/ProfileView.js";
@@ -89,9 +88,44 @@ import ViewAllBatch from "./Batch/ViewAllBatch.js";
 import EditBatch from "./Batch/EditBatch.js";
 import ScrollToTop from "./ScrollToTop.js";
 import ViewAllBAtchForCourse from "./Batch/ViewAllBAtchForCourse.js";
-import Attendance from "./Student/Attendance.js";
-import MyAttendance from "./Student/MyAttendance.js";
+import CreateQuizz from "./course/Quizz/CreateQuizz.js";
+import ViewQuizz from "./course/Quizz/ViewQuizz.js";
+import AddMoreQuizz from "./course/Quizz/AddMoreQuizz.js";
+import EditQuizz from "./course/Quizz/EditQuizz.js";
+import ViewCourseOfBatch from "./Batch/ViewCourseOfBatch.js";
+import SheduleQuizz from "./Batch/SheduleQuizz.js";
+import ProgramCalender from "./course/Quizz/ProgramCalender.js";
+import StartQuizz from "./course/Quizz/StartQuizz.js";
+import WeightageSetting from "./UserSettings/WeightageSetting.js";
+import Grades from "./Student/Grades.js";
+import QuizzScore from "./Student/QuizzScore.js";
+import TestScore from "./course/Test/TestScore.js";
+import StudentsBatch from "./Batch/StudentsBatch.js";
+import BatchDashboard from "./Batch/StudentBatchDashboard.js";
+import Attendance from "./Attendance/Attendance.js";
+import MyAttendance from "./Attendance/MyAttendance.js";
+import QuizzHistorybatch from "./course/Quizz/QuizzHistorybatch.js";
+import UserTestHistory from "./course/Test/UserTestHistory.js";
+import UserGrades from "./Student/UserGrades.js";
+import CreateModuleTest from "./course/ModuleTest.js/CreateModuleTest.js";
+import ListModuleTest from "./course/ModuleTest.js/ListModuleTest.js";
+import ViewModuleTest from "./course/ModuleTest.js/ViewModuleTest.js";
+import AddMoreMQuestion from "./course/ModuleTest.js/AddMoreMQuestion.js";
+import EditModuleQuestion from "./course/ModuleTest.js/EditModuleQuestion.js";
+import SheduleModuleTest from "./course/ModuleTest.js/SheduleModuleTest.js";
+import StartModuleTest from "./course/ModuleTest.js/StartModuleTest.js";
+import Partialpaymentsetting from "./course/Components/Partialpaymentsetting.js";
+import PendingInstallments from "./Student/PendingInstallments.js";
+import CreateAssignment from "./Assignment/CreateAssignment.js";
+import GetAssignments from "./Assignment/GetAssignments.js";
+import EditAssignment from "./Assignment/EditAssignment.js";
+import SheduleAssignment from "./Assignment/SheduleAssignment.js";
+import ViewMyAssignment from "./Assignment/ViewMyAssignment.js";
+import SubmitAssignment from "./Assignment/SubmitAssignment.js";
+import BatchAssignments from "./Assignment/BatchAssignments.js";
+import ValidateAssignment from "./Assignment/ValidateAssignment.js";
 import LicenceFileCreation from "./AuthenticationPages/LicenceFileCreation.js";
+
 function App() {
   useEffect(() => {
     pcoded();
@@ -168,7 +202,7 @@ function App() {
         }
       } catch (error) {
         console.error(error);
-        throw error
+        throw error;
       }
     };
     if (isAuthenticated) {
@@ -178,7 +212,7 @@ function App() {
 
   return (
     <Router>
-      <ScrollToTop/>
+      <ScrollToTop />
       <div className="App ">
         <Routes>
           <Route
@@ -234,6 +268,58 @@ function App() {
               }
             />
             <Route
+              path="/AddQuizz/:courseName/:courseId/:Lessontitle/:lessonId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <CreateQuizz />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/ViewQuizz/:courseName/:courseID/:lessonsName/:lessonId/:quizzName/:quizzId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <ViewQuizz />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/AddQuestionInQuizz/:courseName/:courseID/:lessonsName/:lessonId/:quizzName/:quizzId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <AddMoreQuizz />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/editQuizzQuestion/:courseName/:courseID/:lessonsName/:lessonId/:quizzName/:quizzId/:questionId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <EditQuizz />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
               path="/courses/:courseName/:courseId/"
               element={
                 <ErrorBoundary>
@@ -282,20 +368,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
-            <Route
-              path="/course/Trainer/addcourse"
-              element={
-                <ErrorBoundary>
-                  <PrivateRoute
-                    authenticationRequired={true}
-                    authorizationRequired={true}
-                    onlytrainer={true}
-                  >
-                    <CreateCourseTrainer />
-                  </PrivateRoute>
-                </ErrorBoundary>
-              }
-            />
+
             <Route
               path="/addTrainer"
               element={
@@ -332,7 +405,53 @@ function App() {
                 </ErrorBoundary>
               }
             />
-             
+            <Route
+              path="/myGrades"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <Grades />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/pendingInstallments"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <PendingInstallments />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/Grades/:email/:batchTitle/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <UserGrades />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+  <Route
+              path="/view/Assignments/:batchTitle/:batchId/:userId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <BatchAssignments />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+
             <Route
               path="/myStudents"
               element={
@@ -515,8 +634,8 @@ function App() {
                 </ErrorBoundary>
               }
             />
-             <Route
-              path="/view/Attendance/:id"
+            <Route
+              path="/view/Attendance/:paramBatchId?"
               element={
                 <ErrorBoundary>
                   <PrivateRoute
@@ -528,15 +647,148 @@ function App() {
                 </ErrorBoundary>
               }
             />
+
             <Route
               path="/view/MyAttendance"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <MyAttendance />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/MyQuizzScore"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <QuizzScore />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/MyAssignments"
               element={
                 <ErrorBoundary>
                   <PrivateRoute
                     authenticationRequired={true}
                     onlyuser={true}
                   >
-                    <MyAttendance />
+                    <ViewMyAssignment />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/submitAssignment/:sheduleId/:batchId/:AssignmentId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    onlyuser={true}
+                  >
+                    <SubmitAssignment />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/MyTestScore"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <TestScore />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/TestScore/:email/:batchName/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <UserTestHistory />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            {/* ModuleTest apis */}
+            <Route
+              path="/course/AddModuleTest/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <CreateModuleTest />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/course/moduleTest/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <ListModuleTest />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/moduleTest/AddmoreQuestion/:courseName/:courseId/:mtestName/:mtestId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <AddMoreMQuestion />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/moduleTest/EditQuestion/:courseName/:courseId/:mtestName/:mtestId/:questionId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <EditModuleQuestion />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/ModuleTest/:mtestName/:mtestId/:batchName/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <StartModuleTest />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/ModuleTest/:courseName/:courseId/:mtestname/:mtestId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <ViewModuleTest />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
@@ -581,7 +833,7 @@ function App() {
                 </ErrorBoundary>
               }
             />
-           <Route
+            <Route
               path="/certificate"
               element={
                 <ErrorBoundary>
@@ -604,6 +856,19 @@ function App() {
                     authorizationRequired={true}
                   >
                     <TrainerProfile />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/view/Student/Dashboard/:studentemail/:userId/:batchId/:batchTitle"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <BatchDashboard />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
@@ -701,19 +966,6 @@ function App() {
             />
 
             <Route
-              path="/course/update/paymentSettings/:courseName/:courseId"
-              element={
-                <ErrorBoundary>
-                  <PrivateRoute
-                    authenticationRequired={true}
-                    authorizationRequired={true}
-                  >
-                    <UpdatePartialPaymentSettings />
-                  </PrivateRoute>
-                </ErrorBoundary>
-              }
-            />
-            <Route
               path="/licenceDetails"
               element={
                 <ErrorBoundary>
@@ -791,6 +1043,39 @@ function App() {
                 </ErrorBoundary>
               }
             />
+            <Route
+              path="/user/ProgramCalender"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <ProgramCalender />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/Quizz/:quizzName/:quizzId/:batchName/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <StartQuizz />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/Quizz/gethistory/:email/:batchName/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <QuizzHistorybatch />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
             {/* <Route
               path="/mailSending"
               element={
@@ -804,6 +1089,16 @@ function App() {
                 </ErrorBoundary>
               }
             /> */}
+            <Route
+              path="/settings/Weightage"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute authenticationRequired={true} onlyadmin={true}>
+                    <WeightageSetting />
+                  </PrivateRoute>{" "}
+                </ErrorBoundary>
+              }
+            />
             <Route
               path="/settings/mailSettings"
               element={
@@ -868,12 +1163,90 @@ function App() {
                 </ErrorBoundary>
               }
             />
-             <Route
-              path="/batch/addNew"
+            <Route
+              path="/batch/save/partpay/:batchTitle/:batchId"
               element={
                 <ErrorBoundary>
                   <PrivateRoute authorizationRequired={true} onlyadmin={true}>
+                    <Partialpaymentsetting />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/batch/update/partpay/:batchTitle/:batchId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <UpdatePartialPaymentSettings />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/batch/addNew"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authorizationRequired={true}
+                    authenticationRequired={true}
+                  >
                     <CreateBatch />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/batch/viewcourse/:batchTitle/:batchid"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <ViewCourseOfBatch />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/batch/ViewStudents/:batchTitle/:batchid"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <StudentsBatch />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/sheduleQuizz/:batchTitle/:batchId/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <SheduleQuizz />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/sheduleModuleTest/:batchTitle/:batchId/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <SheduleModuleTest />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
@@ -882,32 +1255,105 @@ function App() {
               path="/batch/viewall"
               element={
                 <ErrorBoundary>
-                  <PrivateRoute authenticationRequired={true} authorizationRequired={true}>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <ViewAllBatch />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
             />
-             <Route
+            <Route
               path="/batch/viewall/:courseId"
               element={
                 <ErrorBoundary>
-                  <PrivateRoute authenticationRequired={true}>
-                    <ViewAllBAtchForCourse/>
+                  <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                    <ViewAllBAtchForCourse />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
             />
-             <Route
+            <Route
               path="/batch/Edit/:id"
               element={
                 <ErrorBoundary>
-                  <PrivateRoute authenticationRequired={true}>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
                     <EditBatch />
                   </PrivateRoute>
                 </ErrorBoundary>
               }
             />
+
+            <Route
+              path="/Assignment/create/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <CreateAssignment />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+              <Route
+              path="/Assignment/Validate/:batchId/:userId/:assignmentId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <ValidateAssignment />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/Assignment/getAll/:courseName/:courseId?"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <GetAssignments />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/Assignment/get/:courseName/:courseId/:assignmentId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <EditAssignment />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/sheduleAssignment/:batchTitle/:batchId/:courseName/:courseId"
+              element={
+                <ErrorBoundary>
+                  <PrivateRoute
+                    authenticationRequired={true}
+                    authorizationRequired={true}
+                  >
+                    <SheduleAssignment />
+                  </PrivateRoute>
+                </ErrorBoundary>
+              }
+            />
+
 
             {/* SysAdminRoutes */}
             <Route
@@ -1003,15 +1449,32 @@ function App() {
             />
             {/* SysAdminRoutes */}
           </Route>
-          <Route path="/updatePayment" element={<PrivateRoute authenticationRequired={true} onlyuser={true}><UpdateStripePayment/></PrivateRoute>}/>
-          <Route path="/updatePaypalPayment"element={<PrivateRoute authenticationRequired={true} onlyuser={true}><UpdatePaypalPayment/></PrivateRoute>}/>
+          <Route
+            path="/updatePayment"
+            element={
+              <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                <UpdateStripePayment />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/updatePaypalPayment"
+            element={
+              <PrivateRoute authenticationRequired={true} onlyuser={true}>
+                <UpdatePaypalPayment />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/"
             element={
               <ErrorBoundary>
                 <RedirectComponent vpsonly={true} checkvisible={true}>
                   {" "}
-                  <ViewCourseVps filter={filter} handleFilterChange={handleFilterChange}/>
+                  <ViewCourseVps
+                    filter={filter}
+                    handleFilterChange={handleFilterChange}
+                  />
                 </RedirectComponent>
               </ErrorBoundary>
             }
@@ -1098,7 +1561,7 @@ function App() {
               </ErrorBoundary>
             }
           />
-          
+
           <Route
             path="*"
             element={
@@ -1107,7 +1570,6 @@ function App() {
               </ErrorBoundary>
             }
           />
-                
         </Routes>
         <Footer />
       </div>

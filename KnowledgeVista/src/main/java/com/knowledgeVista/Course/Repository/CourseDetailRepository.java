@@ -1,5 +1,6 @@
 package com.knowledgeVista.Course.Repository;
 
+import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,12 +16,12 @@ import com.knowledgeVista.Course.CourseDetailDto;
 @Repository
 public interface CourseDetailRepository  extends JpaRepository<CourseDetail,Long>{
 	//for alloted list
-	@Query("SELECT cd FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
-	List<CourseDetail> findAllByInstitutionName(@Param("institutionName") String institutionName);
+	@Query("SELECT new map(cd.courseId as courseId, cd.courseName as courseName) FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
+	List<Map<String, Object>> findAllCourseDetailsByInstitutionName(@Param("institutionName") String institutionName);
 	//for alloted list
-	@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(cd.courseId, cd.courseName, cd.courseUrl, cd.courseDescription, cd.courseCategory, cd.amount, cd.courseImage, cd.paytype, cd.Duration, cd.institutionName, cd.Noofseats) FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
+	@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(cd.courseId, cd.courseName, cd.courseUrl, cd.courseDescription, cd.courseCategory, cd.amount, cd.courseImage,  cd.Duration, cd.institutionName, cd.Noofseats) FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
 	List<CourseDetailDto> findAllByInstitutionNameDto(@Param("institutionName") String institutionName);
-	@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(cd.courseId, cd.courseName, cd.courseUrl, cd.courseDescription, cd.courseCategory, cd.amount, cd.courseImage, cd.paytype, cd.Duration, cd.institutionName, cd.Noofseats) FROM CourseDetail cd ")
+	@Query("SELECT new com.knowledgeVista.Course.CourseDetailDto(cd.courseId, cd.courseName, cd.courseUrl, cd.courseDescription, cd.courseCategory, cd.amount, cd.courseImage,  cd.Duration, cd.institutionName, cd.Noofseats) FROM CourseDetail cd ")
 	List<CourseDetailDto>findallcoursevps();
 	
 	@Query("SELECT COUNT(cd) FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
@@ -34,7 +35,7 @@ public interface CourseDetailRepository  extends JpaRepository<CourseDetail,Long
 	 Optional<CourseDetail> findByCourseIdAndInstitutionName(@Param("courseId") Long courseId, @Param("institutionName") String institutionName);
 	 
 	 @Query("SELECT new com.knowledgeVista.Course.CourseDetail(cd.courseId, cd.courseName, cd.courseUrl, cd.courseDescription, " +
-		       "cd.courseCategory, cd.amount, cd.courseImage, cd.paytype, cd.Duration, " +
+		       "cd.courseCategory, cd.amount, cd.courseImage,  cd.Duration, " +
 		       "cd.institutionName, cd.Noofseats) " +
 		       "FROM CourseDetail cd WHERE cd.courseId = :courseId AND cd.institutionName = :institutionName")
 		Optional<CourseDetail> findMinimalCourseDetailbyCourseIdandInstitutionName(@Param("courseId") Long courseId, 
@@ -44,12 +45,7 @@ public interface CourseDetailRepository  extends JpaRepository<CourseDetail,Long
 	 @Query("SELECT COALESCE(SUM(cd.Noofseats - SIZE(cd.users)), 0) FROM CourseDetail cd WHERE cd.institutionName = :institutionName")
 	 Long countTotalAvailableSeats(@Param("institutionName") String institutionName);
 
-	 @Query("SELECT new com.knowledgeVista.Batch.SearchDto(u.courseId, u.courseName, 'COURSE') " +
-  	       "FROM CourseDetail u " +
-  	       "WHERE u.institutionName = :institutionName " +
-  	       "AND LOWER(u.courseName) LIKE LOWER(CONCAT('%', :Query, '%'))")
-  	List<SearchDto> findCoursesAsSearchDto(@Param("Query") String Query, @Param("institutionName") String institutionName);
-	 
+	
 	 @Query("SELECT c.courseId, c.courseName, c.amount " +
 		       "FROM CourseDetail c " +
 		       "WHERE (:courseName IS NOT NULL AND :courseName <> '' AND LOWER(c.courseName) LIKE LOWER(CONCAT('%', :courseName, '%'))) " +

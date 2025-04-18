@@ -17,6 +17,7 @@ const SheduleZoomMeet = () => {
   const [issubmitting, setissubmitting] = useState(false);
   const [Recurringenabled,setRecurringenabled]=useState(false);
   const[ReccuranceDescription,setReccuranceDescription]=useState("")
+    const [reccurance, setreccurance] = useState("Daily");
   //type 1=daily
   //type 2 =Weekly
   //type 3= Monthly
@@ -639,8 +640,10 @@ const updateStartTime = (event) => {
       setReccuranceDescription={setReccuranceDescription}
        setzoomrequest={setzoomrequest}
        Reccuranceobject={Reccuranceobject} 
-      setReccuranceobject={setReccuranceobject}/>}
-      <div className="form-group row">
+      setReccuranceobject={setReccuranceobject}
+      reccurance={reccurance}
+      setreccurance={setreccurance}/>}
+     {reccurance != "NoFixedTime" && <div className="form-group row">
         <label htmlFor="when"className="col-sm-2 col-form-label">
           When <span className="text-danger">*</span>
         </label>
@@ -680,10 +683,10 @@ const updateStartTime = (event) => {
             <option value="PM">PM</option>
           </select>
         </div>
-      </div>
+      </div>}
       
 
-        {Productversion!=null && Productversion==="FREE" ?(
+        {reccurance != "NoFixedTime" && Productversion!=null && Productversion==="FREE" ?(
          
               
           <div className="form-group row"><label htmlFor="duration"
@@ -696,7 +699,8 @@ const updateStartTime = (event) => {
 </div>
             </div>
             ):(
-              <div className="form-group row">
+             reccurance != "NoFixedTime" &&
+               <div className="form-group row">
               <label htmlFor="duration"
               className="col-sm-2 col-form-label">
                 Duration <span className="text-danger">*</span>
@@ -754,7 +758,7 @@ const updateStartTime = (event) => {
                   type="input"
                   id="customeinpu"
                   className="form-control"
-                  placeholder="search member,course or Batch..."
+                  placeholder="search member or Batch..."
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                 />

@@ -16,7 +16,9 @@ import axios from "axios";
 // const baseUrl = 'http://localhost:8080/eLearning';
 // export default baseUrl;
 
-const baseUrl = 'http://localhost:8081';
+
+const baseUrl = 'http://localhost:8080';
+window.baseUrl = baseUrl; 
 export default baseUrl;
 
 // const baseUrl = 'https://learnhubdigitaltomcat.vsmartengine.com/eLearning';

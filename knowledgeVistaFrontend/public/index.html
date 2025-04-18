@@ -56,13 +56,15 @@
     </script>
 
 <style id="theme-style">
-  :root {
+   :root {
     --primary: #4680ff;  /* Default theme color */
     --lightprimary: #2066ff;
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="../src/api/utils.js"></script>
+<script type="module">
+  import baseUrl from '../src/api/utils.js';
+</script>
 <script>
   // Wait for the page to load before applying the theme
   window.addEventListener('DOMContentLoaded', (event) => {
@@ -79,9 +81,6 @@
           // Fetch theme from the server if not in sessionStorage
           const response = await axios.get(`${baseUrl}/getTheme`);
           const colors = response.data;
-
-          console.log("Fetched colors:", colors);
-
           // Apply colors
           updateCSSVariables(colors);
 
@@ -89,6 +88,8 @@
           sessionStorage.setItem("theme", JSON.stringify(colors));
         }
       } catch (err) {
+        const styleTag = document.getElementById('theme-style');
+        
         console.error("Error fetching theme:", err);
       }
     };
@@ -96,12 +97,19 @@
     // Helper function to update the CSS variables in the style tag
     const updateCSSVariables = (colors) => {
       const styleTag = document.getElementById('theme-style');
-      styleTag.innerHTML = `
-        :root {
-          --primary: ${colors.primaryColor};
-          --lightprimary: ${colors.lightPrimaryColor};
-        }
-      `;
+      const rootStyles = getComputedStyle(document.documentElement);
+  const currentPrimary = rootStyles.getPropertyValue('--primary').trim();
+  const currentLightPrimary = rootStyles.getPropertyValue('--lightprimary').trim();
+
+  // Check if new colors are different from the current ones
+  if (currentPrimary !== colors.primaryColor || currentLightPrimary !== colors.lightPrimaryColor) {
+    styleTag.innerHTML = `
+      :root {
+        --primary: ${colors.primaryColor};
+        --lightprimary: ${colors.lightPrimaryColor};
+      }
+    `;
+  }
     };
 
     // Call fetchTheme as soon as the page loads

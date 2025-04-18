@@ -7,7 +7,9 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.knowledgeVista.Course.Quizz.Quizz;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,7 +59,8 @@ public class videoLessons {
 	    @OneToMany(mappedBy = "VideoLessons", fetch = FetchType.LAZY)
 	    @JsonIgnore 
 	    private List<DocsDetails> documents;
-	    
+	    @OneToOne(mappedBy = "lessons", cascade = CascadeType.ALL,orphanRemoval = true)
+	    private Quizz quizz;
 	    
 	  
 	    

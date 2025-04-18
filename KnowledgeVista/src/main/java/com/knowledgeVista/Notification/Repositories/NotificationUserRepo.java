@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import com.knowledgeVista.Notification.NotificationUser;
 
+import jakarta.transaction.Transactional;
+
 @Repository
 public interface NotificationUserRepo extends JpaRepository<NotificationUser, Long> {
 	 @Query("SELECT nu.notificationId FROM NotificationUser nu WHERE nu.userid = :userId AND nu.is_read = :isRead")
@@ -30,6 +32,7 @@ public interface NotificationUserRepo extends JpaRepository<NotificationUser, Lo
 	  List<Long> findprimaryIdsByUserId(Long userId);
 	 
 	  @Modifying
+	  @Transactional
 	    @Query("DELETE FROM NotificationUser nu WHERE nu.notificationId = :notificationId")
 	    void deleteByNotificationId(@Param("notificationId") Long notificationId);
 	 

@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.knowledgeVista.Attendance.AttendanceService2;
 import com.knowledgeVista.Attendance.Attendancedetails;
 import com.knowledgeVista.Attendance.Repo.AttendanceRepo;
 import com.knowledgeVista.Batch.Batch;
@@ -42,9 +43,11 @@ import com.knowledgeVista.Meeting.zoomclass.MeetingRequest;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.Recurrence;
 import com.knowledgeVista.Meeting.zoomclass.MeetingRequest.Settings;
 import com.knowledgeVista.Meeting.zoomclass.Recurrenceclass;
+import com.knowledgeVista.Meeting.zoomclass.VirtualmeetingMap;
 import com.knowledgeVista.Meeting.zoomclass.repo.InviteeRepo;
 import com.knowledgeVista.Meeting.zoomclass.repo.Meetrepo;
 import com.knowledgeVista.Meeting.zoomclass.repo.OccurancesRepo;
+import com.knowledgeVista.Meeting.zoomclass.repo.VirtualmeetmapRepo;
 import com.knowledgeVista.Meeting.zoomclass.ZoomMeetingInvitee;
 import com.knowledgeVista.Meeting.zoomclass.ZoomSettings;
 import com.knowledgeVista.Meeting.zoomclass.calenderDto;
@@ -84,7 +87,8 @@ public class ZoomMeetingService {
         private BatchRepository batchrepo;
         @Autowired
         private SettingsController settingsctrl;
-       
+       @Autowired 
+       private VirtualmeetmapRepo virtualrepo;
 
 @Autowired
 private OccurancesRepo occurancesRepo;
@@ -92,9 +96,11 @@ private OccurancesRepo occurancesRepo;
 		 private ZoomMethods zoomMethod;
         @Autowired
         private AttendanceRepo attendanceRepo;
-
+        @Autowired
+        private AttendanceService2 attendanceService2;
         @Value("${spring.environment}")
 	    private String environment;
+        
       
    	 private static final Logger logger = LoggerFactory.getLogger(ZoomMeetingService.class);
 
@@ -126,8 +132,7 @@ private OccurancesRepo occurancesRepo;
         		   }
 	    		if("ADMIN".equals(role)||"TRAINER".equals(role)) {
 	    				 meetingStartTimes.put(MeetingId, now); 
-	    				
-	    				  scheduler.schedule(() -> MarkRemainingAsAbsent(meet.getMeetingId()),min, TimeUnit.MINUTES);
+	    				 attendanceService2.scheduleMarkAbsent(meet.getMeetingId(), min);
 	                      System.out.println("min="+min);
 	                 return ResponseEntity.ok(meet.getJoinUrl());	 
 	    		}
@@ -835,6 +840,21 @@ private OccurancesRepo occurancesRepo;
 			
 		}
 
+		
+		public ResponseEntity<?>getVirtualClass(String token){
+			try {
+				String email=jwtUtil.getUsernameFromToken(token);
+				String institutionName=muserRepository.findinstitutionByEmail(email);
+				if(institutionName==null) {
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("institution not found");
+				}
+				String joinurl=virtualrepo.getJoinUrlByInstitutionName(institutionName);
+				return ResponseEntity.ok(joinurl);
+			}catch (Exception e) {
+				logger.error("errror getting virtualClass"+e);
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			}
+		}
 }
 		
 		

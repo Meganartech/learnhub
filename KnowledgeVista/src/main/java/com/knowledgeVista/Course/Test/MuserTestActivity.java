@@ -1,17 +1,21 @@
 package com.knowledgeVista.Course.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.knowledgeVista.Course.CourseDetail;
+import com.knowledgeVista.Course.Quizz.QuizAttemptAnswer;
 import com.knowledgeVista.User.Muser;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,5 +42,6 @@ public class MuserTestActivity {
 	    private Long nthAttempt;
 	   
 	    private Double percentage;
-	    
+	    @OneToMany(mappedBy = "testActivity", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<MuserTestAnswer> answers;
 }

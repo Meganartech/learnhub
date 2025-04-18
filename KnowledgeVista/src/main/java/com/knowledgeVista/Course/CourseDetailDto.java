@@ -14,13 +14,13 @@ public class CourseDetailDto {
     private String courseCategory;
     private Long amount;
     private byte[] courseImage;
-    private String paytype;
     private Long duration;
     private String institutionName;
     private Long noOfSeats;
     
+    
 	public CourseDetailDto(Long courseId, String courseName, String courseUrl, String courseDescription,
-			String courseCategory, Long amount, byte[] courseImage, String paytype, Long duration,
+			String courseCategory, Long amount, byte[] courseImage,  Long duration,
 			String institutionName, Long noOfSeats) {
 	
 		this.courseId = courseId;
@@ -30,9 +30,26 @@ public class CourseDetailDto {
 		this.courseCategory = courseCategory;
 		this.amount = amount;
 		this.courseImage = courseImage;
-		this.paytype = paytype;
 		this.duration = duration;
 		this.institutionName = institutionName;
 		this.noOfSeats = noOfSeats;
 	}
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	public static class courseIdNameImg{
+		private Long courseId;
+	    private String courseName;
+	    private byte[] courseImage;
+		public courseIdNameImg(Long courseId, String courseName, byte[] courseImage) {
+			super();
+			this.courseId = courseId;
+			this.courseName = courseName;
+			this.courseImage = courseImage;
+		}
+		
+	}
+
 }
+
+

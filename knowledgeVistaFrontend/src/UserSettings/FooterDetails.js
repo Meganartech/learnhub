@@ -286,7 +286,22 @@ setFooterDetails((prev)=>({
   );
   return (
     <div>
-      <div className="page-header"></div>
+      <div className="page-header">
+      <div className="page-block">
+                <div className="row align-items-center">
+                    <div className="col-md-12">
+                        <div className="page-header-title">
+                            <h5 className="m-b-10">Settings </h5>
+                        </div>
+                        <ul className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="#" onClick={()=>{ navigate("/admin/dashboard")}} title="dashboard"><i className="feather icon-home"></i></a></li>
+                            <li className="breadcrumb-item"><a href="#">Footer Settings </a></li>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </div>
+      </div>
       <div className="card">
         <div className=" card-body">
           <div className="row">{isnotFound ?editFooter  :oldfooter }</div>

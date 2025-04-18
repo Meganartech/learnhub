@@ -40,10 +40,12 @@ const Approvals = () => {
             Authorization: token,
           },
           params: {
-            username,
-            email,
-            phone,
-            skills,
+           
+            username: encodeURIComponent(username),
+        email: encodeURIComponent(email),
+        phone: encodeURIComponent(phone),
+        dob: encodeURIComponent(dob),
+        skills: encodeURIComponent(skills),
             role,
             page: currentPage,
             size: 10,
@@ -250,7 +252,35 @@ console.log(error)
   };
   return (
     <div>
-      <div className="page-header"></div>
+      <div className="page-header">
+      <div className="page-block">
+          <div className="row align-items-center">
+            <div className="col-md-12">
+              <div className="page-header-title">
+                <h5 className="m-b-10">Settings </h5>
+              </div>
+              <ul className="breadcrumb">
+                <li className="breadcrumb-item">
+                  <a
+                    href="#"
+                    onClick={() => {
+                      navigate("/admin/dashboard");
+                    }}
+                    title="dashboard"
+                  >
+                    <i className="feather icon-home"></i>
+                  </a>
+                </li>
+                <li className="breadcrumb-item">
+                  <a href="#">
+                   Approvals
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="row">
         <div className="col-sm-12">
           <div className="card">

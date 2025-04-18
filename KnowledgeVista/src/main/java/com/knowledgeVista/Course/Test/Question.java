@@ -1,5 +1,6 @@
 package com.knowledgeVista.Course.Test;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,4 +33,6 @@ public class Question {
 	    @ManyToOne
 	    @JoinColumn(name = "testId", referencedColumnName = "testId", nullable = false)
 	    private CourseTest test;
+	    
+	   
 }

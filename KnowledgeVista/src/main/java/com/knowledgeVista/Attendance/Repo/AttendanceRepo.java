@@ -20,18 +20,36 @@ public interface AttendanceRepo extends JpaRepository<Attendancedetails, Long> {
 	 @Query("SELECT a.userId FROM Attendancedetails a WHERE a.meeting.MeetingId = :meetingId AND a.status = 'PRESENT' AND a.date=:date")
 	    List<Long> finduserIdsByMeetingIdAndPRESENT(@Param("meetingId") Long meetingId,@Param("date") LocalDate date);
 	 
-	 @Query("SELECT COUNT(a) FROM Attendancedetails a WHERE a.userId=:userId")
-	    Long countClassesForUser(@Param("userId") Long userId);
-	 
-	 @Query("SELECT COUNT(a) FROM Attendancedetails a WHERE a.userId=:userId AND a.status='PRESENT'")
-	   Long countClassesPresentForUser(@Param("userId") Long userId);
+	 @Query("""
+			    SELECT COUNT(a) 
+			    FROM Attendancedetails a 
+			    JOIN a.meeting m
+			    JOIN m.batches b
+			    WHERE a.userId = :userId 
+			    AND b.id = :batchId
+			""")
+			Long countClassesForUserAndBatch(@Param("userId") Long userId, @Param("batchId") Long batchId);
+
+	 @Query("""
+			    SELECT COUNT(a) 
+			    FROM Attendancedetails a 
+			    JOIN a.meeting m
+			    JOIN m.batches b
+			    WHERE a.userId = :userId 
+			    AND b.id = :batchId
+			    AND a.status='PRESENT'
+			""")
+			Long countClassesPresentForUser(@Param("userId") Long userId, @Param("batchId") Long batchId);
+	
 	 @Query("""
 		        SELECT new com.knowledgeVista.Attendance.AttendanceDto(m.topic, a.id, a.date, a.status) 
 		        FROM Attendancedetails a
 		        JOIN a.meeting m
+		        JOIN m.batches b
 		        WHERE a.userId = :userId
+		          AND b.id = :batchId
 		        """)
-		Page<AttendanceDto> findAttendanceByUserId(@Param("userId") Long userId, Pageable pageable);
+		Page<AttendanceDto> findAttendanceByUserId(@Param("userId") Long userId,@Param("batchId") Long batchId, Pageable pageable);
 
 
 	 

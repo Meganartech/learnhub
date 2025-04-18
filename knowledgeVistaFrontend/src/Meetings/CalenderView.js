@@ -72,14 +72,13 @@ const CalenderView = () => {
   };
 
   // Handle form submission
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault(); 
+  const handleJoin = (e) => {
+   
       if (meetingId) {
         const joinUrl = `https://zoom.us/j/${meetingId}`;
         window.open(joinUrl, '_blank');
       }
-    }
+    
   };
 
   
@@ -131,7 +130,7 @@ const CalenderView = () => {
       style: {
         backgroundColor: colors[index], // Use the color from the array
         color: 'black',
-        height: '30px', // Set the height of the event
+        height: '30px'
         
       }
     };
@@ -144,7 +143,8 @@ const CalenderView = () => {
     <div className='row'>
       <div className='col-sm-12'>
         <div className='card'>
-          <div className='card-header'>
+      
+        <div className='card-body'>
         <div className="navigateheaders ">
           <div onClick={() => navigate(-1)}>
             <i className="fa-solid fa-arrow-left"></i>
@@ -154,18 +154,20 @@ const CalenderView = () => {
             <i className="fa-solid fa-xmark"></i>
           </div>
         </div>
-        </div>
-        <div className='card-body'>
         <div className='calenderheadergrp'>
           <h4>Calendar</h4>
+          <div className='d-flex'>
           <input
         type="text"
         className="form-control tabinp"
         placeholder="Join With Id"
         value={meetingId}
         onChange={handleChange}
-        onKeyPress={handleKeyPress}
       />
+      {meetingId.length>0 &&<button className="hidebtn" onClick={handleJoin}>
+      <i className="fa-solid fa-right-to-bracket"></i>
+      </button>}
+      </div>
           <button onClick={()=>{window.location.href="/meeting/Shedule"}} className='btn btn-primary'>New Meet</button>
         </div>
         <Calendar

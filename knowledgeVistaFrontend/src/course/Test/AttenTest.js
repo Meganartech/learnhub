@@ -277,7 +277,7 @@ const AttenTest = () => {
                    </div>
                    <div className='atbtndiv' >
                     <div>
-                    <Link to={`/courses/${courseName}/${courseId}`} className='btn btn-secondary'>cancel</Link>
+                    <button onClick={()=>{navigate(-1)}} className='btn btn-secondary'>cancel</button>
                     </div><div>
 
                     </div>

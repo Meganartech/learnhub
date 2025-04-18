@@ -53,7 +53,7 @@ const Mycourse = () => {
           ) : (
             <div className="row">
               {Array.isArray(courses) &&  courses.map((item) => (
-                <div className="col-md-6 col-xl-3 course" key={item.courseId}>
+                <div className=" course" key={item.courseId}>
                   <div className="card mb-3">
                     <img
                       style={{ cursor: "pointer" }}

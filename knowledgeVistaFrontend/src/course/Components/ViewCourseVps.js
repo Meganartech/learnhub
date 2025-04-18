@@ -218,74 +218,80 @@ return (
         <SelectPaymentGateway orderData={orderData} setorderData={setorderData}/>
       )}
         <h4 style={{color:"white"}}>Courses For You</h4>
-        < div className="row">
-          {filteredCourses
-            .slice()
-            .reverse()
-            .map((item) => (
-              <div className="col-md-6 col-xl-3 course" key={item.courseId}>
-                <div className="card mb-3">
-                  <img
-                    className="img-fluid card-img-top"
-                    src={`data:image/jpeg;base64,${item.courseImage}`}
-                    onError={(e) => {
-                      e.target.src = errorimg; // Use the imported error image
-                    }}
-                    alt="Course"
-                  />
+        < div className="course-grid ">
+        { filteredCourses
+  .map((item, index) => (
+    <div className="course" key={index}>
+      <div className="card mb-3">
+        <img
+          className="img-fluid card-img-top"
+          src={`data:image/jpeg;base64,${item.courseImage}`}
+          onError={(e) => {
+            e.target.src = errorimg; // Use the imported error image
+          }}
+          alt="Course"
+        />
 
-                  <div className="card-body">
-                      <h5
-                        className="courseName"
-                        title={item.courseName}
-                        style={{ cursor: "pointer" }}
-                        onClick={(e) =>
-                          handleClick(
-                            e,
-                            item.courseId,
-                            item.amount,
-                            item.courseUrl,
-                            item.paytype
-                          )
-                        }
-                      >
-                        { item.courseName}
-                      </h5>
-                      <p title={item.courseDescription} className="courseDescription">
-                    {item.courseDescription}
-                    </p>
-                    <div >
-                      {item.amount === 0 ? (
-                        <a href="#" 
-                        onClick={(e)=>{e.preventDefault();  navigate(item.courseUrl)}}
-                        className="btn btn-sm btn-outline-success">
-                          Enroll for Free
-                        </a>
-                      ) : (
-                        <div
-                         className="amountGrid"
-                        >
-                          <div className="amt">
-                          <i className={Currency === "INR" ? "fa-solid fa-indian-rupee-sign pr-1" : "fa-solid fa-dollar-sign pr-1"}></i>
-                            <span>
-                              {item.amount}
-                            </span>
-                          </div>
-                          <button
-                            className="btn btn-sm btn-outline-primary"
-                            onClick={() =>
-                              handlepaytype(item.courseId, userId, item.paytype)
-                            }
-                          >
-                            Enroll Now
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+        <div className="card-body">
+          <h5
+            className="courseName"
+            title={item.courseName}
+            style={{ cursor: "pointer" }}
+            onClick={(e) =>
+              handleClick(
+                e,
+                item.courseId,
+                item.amount,
+                item.courseUrl,
+                item.paytype
+              )
+            }
+          >
+            {item.courseName}
+          </h5>
+          <p title={item.courseDescription} className="courseDescription">
+            {item.courseDescription}
+          </p>
+          <div>
+            {item.amount === 0 ? (
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(item.courseUrl);
+                }}
+                className="btn btn-sm btn-outline-success"
+              >
+                Enroll for Free
+              </a>
+            ) : (
+              <div className="amountGrid">
+                <div className="amt">
+                  <i
+                    className={
+                      Currency === "INR"
+                        ? "fa-solid fa-indian-rupee-sign pr-1"
+                        : "fa-solid fa-dollar-sign pr-1"
+                    }
+                  ></i>
+                  <span>{item.amount}</span>
                 </div>
+                <button
+                  className="btn btn-sm btn-outline-primary"
+                  onClick={() =>
+                    handlepaytype(item.courseId, userId, item.paytype)
+                  }
+                >
+                  Enroll Now
+                </button>
               </div>
-            ))}
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+
         </div>
       </div>
     ) : notfound ? (

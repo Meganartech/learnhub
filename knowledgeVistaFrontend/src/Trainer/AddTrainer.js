@@ -143,7 +143,7 @@ const AddTrainer = () => {
 
     switch (name) {
       case "username":
-        error = value.length < 1 ? "Please enter a" : "";
+        error = value.length < 1 ? "Please enter a valid user Name" : "";
         break;
       // case 'skills':
       //   error = value.length < 1 ? 'Please enter a skill' : '';
@@ -382,10 +382,9 @@ const AddTrainer = () => {
         } else if (error.response.status === 401) {
           MySwal.fire({
             title: "Un Authorized!",
-            text: `you are unable to add the $ {displayname && displayname.trainer_name
+            text: `you are unable to add the ${displayname && displayname.trainer_name
                     ? displayname.trainer_name
-                    : "Trainer"}
-        `,
+                    : "Trainer"} `,
             icon: "error",
             confirmButtonText: "OK",
           });

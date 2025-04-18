@@ -48,7 +48,6 @@ const StudentCalenderView = () => {
   }, []);
   const handlClickJoinUrl = async (event) => {
     try {
-      console.log("hii in handlClickJoinUrl",event)
         const response =await axios.get(`${baseUrl}/api/zoom/Join/${event.id}`, {
           headers: {
             'Authorization': token,
@@ -96,14 +95,30 @@ const StudentCalenderView = () => {
         });
     }
 };
+ const [meetingId, setMeetingId] = useState('');
 
+  // Handle input change
+  const handleChange = (e) => {
+    setMeetingId(e.target.value);
+  };
+
+  // Handle form submission
+  const handleJoin = (e) => {
+   
+      if (meetingId) {
+        const joinUrl = `https://zoom.us/j/${meetingId}`;
+        window.open(joinUrl, '_blank');
+      }
+    
+  };
   return (
     <div>
     <div className="page-header"></div>
     <div className='row'>
       <div className='col-sm-12'>
         <div className='card'>
-          <div className='card-header'>
+       
+        <div className='card-body'>
         <div className="navigateheaders ">
           <div onClick={() => navigate(-1)}>
             <i className="fa-solid fa-arrow-left"></i>
@@ -113,8 +128,22 @@ const StudentCalenderView = () => {
             <i className="fa-solid fa-xmark"></i>
           </div>
         </div>
+        <div className='calenderheadergrp'>
+          <h4>Calendar</h4>
+          <div></div>
+          <div className='d-flex'>
+          <input
+        type="text"
+        className="form-control "
+        placeholder="Join With Id"
+        value={meetingId}
+        onChange={handleChange}
+      />
+      {meetingId.length>0 &&<button className="hidebtn" onClick={handleJoin}>
+      <i className="fa-solid fa-right-to-bracket"></i>
+      </button>}
+      </div>
         </div>
-        <div className='card-body'>
         <Calendar
           events={events}
           localizer={localizer}
