@@ -17,13 +17,12 @@ import org.springframework.stereotype.Service;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Assignment.Assignment;
 import com.knowledgeVista.Batch.Assignment.Submission;
-import com.knowledgeVista.Batch.Assignment.Repo.AssignmentQuesstionRepo;
+import com.knowledgeVista.Batch.Assignment.Submission.SubmissionStatus;
 import com.knowledgeVista.Batch.Assignment.Repo.AssignmentRepo;
 import com.knowledgeVista.Batch.Assignment.Repo.AssignmentSheduleRepo;
 import com.knowledgeVista.Batch.Assignment.Repo.SubmissionRepo;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
-import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
@@ -32,10 +31,6 @@ import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
 public class AssignmentService2 {
 	@Autowired
 	private AssignmentRepo assignmentRepo;
-	@Autowired
-	private AssignmentQuesstionRepo QuestionRepo;
-	@Autowired
-	private CourseDetailRepository courseDetailRepo;
 	@Autowired
 	private MuserRepositories muserRepo;
 	@Autowired
@@ -382,6 +377,7 @@ public class AssignmentService2 {
 					Submission submission = existingSubmission.get();
 					submission.setFeedback(feedback);
 					submission.setGraded(true);
+					submission.setSubmissionStatus(SubmissionStatus.VALIDATED);
 					submission.setTotalMarksObtained(Marks);
 					submissionRepo.save(submission);
 					return ResponseEntity.ok("Assignment Validated");

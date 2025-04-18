@@ -41,6 +41,7 @@ public class Submission {
 	@JoinColumn(name = "user_id", nullable = false) // <-- match the PK name in Muser
 	private Muser user;
 	@ManyToOne
+
 	@JoinColumn(name = "batch_id", nullable = false) // <-- Add this line
 	private Batch batch;
 	@ElementCollection
@@ -48,7 +49,8 @@ public class Submission {
 	@MapKeyColumn(name = "question_id") // Key = Question ID
 	@Column(name = "answer_text", length = 5000)
 	private Map<Long, String> answers; // Map<QuestionID, AnswerText>
-
+	@Column(length = 1000)
+	private String uploadedFileUrl;
 	private LocalDateTime submittedAt;
 	@Enumerated(EnumType.STRING)
 	private SubmissionStatus submissionStatus = SubmissionStatus.NOT_SUBMITTED;
@@ -57,7 +59,7 @@ public class Submission {
 	private String feedback;
 
 	public enum SubmissionStatus {
-		NOT_SUBMITTED, SUBMITTED, LATE_SUBMISSION
+		NOT_SUBMITTED, SUBMITTED, LATE_SUBMISSION, VALIDATED
 	}
 
 }

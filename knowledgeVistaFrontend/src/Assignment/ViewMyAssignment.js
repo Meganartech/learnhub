@@ -150,7 +150,7 @@ if(response?.status===200){
       item?.submissionstatus === "SUBMITTED"
         ? "submitted"
         : item?.submissionstatus === "NOT_SUBMITTED"
-        ? "NotSubmitted"
+        ? "NotSubmitted":item?.submissionstatus==="VALIDATED"?"submitted"
         : item?.submissionstatus === "LATE_SUBMISSION"
         ? "LateSubmitted"
         : ""

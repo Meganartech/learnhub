@@ -3383,7 +3383,12 @@ fieldset:disabled a.btn {
   background-color: #f8f9fa;
   border-color: #f8f9fa;
 }
-
+.btn-transparent {
+  color: #212529;
+  border-color: var(--lightgrey);
+  border-radius: 7px;
+  padding: 0px;
+}
 .btn-light:hover {
   color: #212529;
   background-color: #e2e6ea;
