@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Assignment.Assignment;
+import com.knowledgeVista.Batch.Assignment.Assignment.AssignmentType;
 import com.knowledgeVista.Batch.Assignment.AssignmentQuestion;
 import com.knowledgeVista.Batch.Assignment.AssignmentSchedule;
 import com.knowledgeVista.Batch.Assignment.Repo.AssignmentQuesstionRepo;
@@ -85,10 +86,19 @@ public class AssignmentService {
 	private ResponseEntity<?> saveAssignmentService(Assignment assignment, CourseDetail course) {
 		try {
 			assignment.setCourseDetail(course);
-			if (assignment.getQuestions() != null) {
-				assignment.getQuestions().forEach(question -> question.setAssignment(assignment));
+			if (assignment.getType().equals(AssignmentType.QA)) {
+				if (assignment.getQuestions() != null) {
+					assignment.getQuestions().forEach(question -> question.setAssignment(assignment));
+				}
+			} else if (assignment.getType().equals(AssignmentType.QUIZ)) {
+				if (assignment.getQuestions() != null) {
+					assignment.getQuestions().forEach(question -> question.setAssignment(assignment));
+					Integer total = assignment.getQuestions().size();
+					assignment.setTotalMarks(total);
+				}
 			}
 			assignmentRepo.save(assignment);
+
 			return ResponseEntity.ok("Assignment Saved Successfully");
 		} catch (Exception e) {
 			logger.error("Error at SaveAssignment Service", e);
@@ -188,6 +198,7 @@ public class AssignmentService {
 			if ("ADMIN".equals(role)) {
 				assignment.setCourseDetail(null);
 				assignment.setSchedules(null);
+				assignment.setSubmissions(null);
 				if (assignment.getQuestions() != null) {
 					assignment.getQuestions().forEach(q -> q.setAssignment(null));
 				}
@@ -196,6 +207,7 @@ public class AssignmentService {
 				if (Course.getTrainer().contains(addingUser)) {
 					assignment.setCourseDetail(null);
 					assignment.setSchedules(null);
+					assignment.setSubmissions(null);
 					if (assignment.getQuestions() != null) {
 						assignment.getQuestions().forEach(q -> q.setAssignment(null));
 					}
@@ -244,6 +256,13 @@ public class AssignmentService {
 				if (updated.getTotalMarks() != null) {
 					assignment.setTotalMarks(updated.getTotalMarks());
 				}
+				if (updated.getType().equals(AssignmentType.FILE_UPLOAD)) {
+					assignment.setType(AssignmentType.FILE_UPLOAD);
+					assignment.getQuestions().clear();
+					if (updated.getMaxFileSize() != null) {
+						assignment.setMaxFileSize(updated.getMaxFileSize());
+					}
+				}
 				assignmentRepo.save(assignment);
 				return ResponseEntity.ok("Updated");
 			} else if ("TRAINER".equals(role)) {
@@ -256,6 +275,13 @@ public class AssignmentService {
 					}
 					if (updated.getTotalMarks() != null) {
 						assignment.setTotalMarks(updated.getTotalMarks());
+					}
+					if (updated.getType().equals(AssignmentType.FILE_UPLOAD)) {
+						assignment.setType(AssignmentType.FILE_UPLOAD);
+						assignment.getQuestions().clear();
+						if (updated.getMaxFileSize() != null) {
+							assignment.setMaxFileSize(updated.getMaxFileSize());
+						}
 					}
 					assignmentRepo.save(assignment);
 					return ResponseEntity.ok("Updated");
@@ -339,6 +365,7 @@ public class AssignmentService {
 				assignment.getQuestions().clear(); // this triggers orphan removal
 				updated.forEach(question -> question.setAssignment(assignment));
 				assignment.getQuestions().addAll(updated); // set the new questions
+				assignment.setType(AssignmentType.QA);
 				assignmentRepo.save(assignment);
 				return ResponseEntity.ok("Updated");
 			} else if ("TRAINER".equals(role)) {
@@ -457,6 +484,45 @@ public class AssignmentService {
 			logger.error("error at GetSheduleQuizz" + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
+		}
+	}
+
+	public ResponseEntity<?> UpdateAssignmentQuizzQuestion(Long questionId, AssignmentQuestion quizzquestion,
+			String token) {
+		try {
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
+			}
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			boolean isalloted = false;
+			Optional<AssignmentQuestion> opquest = QuestionRepo.findById(questionId);
+			if (opquest.isPresent()) {
+				AssignmentQuestion quest = opquest.get();
+				if ("ADMIN".equals(role)) {
+					isalloted = true;
+				} else if ("TRAINER".equals(role)) {
+					Long courseID = quest.getAssignment().getCourseDetail().getCourseId();
+					isalloted = muserRepo.FindAllotedOrNotByUserIdAndCourseId(email, courseID);
+				}
+				if (isalloted) {
+					quest.setAnswer(quizzquestion.getAnswer());
+					quest.setOption1(quizzquestion.getOption1());
+					quest.setOption2(quizzquestion.getOption2());
+					quest.setOption3(quizzquestion.getOption3());
+					quest.setOption4(quizzquestion.getOption4());
+					quest.setQuestionText(quizzquestion.getQuestionText());
+					QuestionRepo.save(quest);
+					return ResponseEntity.ok("updated Successfully");
+				}
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("you Are Not allowed to access This Page");
+			} else {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No Quizz Question Found for the Assignment");
+			}
+
+		} catch (Exception e) {
+			logger.error("error at Update QuizzQuestion For Assignment" + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 

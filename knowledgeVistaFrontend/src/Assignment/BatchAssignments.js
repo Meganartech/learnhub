@@ -243,7 +243,7 @@ useEffect(()=>{
       visibility: assignment?.submissionstatus === "NOT_SUBMITTED" ? "hidden" : "visible",
     }}
   >
-    <button className="btn btn-primary" onClick={()=>{navigate(`/Assignment/Validate/${batchId}/${responsedata?.userId}/${assignment?.assignmentid}`)}}>Validate</button>
+    <button className="btn btn-primary" onClick={()=>{navigate(`/Assignment/Validate/${batchTitle}/${batchId}/${responsedata?.userId}/${assignment?.assignmentid}`)}}>Validate</button>
   </div>
 </div>
 

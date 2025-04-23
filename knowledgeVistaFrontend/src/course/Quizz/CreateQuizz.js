@@ -103,20 +103,7 @@ const CreateQuizz = () => {
         // Update the state with new errors
         setErrors(newErrors);
     };
-    const handleCriteriaChange = (e) => {
-      const { name, value } = e.target;
-      let error = "";
-  
-      // Convert value to a number if it is an attempt count or percentage
-      
-     
-  
-      // Update error state
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: error
-      }));
-    };
+   
      const handlequizzNameChange =(e)=>{
         const { value } = e.target;
         setquizzName(value)

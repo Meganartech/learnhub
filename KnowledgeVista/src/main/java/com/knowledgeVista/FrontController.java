@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -1979,6 +1980,12 @@ public class FrontController {
 		return assignmentService.SaveORUpdateSheduleAssignment(AssignmentId, batchId, AssignmentDate, token);
 	}
 
+	@PatchMapping("/Assignment/UpdateQuestion/{questionId}")
+	public ResponseEntity<?> UpdateAssignmentQuizzQuestion(@PathVariable Long questionId,
+			@RequestBody AssignmentQuestion question, @RequestHeader("Authorization") String token) {
+		return assignmentService.UpdateAssignmentQuizzQuestion(questionId, question, token);
+	}
+
 	// ============================Attendance Service 2=========================
 	@GetMapping("/Assignments/get")
 	public ResponseEntity<?> getAssignmentsByBatchId(@RequestParam Long batchId,
@@ -1994,9 +2001,10 @@ public class FrontController {
 
 	@PostMapping("/Assignment/Submit")
 	public ResponseEntity<?> SubmitAssignment(@RequestHeader("Authorization") String token,
-			@RequestParam("assignmentId") Long assignmentId, @RequestParam("scheduleId") Long scheduleId,
-			@RequestParam("batchId") Long batchId, @RequestBody Map<Long, String> answers) {
-		return assignmentService2.SubmitAssignment(token, assignmentId, scheduleId, batchId, answers);
+			@RequestParam("assignmentId") Long assignmentId, @RequestParam("batchId") Long batchId,
+			@RequestPart(value = "file", required = false) MultipartFile file,
+			@RequestPart(value = "answers", required = false) Map<Long, String> answers) {
+		return assignmentService2.SubmitAssignment(token, assignmentId, batchId, file, answers);
 	}
 
 	@GetMapping("/Assignments/getByStudent")
@@ -2018,4 +2026,15 @@ public class FrontController {
 		return assignmentService2.ValidateAssignment(token, assignmentId, batchId, userId, feedback, marks);
 	}
 
+	@DeleteMapping("/Assignment/Delete/{assignmentId}")
+	public ResponseEntity<?> DeleteAssignmentQuizzQuestion(@PathVariable Long assignmentId,
+			@RequestBody List<Long> questionIds, @RequestHeader("Authorization") String token) {
+		return assignmentService2.DeleteAssignmentQuizzQuestion(questionIds, assignmentId, token);
+	}
+
+	@PostMapping("/Assignment/AddMore/{assignmentId}")
+	public ResponseEntity<?> AddMoreQuestionForQuizzInAssignment(@RequestBody AssignmentQuestion question,
+			@PathVariable Long assignmentId, @RequestHeader("Authorization") String token) {
+		return assignmentService2.AddMoreQuestionForQuizzInAssignment(assignmentId, question, token);
+	}
 }
