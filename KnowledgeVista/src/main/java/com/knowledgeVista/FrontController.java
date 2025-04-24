@@ -1975,9 +1975,10 @@ public class FrontController {
 	}
 
 	@PostMapping("/Assignment/Shedule")
-	public ResponseEntity<?> SaveORUpdateSheduleAssignment(@RequestParam Long AssignmentId, @RequestParam Long batchId,
-			@RequestParam LocalDate AssignmentDate, @RequestHeader("Authorization") String token) {
-		return assignmentService.SaveORUpdateSheduleAssignment(AssignmentId, batchId, AssignmentDate, token);
+	public ResponseEntity<?> SaveORUpdateSheduleAssignment(HttpServletRequest request, @RequestParam Long AssignmentId,
+			@RequestParam Long batchId, @RequestParam LocalDate AssignmentDate,
+			@RequestHeader("Authorization") String token) {
+		return assignmentService.SaveORUpdateSheduleAssignment(request, AssignmentId, batchId, AssignmentDate, token);
 	}
 
 	@PatchMapping("/Assignment/UpdateQuestion/{questionId}")

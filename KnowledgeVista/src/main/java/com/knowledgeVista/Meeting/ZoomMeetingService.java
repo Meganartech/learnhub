@@ -144,13 +144,11 @@ public class ZoomMeetingService {
 					Optional<Attendancedetails> opattendance = attendanceRepo
 							.findByUserIdAndMeetingIdAndDate(user.getUserId(), MeetingId, LocalDate.now());
 					if (opattendance.isPresent()) {
-						System.out.println("in present-------------------------------------------");
 						Attendancedetails attendance = opattendance.get();
 						attendance.setStatus("PRESENT");
 						attendanceRepo.save(attendance);// need to make meetid and userid as unique one
 						return ResponseEntity.ok(meet.getJoinUrl());
 					} else {
-						System.out.println("----------------------------------------------in else");
 						Attendancedetails attendancenew = new Attendancedetails();
 						attendancenew.setUserId(user.getUserId());
 						attendancenew.setMeeting(meet);
@@ -265,7 +263,6 @@ public class ZoomMeetingService {
 				String InstitutionName = user.getInstitutionName();
 				if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 					String accessToken = zoomTokenService.getAccessToken(InstitutionName);
-					System.out.println("accessTokennnnnnnnnnnnnnn" + accessToken);
 					if (accessToken == null || accessToken.isEmpty()) {
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Access Token Generation Failed");
 					}

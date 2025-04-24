@@ -1,6 +1,8 @@
 package com.knowledgeVista.Batch.Assignment.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,9 +25,13 @@ import com.knowledgeVista.Batch.Assignment.Repo.AssignmentSheduleRepo;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
+import com.knowledgeVista.Email.EmailService;
+import com.knowledgeVista.Notification.Service.NotificationService;
 import com.knowledgeVista.User.Muser;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class AssignmentService {
@@ -43,6 +49,10 @@ public class AssignmentService {
 	private JwtUtil jwtUtil;
 	@Autowired
 	private AssignmentSheduleRepo sheduleRepo;
+	@Autowired
+	private NotificationService notiservice;
+	@Autowired
+	private EmailService emailService;
 	private static final Logger logger = LoggerFactory.getLogger(AssignmentService.class);
 
 	public ResponseEntity<?> saveAssignment(String token, Assignment assignment, Long courseId) {
@@ -413,8 +423,8 @@ public class AssignmentService {
 		}
 	}
 
-	public ResponseEntity<?> SaveORUpdateSheduleAssignment(Long AssignmentId, Long batchId, LocalDate AssignmentDate,
-			String token) {
+	public ResponseEntity<?> SaveORUpdateSheduleAssignment(HttpServletRequest request, Long AssignmentId, Long batchId,
+			LocalDate AssignmentDate, String token) {
 		try {
 			if (!jwtUtil.validateToken(token)) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
@@ -440,51 +450,122 @@ public class AssignmentService {
 			}
 			Assignment assignment = opassignment.get();
 			CourseDetail Course = assignment.getCourseDetail();
-			if ("ADMIN".equals(role)) {
+			if ("ADMIN".equals(role) || ("TRAINER".equals(role) && Course.getTrainer().contains(addingUser))) {
+
 				Optional<AssignmentSchedule> opshedule = sheduleRepo.findByAssignmentIdAndBatchId(batchId,
 						AssignmentId);
+
+				AssignmentSchedule schedule;
 				if (opshedule.isPresent()) {
-					AssignmentSchedule shedule = opshedule.get();
-					shedule.setAssignmentDate(AssignmentDate);
-					sheduleRepo.save(shedule);
+					schedule = opshedule.get();
+					schedule.setAssignmentDate(AssignmentDate);
+					sheduleRepo.save(schedule);
+					String heading = "Assignment Sheduled !";
+					String link = "/submitAssignment/" + batch.getId() + "/" + assignment.getId();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+					String formattedDate = AssignmentDate.format(formatter);
+					String notidescription = "The schedule for Assignment '" + assignment.getTitle()
+							+ "' was updated by " + addingUser.getUsername() + " for the batch " + batch.getBatchTitle()
+							+ " to " + formattedDate + ".";
+					Long NotifyId = notiservice.createNotification("Assignment", addingUser.getUsername(),
+							notidescription, addingUser.getUsername(), heading, link);
+
+					List<String> user = new ArrayList<String>();
+					for (Muser student : batch.getUsers()) {
+						user.add(student.getEmail());
+					}
+					if (!user.isEmpty()) {
+						notiservice.SpecificCreateNotificationusingEmail(NotifyId, user);
+					}
+					sendmailService(request, "Updated", user, addingUser.getInstitutionName(), formattedDate,
+							batch.getBatchTitle(), assignment.getTitle());
+
 					return ResponseEntity.ok("Updated");
 				} else {
-					AssignmentSchedule shedule = new AssignmentSchedule();
-					shedule.setAssignment(assignment);
-					shedule.setBatch(batch);
-					shedule.setAssignmentDate(AssignmentDate);
-					sheduleRepo.save(shedule);
+					schedule = new AssignmentSchedule();
+					schedule.setAssignment(assignment);
+					schedule.setBatch(batch);
+					schedule.setAssignmentDate(AssignmentDate);
+					sheduleRepo.save(schedule);
+					// notifiction====================================
+					String heading = "Assignment Sheduled !";
+					String link = "/submitAssignment/" + batch.getId() + "/" + assignment.getId();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+					String formattedDate = AssignmentDate.format(formatter);
+
+					String notidescription = "A new Assignment '" + assignment.getTitle() + "' was Scheduled by "
+							+ addingUser.getUsername() + " for the batch " + batch.getBatchTitle() + " on "
+							+ formattedDate;
+
+					Long NotifyId = notiservice.createNotification("Assignment", addingUser.getUsername(),
+							notidescription, addingUser.getUsername(), heading, link);
+
+					List<String> user = new ArrayList<String>();
+					for (Muser student : batch.getUsers()) {
+						user.add(student.getEmail());
+					}
+					if (!user.isEmpty()) {
+						notiservice.SpecificCreateNotificationusingEmail(NotifyId, user);
+					}
+
+					// ==============================mail sending ===============
+					sendmailService(request, "Scheduled", user, addingUser.getInstitutionName(), formattedDate,
+							batch.getBatchTitle(), assignment.getTitle());
 					return ResponseEntity.ok("Saved");
 				}
 
 			} else if ("TRAINER".equals(role)) {
-				if (Course.getTrainer().contains(addingUser)) {
-					Optional<AssignmentSchedule> opshedule = sheduleRepo.findByAssignmentIdAndBatchId(batchId,
-							AssignmentId);
-					if (opshedule.isPresent()) {
-						AssignmentSchedule shedule = opshedule.get();
-						shedule.setAssignmentDate(AssignmentDate);
-						sheduleRepo.save(shedule);
-						return ResponseEntity.ok("Updated");
-					} else {
-						AssignmentSchedule shedule = new AssignmentSchedule();
-						shedule.setAssignment(assignment);
-						shedule.setBatch(batch);
-						shedule.setAssignmentDate(AssignmentDate);
-						sheduleRepo.save(shedule);
-						return ResponseEntity.ok("Saved");
-					}
-				} else {
-					return ResponseEntity.status(HttpStatus.FORBIDDEN).body("This Course Was Not Assigned To You");
-				}
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("This Course Was Not Assigned To You");
 			} else {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Students Cannot Acces this Page");
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized");
 			}
 		} catch (Exception e) {
 			logger.error("error at GetSheduleQuizz" + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
 		}
+	}
+
+	private void sendmailService(HttpServletRequest request, String state, List<String> users, String institutionname,
+			String formattedScheduleDate, String batchTitle, String assignmentTitle) {
+		try {
+			List<String> bcc = null;
+			List<String> cc = null;
+			String domain = request.getHeader("origin"); // Extracts the domain dynamically
+
+			// Fallback if "Origin" header is not present (e.g., direct backend requests)
+			if (domain == null || domain.isEmpty()) {
+				domain = request.getScheme() + "://" + request.getServerName();
+				if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+					domain += ":" + request.getServerPort();
+				}
+			}
+			String signInLink = domain + "/login";
+
+			StringBuilder body = new StringBuilder();
+			body.append("<html>").append("<body>").append("<h2>📢  Assignment " + state + " on LearnHub!</h2>")
+					.append("<p>Dear Student,</p>")
+					.append("<p>We hope you're doing great! A new assignment has been scheduled for your batch <strong>")
+					.append(batchTitle).append("</strong> on <strong>").append(formattedScheduleDate)
+					.append("</strong>.</p>").append("<p><strong>Assignment Title:</strong> ").append(assignmentTitle)
+					.append("</p>")
+					.append("<p>This assignment is a part of your course curriculum and is designed to help you strengthen your understanding of the concepts.</p>")
+					.append("<p><strong>What you need to do:</strong></p>").append("<ul>")
+					.append("<li>Log in to your LearnHub account</li>")
+					.append("<li>Navigate to your batch dashboard</li>")
+					.append("<li>Find and complete the assignment on or before the deadline</li>").append("</ul>")
+					.append("<p>Click the link below to get started:</p>").append("<p><a href='").append(signInLink)
+					.append("' style='font-size:16px; color:blue;'>Go to LearnHub</a></p>")
+					.append("<p>Stay consistent and keep learning! 🚀</p>")
+					.append("<p>Best Regards,<br>LearnHub Team</p>").append("</body>").append("</html>");
+
+			emailService.sendHtmlEmailAsync(institutionname, users, cc, bcc,
+					"New Assignment Scheduled - " + assignmentTitle, body.toString());
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error("error in Sending mail" + e.getMessage());
+		}
+
 	}
 
 	public ResponseEntity<?> UpdateAssignmentQuizzQuestion(Long questionId, AssignmentQuestion quizzquestion,
