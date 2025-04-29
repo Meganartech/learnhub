@@ -85,6 +85,14 @@ public class LicenseController {
 
 	@Value("${upload.standard.licence.directory}")
 	private String standardlicencedir;
+	@Value("${upload.basic.licence.directory}")
+	private String basiclicencedir;
+	@Value("${upload.professional.licence.directory}")
+	private String professionallicencedir;
+	@Value("${upload.enterprise.licence.directory}")
+	private String enterpriselicencedir;
+	@Value("${upload.customized.licence.directory}")
+	private String customizedlicencedir;
 
 	private String valu;
 
@@ -298,7 +306,6 @@ public class LicenseController {
 				License license = oplicense.get();
 				courseString = license.getCourse();
 
-				
 				// System.out.println(courseString.isEmpty());
 				if (!(courseString.isEmpty())) {
 					course = Long.parseLong(courseString);
@@ -321,7 +328,7 @@ public class LicenseController {
 				String message = "License limit reached. Please upgrade your license.";
 				logger.info("-------------------------------------------------------");
 				logger.info(message);
-				return new ResponseEntity<>(429,HttpStatus.TOO_MANY_REQUESTS);
+				return new ResponseEntity<>(429, HttpStatus.TOO_MANY_REQUESTS);
 			}
 		} else {
 			return new ResponseEntity<>(204, HttpStatus.NOT_FOUND);
@@ -339,13 +346,13 @@ public class LicenseController {
 		java.util.Date Datecurrent = java.sql.Date.valueOf(currentDate);
 		long milliseconds = Datecurrent.getTime(); // Get the time in milliseconds
 		java.sql.Timestamp timestamp = new java.sql.Timestamp(milliseconds);
-		
+
 		String localFile = "";
 		for (License license : licenseList) {
 			localFile = license.getFilename();
 
 		}
-		String val="";
+		String val = "";
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -384,13 +391,11 @@ public class LicenseController {
 		for (License license : licenseList) {
 			this.valu1 = license.getKey();
 			String value2 = license.getKey2();
-			 Date endDate = license.getEnd_date();  
+			Date endDate = license.getEnd_date();
 			// Convert Date to LocalDate
-		        LocalDate licenseEndDate = endDate.toInstant()
-		                                          .atZone(ZoneId.systemDefault())
-		                                          .toLocalDate();
-			 LocalDate today = LocalDate.now();
-			boolean va=licenseEndDate.isBefore(today);
+			LocalDate licenseEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate today = LocalDate.now();
+			boolean va = licenseEndDate.isBefore(today);
 //		    -------------------------------------testarea-----------------------------
 			if ((valu.equals(valu1) || valu.equals(value2)) && !(licenseEndDate.isBefore(today))) {
 
@@ -404,7 +409,7 @@ public class LicenseController {
 
 			} else {
 				logger.info("License is InValid");
-				if (!(valu.equals(valu1)) || !(valu.equals(value2)) ) {
+				if (!(valu.equals(valu1)) || !(valu.equals(value2))) {
 					valid = false;
 					logger.info("License is Modified");
 				} else if (licenseEndDate.isBefore(today)) {
@@ -476,15 +481,13 @@ public class LicenseController {
 
 		this.valu1 = license.getKey();
 		String value2 = license.getKey2();
-		 Date endDate = license.getEnd_date();  
+		Date endDate = license.getEnd_date();
 		// Convert Date to LocalDate
-	        LocalDate licenseEndDate = endDate.toInstant()
-	                                          .atZone(ZoneId.systemDefault())
-	                                          .toLocalDate();
-		 LocalDate today = LocalDate.now();
+		LocalDate licenseEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate today = LocalDate.now();
 
 //		    -------------------------------------testarea-----------------------------
-			if ((valu.equals(valu1) || valu.equals(value2)) && !(licenseEndDate.isBefore(today))) {
+		if ((valu.equals(valu1) || valu.equals(value2)) && !(licenseEndDate.isBefore(today))) {
 			valid = true;
 			System.out.println("361" + valid);
 			logger.info("License is Valid" + valid);
@@ -498,7 +501,7 @@ public class LicenseController {
 
 		} else {
 			System.out.println("363" + valid);
-			if (!(valu.equals(valu1)) || !(valu.equals(value2)) ) {
+			if (!(valu.equals(valu1)) || !(valu.equals(value2))) {
 				valid = false;
 				System.out.println("364" + valid);
 				logger.info("License is Modified");
@@ -633,11 +636,11 @@ public class LicenseController {
 					updateData.setLicencestartdate(startdate);
 					updateData.setLicenceEndDate(endDate);
 					updateData.setIsLicenseExpired(false);
-					   try {
-					restTemplate.put(apiurl3, updateData, String.class);
-					   }catch (Exception e) {
-						logger.error("error in CustomerLeads"+ e);
-						System.out.println("error At Customer Leads" +e);
+					try {
+						restTemplate.put(apiurl3, updateData, String.class);
+					} catch (Exception e) {
+						logger.error("error in CustomerLeads" + e);
+						System.out.println("error At Customer Leads" + e);
 					}
 					String apiurl4 = baseUrl + "/Developer/CustomerDownload/" + email;
 					Customer_downloads custdown = new Customer_downloads();
@@ -649,11 +652,11 @@ public class LicenseController {
 					custdown.setStudentCount(StudentCount);
 					custdown.setTrainerCount(TrainerCount);
 					custdown.setVersion(version);
-                     try {
-					restTemplate.put(apiurl4, updateData, String.class);
-                     }catch (Exception e) {
-						logger.error("error At Customer Doumloads"+e);
-						System.out.println("error At Customer Doumloads"+e);
+					try {
+						restTemplate.put(apiurl4, updateData, String.class);
+					} catch (Exception e) {
+						logger.error("error At Customer Doumloads" + e);
+						System.out.println("error At Customer Doumloads" + e);
 					}
 
 //----------------------------------------CustomerLeads---------------------------
@@ -680,11 +683,17 @@ public class LicenseController {
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			if (madmin.getLicenceType().equals("FREE")) {
-				// For Future Use
 				licenceUploadDirectory = freelicencedir;
-
 			} else if (madmin.getLicenceType().equals("STANDARD")) {
 				licenceUploadDirectory = standardlicencedir;
+			} else if (madmin.getLicenceType().equals("BASIC")) {
+				licenceUploadDirectory = basiclicencedir;
+			} else if (madmin.getLicenceType().equals("PROFESSIONAL")) {
+				licenceUploadDirectory = professionallicencedir;
+			} else if (madmin.getLicenceType().equals("ENTERPRISE")) {
+				licenceUploadDirectory = enterpriselicencedir;
+			} else if (madmin.getLicenceType().equals("CUSTOMIZED")) {
+				licenceUploadDirectory = customizedlicencedir;
 			}
 
 			Document document = builder.parse(new File(licenceUploadDirectory + "data.xml"));
@@ -825,8 +834,9 @@ public class LicenseController {
 
 	// -----licence details
 	// vps--------------------------------------------------------
-	public String licensedetails(String product_name, String company_name, String storage, String key, String key2, String validity,
-			String course, String trainercount, String studentcount, String type, String file, String institution) {
+	public String licensedetails(String product_name, String company_name, String storage, String key, String key2,
+			String validity, String course, String trainercount, String studentcount, String type, String file,
+			String institution) {
 
 		Iterable<License> licenseIterable = licenseRepository.findAll();
 		List<License> licenseList = StreamSupport.stream(licenseIterable.spliterator(), false)
@@ -956,7 +966,16 @@ public class LicenseController {
 				licenseUploadDirectory = freelicencedir;
 			} else if (licenseType.equalsIgnoreCase("STANDARD")) {
 				licenseUploadDirectory = standardlicencedir;
+			} else if (licenseType.equalsIgnoreCase("BASIC")) {
+				licenseUploadDirectory = basiclicencedir;
+			} else if (licenseType.equalsIgnoreCase("PROFESSIONAL")) {
+				licenseUploadDirectory = professionallicencedir;
+			} else if (licenseType.equalsIgnoreCase("ENTERPRISE")) {
+				licenseUploadDirectory = enterpriselicencedir;
+			} else if (licenseType.equalsIgnoreCase("CUSTOMIZED")) {
+				licenseUploadDirectory = customizedlicencedir;
 			} else {
+
 				return ResponseEntity.badRequest().body("Unsupported license type: " + licenseType);
 			}
 			String uniqueFileName = file.getOriginalFilename();
