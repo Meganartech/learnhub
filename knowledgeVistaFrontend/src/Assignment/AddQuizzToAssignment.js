@@ -200,6 +200,79 @@ const AddQuizzToAssignment = ({savedQuestions, setSavedQuestions, setShowAddQues
                       setAnswer("");
                       }
                     };
+                    const handleFinalSubmit = () => {
+                      const isQuestionTextEmpty = questionText.trim() === '';
+                      const areOptionsEmpty = options.every(opt => opt.trim() === '');
+                      const isAnswerEmpty = !answer;
+                    
+                      // ✅ If all fields are empty, skip the question and call handleSubmit
+                      if (isQuestionTextEmpty && areOptionsEmpty && isAnswerEmpty) {
+                        handleSubmit();
+                        return;
+                      }
+                    
+                      let hasError = false;
+                    
+                      const trimmedQuestionText = questionText.trim();
+                      if (!trimmedQuestionText) {
+                        setErrors(prev => ({ ...prev, questionText: 'This field is required.' }));
+                        hasError = true;
+                      } else if (trimmedQuestionText.length > 1000) {
+                        setErrors(prev => ({ ...prev, questionText: 'Question text cannot be more than 1000 characters.' }));
+                        hasError = true;
+                      }
+                    
+                      const newOptionErrors = {};
+                      options.forEach((option, index) => {
+                        const trimmed = option.trim();
+                        if (!trimmed) {
+                          newOptionErrors[index] = `Option ${index + 1} cannot be empty.`;
+                          hasError = true;
+                        } else if (trimmed.length > 255) {
+                          newOptionErrors[index] = `Option ${index + 1} cannot be more than 255 characters.`;
+                          hasError = true;
+                        }
+                      });
+                    
+                      if (!answer) {
+                        setErrors(prev => ({ ...prev, selectedOption: 'Please select the correct answer.' }));
+                        hasError = true;
+                      } else if (answer.length > 255) {
+                        setErrors(prev => ({ ...prev, selectedOption: 'Answer option cannot be more than 255 characters.' }));
+                        hasError = true;
+                      }
+                    
+                      if (Object.keys(newOptionErrors).length > 0) {
+                        setErrors(prevErrors => ({
+                          ...prevErrors,
+                          options: {
+                            ...prevErrors.options,
+                            ...newOptionErrors,
+                          },
+                        }));
+                      }
+                    
+                      if (hasError) return;
+                    
+                      // Add/update current question
+                      const newQuestion = {
+                        questionText: questionText,
+                        option1: options[0],
+                        option2: options[1],
+                        option3: options[2],
+                        option4: options[3],
+                        answer: answer
+                      };
+                    
+                      const updatedQuestions = [...savedQuestions];
+                      updatedQuestions[selectedQuestionIndex] = newQuestion;
+                      setSavedQuestions(updatedQuestions);
+                    
+                      // Call parent submit handler
+                      handleSubmit();
+                    };
+                    
+                    
                 
   return (
     <div>
@@ -331,7 +404,8 @@ const AddQuizzToAssignment = ({savedQuestions, setSavedQuestions, setShowAddQues
 
                 <div>
                   <button
-                  onClick={handleSubmit}
+                  onClick={handleFinalSubmit}
+                  disabled={savedQuestions.length<=0}
                     className="btn btn-success mt-4"
                   >
                    Submit

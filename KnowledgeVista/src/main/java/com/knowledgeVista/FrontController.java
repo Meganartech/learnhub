@@ -2004,7 +2004,7 @@ public class FrontController {
 	public ResponseEntity<?> SubmitAssignment(@RequestHeader("Authorization") String token,
 			@RequestParam("assignmentId") Long assignmentId, @RequestParam("batchId") Long batchId,
 			@RequestPart(value = "file", required = false) MultipartFile file,
-			@RequestPart(value = "answers", required = false) Map<Long, String> answers) {
+			@RequestBody(required = false) Map<Long, String> answers) {
 		return assignmentService2.SubmitAssignment(token, assignmentId, batchId, file, answers);
 	}
 

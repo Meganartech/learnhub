@@ -112,13 +112,22 @@ const CreateQuizz = () => {
               ...prevErrors,
               quizzName  : 'This field is required'
           }));
-      }if (quizzName.length > 50) {
+      }else if (quizzName.length > 50) {
         setErrors((prevErrors) => ({
           ...prevErrors,
           quizzName: 'Test name cannot be more than 50 characters.',
         }));
         return;
-      } else {
+      }else 
+      if(value.includes("/")||  value.includes("\\")){
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          quizzName:  "Quizz Title should not contain the '/' or '\' character",
+        }));
+        return;
+         
+      }
+       else {
           setErrors(prevErrors => ({
               ...prevErrors,
               quizzName: ''

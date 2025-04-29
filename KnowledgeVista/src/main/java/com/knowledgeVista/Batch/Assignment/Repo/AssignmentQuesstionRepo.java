@@ -17,6 +17,6 @@ public interface AssignmentQuesstionRepo extends JpaRepository<AssignmentQuestio
 	List<AssignmentQuestion> findByAssignment(@Param("assignment") Assignment assignment);
 
 	@Query("SELECT COUNT(q) FROM AssignmentQuestion q WHERE q.assignment.id = :assignmentId")
-	Long countByAssignmentId(@Param("assignmentId") Long assignmentId);
+	Integer countByAssignmentId(@Param("assignmentId") Long assignmentId);
 
 }

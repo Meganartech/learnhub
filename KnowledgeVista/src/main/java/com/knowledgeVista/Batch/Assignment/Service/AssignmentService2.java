@@ -247,6 +247,9 @@ public class AssignmentService2 {
 
 			switch (assignment.getType()) {
 			case QA -> {
+				if (answers == null) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("answers cannot be null");
+				}
 				submission.setAnswers(answers);
 				submission.setGraded(false);
 				responseMessage = "Assignment Submitted Successfully";
@@ -264,6 +267,9 @@ public class AssignmentService2 {
 				responseMessage = "Assignment Submitted Successfully";
 			}
 			case QUIZ -> {
+				if (answers == null) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("answers cannot be null");
+				}
 				List<AssignmentQuestion> allQuestions = assignmentQuesstionRepo.findByAssignment(assignment);
 				int totalCorrect = (int) allQuestions.stream()
 						.filter(q -> answers.get(q.getId()) != null && answers.get(q.getId()).equals(q.getAnswer()))
@@ -514,12 +520,13 @@ public class AssignmentService2 {
 				if (isalloted) {
 					List<AssignmentQuestion> questions = assignmentQuesstionRepo.findAllById(questionIds);
 					assignmentQuesstionRepo.deleteAll(questions);
-					Long remainingQuestions = assignmentQuesstionRepo.countByAssignmentId(AssignmentId);
-					System.out.println(remainingQuestions);
+					Integer remainingQuestions = assignmentQuesstionRepo.countByAssignmentId(AssignmentId);
 					if (remainingQuestions == 0) {
 						assignmentRepo.delete(assignment);
 
 					}
+					assignment.setTotalMarks(remainingQuestions);
+					assignmentRepo.save(assignment);
 					return ResponseEntity.ok("Delted Successfully");
 				}
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("you Are Not allowed to access This Page");
@@ -557,6 +564,7 @@ public class AssignmentService2 {
 						question.setAssignment(assignment);
 						assignment.setType(AssignmentType.QUIZ);
 						assignment.getQuestions().add(question);
+						assignment.setTotalMarks(assignment.getTotalMarks() + 1);
 						assignmentRepo.save(assignment);
 						return ResponseEntity.ok("Saved SuccessFully");
 					}

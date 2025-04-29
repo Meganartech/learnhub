@@ -84,6 +84,8 @@ const EditAssignment = () => {
         newErrors.title = "Title is required";
       } else if (value.length > 255) {
         newErrors.title = "Title cannot exceed 255 characters";
+      } else if(value.includes("/")||value.includes("\\")){
+        newErrors.title = "Title cannot have '/' or '\\'  characters";
       } else {
         newErrors.title = "";
       }

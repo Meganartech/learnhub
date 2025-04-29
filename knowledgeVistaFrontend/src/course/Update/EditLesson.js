@@ -146,6 +146,8 @@ const EditLesson = () => {
         error = value.length < 1 
         ? "Please enter a Lesson Title" : value.length > 50 
         ? "Lesson Title should not exceed 50 characters" 
+        :(value.includes("/") || value.includes("\\"))
+            ?  "Lesson Title should not contain the '/' or '\' character"
         : "";
         setvideodata({ ...videodata, [name]: value });
         break;

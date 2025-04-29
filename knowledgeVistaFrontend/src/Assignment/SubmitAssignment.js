@@ -32,8 +32,7 @@ const SubmitAssignment = () => {
       if (Assignment?.type === "QA" || Assignment?.type === "QUIZ") {
         response = await axios.post(`${baseUrl}/Assignment/Submit?assignmentId=${AssignmentId}&batchId=${batchId}`,answers, {
           headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
+            Authorization: token
           },
         });
       }
