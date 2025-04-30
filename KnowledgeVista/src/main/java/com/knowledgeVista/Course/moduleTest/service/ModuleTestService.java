@@ -1,32 +1,26 @@
 package com.knowledgeVista.Course.moduleTest.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Repo.BatchRepository;
 import com.knowledgeVista.Course.CourseDetail;
 import com.knowledgeVista.Course.VideoLessonDTO;
 import com.knowledgeVista.Course.videoLessons;
-import com.knowledgeVista.Course.Quizz.QuizAttempt;
-import com.knowledgeVista.Course.Quizz.QuizAttemptAnswer;
-import com.knowledgeVista.Course.Quizz.Quizz;
-import com.knowledgeVista.Course.Quizz.Quizzquestion;
-import com.knowledgeVista.Course.Quizz.ShedueleListDto;
 import com.knowledgeVista.Course.Quizz.DTO.AnswerDto;
-import com.knowledgeVista.Course.Quizz.DTO.QuizzquestionDTO;
 import com.knowledgeVista.Course.Quizz.DTO.AnswerDto.ModuleTestAnswerResult;
-import com.knowledgeVista.Course.Quizz.DTO.AnswerDto.QuizAnswerResult;
 import com.knowledgeVista.Course.Repository.CourseDetailRepository;
 import com.knowledgeVista.Course.Repository.videoLessonRepo;
 import com.knowledgeVista.Course.moduleTest.MQuestion;
@@ -355,217 +349,213 @@ public class ModuleTestService {
 		} catch (Exception e) {
 
 			e.printStackTrace();
-			logger.error("", e);		
+			logger.error("", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("message" + e.getMessage());
 		}
 	}
 
-	
-	public ResponseEntity<?>SaveORUpdateSheduleModuleTest(Long mtestId, String batchId,LocalDate testDate, String token){
+	public ResponseEntity<?> SaveORUpdateSheduleModuleTest(Long mtestId, Long batchId, LocalDate testDate,
+			String token) {
 		try {
-			 String role=jwtUtil.getRoleFromToken(token);
-			  String email=jwtUtil.getUsernameFromToken(token);
-			  String insitution=muserRepository.findinstitutionByEmail(email);
-			  if(insitution==null) {
-				  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			  }
-			  boolean isalloted=false;
-			 Optional<ModuleTest> opmtest= moduletestRepo.findById(mtestId);
-			 Optional<Batch>opbatch=batchRepo.findBatchByIdAndInstitutionName(batchId, insitution);
-			 if(!opmtest.isPresent() ) {
-				 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ModuleTest Not Found");
-			 }
-			 if(!opbatch.isPresent()) {
-				 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch Not Found");
-			 }
-			 ModuleTest mtest=opmtest.get();
-			 Batch batch=opbatch.get();
-			Long courseId=mtest.getCourseDetail().getCourseId();
-					  if("ADMIN".equals(role)) {
-						  isalloted=true;
-					  }else if("TRAINER".equals(role)){
-						   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
-					  }
-					  if(isalloted) {
-						  Optional<SheduleModuleTest> opQuizzschedule= sheduleTestRepo.findByModuleTestIdAndBatchId(mtestId, batchId);
-						  if(opQuizzschedule.isPresent()) {
-						    SheduleModuleTest shedule=opQuizzschedule.get();
-						    shedule.setTestDate(testDate);
-						    sheduleTestRepo.save(shedule);
-						    return ResponseEntity.ok("Updated");
-						  }else {
-							  SheduleModuleTest shedule=new SheduleModuleTest();
-							  shedule.setBatch(batch);
-							  shedule.setMtest(mtest);
-							  shedule.setTestDate(testDate);
-							  sheduleTestRepo.save(shedule);
-							  return ResponseEntity.ok("saved");
-						  }
-					  }
-					  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}catch (Exception e) {
-			logger.error("error at SaveOrUpdateSheduleModuleTest"+e);
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			String insitution = muserRepository.findinstitutionByEmail(email);
+			if (insitution == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			}
+			boolean isalloted = false;
+			Optional<ModuleTest> opmtest = moduletestRepo.findById(mtestId);
+			Optional<Batch> opbatch = batchRepo.findBatchByIdAndInstitutionName(batchId, insitution);
+			if (!opmtest.isPresent()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("ModuleTest Not Found");
+			}
+			if (!opbatch.isPresent()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Batch Not Found");
+			}
+			ModuleTest mtest = opmtest.get();
+			Batch batch = opbatch.get();
+			Long courseId = mtest.getCourseDetail().getCourseId();
+			if ("ADMIN".equals(role)) {
+				isalloted = true;
+			} else if ("TRAINER".equals(role)) {
+				isalloted = muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
+			}
+			if (isalloted) {
+				Optional<SheduleModuleTest> opQuizzschedule = sheduleTestRepo.findByModuleTestIdAndBatchId(mtestId,
+						batchId);
+				if (opQuizzschedule.isPresent()) {
+					SheduleModuleTest shedule = opQuizzschedule.get();
+					shedule.setTestDate(testDate);
+					sheduleTestRepo.save(shedule);
+					return ResponseEntity.ok("Updated");
+				} else {
+					SheduleModuleTest shedule = new SheduleModuleTest();
+					shedule.setBatch(batch);
+					shedule.setMtest(mtest);
+					shedule.setTestDate(testDate);
+					sheduleTestRepo.save(shedule);
+					return ResponseEntity.ok("saved");
+				}
+			}
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		} catch (Exception e) {
+			logger.error("error at SaveOrUpdateSheduleModuleTest" + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-					
-		}
-	}
-	public ResponseEntity<?>getModuleTestSheduleDetails(Long courseId, String batchId,String token){
-		try {
-			 String role=jwtUtil.getRoleFromToken(token);
-			  String email=jwtUtil.getUsernameFromToken(token);
-			  boolean isalloted=false;
-				
-					  if("ADMIN".equals(role)) {
-						  isalloted=true;
-					  }else if("TRAINER".equals(role)){
-						   isalloted=muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
-					  }
-					  if(isalloted) {
-						  List<MTSheduleListDto> shedule= moduletestRepo.getQuizzShedulesByCourseIdAndBatchId(courseId, batchId);
-						  return ResponseEntity.ok(shedule);
-					  }
-					  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}catch (Exception e) {
-			logger.error("error at getModuleTestShedules "+e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-					
+
 		}
 	}
 
-	
-	//======================================
-	
+	public ResponseEntity<?> getModuleTestSheduleDetails(Long courseId, Long batchId, String token) {
+		try {
+			String role = jwtUtil.getRoleFromToken(token);
+			String email = jwtUtil.getUsernameFromToken(token);
+			boolean isalloted = false;
 
-    public ResponseEntity<?> startModuleTest(String token, Long mtestId, Long batchId) {
-        try {
-            if (!jwtUtil.validateToken(token)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
-            }
+			if ("ADMIN".equals(role)) {
+				isalloted = true;
+			} else if ("TRAINER".equals(role)) {
+				isalloted = muserRepository.FindAllotedOrNotByUserIdAndCourseId(email, courseId);
+			}
+			if (isalloted) {
+				List<MTSheduleListDto> shedule = moduletestRepo.getQuizzShedulesByCourseIdAndBatchId(courseId, batchId);
+				return ResponseEntity.ok(shedule);
+			}
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		} catch (Exception e) {
+			logger.error("error at getModuleTestShedules " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
-            String email = jwtUtil.getUsernameFromToken(token);
-            Optional<Muser> opmuser = muserRepository.findByEmail(email);
-
-            if (opmuser.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
-            }
-
-            Muser user = opmuser.get();
-            if (!"USER".equals(user.getRole().getRoleName())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only students can attempt the quiz.");
-            }
-            
-            Batch batch = user.getEnrolledbatch().stream()
-                    .filter(b -> b.getId().equals(batchId))
-                    .findFirst()
-                    .orElse(null);
-
-            if (batch == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not enrolled in this batch.");
-            }
-
-            Optional<ModuleTest> opmtest = moduletestRepo.findById(mtestId);
-            if (opmtest.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Module Test Not Found.");
-            }
-            ModuleTest mtest=opmtest.get();
-            System.out.println(batchId+ "f0"+mtestId);
-            LocalDate sheduledDate = sheduleTestRepo.getSheduledDate(mtest.getMtestId(), batchId);
-           System.out.println(sheduledDate);
-
-            LocalDate now = LocalDate.now();
-           
-            if (now.isBefore(sheduledDate)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Module Test has not started yet.");
-            }
-            if (now.isAfter(sheduledDate)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Module Test has expired.");
-            }
-            return getMtestQuestions(mtestId);
-        } catch (Exception e) {
-            logger.error("Error Getting ModuleTest Question Questions", e);
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-   
-
-    private ResponseEntity<?> getMtestQuestions(Long mtestId) {
-    	
-        List<MQuestion> questions = MquestionRepo.getQuestionsBymtestId(mtestId);
-        Map<String, Object> response = new HashMap<>();
-        response.put("questions", questions);
-        return ResponseEntity.ok(response);
-
-    }
-   
-    public ResponseEntity<?> saveModuleTestAnswers(String token,Long mtestId,List<AnswerDto> answers){
-    	try {
-    		 if (!jwtUtil.validateToken(token)) {
-                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
-             }
-
-             String email = jwtUtil.getUsernameFromToken(token);
-             Optional<Muser> opmuser = muserRepository.findByEmail(email);
-
-             if (opmuser.isEmpty()) {
-                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
-             }
-
-             Muser user = opmuser.get();
-             Long id=user.getUserId();
-            Long count= moduletestActivityrepo.countByUserAndTestId(id, mtestId);
-            Optional<ModuleTest> opmtest = moduletestRepo.findById(mtestId);
-            if (opmtest.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Module Test Not Found.");
-            }
-            ModuleTest mtest=opmtest.get();
-                 ModuleTestActivity attempt =new ModuleTestActivity();
-            	LocalDate now = LocalDate.now();
-            	attempt.setTestDate(now);
-            	attempt.setNthAttempt(count+1);
-            	attempt.setMtest(mtest);
-            	attempt.setUser(user);
-            	attempt= moduletestActivityrepo.save(attempt);
-            	ModuleTestAnswerResult result = saveAnswers(answers, attempt,mtestId);
-                // Update attempt with score
-                attempt.setPercentage(result.getScore());
-                moduletestActivityrepo.save(attempt);
-
-                return ResponseEntity.ok("module Test Submitted. Score: " + result.getScore());
-           
-             
-    	}catch (Exception e) {
-    		logger.error("error At Saving Module Test answers"+e);
-    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-    }
-    private ModuleTestAnswerResult saveAnswers(List<AnswerDto> answers, ModuleTestActivity attempt,Long quizzId) {
-        List<ModuleTestAnswer> saveAnswers = new ArrayList<>();
-        double score = 0.0;
-        long totalQuestions =MquestionRepo.countBymtestId(quizzId);
-        for (AnswerDto answerDto : answers) {
-            Optional<MQuestion> opQuestion = MquestionRepo.findById(answerDto.getQuestionId());
-            if (opQuestion.isPresent()) {
-            	MQuestion question = opQuestion.get();
-                boolean isCorrect = answerDto.getSelected().equals(question.getAnswer());
-                ModuleTestAnswer answer = new ModuleTestAnswer();
-                answer.setModuletestActivity(attempt);
-                answer.setQuestion(question);
-                answer.setSelectedOption(answerDto.getSelected());
-                answer.setIsCorrect(isCorrect);
-                saveAnswers.add(answer);
-                if (isCorrect) {
-                    score += 1; // Each correct answer adds 1 point
-                }
-            }
-        }
-        List<ModuleTestAnswer> savedAnswers =moduleTestAnswerRepo.saveAll(saveAnswers);
-        ModuleTestAnswerResult res=new ModuleTestAnswerResult();
-        res.setSavedAnswers(savedAnswers);
-        double percentage = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0.0;
-        res.setScore(percentage);        
-        return res;
-    }
+	}
+
+	// ======================================
+
+	public ResponseEntity<?> startModuleTest(String token, Long mtestId, Long batchId) {
+		try {
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
+			}
+
+			String email = jwtUtil.getUsernameFromToken(token);
+			Optional<Muser> opmuser = muserRepository.findByEmail(email);
+
+			if (opmuser.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+			}
+
+			Muser user = opmuser.get();
+			if (!"USER".equals(user.getRole().getRoleName())) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Only students can attempt the quiz.");
+			}
+
+			Batch batch = user.getEnrolledbatch().stream().filter(b -> b.getId().equals(batchId)).findFirst()
+					.orElse(null);
+
+			if (batch == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not enrolled in this batch.");
+			}
+
+			Optional<ModuleTest> opmtest = moduletestRepo.findById(mtestId);
+			if (opmtest.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Module Test Not Found.");
+			}
+			ModuleTest mtest = opmtest.get();
+			System.out.println(batchId + "f0" + mtestId);
+			LocalDate sheduledDate = sheduleTestRepo.getSheduledDate(mtest.getMtestId(), batchId);
+			System.out.println(sheduledDate);
+
+			LocalDate now = LocalDate.now();
+
+			if (now.isBefore(sheduledDate)) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Module Test has not started yet.");
+			}
+			if (now.isAfter(sheduledDate)) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Module Test has expired.");
+			}
+			return getMtestQuestions(mtestId);
+		} catch (Exception e) {
+			logger.error("Error Getting ModuleTest Question Questions", e);
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	private ResponseEntity<?> getMtestQuestions(Long mtestId) {
+
+		List<MQuestion> questions = MquestionRepo.getQuestionsBymtestId(mtestId);
+		Map<String, Object> response = new HashMap<>();
+		response.put("questions", questions);
+		return ResponseEntity.ok(response);
+
+	}
+
+	public ResponseEntity<?> saveModuleTestAnswers(String token, Long mtestId, List<AnswerDto> answers) {
+		try {
+			if (!jwtUtil.validateToken(token)) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired");
+			}
+
+			String email = jwtUtil.getUsernameFromToken(token);
+			Optional<Muser> opmuser = muserRepository.findByEmail(email);
+
+			if (opmuser.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
+			}
+
+			Muser user = opmuser.get();
+			Long id = user.getUserId();
+			Long count = moduletestActivityrepo.countByUserAndTestId(id, mtestId);
+			Optional<ModuleTest> opmtest = moduletestRepo.findById(mtestId);
+			if (opmtest.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Module Test Not Found.");
+			}
+			ModuleTest mtest = opmtest.get();
+			ModuleTestActivity attempt = new ModuleTestActivity();
+			LocalDate now = LocalDate.now();
+			attempt.setTestDate(now);
+			attempt.setNthAttempt(count + 1);
+			attempt.setMtest(mtest);
+			attempt.setUser(user);
+			attempt = moduletestActivityrepo.save(attempt);
+			ModuleTestAnswerResult result = saveAnswers(answers, attempt, mtestId);
+			// Update attempt with score
+			attempt.setPercentage(result.getScore());
+			moduletestActivityrepo.save(attempt);
+
+			return ResponseEntity.ok("module Test Submitted. Score: " + result.getScore());
+
+		} catch (Exception e) {
+			logger.error("error At Saving Module Test answers" + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	private ModuleTestAnswerResult saveAnswers(List<AnswerDto> answers, ModuleTestActivity attempt, Long quizzId) {
+		List<ModuleTestAnswer> saveAnswers = new ArrayList<>();
+		double score = 0.0;
+		long totalQuestions = MquestionRepo.countBymtestId(quizzId);
+		for (AnswerDto answerDto : answers) {
+			Optional<MQuestion> opQuestion = MquestionRepo.findById(answerDto.getQuestionId());
+			if (opQuestion.isPresent()) {
+				MQuestion question = opQuestion.get();
+				boolean isCorrect = answerDto.getSelected().equals(question.getAnswer());
+				ModuleTestAnswer answer = new ModuleTestAnswer();
+				answer.setModuletestActivity(attempt);
+				answer.setQuestion(question);
+				answer.setSelectedOption(answerDto.getSelected());
+				answer.setIsCorrect(isCorrect);
+				saveAnswers.add(answer);
+				if (isCorrect) {
+					score += 1; // Each correct answer adds 1 point
+				}
+			}
+		}
+		List<ModuleTestAnswer> savedAnswers = moduleTestAnswerRepo.saveAll(saveAnswers);
+		ModuleTestAnswerResult res = new ModuleTestAnswerResult();
+		res.setSavedAnswers(savedAnswers);
+		double percentage = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0.0;
+		res.setScore(percentage);
+		return res;
+	}
 
 }

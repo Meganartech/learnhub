@@ -290,14 +290,6 @@ const AddQuizzToAssignment = ({savedQuestions, setSavedQuestions, setShowAddQues
               <div className="atgrid ">
               <div  className="flexWithPadding">
                 <h4>Add Quizz To Assignment</h4>
-                  <button
-                    onClick={addQuestion}
-                    className="btn btn-primary "
-                  >
-                    {selectedQuestionIndex === savedQuestions.length
-                      ? "Add More "
-                      : "update "}
-                  </button>
                 </div>
                 <div>
                   {errors.selectedOption && (
@@ -369,14 +361,15 @@ const AddQuizzToAssignment = ({savedQuestions, setSavedQuestions, setShowAddQues
               </div>
               <div className="atbtndiv">
                 <div>
-                  <button
-                    onClick={() => {
-                      setShowAddQuestion(false)
-                    }}
-                    className="btn btn-secondary mt-4"
+                <button
+                    onClick={addQuestion}
+                    className="btn btn-primary mt-4"
                   >
-                    cancel
+                    {selectedQuestionIndex === savedQuestions.length
+                      ? "Add"
+                      : "update "}
                   </button>
+                 
                 </div>
                 <div className="atbtndiv">
                   <div>

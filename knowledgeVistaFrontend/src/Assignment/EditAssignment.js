@@ -408,6 +408,7 @@ const EditAssignment = () => {
     )}
   </div>
 </div>
+{Assignment?.type!="QUIZ" && 
                   <div className="form-group row">
                     <label
                       htmlFor="totalMarks"
@@ -432,7 +433,7 @@ const EditAssignment = () => {
                         {errors.totalMarks}
                       </div>
                     </div>
-                  </div>
+                  </div>}
                 </div>
 
                 <div className="cornerbtn">

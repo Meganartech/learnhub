@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -1877,13 +1876,13 @@ public class FrontController {
 	}
 
 	@PostMapping("/ModuleTest/Shedule")
-	public ResponseEntity<?> SaveORUpdateSheduleModuleTest(@RequestParam Long mtestId, @RequestParam String batchId,
+	public ResponseEntity<?> SaveORUpdateSheduleModuleTest(@RequestParam Long mtestId, @RequestParam Long batchId,
 			@RequestParam LocalDate testdate, @RequestHeader("Authorization") String token) {
 		return ModuleTestService.SaveORUpdateSheduleModuleTest(mtestId, batchId, testdate, token);
 	}
 
 	@GetMapping("/ModuleTest/GetSheduleDetails/{courseId}/{batchId}")
-	public ResponseEntity<?> getSheduleModuleTest(@PathVariable Long courseId, @PathVariable String batchId,
+	public ResponseEntity<?> getSheduleModuleTest(@PathVariable Long courseId, @PathVariable Long batchId,
 			@RequestHeader("Authorization") String token) {
 		return ModuleTestService.getModuleTestSheduleDetails(courseId, batchId, token);
 	}
@@ -2003,9 +2002,9 @@ public class FrontController {
 	@PostMapping("/Assignment/Submit")
 	public ResponseEntity<?> SubmitAssignment(@RequestHeader("Authorization") String token,
 			@RequestParam("assignmentId") Long assignmentId, @RequestParam("batchId") Long batchId,
-			@RequestPart(value = "file", required = false) MultipartFile file,
-			@RequestBody(required = false) Map<Long, String> answers) {
-		return assignmentService2.SubmitAssignment(token, assignmentId, batchId, file, answers);
+			@RequestParam(value = "file", required = false) MultipartFile file,
+			@RequestParam(value = "answers", required = false) String answersJson) {
+		return assignmentService2.SubmitAssignment(token, assignmentId, batchId, file, answersJson);
 	}
 
 	@GetMapping("/Assignments/getByStudent")

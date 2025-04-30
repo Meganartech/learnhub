@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knowledgeVista.Batch.Batch;
 import com.knowledgeVista.Batch.Assignment.Assignment;
 import com.knowledgeVista.Batch.Assignment.Assignment.AssignmentType;
@@ -172,7 +174,7 @@ public class AssignmentService2 {
 	}
 
 	public ResponseEntity<?> SubmitAssignment(String token, Long assignmentId, Long batchId, MultipartFile file,
-			Map<Long, String> answers) {
+			String answerjson) {
 		try {
 // Step 1: Validate Token
 			if (!jwtUtil.validateToken(token)) {
@@ -247,6 +249,16 @@ public class AssignmentService2 {
 
 			switch (assignment.getType()) {
 			case QA -> {
+				Map<Long, String> answers = null;
+				if (answerjson != null && !answerjson.isEmpty()) {
+					try {
+						ObjectMapper mapper = new ObjectMapper();
+						answers = mapper.readValue(answerjson, new TypeReference<Map<Long, String>>() {
+						});
+					} catch (Exception e) {
+						return ResponseEntity.badRequest().body("Invalid JSON in 'answers'");
+					}
+				}
 				if (answers == null) {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("answers cannot be null");
 				}
@@ -267,13 +279,22 @@ public class AssignmentService2 {
 				responseMessage = "Assignment Submitted Successfully";
 			}
 			case QUIZ -> {
+				Map<Long, String> answers = null;
+
+				if (answerjson != null && !answerjson.isEmpty()) {
+					try {
+						ObjectMapper mapper = new ObjectMapper();
+						answers = mapper.readValue(answerjson, new TypeReference<Map<Long, String>>() {
+						});
+					} catch (Exception e) {
+						return ResponseEntity.badRequest().body("Invalid JSON in 'answers'");
+					}
+				}
 				if (answers == null) {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("answers cannot be null");
 				}
 				List<AssignmentQuestion> allQuestions = assignmentQuesstionRepo.findByAssignment(assignment);
-				int totalCorrect = (int) allQuestions.stream()
-						.filter(q -> answers.get(q.getId()) != null && answers.get(q.getId()).equals(q.getAnswer()))
-						.count();
+				int totalCorrect = calculateTotalCorrect(allQuestions, answers);
 				submission.setAnswers(answers);
 				submission.setGraded(true);
 				submission.setSubmissionStatus(Submission.SubmissionStatus.VALIDATED);
@@ -307,6 +328,13 @@ public class AssignmentService2 {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("An error occurred while submitting the assignment");
 		}
+	}
+
+	private int calculateTotalCorrect(List<AssignmentQuestion> questions, Map<Long, String> answers) {
+		return (int) questions.stream().filter(q -> {
+			String userAnswer = answers.get(q.getId());
+			return userAnswer != null && userAnswer.equals(q.getAnswer());
+		}).count();
 	}
 
 	public ResponseEntity<?> getAssignmentsBybatchIdForValidation(String token, Long batchId, Long userId) {

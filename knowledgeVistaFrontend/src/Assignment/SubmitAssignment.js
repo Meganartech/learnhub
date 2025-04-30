@@ -27,39 +27,35 @@ const SubmitAssignment = () => {
 
   const handleSubmit = async () => {
     try {
-      let response;
+      if (Assignment?.type === "FILE_UPLOAD" && !selectedFile) {
+        MySwal.fire({
+          title: "Missing File",
+          text: "Please select a file before submitting.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append("assignmentId", AssignmentId);
+      formData.append("batchId", batchId);
   
       if (Assignment?.type === "QA" || Assignment?.type === "QUIZ") {
-        response = await axios.post(`${baseUrl}/Assignment/Submit?assignmentId=${AssignmentId}&batchId=${batchId}`,answers, {
-          headers: {
-            Authorization: token
-          },
-        });
+        formData.append("answers", JSON.stringify(answers));
       }
   
-      else if (Assignment?.type === "FILE_UPLOAD") {
-        if (!selectedFile) {
-          MySwal.fire({
-            title: "Missing File",
-            text: "Please select a file before submitting.",
-            icon: "warning",
-            confirmButtonText: "OK",
-          });
-          return;
-        }
-  
-        const formData = new FormData();
+      if (Assignment?.type === "FILE_UPLOAD") {
         formData.append("file", selectedFile);
-  
-        response = await axios.post(`${baseUrl}/Assignment/Submit?assignmentId=${AssignmentId}&batchId=${batchId}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: token,
-          },
-        });
       }
   
-      // Handle success response
+      const response = await axios.post(`${baseUrl}/Assignment/Submit`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: token,
+        },
+      });
+  
       if (response?.status === 200) {
         MySwal.fire({
           title: "Success!",
@@ -71,7 +67,6 @@ const SubmitAssignment = () => {
         });
       }
     } catch (err) {
-      // Handle error responses
       if (err?.response?.status === 403 || err?.response?.status === 400) {
         MySwal.fire({
           title: "Submission Failed",
@@ -92,6 +87,7 @@ const SubmitAssignment = () => {
       }
     }
   };
+  
   
 
   const getAssignment = async () => {
