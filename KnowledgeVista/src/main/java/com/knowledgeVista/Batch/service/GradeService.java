@@ -202,6 +202,7 @@ public class GradeService {
 			List<Batch> batches = user.getEnrolledbatch();
 			for (Batch batch : batches) {
 				GradeDto grade = getGradesbyBatchId(user, weightage, batch.getId(), batch.getBatchTitle());
+				grade.setBatchImage(batch.getBatchImage());
 				grades.add(grade);
 			}
 			Map<String, Object> res = new HashMap<>();
