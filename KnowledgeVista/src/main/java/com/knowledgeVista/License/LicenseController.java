@@ -189,7 +189,7 @@ public class LicenseController {
 					;
 				}
 
-				valid = this.getallSAS(institution, madmin, license);
+				valid = this.getallSAS(license);
 
 				UserListWithStatus userListWithStatus = new UserListWithStatus(isEmpty, valid, type, dataList,
 						Productversion);
@@ -424,97 +424,23 @@ public class LicenseController {
 	}
 
 //---------------------------------------------------------------------------------------
-	public boolean getallSAS(String institution, Madmin_Licence madmin, License license) {
-
-		LocalDate currentDate = LocalDate.now();
-		java.util.Date Datecurrent = java.sql.Date.valueOf(currentDate);
-		long milliseconds = Datecurrent.getTime(); // Get the time in milliseconds
-		java.sql.Timestamp timestamp = new java.sql.Timestamp(milliseconds);
-		String val = "";
-		String localFile = "";
-
-		localFile = license.getFilename();
-
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			if (madmin.getLicenceType().equals("FREE")) {
-				// For Future Use
-				licenceUploadDirectory = freelicencedir;
-			} else if (madmin.getLicenceType().equals("STANDARD")) {
-				licenceUploadDirectory = standardlicencedir;
-			}
-
-			Document document = builder.parse(new File(licenceUploadDirectory + localFile));
-			Element rootElement = document.getDocumentElement();
-			NodeList personList = rootElement.getElementsByTagName("data");
-			File file = new File(licenceUploadDirectory + localFile);
-			long lastModified = file.lastModified();
-			Date date = new Date(lastModified);
-			SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
-			Element person4 = (Element) personList.item(0);
-			Element trai = (Element) person4.getElementsByTagName("course").item(0);
-			Element stud = (Element) person4.getElementsByTagName("type").item(0);
-			Element vale = (Element) person4.getElementsByTagName("validity").item(0);
-			String tra = trai.getTextContent();
-			String stude = stud.getTextContent();
-			val = vale.getTextContent();
-
-			String formattedDate = formatter.format(date) + tra + stude + val;
-
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(file);
-			doc.getDocumentElement();
-			doc.createElement("key");
-			this.valu = (Jwts.builder().setSubject(formattedDate)
-					.signWith(SignatureAlgorithm.HS256, "yourSecretKeyStringWithAtLeast256BitsLength").compact());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("", e);
-			;
-			this.valu = "123344";
-		}
-
-		boolean valid = false; // Initialize valid to false
-
-		this.valu1 = license.getKey();
-		String value2 = license.getKey2();
+	public boolean getallSAS(License license) {
+		boolean valid = false;
 		Date endDate = license.getEnd_date();
 		// Convert Date to LocalDate
 		LocalDate licenseEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalDate today = LocalDate.now();
-
-//		    -------------------------------------testarea-----------------------------
-		if ((valu.equals(valu1) || valu.equals(value2)) && !(licenseEndDate.isBefore(today))) {
+		if (licenseEndDate.isAfter(today)) {
+			// endDate is in the future ✅
 			valid = true;
-			System.out.println("361" + valid);
-			logger.info("License is Valid" + valid);
-
-//		} else if ((val.isEmpty()) && (valu.equals(valu1))) {
-//			System.out.println("362" + valid);
-//			valid = true;
-//			System.out.println("else if " + valid);
-//			logger.info("License is valid");
-//			logger.info("License validy is unlimited");
-
 		} else {
-			System.out.println("363" + valid);
-			if (!(valu.equals(valu1)) || !(valu.equals(value2))) {
-				valid = false;
-				System.out.println("364" + valid);
-				logger.info("License is Modified");
-
-			} else if (licenseEndDate.isBefore(today)) {
-				valid = false;
-				logger.info("License is Expired");
-			}
+			valid = false;
+			// endDate is today or in the past ❌
 		}
-
 		licenceUploadDirectory = olddir;
 
 		return valid;
+
 	}
 
 //----------------upload VPS-------------------------------------------------------------------------
