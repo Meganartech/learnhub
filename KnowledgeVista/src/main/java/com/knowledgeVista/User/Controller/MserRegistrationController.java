@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +37,7 @@ import com.knowledgeVista.User.Approvals.MuserApprovals;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.Repository.MuserRoleRepository;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
+import com.knowledgeVista.User.SecurityConfiguration.OtpService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -42,6 +45,9 @@ import jakarta.servlet.http.HttpServletRequest;
 public class MserRegistrationController {
 	@Autowired
 	private MuserRepositories muserrepositories;
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
 	@Autowired
 	private JwtUtil jwtUtil;
 	@Autowired
@@ -64,8 +70,15 @@ public class MserRegistrationController {
 	private String activeProfile;
 	@Value("${base.url}")
 	private String baseUrl;
-
+	@Autowired
+	private OtpService otpService;
 	private static final Logger logger = LoggerFactory.getLogger(MserRegistrationController.class);
+
+	@Autowired
+	private JavaMailSender mailSender;
+
+	@Value("${spring.mail.username}")
+	private String emailUsername;
 
 	public Long countadmin() {
 		return muserrepositories.countByRoleName("ADMIN");
@@ -73,8 +86,13 @@ public class MserRegistrationController {
 
 	public ResponseEntity<?> registerAdmin(HttpServletRequest request, String username, String psw, String email,
 			String institutionName, LocalDate dob, String role, String phone, String skills, MultipartFile profile,
-			Boolean isActive, String countryCode) {
+			Boolean isActive, String countryCode, String otp) {
 		try {
+			if (!otpService.validateOtp(email, otp)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP");
+			}
+			// Remove OTP after successful verification
+			otpService.clearOtp(email);
 			Long count = muserrepositories.count();
 			if (environment.equals("VPS") && count > 1) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ADMIN");
@@ -102,8 +120,10 @@ public class MserRegistrationController {
 				Muser user = new Muser();
 				user.setUsername(username);
 				user.setEmail(email);
+				// Store plain text password for email
+				String plainTextPassword = psw;
+				user.setPassword(psw, passwordEncoder);
 				user.setIsActive(isActive);
-				user.setPsw(psw);
 				user.setPhone(phone);
 				user.setDob(dob);
 				user.setSkills(skills);
@@ -127,7 +147,6 @@ public class MserRegistrationController {
 					Madmin_Licence madmin = new Madmin_Licence();
 					madmin.setAdminId(savedadmin.getUserId());
 					madmin.setInstitution(institutionName);
-					madmin.setUpdatedDate(LocalDate.now());
 					madmin.setLicenceType("FREE");
 					madminrepo.save(madmin);
 					licencecontrol.uploadSAS(madmin, savedadmin);
@@ -167,7 +186,7 @@ public class MserRegistrationController {
 						+ "<p>Best Regards,<br>LearnHub Team</p>" + "</body>" + "</html>", user.getUsername(), // Admin
 																												// Name
 						user.getEmail(), // Admin Username (email)
-						psw // Admin Password
+						plainTextPassword // Admin Password (plain text)
 				);
 
 				if (institutionname != null && !institutionname.isEmpty()) {
@@ -230,8 +249,14 @@ public class MserRegistrationController {
 
 	public ResponseEntity<?> RegisterStudent(HttpServletRequest request, String username, String psw, String email,
 			LocalDate dob, String role, String phone, String skills, MultipartFile profile, Boolean isActive,
-			String countryCode) {
+			String countryCode, String otp) {
 		try {
+			if (!otpService.validateOtp(email, otp)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP");
+			}
+			// Remove OTP after successful verification
+			otpService.clearOtp(email);
+			// Continue with existing registration logic
 			if (!environment.equals("VPS")) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body("Cannot Register as Student in Sas Environment");
@@ -267,7 +292,9 @@ public class MserRegistrationController {
 				Muser user = new Muser();
 				user.setUsername(username);
 				user.setEmail(email);
-				user.setPsw(psw);
+				// Store plain text password for email
+				String plainTextPassword = psw;
+				user.setPassword(psw, passwordEncoder);
 				user.setPhone(phone);
 				user.setDob(dob);
 				user.setSkills(skills);
@@ -313,7 +340,7 @@ public class MserRegistrationController {
 						+ "' style='font-size:16px; color:blue;'>Sign In</a></p>" + "<p>Happy Learning!</p>"
 						+ "<p>Best Regards,<br>LearnHub Team</p>" + "</body>" + "</html>", username, // Student Name
 						email, // Student Username (email)
-						psw // Student Password
+						plainTextPassword // Student Password (plain text)
 				);
 
 				if (institutionname != null && !institutionname.isEmpty()) {
@@ -345,8 +372,13 @@ public class MserRegistrationController {
 
 	public ResponseEntity<?> RegisterTrainer(HttpServletRequest request, String username, String psw, String email,
 			LocalDate dob, String role, String phone, String skills, MultipartFile profile, Boolean isActive,
-			String countryCode) {
+			String countryCode, String otp) {
 		try {
+			if (!otpService.validateOtp(email, otp)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP");
+			}
+			// Remove OTP after successful verification
+			otpService.clearOtp(email);
 			if (!environment.equals("VPS")) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body("Cannot Register as Trainer in Sas Environment");
@@ -399,20 +431,15 @@ public class MserRegistrationController {
 						user.setProfile(profile.getBytes());
 					} catch (IOException e) {
 						logger.error("Error processing profile image", e);
-						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-								.body("{\"message\": \"Error processing profile image\"}");
 					}
 				}
-
 				MuserApproval.save(user);
-
 				// Send Approval Email to Admin
 				sendApprovalEmail(request, adminEmail, user);
 
 				return ResponseEntity.ok().body("{\"message\": \"Trainer registration pending approval.\"}");
 			} else {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-						.body("{\"message\": \"Error getting role\"}");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Error getting role\"}");
 			}
 
 		} catch (Exception e) {
@@ -470,10 +497,7 @@ public class MserRegistrationController {
 
 	public ResponseEntity<?> getUserByEmail(String email, String token) {
 		try {
-			if (!jwtUtil.validateToken(token)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-			String emailofreq = jwtUtil.getUsernameFromToken(token);
+			String emailofreq = jwtUtil.getEmailFromToken(token);
 			String institution = "";
 			Optional<Muser> opuser = muserrepositories.findByEmail(emailofreq);
 			if (opuser.isPresent()) {
@@ -509,14 +533,8 @@ public class MserRegistrationController {
 	}
 
 	public ResponseEntity<?> getTrainerDetailsByEmail(String email, String token) {
-
 		try {
-			// Validate the token
-			if (!jwtUtil.validateToken(token)) {
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-			String emailofreq = jwtUtil.getUsernameFromToken(token);
+			String emailofreq = jwtUtil.getEmailFromToken(token);
 			String role = jwtUtil.getRoleFromToken(token);
 			String institution = "";
 			Optional<Muser> opuser = muserrepositories.findByEmail(emailofreq);
@@ -555,14 +573,8 @@ public class MserRegistrationController {
 	public ResponseEntity<?> getStudentDetailsByEmail(String email, String token) {
 
 		try {
-			// Validate the token
-			if (!jwtUtil.validateToken(token)) {
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			String role = jwtUtil.getRoleFromToken(token);
-			String emailofreq = jwtUtil.getUsernameFromToken(token);
+			String emailofreq = jwtUtil.getEmailFromToken(token);
 
 			String institution = "";
 			Optional<Muser> opuser = muserrepositories.findByEmail(emailofreq);
@@ -598,13 +610,7 @@ public class MserRegistrationController {
 
 	public ResponseEntity<?> getDetailsbyemail(String email, String token) {
 		try {
-			// Validate the token
-			if (!jwtUtil.validateToken(token)) {
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
-			String emailofreq = jwtUtil.getUsernameFromToken(token);
+			String emailofreq = jwtUtil.getEmailFromToken(token);
 
 			String institution = "";
 			Optional<Muser> opuser = muserrepositories.findByEmail(emailofreq);
@@ -640,13 +646,7 @@ public class MserRegistrationController {
 	}
 
 	public ResponseEntity<?> getAdminDetailsBYEmail(String email, String token) {
-
 		try {
-			// Validate the token
-			if (!jwtUtil.validateToken(token)) {
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
 			String role = jwtUtil.getRoleFromToken(token);
 
 			// Perform authentication based on role
@@ -680,4 +680,50 @@ public class MserRegistrationController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+
+	public ResponseEntity<?> sendOTP(String email) {
+		try {
+			Optional<Muser> existingUser = muserrepositories.findByEmail(email);
+			if (existingUser.isPresent()) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL");
+			}
+
+			// Generate and store OTP
+			String otp = otpService.generateOtpAndStore(email);
+
+			// Prepare the email
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setFrom(otpService.getEmailUsername()); // safer than using injected emailUsername directly
+			message.setTo(email);
+			message.setSubject("LearnHub - Email Verification OTP");
+
+			String emailContent = String.format("Dear User,\n\n"
+					+ "Welcome to LearnHub! We're excited to have you join our learning community.\n\n"
+					+ "To complete your registration and verify your email address, please use the following One-Time Password (OTP):\n\n"
+					+ "                          %s\n\n" + "Important Notes:\n"
+					+ "• This OTP is valid for 5 minutes only\n" + "• Please do not share this OTP with anyone\n"
+					+ "• If you didn't request this OTP, please ignore this email\n\n"
+					+ "Need help? Contact our support team at support@meganartech.com\n\n" + "Best regards,\n"
+					+ "The LearnHub Team\n\n"
+					+ "Note: This is an auto-generated email. Please do not reply to this email.", otp);
+
+			message.setText(emailContent);
+			mailSender.send(message);
+
+			return ResponseEntity.ok().body("OTP sent successfully");
+		} catch (Exception e) {
+			logger.error("Error sending OTP", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send OTP");
+		}
+	}
+
+	public ResponseEntity<?> verifyOTP(String email, String otp) {
+		boolean isValid = otpService.validateOtp(email, otp);
+		if (!isValid) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP");
+		}
+
+		return ResponseEntity.ok().body("OTP verified successfully");
+	}
+
 }

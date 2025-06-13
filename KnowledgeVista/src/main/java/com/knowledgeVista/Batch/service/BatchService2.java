@@ -33,11 +33,6 @@ public class BatchService2 {
 
 	public ResponseEntity<?> getEnrolledBatches(String token, Long userId, int page, int size) {
 		try {
-			// Validate JWT token
-			if (!jwtUtil.validateToken(token)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			// Check user role
 			String role = jwtUtil.getRoleFromToken(token);
 			if (!"ADMIN".equals(role) && !"TRAINER".equals(role)) {
@@ -68,11 +63,6 @@ public class BatchService2 {
 
 	public ResponseEntity<?> getOtherBatches(String token, Long userId, int page, int size) {
 		try {
-			// Validate JWT token
-			if (!jwtUtil.validateToken(token)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			// Check user role
 			String role = jwtUtil.getRoleFromToken(token);
 			if (!"ADMIN".equals(role) && !"TRAINER".equals(role)) {
@@ -105,11 +95,6 @@ public class BatchService2 {
 //======================================For Trainer===============================================
 	public ResponseEntity<?> getbatchesForTrainer(String token, Long userId, int page, int size) {
 		try {
-			// Validate JWT token
-			if (!jwtUtil.validateToken(token)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			// Check user role
 			String role = jwtUtil.getRoleFromToken(token);
 			if (!"ADMIN".equals(role)) {
@@ -141,11 +126,6 @@ public class BatchService2 {
 
 	public ResponseEntity<?> getOtherBatchesForTrainer(String token, Long userId, int page, int size) {
 		try {
-			// Validate JWT token
-			if (!jwtUtil.validateToken(token)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			// Check user role
 			String role = jwtUtil.getRoleFromToken(token);
 			if (!"ADMIN".equals(role)) {

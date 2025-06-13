@@ -10,9 +10,7 @@ const EditLesson = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const MySwal = withReactContent(Swal);
-
   const { courseName, Lessontitle, lessonId, courseId } = useParams();
-
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadType, setUploadType] = useState("video");
   const [videodata, setvideodata] = useState({
@@ -199,7 +197,32 @@ const EditLesson = () => {
         newDocumentFiles: [...(prevData.newDocumentFiles || []), file], // Store the actual file, not an object
       }));
     } else {
-      alert("Only PDF or PPT files are allowed!");
+       MySwal.fire({
+                    toast:true,
+              position: 'top-end', 
+              icon: 'warning',
+              title: 'Only PDF or PPT files are allowed',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+              }
+            });
+             MySwal.fire({
+                    toast:true,
+              position: 'top-end', 
+              icon: 'warning',
+              title: 'Only PDF or PPT files arre allowed',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+              }
+            });
       // Optionally, clear the input if invalid
       e.target.value = null;
     }
@@ -220,7 +243,19 @@ const EditLesson = () => {
         newDocumentFiles: [...(prevData.newDocumentFiles || []), file], // Store the actual file, not an object
       }));
     } else {
-      alert("Only PDF or PPT files are allowed!");
+       MySwal.fire({
+                    toast:true,
+              position: 'top-end', 
+              icon: 'warning',
+              title: 'Only PDF or PPT files arre allowed',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+              }
+            });
       // Optionally, clear the input if invalid
       e.target.value = null;
     }
@@ -414,7 +449,19 @@ const EditLesson = () => {
     const file = e.dataTransfer.files[0];
     const maxSize = 1024 * 1024 * 1024;
       if (file && file.size > maxSize) {
-      alert("File size exceeds 1 GB limit.");
+       MySwal.fire({
+                    toast:true,
+              position: 'top-end', 
+              icon: 'warning',
+              title: 'File Size exceeds 1GB Limit',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+              }
+            });
     } else {
       if (file && file.type.includes("video")) {
         // Set the selected file name in state
@@ -430,7 +477,19 @@ const EditLesson = () => {
           fileUrl: "", // Clear file URL if necessary
         }));
       } else {
-        alert("Please select a video file.");
+         MySwal.fire({
+                      toast:true,
+                position: 'top-end', 
+                icon: 'warning',
+                title: 'Please Select a Video File',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer);
+                  toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+              });
       }
     }
   };
@@ -439,7 +498,19 @@ const EditLesson = () => {
     const maxSize = 1024 * 1024 * 1024; // 1 GB in bytes
   
     if (file && file.size > maxSize) {
-      alert("File size exceeds 1 GB limit.");
+       MySwal.fire({
+                    toast:true,
+              position: 'top-end', 
+              icon: 'warning',
+              title: 'File Size Exceeds 1GB Limit!',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+              }
+            });
     } else {
       if (file && file.type.includes("video")) {
         // Set the selected file name in state
@@ -455,7 +526,19 @@ const EditLesson = () => {
           fileUrl: "", // Clear file URL if necessary
         }));
       } else {
-        alert("Please select a video file.");
+         MySwal.fire({
+                      toast:true,
+                position: 'top-end', 
+                icon: 'warning',
+                title: 'Please Select a Video File.',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer);
+                  toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+              });
       }
     }
   };

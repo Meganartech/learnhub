@@ -49,14 +49,7 @@ public class DeleteApis {
 	@DeleteMapping("/Delete/Trainer/{email}")
 	public ResponseEntity<?> deleteTrainer(@RequestHeader("Authorization") String token, @PathVariable String email) {
 		try {
-			// Validate the token
-			if (!jwtUtil.validateToken(token)) {
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			String role = jwtUtil.getRoleFromToken(token);
-
 			// Perform authentication based on role
 			if ("SYSADMIN".equals(role)) {
 				Optional<Muser> existingUser = muserrepositories.findByEmail(email);
@@ -91,11 +84,6 @@ public class DeleteApis {
 	@DeleteMapping("/Delete/User/{email}")
 	public ResponseEntity<?> deleteStudent(@RequestHeader("Authorization") String token, @PathVariable String email) {
 		try {
-			if (!jwtUtil.validateToken(token)) {
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			String role = jwtUtil.getRoleFromToken(token);
 
 			// Perform authentication based on role
@@ -135,11 +123,6 @@ public class DeleteApis {
 	@DeleteMapping("/Delete/Admin/{email}")
 	public ResponseEntity<?> deleteAdmin(@RequestHeader("Authorization") String token, @PathVariable String email) {
 		try {
-			if (!jwtUtil.validateToken(token)) {
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			String role = jwtUtil.getRoleFromToken(token);
 
 			// Perform authentication based on role
@@ -180,14 +163,7 @@ public class DeleteApis {
 	public ResponseEntity<?> EditLicence(@RequestHeader("Authorization") String token, @PathVariable String email,
 			@PathVariable String type) {
 		try {
-
-			if (!jwtUtil.validateToken(token)) {
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			String role = jwtUtil.getRoleFromToken(token);
-
 			// Perform authentication based on role
 			if ("SYSADMIN".equals(role)) {
 				Optional<Muser> existingUser = muserrepositories.findByEmail(email);

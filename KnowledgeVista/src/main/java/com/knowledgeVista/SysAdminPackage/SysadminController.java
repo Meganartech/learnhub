@@ -35,6 +35,7 @@ import com.knowledgeVista.User.Controller.MserRegistrationController;
 import com.knowledgeVista.User.Repository.MuserRepoPageable;
 import com.knowledgeVista.User.Repository.MuserRepositories;
 import com.knowledgeVista.User.SecurityConfiguration.JwtUtil;
+import com.knowledgeVista.User.SecurityConfiguration.CacheService;
 
 @RestController
 @CrossOrigin
@@ -63,6 +64,8 @@ public class SysadminController {
 		private GoogleAuthController googleauth;
 		@Autowired
 		private MserRegistrationController muserreg;
+		@Autowired
+		private CacheService cacheService;
 	
 	   @GetMapping("/ViewAll/Admins")
        public ResponseEntity<?> ViewAllAdmins(
@@ -70,11 +73,6 @@ public class SysadminController {
               @RequestParam(defaultValue = "0") int pageNumber, 
             @RequestParam(defaultValue = "10") int pageSize  ){
 		  try {
-			
-	        	if (!jwtUtil.validateToken(token)) {
-	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	   	     }
-
 	   	     String role = jwtUtil.getRoleFromToken(token);
 	   	     if(role.equals("SYSADMIN")) {
 	   	    	Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -104,10 +102,6 @@ public class SysadminController {
     		   @RequestParam(defaultValue = "0") int pageNumber, 
                @RequestParam(defaultValue = "10") int pageSize){
 		  try {
-	        	if (!jwtUtil.validateToken(token)) {
-	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	   	     }
-
 	   	     String role = jwtUtil.getRoleFromToken(token);
 	   	     if(role.equals("SYSADMIN")) {
 	   	    	Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -130,10 +124,6 @@ public class SysadminController {
     		   @RequestParam(defaultValue = "0") int pageNumber, 
                @RequestParam(defaultValue = "10") int pageSize){
 		  try {
-	        	if (!jwtUtil.validateToken(token)) {
-	   	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	   	     }
-
 	   	     String role = jwtUtil.getRoleFromToken(token);
 	   	     if(role.equals("SYSADMIN")) {
 	   	    	Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -155,14 +145,7 @@ public class SysadminController {
        public ResponseEntity<?>DeActiveteAdmin(@RequestParam("email") String email,
     		   @RequestParam("reason") String reason, @RequestHeader("Authorization") String token){
 	      try {
-	          // Validate the token
-	          if (!jwtUtil.validateToken(token)) {
-	              // If the token is not valid, return unauthorized status
-	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	          }
-
 	          String role = jwtUtil.getRoleFromToken(token);
-
 	          // Perform authentication based on role
 	          if ("SYSADMIN".equals(role)) {
 	              Optional<Muser> existingUser = muserrepositories.findByEmail(email);
@@ -172,6 +155,7 @@ public class SysadminController {
 	                     user.setIsActive(false);
 	                     user.setInactiveDescription(reason);
 	                     muserrepositories.save(user);
+						  cacheService.updateAdminStatus(user.getInstitutionName());
 	                      return ResponseEntity.ok().body("{\"message\": \"Deactivated Successfully\"}");
 	                  } 
 
@@ -199,12 +183,6 @@ public class SysadminController {
      public ResponseEntity<?>ActiveteAdmin(@RequestParam("email") String email, 
   		   @RequestHeader("Authorization") String token){
 	      try {
-	          // Validate the token
-	          if (!jwtUtil.validateToken(token)) {
-	              // If the token is not valid, return unauthorized status
-	              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	          }
-
 	          String role = jwtUtil.getRoleFromToken(token);
 
 	          // Perform authentication based on role
@@ -214,8 +192,10 @@ public class SysadminController {
 	                  Muser user = existingUser.get();
 	                  if ("ADMIN".equals(user.getRole().getRoleName())) {
 	                     user.setIsActive(true);
+	                     user.setLoginAttempts(0);
 	                     user.setInactiveDescription("");
 	                     muserrepositories.save(user);
+	                     cacheService.updateAdminStatus(user.getInstitutionName());
 	                      return ResponseEntity.ok().body("{\"message\": \"Deactivated Successfully\"}");
 	                  } 
 

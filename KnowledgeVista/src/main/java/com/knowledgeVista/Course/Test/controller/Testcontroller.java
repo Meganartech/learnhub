@@ -64,14 +64,8 @@ public class Testcontroller {
 
 	public ResponseEntity<String> createTest(Long courseId, CourseTest test, String token) {
 		try {
-			if (!jwtUtil.validateToken(token)) {
-				System.out.println("Invalid Token");
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			String role = jwtUtil.getRoleFromToken(token);
-			String email = jwtUtil.getUsernameFromToken(token);
+			String email = jwtUtil.getEmailFromToken(token);
 			String username = "";
 			String institution = "";
 			Optional<Muser> opuser = muserRepository.findByEmail(email);
@@ -151,14 +145,8 @@ public class Testcontroller {
 
 	public ResponseEntity<?> getTestsByCourseIdonly(Long courseId, String token) {
 		try {
-			if (!jwtUtil.validateToken(token)) {
-				System.out.println("Invalid Token");
-				// If the token is not valid, return unauthorized status
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			String role = jwtUtil.getRoleFromToken(token);
-			String email = jwtUtil.getUsernameFromToken(token);
+			String email = jwtUtil.getEmailFromToken(token);
 			String institution = "";
 			Optional<Muser> opuser = muserRepository.findByEmail(email);
 			if (opuser.isPresent()) {
@@ -240,13 +228,9 @@ public class Testcontroller {
 	public ResponseEntity<?> getTestByCourseId(Long courseId, String token) {
 		// Validate the JWT token
 		try {
-			if (!jwtUtil.validateToken(token)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Token");
-			}
-
 			// Retrieve role and email from token
 			String role = jwtUtil.getRoleFromToken(token);
-			String email = jwtUtil.getUsernameFromToken(token);
+			String email = jwtUtil.getEmailFromToken(token);
 			String institution = "";
 			Optional<Muser> opuser = muserRepository.findByEmail(email);
 			if (opuser.isPresent()) {
@@ -363,10 +347,7 @@ public class Testcontroller {
 	public ResponseEntity<?> editTest(Long testId, String testName, Long noOfAttempt, Double passPercentage,
 			String token) {
 		try {
-			if (!jwtUtil.validateToken(token)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"error\": \"Invalid Token\"}");
-			}
-			String email = jwtUtil.getUsernameFromToken(token);
+			String email = jwtUtil.getEmailFromToken(token);
 			String institution = "";
 			Optional<Muser> opuser = muserRepository.findByEmail(email);
 			if (opuser.isPresent()) {
@@ -449,12 +430,8 @@ public class Testcontroller {
 //==============================Test History===============================
 	public ResponseEntity<?> getTestHistory(String token, Long batchId, int page, int size) {
 		try {
-			if (!jwtUtil.validateToken(token)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
-
 			String role = jwtUtil.getRoleFromToken(token);
-			String email = jwtUtil.getUsernameFromToken(token);
+			String email = jwtUtil.getEmailFromToken(token);
 			String institutionName = muserRepository.findinstitutionByEmail(email);
 			if (institutionName == null) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized User Institution Not Found");
@@ -487,9 +464,6 @@ public class Testcontroller {
 
 	public ResponseEntity<?> getTestHistoryforUser(String token, Long batchId, String email, int page, int size) {
 		try {
-			if (!jwtUtil.validateToken(token)) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			}
 			String role = jwtUtil.getRoleFromToken(token);
 			if ("ADMIN".equals(role) || "TRAINER".equals(role)) {
 

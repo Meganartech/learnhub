@@ -202,6 +202,7 @@ const Login = () => {
       });
 
       if (response.status === 200) {
+          sessionStorage.clear();
         const data = response.data;
         const jwtToken = data.token;
         const role = data.role;

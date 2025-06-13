@@ -27,8 +27,10 @@ export default baseUrl;
 //test server================
 
 // const baseUrl = 'https://learnhubdigitaltomcat.vsmartengine.com/eLearning';
+// window.baseUrl = baseUrl; 
 // export default baseUrl;
 
 
 // const baseUrl = 'https://lhdemotomcat.vsmartengine.com/eLearning';
+// window.baseUrl = baseUrl; 
 // export default baseUrl;
